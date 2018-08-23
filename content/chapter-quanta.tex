@@ -99,8 +99,13 @@ Nous avons par conséquent opter pour la définition d'approches génériques ad
     \item choix d'une catégorie: définition d'un nom, de l'objet et du fondement;
     \item recherche par mots-clés des documents suceptibles de contenir la catégorie (par exemple sur le siteWeb de LexisNexis);
     \item Parmi les documents trouvés, choisir quelques uns de ceux qui contiennent effectivement des demandes de la catégorie; 
-    \item lire chaque document choisi pour identifier les demandes tout en remplissant le tableau des demandes de références dont un extrait est illustré par le Tableau \ref{}.
+    \item lire chaque document choisi pour identifier les demandes tout en remplissant le tableau des demandes de références dont un extrait est illustré par le Tableau \ref{tab:quanta:tab-annotations}.
 \end{enumerate}
+
+\begin{table}[!htb]
+\includegraphics[width=\textwidth]{tab-annotations.png}
+\caption{Structure du tableau d'annotations manuelles à remplir: les noms des champs sont sur les 2 premières lignes et les demandes sont données en exemple pour la catégorie \textit{dommages-intérêts sur le fondement de l'article 700 du code de procédure civile} (décision 14/06911 de la cour d'appel de Lyon).} \label{tab:quanta:tab-annotations}
+\end{table}
 
 Le problème est ainsi décomposé grossièrement en 3 tâches:
 \begin{enumerate}
@@ -109,10 +114,52 @@ Le problème est ainsi décomposé grossièrement en 3 tâches:
 \item résolution des coréférences: Liaison des données relatives à la même demande
 \end{enumerate}
 
-Chacune de ses tâches se rapproche d'une tâche traitée dans la litérature, et nous donne ainsi des voies de solution. En effet, la détection de catégories dans les décisions peut être modélisée comme un problème de classification de document. Les deux dernières tâches se rapprochent plus de problématiques d'extraction d'entités complexes à champs/attributs comme l'extraction d'évènements, le remplissage de champs, ou encore l'extraction d'entités ou de rôles sémantiques et la résolution de coréférencement. Dans la section suivante, nous synthétisons l'analogie avec ses problématiques et explorons les approches proposées dans des travaux publiés.
+ Dans la section suivante, nous synthétisons l'analogie avec des problématiques couramment traités et explorons les approches proposées dans des travaux publiés.
 
 \section{Synthèse bibliographique associée}
 \label{sec:quanta:biblio}
+Chacune de ses tâches se rapproche d'une tâche traitée dans la litérature, et nous donne ainsi des voies de solution. En effet, la détection de catégories dans les décisions peut être modélisée comme un problème de classification de document. Les deux dernières tâches se rapprochent plus de problématiques d'extraction d'entités complexes à champs/attributs comme l'extraction d'évènements, le remplissage de champs, ou encore l'extraction d'entités ou de rôles sémantiques et la résolution de coréférencement.
+
+\subsection{Analogie avec des problématiques de la litératures}
+\begin{itemize}
+\item Extraction d'évènement : 
+\end{itemize}
+\begin{table}[h]
+\small
+\begin{tabular}{|p{0.13\textwidth}|p{0.3\textwidth}|p{0.4\textwidth}|}
+\hline
+\textbf{Champs} & \textbf{\cite{ace2005event}} & \textbf{Analogie chez les demandes} \\ \hline
+\textbf{Type} &  Die & Catégorie="Dommages-intérêts pour procédure abusive" \\ \hline
+\textbf{Expression} (\textit{extend}) & "Il est \textbf{mort} hier d'une insuffisance rénale."  & (\textit{voir page précédente}) \\ \hline
+\textbf{Déclencheur} & "mort" & "procédure abusive"\\ \hline
+\textbf{Argument} & Victim-Arg="il" \linebreak Time-Arg="hier"  & Quantum-demandé="3000\euro{}"\linebreak  Quantum-obtenu="0 \euro{}"\ \\ \hline
+\textbf{Attribut} & Polarity=POSITIVE, Tense=PAST & Sens-résultat="Rejeté" \\ \hline
+\end{tabular}
+\caption{Exemple d'analogie entre les évènements et l'extraction de demande}
+\end{table}
+\begin{itemize}
+\item Remplissage de champs des entités \textbf{Demande} (\textit{slot-filling)}: \textbf{Catégorie, Quantum-demandé, Quantum-obtenu, Sens-résultat}
+\item Extraction d'entités et relations ou résolution de coréférence: par ex. \textbf{(quantum demandé, quantum obtenu)}
+\end{itemize}
+
+\subsection{Approches}
+\begin{table}[h!]
+\small
+\begin{tabular}{|p{0.25\textwidth}|p{0.7\textwidth}|}
+\hline
+\textbf{Type d'approches} & \textbf{Exemples} \\ \hline
+\textbf{Chaine de traitement} & \textbf{Chaîne de classifieurs  }\cite{ahn2006stages} \\ \hline
+\textbf{Modélisation probabiliste} de la structure de l'évènement & \textbf{Modèle joint d'inférence} des entités, arguments, déclencheurs
+
+$p_\theta(t_i, r_i, a \vert i, N_i, x)$ \cite{yang2016jointEntityEvt} %\linebreak 
+\\ \hline
+\textbf{Réseau de neuronnes} pour automatiser la génération des caractéristiques et la modélisation de la structure & (i) \textbf{Architecture multicouche de réseaux de neuronnes récurrents}: encodage de la phrase, encodage des contextes, prédiction du déclencheur, prédiction des rôles, mémoire matricielle d'interdépendance déclencheur-argument \cite{nguyen2016jointtrgarg},  
+
+(ii) \textbf{Réseau de pointeur} (\textit{pointer network}): un encodeur de la phrase et des contextes, plusieurs décodeurs (un pour chaque champ) \cite{palm2017e2e-dnn} \\ \hline
+\end{tabular}
+\caption{Type d'approches}
+\end{table}
+
 
 \section{Méthode1: Localisation à Base d'Expressions clés prédéfinies et Apprises Automatiquement}
 \label{sec:quanta:baseline}

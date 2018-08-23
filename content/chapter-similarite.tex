@@ -52,7 +52,9 @@ $\overline{x_j}$: échantillons moyens du cluster $j$
 Comme on peut le remarquer, il s’agit d’une métrique non-supervisée (pas besoin de données labellisées) qu’il faut minimiser. C’est une fonction monotone décroissante ou croissante. Le choix de ce coude est visuel et peut sembler ambigu. Salvador et Chan (2004) propose d’utiliser l’intersection des deux lignes approximant la courbe. Mais plus récemment, Zhang et al. (2016) trouve que cette approche n’est pas appropriée pour les cas où le graphe d’évaluation n’est ni lisse, ni monotone. Zhang et al. (2016) propose d’exploiter la courbure du graphe i.e. la valeur dont un objet géométrique s'écarte d'être plat ou droit dans le cas d'une ligne.
 
 \subsubsection{Définir une représentation appropriée pour les textes}
+\url{https://arxiv.org/pdf/1509.01626.pdf}
 
+\url{http://ad-publications.informatik.uni-freiburg.de/theses/Bachelor_Jon_Ezeiza_2017_presentation.pdf}
 \subsubsection{Labeliser les clusters}
 
 \subsubsection{Evaluation du clustering généré}
@@ -91,13 +93,13 @@ $P_{x,y}$ : ensemble des modifications de $x$ nécessaire pour obtenir $y$ i.e. 
 
 $d$ désigne la métrique.
 
-Une simple implémentation de $d$ peut être de considérer le taux de mots modifiés dans $x$: 
+Un simple estimateur de $d$ peut être de considérer le taux de mots modifiés dans $x$: 
 \begin{equation}
-d(x,y) = \frac{\vert\vert P_{x,y} \vert\vert}{\vert\vert W_x \vert\vert}
+\widetilde{d}(x,y) = \frac{card(P_{x,y})}{card(W_x)}
 \end{equation}
  Un tel modèle ne considère ni l'ordre des mots, ni celui des phrases, ni la différence d'importance entre les mots, la complexité de la modification (une substitution est plus complexe qu'une suppression ou une insertion), ni le degré sémantique des perturbations. ce dernier peut être estimé en lissant le taux de perturbation à l'aide de la distance sémantique entre les mots substitués (le vecteur représentant le mot vide étant le vecteur nul par ex.):
 \begin{equation}
-d(x,y) = \sum\limits_{(w_x, w_y) \in Px,y} d_w(w_x,w_y),
+\widetilde{d}(x,y) = \sum\limits_{(w_x, w_y) \in Px,y} d_w(w_x,w_y) \label{equation:similarite:somme-dist-mots}
 \end{equation}
 $d_w$ désignant la distance sémantique entre les mots.
 Il est difficile de calculer de telle distance sur un grand corpus étant donné la longueur de notre document.
@@ -105,19 +107,20 @@ Il est difficile de calculer de telle distance sur un grand corpus étant donné
 Nous pouvons ainsi générer une jeu artificiel de données pour l'entrainement d'un modèle regréssif de la métrique entre deux textes $x$ et $y$. Pour cela, nous partons d'un ensemble $C$ de documents et pour chacun de ces documents, noté $x$, nous générons aléatoirement une valeur seuil de probabilité de perturbation en deça duquel un mot de $x$ est modifié. Par la suite, le texte  $y$, résultant de la modification de $x$, est généré en modifiant séquentiellement les mots de $x$ :
 
 \begin{algorithm}[H]
- \KwData{texte x, valeur seuil de probabilité p}
- \KwResult{y, d(x,y)}
+ \KwData{texte $x$, valeur seuil de probabilité p}
+ \KwResult{$y$, $\widetilde{d}(x,y)$}
  $y = "" $\; 
  \For{w in y}{
- 	v = random(0, 1)\;
+ 	$v = random(0,1)$\;
     \eIf{v < p}{
-       y += modifie(w)\;
+       $y += modifie(w)$; // Algorithme \ref{algo:similarite:modifiemot}
      }{
-     y += w
+     $y += w$\;
      }
+     $\widetilde{d}(x,y) = \sum\limits_{(w_x, w_y) \in Px,y} d_w(w_x,w_y)$\;
  }
- \Return $y$\;
- \caption{Génère une perturbation de $x$} \label{algo:perturbation}
+ \Return $y, \widetilde{d}(x,y)$\;
+ \caption{Génère une perturbation de $x$} \label{algo:similarite:perturbation}
 \end{algorithm}
 
 
@@ -125,19 +128,18 @@ Nous pouvons ainsi générer une jeu artificiel de données pour l'entrainement 
  \KwData{un mot $w$}
  \KwResult{un mot $w'$} 
  \Return "" ou $\arg\min\limits_{w'} d_w(w, w')$\;
- \caption{modifie} \label{algo:modifiemot}
+ \caption{modifie} \label{algo:similarite:modifiemot}
 \end{algorithm}
 
-Après avoir généré la base de données $B = \lbrace (d_i, d_i', s(d_i, d_i'))\rbrace$, on entraine un mdoèle regressif pour prédire la similarité entre 2 documents en fonction de leur représentation vectorielle. Ce modèle regressif peut être utilisé comme métrique de similarité dans un algorithme de clustering comme l'algorithme des K-moyennes.
+Après avoir généré l'ensemble $B = \lbrace (d_i, d_i', s(d_i, d_i'))\rbrace$ de données artificielle d'entrainement , on entraine un mdoèle regressif pour prédire la similarité entre 2 documents en fonction de leur représentation vectorielle. Ce modèle regressif peut être utilisé comme métrique de similarité dans un algorithme de clustering comme l'algorithme des K-moyennes.
 
 \textcolor{red}{Issues:}
 \begin{itemize}
-\item les docs sont généralement de tailles différentes, ne faudrait il pas intégrer une perturbation ajout de mots?
-\item il faudrait intégrer la composante taille du document
-\item comment assurer les propriétés d'une fonction similarité? par exemple si aucune perturbation n'est opérée, alors la similarité est maximale et si tous les mots sont modifiés alors la similarité est minimale
-\item $s = 1-p$ ne fonctionnerait pas comme similarité parce que le p est la proba de modifier un mot (ce qui n'assure pas qu'on l'ait modifié). Du coup, une même perturbation pourrait avoir deux mesures de similarité différentes avec le texte de départ. Pire encore, si aucune perturbation n'a eu lieu, la similarité avec l'original ne sera pas maximale. Je propose d'utiliser le taux de perturbation à la place de $p$ dans le calcul de $s$. Ce taux correspond à la proportion de mots modifiés.
-\item Ne faudrait il pas prendre en compte un poids pour les mots, car peut-être la modification de certains mots ne devrait pas avoir le même impact sur la similarité ou le taux de perturbation que celle d'autres mots. 
-\item ne faudrait il pas intégré une autre similarité plus proche de notre objectif qu'on déduirait des données labelisées (appartenance ou pas au même cluster)
+\item les docs sont généralement de tailles différentes, ne faudrait il pas intégrer une perturbation ajout de mots? \textcolor{blue}{combiner les modifications par supression et par substitution}
+\item il faudrait intégrer la composante taille du document: \textcolor{blue}{agréger sur le nombre minimal de phrases des paires de documents}
+\item comment assurer les propriétés d'une fonction similarité? par exemple si aucune perturbation n'est opérée, alors la similarité est maximale et si tous les mots sont modifiés alors la similarité est minimale: \textcolor{blue}{agrégation par soustraction des vecteurs du couple de docs. plus deux doc seront similaire, plus le vecteur de leur paire tendra vers le null}
+\item Ne faudrait il pas prendre en compte un poids pour les mots, car peut-être la modification de certains mots ne devrait pas avoir le même impact sur la similarité ou le taux de perturbation que celle d'autres mots:  \textcolor{blue}{lissage par la somme des distance des vecteurs de mots substitués Eq. \ref{equation:similarite:somme-dist-mots}}
+\item ne faudrait il pas intégré une métrique proche de la tâche: la ressemblance n'est pas forcément globale à tous le corps du document mais plus à certaines régions; donc un document auquel on rajoute quelques phrases ne devrait pas voir  son sens trop changer:  \textcolor{blue}{peut-être agréger les distances minimales entre les paires de phrases}
 \end{itemize}
 
 \section{Expérimentations et interprétation des résultats}
@@ -151,7 +153,9 @@ L'expert annotateur a identifié quatre cas différents (a, b, c, d) décrits en
 - pour le cas d) il s'agit d'un avocat attaqué par son adversaire et non pas par son propre client
 Le dataset comprend 81 documents répartis dans 4 groupes avec 6 documents appartenant chacun à 2 groupes.
 
-Pour l'évaluation non supervisée, les 6 catégories de demande utilisée pour l'extraction de demandes sont utilisés.
+Pour l'évaluation non supervisée, les 6 catégories de demande utilisée pour l'extraction de demandes sont utilisés en plus.
+
+\subsection{Apprentissage de la métrique}
 
 
 \section{Conclusion}

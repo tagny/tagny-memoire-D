@@ -21,7 +21,7 @@
 \usepackage{multirow}
 \usepackage{longtable}
 %\usepackage{subfigure}
-\usepackage{caption}
+\usepackage[labelfont=small,textfont=small,singlelinecheck=off,justification=centering]{caption}
 \usepackage{subcaption}
 \usepackage{framed}
 \usepackage[left=2.5cm,right=2.5cm,top=3cm,bottom=3cm]{geometry}
@@ -75,9 +75,10 @@
 \renewcommand{\nomentryend}{.}
 \renewcommand{\nomlabel}[1]{\hfil {\bf #1}\hfil:}
 \addto\captionsfrench{%
-\renewcommand{\figurename}{\footnotesize {\scshape \it Figure} \it}}
-\addto\captionsfrench{%
-\renewcommand{\tablename}{\footnotesize {\scshape \it Tableau} \it}
+%\renewcommand{\figurename}{\footnotesize {\scshape \it Figure} \it}
+%\renewcommand{\tablename}{\footnotesize {\scshape \it Tableau} \it}
+\renewcommand{\figurename}{Figure}
+\renewcommand{\tablename}{Tableau}
 \renewcommand{\listfigurename}{Liste des figures}
 %\renewcommand{\contentsname}{Sommaire}
 }
