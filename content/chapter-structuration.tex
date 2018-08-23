@@ -1,0 +1,249 @@
+\chapter{Sectionnement et Annotation d'entités}
+\label{sec:structuration}
+
+\section{Introduction}
+\label{sec:structuration:motivation}
+Ce chapitre traite de la détection de sections et d'entités dans les décisions jurisprudentielles françaises. Ces décisions sont des documents non structurés qui partagent généralement la même structure qu'on peut définir par les sections: \textit{entête}, \textit{exposé du litige}, \textit{motifs}, \textit{dispositif}. Chaque section comprend des information sur l'affaire: 
+\begin{enumerate}
+\item la section ENTETE contient diverses métadonnées de référence (date, lieu, identifiant, parties impliquées, juges, affaires antérieurs liés, ...); 
+\item la section LITIGE comprend une description des faits, des procédures (jugements antérieurs, appel, assignations, ...), des demandes et raisonnements des parties; 
+\item la section MOTIFS détaille le raisonnement et les arguments des juges;
+\item la section DISPOSITIF est la décision finale qui résume la réponse des juges aux différentes demandes des parties.
+\end{enumerate}
+
+ Même si toutes les décisions respectent cette organisation, la structure à l'intérieur des sections peut varier d'un document à l'autre. Compte tenu de la répartition très sémantique des informations entre les sections, il nous a paru logique de détecter les sections dans un premier temps pour mieux organiser les différentes tâches d'extraction. Par la suite, des données sur les entités ou les demandes par exemple peuvent être plus facilement extraites en fonction des sections où elles se retrouvent généralement. Nous nous focalisons en particulier ici sur la détection d'entités telles que la date à laquelle le jugement a été prononcé, le type de juridiction, sa localisation (ville), les noms de juges, des parties et des avocats. La Table \ref{p4_relevantinfo} liste les différentes entités ciblées et fournit des exemples illustrant la forme de leurs mentions dans les arrêts français (décisions de juridictions de second degré).
+
+\begin{table}[!htb]
+\begin{tabular}[c]{|p{0.2\textwidth}|c|p{0.37\textwidth}|cc|}
+\hline
+\textbf{Entités} & \textbf{Label} & \textbf{Exemples} & \multicolumn{2}{c|}{\textbf{\#mentions}$^a$}\\
+  & & & \textbf{Médiane}$^b$& \textbf{Total}$^c$ \\ \hline
+Numéro de registre & \textbf{rg} & "10/02324", "60/JAF/09" & 3 & 1318\\ \hline
+Ville & \textbf{ville}& "NÎMES", "Agen", "Toulouse" & 3 & 1304\\ \hline
+Juridiction & \textbf{juridiction} & "COUR D'APPEL" & 3 & 1308\\ \hline
+Formation & \textbf{formation} & "1re chambre", "Chambre économique" & 2 &  1245\\ \hline
+Date de prononcé de la décision & \textbf{date} & "01 MARS 2012", "15/04/2014" & 3 & 1590\\ \hline
+Appelant & \textbf{appelant} & "SARL K.", "Syndicat ...", "Mme X ..." & 2 & 1336 \\ \hline
+Intimé & \textbf{intime} & - // - & 3 & 1933 \\ \hline
+Intervenant & \textbf{intervenant} & - // - & 0 & 51 \\ \hline
+Avocat & \textbf{avocat} & "Me Dominique A., avocat au barreau de Papeete" & 3 & 2313\\ \hline
+Juge & \textbf{juge} & "Monsieur André R.", "Mme BOUSQUEL" & 4 & 2089\\ \hline
+Fonction de juge & \textbf{fonction} & "Conseiller", "Président" & 4 & 2062\\ \hline
+Norme & \textbf{norme} & "l' article 700 NCPC", "articles 901 et 903" & 12 & 7641 \\ \hline
+\noalign{\smallskip}\hline\noalign{\smallskip}
+Non-entité & \textbf{O} & \textit{mot ne faisant partie d'aucune mention d'entité} & - & -\\ \hline
+\end{tabular} 
+
+$^a$ nombre de mentions d'entités dans le corpus annoté pour les expérimentations
+
+$^b$ nombre médian de mentions par document dans le corpus annoté
+
+$^c$ nombre total d'occurrences dans le corpus annoté
+\caption{Entités et labels correspondant utilisés pour labeliser leurs mots. }\label{p4_relevantinfo}
+\end{table}
+
+
+\section{Les décisions de justices françaises}
+\label{sec:structuration:probleme}
+\subsection{Structure}
+Vu la sémantique ou le rôle des différentes sections, il est évident qu'elles sont séparées par des marqueurs bien précis. Une approche intuitive consiste par exemple à définir un algorithme capable de reconnaitre ces marqueurs de transitions à travers des expressions régulières. Cependant, les marqueurs utilisés ne sont pas standards car il n'existe pas de modèle stricte utilisé par toutes les juridictions. par conséquent, les marqueurs de transitions sont souvent différents d'une décision à l'autre et peuvent être des titres ou des motifs à base de symboles (astérisques, tirets, etc.). Il arrive parfois que la transition soit implicite et qu'on ne s'en rende compte que par la forme des lignes, au cours de la lecture. Même les marqueurs explicites sont hétérogènes. D'une part en cas d'utilisation de titres par exemple, la transition de l'entête à l'exposé du litige peut être indiquée par des titres comme "\textit{Exposé}", "\textit{FAITS ET PROCÉDURES}", "\textit{Exposé de l’affaire}", "\textit{Exposé des faits}", etc. Quant au dispositif, il est introduit généralement par l'expression "\textit{PAR CES MOTIFS}" avec souvent quelques variantes qui peuvent être très simples (par ex. "\textit{Par Ces Motifs}") ou exceptionnelles (par ex. "\textit{P A R C E S M O T I F S :}"). Dans certaines décisions, cet expression est remplacée par d'autres expressions comme "\textit{DECISION}", "\textit{DISPOSITIF}", "\textit{LA COUR}", etc. 
+D'autre part lors de l'utilisation de symboles, il arrive qu'un même motif sépare différentes sections et même des paragraphes dans le même document.
+
+Une hétérogénéité similaire apparait pour les entités. Les noms de parties et d'avocats sont généralement placés après un mot particulier comme  "\textit{APPELANTS}" ou "\textit{DEMANDEUR}" pour les demandeurs (appelants en juridiction de 2e degré), "\textit{INTIMES}" ou "\textit{DEFENDEUR}" pour les défendeurs (ou intimés), and "\textit{INTERVENANTS}" pour les intervenants. Les noms des individus, sociétés et lieux commencent par une lettre majuscule ou sont entièrement en majuscule. Cependant, certains mots communs peuvent apparaitre aussi en majuscule (par ex. \textit{APPELANTS}, \textit{DÉBATS}, \textit{ORDONNANCE DE CLÔTURE}). Les entités peuvent contenir des chiffres (identifiant, dates, ...), des caractères spéciaux ("/", "-"), des initiaux ou abréviations.  Dans l'entête, les entités apparaissent généralement dans le même ordre (par ex. les appelants avant les intimés, les intimés avant les intervenants). Cependant, plusieurs types d'entités apparaissent dans l'entête, contrairement aux autres sections où seules les normes nous intéressent dans cette étude. L'entête est aussi mieux structurée que les autres sections même si sa structure peut différer entre deux documents.
+
+\subsection{Aquisition}
+Les décisions sont disponibles auprès des juridictions mais on note qu'un certain nombre d'entre elles est accessible en ligne. On les y retrouve sous divers formats dont par exemple .rtf sur \url{http://legifrance.gouv.fr}, ou .doc(x) et .txt sur le site web de LexisNexis d'où proviennent les documents de notre étude. Chaque document téléchargé de LexisNexis contient une ou plusieurs décisions de justice. De plus, LexisNexis n'autorise le téléchargement simultané qu'un nombre très faible de décisions qui décroit dans le temps (nous avons remarqué des limites de 100, puis 20, et ensuite 10 au cours de ces 3 dernières années). Par contre, l'identification et le service des documents sur Legifrance permet de pouvoir recolter plus rapidement les documents à l'aide par ex. d'une simple routine de téléchargement itératif.
+
+
+
+
+\section{Synthèse bibliographique: Reconnaissance d'entités par étiquetage de séquence et décisions de justices}
+\label{sec:structuration:biblio}
+
+\subsection{Approches générales de détection d'entités}
+
+Quatre catégories d'approches de détection d'entités ont été distinguées \citep{chau2002nerwithNN}:
+
+\begin{itemize}
+\item Les \textbf{systèmes à recherche lexicale} sont conçus sur la base d'une liste d'entités précédemment connues, avec leurs synonymes dans le domaine d'intérêt. Par exemple, dans le domaine juridique, un lexique pourrait contenir les identifiant de règles juridiques et les noms des juges. La liste des entités peut être manuscrite par des experts ou apprise à partir d'un ensemble de données étiquetées (phase d'apprentissage). Cependant, il s'avère très difficile de maintenir une telle liste car le domaine pourrait changer régulièrement (nouvelles lois par ex.). De plus, les mentions d'entités peuvent avoir plusieurs variantes. Par exemple, la même règle "Article 700 du code de procédure civile" peut \^etre citée seule et en entier (\textit{article 700 du code de procédure civile}), ou abrégée (\textit{article 700 CPC}), ou encore combinée avec d'autres règles (\textit{articles 700 et 699 du code de procédure civile}). Ces problèmes, y compris les ambiguïtés (par exemple, différentes entités utilisant les mêmes mots), ont limité les premiers systèmes \citep{palmer1997learnedLookup}.
+
+\item Les \textbf{systèmes à base de règles} sur des règles qui décrivent suffisamment, contextuellement, structurellement ou lexicalement, la diversité des mentions d'entités. Ils sont avantageux parce que leurs erreurs sont facilement explicables. La définition manuelle de règles exige malheureusement des efforts considérables, en particulier pour les grands corpus. De plus, un ensemble donné de règles est difficilement réutilisable dans d'autres domaines. Cependant, quelques approches adaptatives ont été conçues pour surmonter ces limites tout en bénéficiant toujours de l'explicabilité du comportement des systèmes à base de règles \citep{siniakov2008gropusrulebased,chiticariu2010adaptativerulebased}.
+
+\item Les \textbf{systèmes statistiques} adaptent les modèles statistiques de langage, issus typiquement des méthodes de compression de texte, pour détecter les entités. Par exemple, \citet{witten1999languagemodel} ont adapté les schémas de compression nommés "Prédiction par Correspondance Partielle".
+
+\item Les \textbf{systèmes basés sur l'apprentissage automatique} exécutent des classifieurs multi-classes sur des segments de texte. Par exemple, un classifieur traditionnel comme le classifieur bayésien naïf peut être entrainer pour détecter les noms de gènes en classifiant les mots du documents à partir d'un ensemble de descripteurs définis manuellement \citep{persson2012nbbioner}. Pour détecter les entités, les algorithmes d'étiquetage de séquence tels que le CRF quant à eux classifient les segments de texte tout en modélisant les transitions entre les labels \citep{finkel2005stanfordcrfner}. Dans ce registre, les architectures d'apprentissage profond réalisent actuellement les meilleures performances sur de multiples tâche d'extraction d'information en général et de reconnaissance d'entités nommées en particulier \citep{lample2016nnner}.
+\end{itemize}
+Certains travaux ont combiné diverses approches pour extraire les entités à partir de documents juridiques,  par exemple,  par la description de l'information contextuelle en utilisant des règles pour répondre au problème d'ambigüité des méthodes à recherche lexicale \citep{mikheev1999NERlexicalWithRules,hanisch2005prominer}. 
+
+\subsection{Détections d'entités dans des documents juridiques}
+Les modèles HMM et CRF ont été utilisés dans de multiples travaux pour reconnaître des entités juridiques. Ils peuvent être combinés à d'autres approches dans un système global. Après avoir segmenter les documents à l'aide d'un modèle CRF, \citet{dozier2010legalnerr} ont combiné plusieurs approches pour reconnaître des entités dans les décisions de la cour suprême des Etats-Unis. Ils ont définis des détecteurs distincts à base de règles pour identifier séparémment la juridiction (zone géographique), le type de document, et les noms des juges, en plus de l'introduction d'une recherche lexicale pour détecter la cour, ainsi qu'un classifieur entrainé pour reconnaître le titre. Ces différents détecteurs ont atteint des performances prometteuses, mais avec des rappels limités entre $ 72 \% $ et $ 87 \% $. \citep{cardellino2017legalNERCL} quant à eux ont utilisé le CRF et les réseaux de neurones (\textcolor{red}{OÙ pays?}). Les basses performances qu'ils rapportent pour l'extraction dans les jugements illustre bien la difficulté de la détection d'entités juridiques. Plus récemment encore, \citet{andrew2018legalNerAndRelation} obtiennent de bons résultats en combinant l'extraction d'entités non-juridiques par CRF à l'extraction de relations par une grammaire GATE JAPE \citep{thakker2009gatejape}.
+
+La comparaison avec d'autres approches démontre bien que les modèles probabilistes atteignent de très bonnes performances lors de l'extraction d'information dand les documents juridiques. Par exemple, le HMM a été comparé à l'Algorithme de Perceptron à Marges Inégales (PAUM) \citep{li2002PAUM} pour reconnaître les institutions et références d'autres décisions de justice, ainsi que les citations d'actes juridiques (loi, contrat, etc.) dans les décisions judiciaires de la République Tchèque \citep{Kriz2014nerinczechdecisions}. Les deux modèles ont données de bonnes performances avec des scores F1 de $ 89 \% $ et $ 97 \% $ pour le HMM utilisant les trigrammes comme descripteurs de mots, et des scores F1 de $ 87 \% $ et $ 97 \% $ pour le PAUM en utilisant des 5-grammes de lemmes et les rôles grammaticaux (\textit{Part-Of-Speech tag}) comme descripteurs. 
+
+\subsection{Modèles d'étiquetage de texte pour l'extraction d'information}
+Considérons un texte T comme étant une séquence d'observations $t_{1:n}$, avec chaque $t_i$ étant un segment de texte (mots, ligne, phrase, etc.). En considérant une collection de labels, l'étiquetage de T consiste à affecter à les labels appropriés à chaque $t_i$. La segmentation de T est un étiquetage particulier qui implique de découper T en des groupes qui ne se chevauchent pas (des partitions), tels que les segments d'un groupe constituent nécessairement une sous-séquence de T. En d'autres termes, segmenter T revient à labeliser ses segments en considérant une contrainte particulière (\textcolor{red}{Laquelle?}). Parmi les multiples modèles d'étiquetage de séquences, nous nous sommes proposés d'étudier les performances de quelques modèles établis décrits ci-après.
+\subsubsection{HMM}
+Un modèle HMM est une machine à état fini défini par un ensemble d'états $ \lbrace s_1, s_2, ..., s_m \rbrace $. Un modèle HMM a pour fonction d'affecter une probabilité jointe 
+$ P (T , L) = \prod\limits_i P(l_i \vert l_{i-1})P(T \vert l_i)$  à des paires de séquences d'observations $ T = t_{1: n} $ et de séquence de labels $ L = l_{1:n} $. Etant donnée qu'un HMM est un modèle génératif, chaque label $l_i$ correspond à l'état $s_j$ dans lequel la machine a généré l'observation $t_i$. Il y a autant de labels possibles que d'états. Le processus de labelisation de T consiste à déterminer la séquence de labels $ L^* $ qui maximise la probabilité jointe ($L^* = \arg \max\limits_L P(T, L)$). Une évaluation de toutes les séquences possibles de labels est nécessaire pour déterminer celle qui convient mieux à $ T $. Pour éviter la complexité exponentielle $ O(m^n)$ d'une telle approche, $n$ étant la longueur de la séquence et $m$ le nombre de labels possibles, le processus d'étiquetage utilise généralement l'algorithme de décodage Viterbi \citep{viterbi1967viterbi} qui est basé sur la programmation dynamique. Cette algorithme utilise les paramètres du HMM estimés par apprentissage sur un corpus de textes annotés manuellement:
+\begin{itemize}
+\item Un ensemble d'états $ \lbrace s_1, s_2, ..., s_m \rbrace $ et un alphabet $ \lbrace o_1, o_2, ..., o_k \rbrace $
+\item La probabilité que $ s_j $ génère la première observation $ \pi(s_j), \forall j \in [1 .. m] $
+\item La distribution de probabilité de transition $ P (s_i\vert s_j),  \forall i,j \in [1 .. m] $
+\item La distribution de probabilité de d'émission $ P(o_i\vert s_j), \forall i \in [1 .. k], \forall j \in [1 .. m]$
+\end{itemize}
+
+Les probabilités de transition et d'émission peuvent être inférer en utilisant une méthode de maximum de vraisemblance comme l'algorithme d'espérance maximale. L'algorithme Baum-Welch \citep{welch2003baumwelch} en est une spécification conçu spécialement pour le HMM. L'avantage du HMM réside dans sa simplicité et sa vitesse d'entrainement. Par ailleurs, il est difficile de représenter de multiples descripteurs interactifs pour les segments de texte, tout comme de modéliser la dépendance entre des observations distantes parce que l'hypothèse d'indépendance entre observations est très restrictive (i.e. l'état courant dépend uniquement des état précédents et de l'observation courante). \citet{rabiner1989tutorial} fournit plus de détails sur le HMM.
+
+\subsubsection{CRF}
+\label{sec:structuration:biblio:CRF}
+Même si l'algorithme Viterbi est aussi utilisé pour appliquer le CRF à l'étiquetage de séquence, les structures du CRF et du HMM diffèrent. Au lieu de maximiser la probabilité jointe $ P(L, T)$ comme le HMM, un CRF \citep{lafferty2001crfie} cherche la séquence de labels $L^*$ qui maximise la probabilité conditionnelle suivante: $$P(L|T) = \frac{1}{Z}\exp \left(\sum\limits_{i=1}^n\sum\limits_{j=1}^F \lambda_j f_j(l_{i-1},l_i,t_{1:n},i)\right)$$ où $Z$ est le facteur de normalisation. Les fonctions potentielles $f(\cdot)$ sont les caractéristiques utilisés par les modèles CRF. Deux types de fonctions caractéristiques sont définies: les caractéristiques de transition qui dépendent des labels aux positions courantes et précédentes ($l_{i-1}$ and $ l_{i}$ respectivement) et de $T$; et les caractéristiques d'état qui sont des fonctions de l'état courant $ l_{i} $ et de la séquence $ T $. Ces fonctions $f(\cdot)$ sont définies à l'aide soit par de fonctions à valeur binaire ou réelle $b(T,i)$ qui combine les descripteurs d'une positiond'une position $i$ dans $T$ \citep{Wallach2004crfintro}. Pour labéliser les références aux règles de loi par exemple, un CRF pourrait inclure par exemple les fonctions potentielles pour labéliser "\textit{700}" dans ce contexte "\textit{... l'article 700 du code de procédure civile...}":
+\[f_1(l_{i-1},l_i,t_{1:n},i) = \left\lbrace \begin{array}{ll}
+b_1(T,i) & \text{if } l_{i-1} = \text{NORME} \wedge l_i = \text{NORME} \\
+0 & \text{otherwise}
+\end{array} \right.\]
+\[f_2(l_{i-1},l_i,t_{1:n},i) = \left\lbrace \begin{array}{ll}
+b_2(T,i) & \text{if }l_i = \text{NORME} \\
+0 & \text{otherwise}
+\end{array} \right.\]
+with
+\[b_1(T,i) = \left\lbrace \begin{array}{ll}
+1 & \text{if } (t_{i-1} =\text{article) }\wedge (POS_{i-1}=\text{NOM}) \\&  \wedge  (NP1_{i-1}=\text{<unknown>)} \wedge (NS1_{i-1}=\text{@card@)} \\
+0 & \text{otherwise} 
+\end{array} \right.\]
+\[b_2(T,i) = \left\lbrace \begin{array}{ll}
+1 & \text{if } (t_i =\text{700) }\wedge (POS_i=\text{NUM})  \wedge (NP1_i=\text{article)} \wedge (NS1_i=\text{code)} \\
+0 & \text{otherwise}
+\end{array} \right.\]
+$t_i$ étant une observation dans $T$, POS étant le rôle grammatical de $t_i$ (NUM = valeur numerique, NOM=nom), et NP1 et NS1 sont les lemmes des mots avant et après $t_i$, respectivement. Les symboles \textit{<unknown>} et \textit{@card@} encode les lemmes inconnus et les lemmes de numbres respectivement. Pouvant être activées au même moment, les fonctions $f_1$ et $f_2$ définissent des descripteurs se chevauchant. Avec plusieurs fonctions activées, la croyance dans le fait que $l_i = NORME$ est renforcée par la somme $\lambda_1 + \lambda_2$ des poids  des functions activées \citep{Zhu2010CRFlecture}.  Un modèle CRF emploie une fonction $f_j$ lorsuqe ses conditions sont satisfaites et $\lambda_j > 0$. Les diverse fonctions pondérées $f_j$ sont définies par des descripteurs caractérisant le texte et les labels des données d'entrainement. La phase d'entrainement consiste principalement à estimer le vecteur de paramètres $\lambda = (\lambda_1,...,\lambda_F)$ à partir des de textes annotés manuellement $ \lbrace (T_1, L_1), ..., (T_M, L_M) \rbrace $, $ T_k $ étant un texte et $ L_k $ la séquence de labels correspondande. La valeur optimal retenue pour estimer de $\lambda$ est celle maximisant la fonction objectif   
+$\sum\limits_ {k = 1} ^ M \log P (L_k \vert T_k) $ sur les données d'entrainement. En général, outre le maximum de vraisemblance, cette optimisation est résolue à l'aide de l'algorithme de descente du gradient dont l'exécution peut-être accélérée à l'aide de l'algorithme L-BFGS \citep{liu1989l-bfgs}.
+
+\subsubsection{Extensions du CRF par les réseaux de neurones: BiLSTM-CRF vs. BiLSTM-CNN-CRF}
+2015 https://arxiv.org/pdf/1508.01991.pdf
+
+https://github.com/UKPLab/emnlp2017-bilstm-cnn-crf
+
+dnn crf : https://pdfs.semanticscholar.org/c322/7702dd212965157a615332f3dd78b0f11b5e.pdf
+
+https://towardsdatascience.com/conditional-random-field-tutorial-in-pytorch-ca0d04499463
+
+Deux architectures de réseaux de neuronnes réalisent actuellement les meilleures performances en matière de détection d'entités nommées. Il s'agit du modèle LSTM-CRF proposé par \citet{lample2016nnner} et du LSTM-CNN-CRF de \citet{ma2016lstm-cnns-crf}. On pourrait résumer ces architectures en trois phases. Dans un premier temps, les segments de textes (mots) sont représentés vectoriellement en concatenant 2 vecteurs de plongement sémantique: l'un issu de l'apprentissage morphologique du mot à partir de ces caractères, et l'autre issu de l'apprentissage du contexte général d'occurrence du mot (par ex. CBOW, Skip-gram, Glove, ...). Lors de la seconde phase, deux couches de cellules LSTM enchainées permettent de modéliser le contexte à droite et à gauche de chaque mots du texte. La dernière phase détermine la séquence de label la plus probable pour le texte à l'aide d'une implémentation d'un modèle CRF sous forme de réseau de neuronnes. Le CRF reçoit en entrée la concaténation des contextes à droite et à gauche des mots.
+
+\subsection{Définition des descripteurs d'éléments atomiques}
+\textcolor{red}{Pourquoi? Quoi ? et Comment?}
+
+La représentation des éléments atomiques occupe une place importante dans le bon fonctionnement des modèles décrits précédemment. Si les architectures basée sur les LSTM combinent une représentation indépendente de la tâche à des représentations de forme et de contexte inférerées en interne, la définition des descripteurs est plus arbitraire chez les modèles probabilistes. Il s'agit généralement de caractéristiques booléennes comme celles mentionnées dans la description du CRF (\ref{sec:structuration:biblio:CRF}). Par exemple, indiquer si un mot débute par une lettre majuscule permet de mettre en évidence les noms propres. La définition de telles caractéristiques consiste ainsi à fournir au modèle des indices l'aidant à mieux distinguer les différents types d'entités par la forme et le contexte d'occurrence des éléments atomiques. 
+
+Etant donné que les descripteurs dépendent généralement de l'intuition du modélisateur, il est difficile mais nécessaire d'identifier des descripteurs appropriés. Les nombreux travaux de reconnaissance d'entités nommés inspirent des descripteurs candidats qui ont déjà été expérimentés avec succès. De plus, il est possible d'appliquer une sélection des descripteurs afin de réduire tous les candidats définis à un sous-ensemble plus optimal. Cette réduction a pour objectif d'améliorer les performances d'étiquetage, d'accélérer les phases d'extraction de caractéristiques, d'entrainement et de prédiction, et de fournir une meilleure compréhension du comportement des modèles. 
+
+Les méthodes de sélection utilisées dans la littérature sont généralement basées sur des algorithmes Filtre (\textit{filters}) qui associent à chaque descripteur un score, ou des algorithmes Symbiose (\textit{wrappers}) qui préparent, évaluent et comparent des combinaisons de descripteurs. D'une part, les filtres ont l'avantage d'être rapide à exécuter par rapport aux emballages beaucoup plus lents. D'autre part, les filtres sont moins performants car ils ne permettent pas d'éviter les cas de redondances et ne prennent pas en compte l'effet de la combinaison de variables. C'est ainsi que les filtres peuvent être utilisés avant les emballages afin de comparer uniquement les combinaisons des caractéristiques significatives. Au départ proposés et utilisés en classification multi-dimmensionnelle, les algorithmes de sélections de caractéristiques ont été appliqués avec succès pour l'extraction d'entités. \citet{klinger2009FeaturefilterCRF} ont 
+
+\subsection{Sélection du schéma d'étiquetage}
+Nous traitons d'entités dont les mentions comprennent un ou plusieurs éléments atomiques. Pour améliorer les performance d'un modèle d'étiquetage, certaines parties des entités peuvent être mise en évidence à travers une représentation appropriée de segment. Nous comparons dans cette étude quelques schémas d'étiquetage dont certains sont décrits par \citet{konkol2015tagModel}. Le schéma IO utilisé par défaut ne met l'accent sur aucune partie de l'entité et affecte le même label à chaque élément de l'entité. D'autres schémas distinguent soit le premier élément (BIO), soit le dernier (IEO), soit les deux (BIEO). Le modèle BIEO est souvent étendu à BIESO (ou BILOU) dans le cas où on souhaite distinguer les mentions à un seul élément (par ex. ville ou numéro RG). Les lettres des sigles de ces modèles servent de préfixes aux labels et portent la signification suivante:
+
+\begin{itemize}
+\item B - "\textit{beginning}": début;
+\item I - "\textit{inside}": intérieur;
+\item E (ou L, ou M) - "\textit{end}" ou "\textit{last}" ou "\textit{middle}": fin;
+\item S (ou U, ou W) - "\textit{single}" ou "\textit{unit}" ou "\textit{whole}": singleton;
+\item O - "\textit{outside}": hors de toute entité.
+\end{itemize}
+
+La figure \ref{p4_sample-tagmod} illustrate l'utilisation des ces différents modèles sur un extrait de décision de justice:
+\begin{figure}[!h]
+\scriptsize
+\begin{tabular}{l|ccccccccccc}
+ & \textit{composée} & \textit{de} & \textit{Madame} & \textit{Martine} & \textit{JEAN} & , & \textit{Président} & \textit{de} & \textit{chambre} & , & \textit{de} \\ 
+IO & O & O & I-JUGE & I-JUGE & I-JUGE & O & I-FONCTION & I-FONCTION & I-FONCTION & O & O \\
+BIO & O & O & B-JUGE & I-JUGE & I-JUGE & O & B-FONCTION & I-FONCTION & I-FONCTION & O & O \\
+IEO & O & O & I-JUGE & I-JUGE & E-JUGE & O & I-FONCTION & I-FONCTION & E-FONCTION & O & O \\
+BIEO & O & O & B-JUGE & I-JUGE & E-JUGE & O & B-FONCTION & I-FONCTION & E-FONCTION & O & O \\
+\end{tabular}
+\caption{Illustration de différents schémas d'étiquetage}\label{p4_sample-tagmod}
+\end{figure}
+
+Il est possible d'aller plus loin en mettant l'accent sur les mots avant  (O-JUGE) et après (JUGE-O) l'entité (JUGE par exemple) et en indicant le début (BOS-O, \textit{begininning of sentence}) et la fin (O-EOS, \textit{end of sentence}) du texte. Le format ainsi obtenu est appelé BMEWO+ \citep{baldwin2009bmewo}.
+
+Un autre intérêt très important de modèle plus complexes que IO est de pouvoir distinguer des entités qui se suivent sans être séparées d'une ponctuation visible. Cet aspect est notamment important dans les décisions de justice par exemple lorsque des noms de parties soient listés dans la section ENTETE en n'étant séparés que d'un simple retour à la ligne (\textcolor{red}{Illustration?}).
+
+\section{Approches proposées}
+\subsection{Chaine d'extraction et exploration de caractéristiques pertinentes}
+\label{sec:structuration:proposition}
+Nous proposons de travailler uniquement avec le contenu textuel des documents. Ce contenu est extrait des documents téléchargés en eliminant les éléments inutiles, principalement des espaces vides. Ces éléments sont typiques des documents formatés (.rtf, .doc(x), .pdf). Ils ne fournissent pas une indication standard sur le début des sections. Le choix de ne pas exploiter le formatage des documents permet d'avoir à gérer un nombre plus faible de diversités entre les textes tout appliquant le même processus de traitement à tout document indépendament de sont format d'origine. Une simple architecture d'étiquetage de sections et d'entités juridiques a été conçu avec cet uniformisation des documents comme point d'entrée. Ainsi, les documents sont collectés pui prétraités suivant leur format d'origine (extraction du texte et séparation des décisions apparaissant dans le même document).  Ensuite, après le sectionnement des décisions, les entitées sont identifiées dans les différentes sections. Cette section décrit quelques aspects de conception à prendre en compte dans le but d'obtenir de bons résultats à partir d'un tel système.
+
+\begin{figure}[!h]
+%\sidecaption
+\centering
+\includegraphics [width=0.45\textwidth]{structuration-preprocess.png}
+\includegraphics [width=0.45\textwidth]{structuration-pipeline-application.png}
+\caption{Application des modèles entrainés: après la collecte et le pretraitement des documents, l'étiqueteur de ligne est d'abord appliqué pour détecter les sections, puis les étiqueteurs d'entités peuvent être appliqués simultanement dans differentes sections.}\label{p4_archAppli}
+\end{figure}
+
+\subsection{Joindre les deux tâches à l'aide d'un réseaux de neuronnes à double-tache d'étiquetage}
+
+
+\section{Expérimentations et interprétation des résultats}
+L'objectif de cette section est de discuter des différents aspects d'optimisation des performance des modèles CRF, HMM et BiLSTM-CRF, et de les comparer lorsqu'ils sont entrainés dans les conditions optimales déterminées empiriquement. Il est question de discuter l'effet des caractéristiques définies, de comparer des algorithmes de sélection de caractéristiques et des schémas d'étiquetage, de vérifier l'effet de l'augmentation des données d'entrainement sur la performance des modèles.
+
+\label{sec:structuration:experimentations}
+\subsection{Configuration des expérimentations}
+\subsubsection{Données}
+Pour évaluer les méthodes de TAL, \citet{xiao2010corpuscreation} (\textcolor{red}{démontre l'importance...}) suggère de choisir un jeu de données échantillon suffisant en assurant l'équilibre dans la variété des données et la représentativité du langage. Cette en suivant cette recommendation que nous avons prétraité et annoté manuellement un ensemble de 503 documents à l'aide de la plateforme GATE Developer\footnote{https://gate.ac.uk/family/developer.html}. Cet outil permet de marquer avec le pointeur de la souris les passage à annoter; ce qui facilite l'annotation manuelle. Des balises XML sont rajoutées en arrières plan dans le document pour marquer les passages sélectionnés.
+
+Chaque document comprend en moyenne 262,257 lignes et 3955,215 mots. La représentativité du corpus a été simulée en choisissant aléatoirement les décisions tout en faisant variés la ville et l'année. Les deux dernières colonnes du Tableau \ref{p4_relevantinfo} présente la distribution des entités labelisées dans le jeu de données. En se basant sur un sous-ensemble de 13 documents labelisés par 2 annotateurs différents, nous avons calculé des taux d'inter-agrément en utilisant la statistique Kapp de Cohen. Ces mesures d'inter-agrément ont été calculées au niveau des caractère parce que certains mots peuvent être coupés par des annotations incorrectes. (par ex. \textit{<juridiction>cour d'appe</juridiction>\underline{l}} vs. \textit{<juridiction>cour d'appe\underline{l}</juridiction>}), ou les annotateurs pourraient ne pas être d'accord un apostrophe doit être inclu ou pas (par ex. \textit{ \underline{l'}<norme>article 700} vs. \textit{ <norme>\underline{l'}article 700}). Les taux de Kappa de 0,705 et 0,974 ont été obtenu pour l'annotation des entités et des sections respectivement. D'après la ctégorisation de \citet{viera2005kappa}, le niveau d'agrément est \textit{substentiel} pour les entités (0,61-0,80) et \textit{presque parfait} pour les sections (0.81 - 0.99).
+
+\subsubsection{Protocole d'évaluation}
+Nous avons utilisé la Précision, le rappel et la F1-mesure comme mesures d'évaluation car elles sont généralement utilisées comme référence en extraction d'information. Nous comparons deux niveaux de performances: i) à quel point le système est en mesure de bien labeliser chaque élément/mot d'entité (niveau-mot), et ii) à quel point le modèle labélise entièrement une entité (niveau-entité). Nous présentons aussi des performances au niveau micro i.e. les performances du classifieur en général sans distinction des classes. A tous les niveau d'évaluation, la F1-mesure se calcule à l'aide de la formule \ref{NER-f1-mesure}.  
+\begin{equation}\label{NER-f1-mesure}
+F1 = 2 \times \frac{Precision \times Rappel} {Precision + Rappel}
+\end{equation}
+%La précision et le rappel quant à eux se calculent suivant les formules
+% \begin{equation}\label{NER-precision}
+% Precision = \frac{TP}{}
+% \end{equation}
+
+\vspace{0.3cm}
+
+\noindent \underline{\textbf{Evaluation au niveau atomique (\textit{token-level)}}}: Cette évaluation mésure la capacité d'un modèle à labeliser les éléments atomiques des entités à identifier. Les valeurs de précision and rappel sont calculés sur les données de test pour chaque label $l$ comme suit:
+\[Precision_l = \frac{\text{nombre d'éléments correctement labelisés par le modèle avec } l} {\text{nombre d'éléments labelisés par le modèle avec } l}\]
+\[Rappel_l = \frac{\text{nombre d'éléments correctement labelisés par le modèle avec } l} {\text{nombre d'éléments manuellement labelisés par le modèle avec } l}\]
+
+\vspace{0.3cm}
+
+\noindent \underline{\textbf{Evaluation au niveau entité (\textit{entity-level})}}: Cette évaluation mésure le taux d'entités parfaitement identifiées c'est-à-dire seulement ceux dont les éléments atomiques ont été tous correctement labélisés. Les valeurs de précision and rappel sont calculés sur les données de test pour chaque classe d'entité $e$ comme suit :
+\[Precision_e = \frac{\text{nombre d'entités de type } e \text{ parfaitement détectées par le modèle}} {\text{nombre d'entités détectées et classifiées } e\text{ par le modèle}}\]
+\[Rappel_e = \frac{\text{nombre d'entités de type } e \text{ parfaitement détectées par le modèle}} {\text{nombre d'entitées manuellement classifiées } e}\]
+
+\vspace{0.3cm}
+
+\noindent \underline{\textbf{Evaluation globale (\textit{overall-level})}}: L'évaluation globale donne les performances générales d'un modèle sans distinction des classes ou labels. Elle est réalisée aux deux niveaux décrits précédemment mais independamment du label d'élément ou du type d'entité :
+\[Precision = \frac{\text{nombre d'entitées (resp. d'éléments) correctement detectées par le modèle}} {\text{nombre d'entitées (resp. d'éléments) detecteés par le modèle}}\]
+\[Rappel = \frac{\text{nombre d'entitées (resp. d'éléments) correctement detectées par le modèle}} {\text{nombre d'entitées (resp. d'éléments)  manuellement annotatées}}\]
+
+\subsubsection{Outils logiciels}
+Nous avons utilisé les modèles HMM et CRF tels qu'implémentés dans la librairie Mallet \citep{McCallum2002Mallet}. Les modèles étudiés ont été entrainés par la méthode d'espérance maximale pour ceux basés sur le HMM, et par la méthode L-BFGS pour ceux basés sur le CRF. La \textit{tokenisation} des textes (découpage en élément atomique de type mots), ainsi que la lémmatisation et l'annotation des rôles grammaticaux (\textit{Part-of-Speech tagging}) ont été effetué à l'aide de la fonctionnalité d'annotation de texte français de TreeTagger \footnote{\url{http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger}}  \citep{schmid2013treetagger}. L'implémentation dans Mallet du LDA \citep{blei2003lda} a permis d'inférer 100 thèmes à partir d'un corpus lémmatisé d'environ 6k documents. Le tableau \ref{p4_topics} 
+présente des mots représentatifs trouvés dans les premiers thèmes inférés. L'extraction des autres caractéristiques manuelles a été implémentée pour cette expérimentation. 
+
+Les valeurs de précision, rappel, et F1-mesure ont été calculées à l'aide du script d'évaluation de la campagne CoNLL-2002 \footnote{\url{http://www.cnts.ua.ac.be/conll2002/ner/bin/conlleval.txt}}.
+
+\begin{table}[!h]
+\scriptsize
+\begin{center}
+\begin{tabular}{c|l}
+Id thème & Mots représentatifs  \\ \hline
+0	& 	préjudice  dommage  somme  subir  réparation  titre  faute  payer  intérêt  responsabilité  \\ \hline
+1	& société  salarié  groupe  mirabeau  pouvoir  demande  article  licenciement  cour  titre    \\ \hline
+2	& harcèlement  travail  salarié  moral  employeur  fait  attestation  faire  santé  agissements  \\ \hline
+3	& vente  acte  prix  vendeur  acquéreur  notaire  condition  clause  vendre  immeuble  \\ \hline
+4	& 		travail  poste  reclassement  employeur  médecin  licenciement  salarié  inaptitude  visite  \\ \hline
+5	& 	monsieur  nîmes  avocat  appel  barreau  arrêt  madame  disposition  prononcer  président  \\ \hline
+6	& 	mademoiselle  madame  non  mesure  décision  tutelle  surendettement  comparant   \\ \hline
+7	& transport  marchandise  jeune  sed  éducateur  bateau  navire  transporteur  responsabilité  \\ \hline
+8	&congé  salarié  conversion  emploi  plan  convention  employeur  sauvegarde  reclassement  \\ \hline
+9	&marque  site  contrefaçon  sous  droit  auteur  joseph  produit  propriété  photographie  \\ \hline
+10	&pierre  patrick  bordeaux  bruno  catherine  civil  article  corinne  cour  avocat\\ \hline
+\end{tabular}
+\end{center}
+\caption{Mots représentatifs des 10 premiers thèmes sur les 100 inférés}\label{p4_topics}
+\end{table}
+\section{Conclusion}
+\label{sec:structuration:conclusion}

@@ -1,0 +1,51 @@
+%entete_pied
+%\newcommand{\sujet}{Analyse Sémantique d'un Corpus Exhaustif de Décisions Jurisprudentielles}
+%\newcommand{\auteur}{Gildas TAGNY NGOMPÉ}
+\newcommand{\numpage}{\bf \large \thepage}
+\newcommand{\institut}{IMT Mines Alès - ED 583 Risques et Sociétés}
+\newcommand{\entreprise}{LGI2P / IMT Mines Alès \& EA 7352 CHROME / UNIMES  }
+%\newcommand{\doc}{\footnotesize{{\bf \auteur}, {\it élève-ingénieur à l'iai} (2011-2012)}}
+
+\hypersetup{
+       %backref=true,                           % Permet d'ajouter des liens dans
+       %pagebackref=true,                       % les bibliographies
+       %hyperindex=true,                        % Ajoute des liens dans les index.
+       colorlinks=true,                        % Colorise les liens.
+       breaklinks=true,                        % Permet le retour à  la ligne dans les liens trop longs.
+       urlcolor= black,                         % Couleur des hyperliens.
+       linkcolor= black,                        % Couleur des liens internes.
+       %bookmarks=true,                         % Crées des signets pour Acrobat.
+       %bookmarksopen=true,                     % Si les signets Acrobat sont créés,
+       citecolor=black,                           % les afficher complètement.
+       pdftitle={\@author, M\'emoire de Thèse Doctorat en Informatique de l'IMT Mines Alès - \entreprise - \institut},  % Titre du document.
+                                               % Informations apparaissant dans
+       pdfauthor={\@author},                      % dans les informations du document
+       pdfsubject={\@title},           % sous Acrobat.
+       pdfkeywords={Fouille de textes juridiques, Annotation de document, extraction d'information}
+    }
+
+\newlength{\eptrait}
+\setlength{\eptrait}{0.05mm}
+
+\fancypagestyle{plain}{
+\fancyhf{}
+%\fancyfoot[L]{\it \auteur,  \og \sujet \fg{}}
+\fancyhead[C]{}%\sujet}
+\fancyfoot[R]{\numpage}
+%\fancyhead[L]{}%\institut}
+\fancyhead[R]{}%\entreprise}
+}
+%\fancyfoot[C]{\tiny{IAI}}
+\headsep=15pt
+\renewcommand{\headrulewidth}{\eptrait}
+\pagestyle{fancy}
+%\usefont{OT1}{ptv}{m}{n}
+%\renewcommand{\headrulewidth}{1pt}
+%\lfoot{\auteur, \sujet}
+\rhead{}
+\rfoot{\numpage}
+\cfoot{}
+%\lhead{}%\institut}
+%\chead{\sujet}
+\rhead{}%\entreprise}
+\renewcommand{\footrulewidth}{\eptrait}

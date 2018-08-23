@@ -1,0 +1,46 @@
+\renewcommand{\chaptertitlename}{Chapitre }
+\renewcommand{\thechapter}{\arabic{chapter}}
+\renewcommand{\thesection}{\thechapter.\arabic{section}}
+\renewcommand\thesubsection{\thesection.\arabic{subsection}}
+
+%{\usefont{OT1}{ptm}{b}{n}
+ \titleformat{\chapter}[display]
+{\bfseries\Large\filleft}
+{\filright {\chaptertitlename } 
+\Large\thechapter}
+{1ex}
+{\titlerule[3pt]%
+\vspace{2pt}%
+\titlerule
+\vspace{2ex}%
+\filright}
+[\vspace{2ex}%
+\titlerule]
+
+%\renewcommand{\chaptertitlename}{Chapitre }
+%\renewcommand{\thepart}{\arabic{part}}
+%{\usefont{OT1}{ptm}{b}{n}
+ \titleformat{\part}[display]
+{\bfseries\Huge\filleft}
+{\filright {\partname } %\textcolor{blue}
+\Huge}
+{1ex}
+{\titlerule[3pt]%
+\vspace{5pt}%
+\titlerule
+\vspace{5ex}%
+\filright} % \textcolor{blue}
+[\vspace{5ex}%
+\titlerule]
+
+%
+%}
+
+% % partie
+%  \titleformat{\part}[frame]
+% {\normalfont}
+% {\filright
+% \footnotesize
+% \enspace \bf \Huge \thepart\enspace}
+% {18pt}
+% {\Large\bfseries\filcenter}

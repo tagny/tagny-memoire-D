@@ -1,0 +1,147 @@
+\documentclass[12pt,a4paper,oneside,openright]{book}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[round]{natbib}
+\usepackage[english,frenchb]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{xcolor, graphicx}
+\usepackage{eurosym}
+\graphicspath{ {gfx/} }
+\usepackage{mathpazo}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+%\usepackage{cite}
+%\usepackage{epigraph}
+\usepackage{setspace}
+\usepackage{nomencl}
+\usepackage[titles]{tocloft}
+\usepackage{titlesec}
+\usepackage{multirow}
+\usepackage{longtable}
+%\usepackage{subfigure}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{framed}
+\usepackage[left=2.5cm,right=2.5cm,top=3cm,bottom=3cm]{geometry}
+%\usepackage{geometry}
+\usepackage[titlenotnumbered,ruled,vlined,noend,linesnumbered]{algorithm2e}
+\usepackage{nomencl}
+\usepackage{setspace}
+\usepackage[titletoc]{appendix}
+\usepackage{nameref}
+\onehalfspacing
+
+\author{Gildas TAGNY NGOMPE}
+\title{Analyse sémantique d'un corpus exhaustif de décisions jurisprudentielles}
+
+\titleformat{\chapter}{\Huge\bfseries}{\chaptername\ \thechapter}{0pt}{\vskip 20pt\raggedright}%
+\titlespacing{\chapter}{0pt}{10pt}{30pt}%
+
+%{\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter}{20pt}{\Huge}   
+%\titlespacing*{\chapter}{0pt}{-50pt}{40pt}
+
+\makeatletter
+\renewcommand*{\p@section}{\S\,}
+\renewcommand*{\p@subsection}{\S\,}
+\renewcommand*{\p@subsubsection}{\S\,}
+\makeatother
+\renewcommand{\bibname}{Bibliographie}
+\newlength{\larg}
+\setlength{\larg}{16cm}
+\setlength{\cftchapnumwidth}{2.5cm}
+\setlength{\cftbeforechapskip}{0.25cm}
+\setlength{\cftbeforepartskip}{0.4cm}
+\setlength{\cftbeforesecskip}{0.2cm}
+%\renewcommand{\cftpartpresnum}{Partie }
+\renewcommand{\cftchappresnum}{\chaptertitlename \hspace{0.2cm}}
+\renewcommand{\cftsecpresnum}{\hspace{0.2cm}}
+%\renewcommand\citeform[1]{\bf #1}
+\newcommand{\argmax}{\mathop{\mathrm{argmax}}\limits}
+\renewcommand{\max}{\mathop{\mathrm{max}}\limits}
+\newcommand{\argmin}{\mathop{\mathrm{argmin}}\limits}
+\renewcommand{\min}{\mathop{\mathrm{min}}\limits}
+\newtheorem{postulat}{Postulat}[section]
+\newcommand*{\andname}{and}
+      \addto \captionsenglish {\renewcommand*{\andname}{and}}
+      \addto \captionsfrench  {\renewcommand*{\andname}{et}}
+
+\include{style_chapitre}
+\include{entete_pied}
+\makenomenclature
+\renewcommand{\nomname}{Glossaire}
+
+\renewcommand{\nomentryend}{.}
+\renewcommand{\nomlabel}[1]{\hfil {\bf #1}\hfil:}
+\addto\captionsfrench{%
+\renewcommand{\figurename}{\footnotesize {\scshape \it Figure} \it}}
+\addto\captionsfrench{%
+\renewcommand{\tablename}{\footnotesize {\scshape \it Tableau} \it}
+\renewcommand{\listfigurename}{Liste des figures}
+%\renewcommand{\contentsname}{Sommaire}
+}
+
+\setcounter{tocdepth}{2}
+\setcounter{secnumdepth}{3}
+
+\begin{document}
+\nocite{}
+
+
+\frontmatter
+
+%\include{content/cover}
+%\include{content/thanks}
+\include{content/resume}
+\include{content/abstract}
+%liste des matières
+\addcontentsline{toc}{chapter}{\contentsname}
+\tableofcontents
+%liste des figures
+\listoffigures
+\addcontentsline{toc}{chapter}{\listfigurename}
+%liste des tableaux
+\listoftables
+\addcontentsline{toc}{chapter}{\listtablename}
+
+\mainmatter
+
+%\include{introduction}
+\input{content/introduction} % INCLUDE: introduction
+
+% changement du style des chapitres
+\include{style_chapitre2}
+
+\input{content/chapter-literature} % INCLUDE: related work
+\input{content/chapter-structuration}	% INCLUDE: structuration
+\input{content/chapter-quanta} % INCLUDE: quanta
+\input{content/chapter-sensresultat} % INCLUDE: sensresultat
+\input{content/chapter-similarite} % INCLUDE: similarite
+
+\backmatter
+
+% changement du style des chapitres
+\include{style_chapitre}
+
+\input{content/conclusion} % INCLUDE: conclusion
+
+%Bibliographie
+\bibliographystyle{apalike}
+\def\bibname{Bibliographie}
+\addcontentsline{toc}{chapter}{\bibname}
+\bibliography{references-pub.bib}
+
+\newpage
+%Glossaire
+\printnomenclature[2cm]
+\addcontentsline{toc}{chapter}{\nomname}
+%Annexes
+\include{style_chapitre3}
+%annexes
+%\appendix
+\begin{appendices}
+\input{content/annexe-demo} % INCLUDE: demo
+\input{content/annexe-coliee2017} % INCLUDE: coliee
+\end{appendices}
+\end{document}

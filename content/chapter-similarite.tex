@@ -1,0 +1,158 @@
+ 0000000\chapter{Extraction des Circonstances Factuelles}
+\label{sec:similarite}
+
+%\epigraph{Le plus important, c'est d'avoir un langage métaphorique ; car c'est le seul mérite qu'on ne puisse emprunter à un autre et qui dénote un esprit naturellement bien doué ; vu que, bien placer une métaphore, c'est avoir égard aux rapports de ressemblance.}{Aristote, Poétique}
+% 
+
+\section{Introduction}
+\label{sec:similarite:introduction}
+Les circonstances factuelles sont les différents cas ou différentes situations possibles dans lesquelles une catégorie de demande peut être formulée. Il est important de les identifier car les analyses descriptives ou prédictives ne prennent sens que lorsque les différentes décisions partagent des situations similaires. Par exemple, il serait imprudent de considérer toutes les décisions portant sur l'article 700 pour prédire les chances d'acceptation d'une affaire ne portant que sur un licenciement. Il serait préférable de travailler uniquement avec des affaires de licenciement. Une méthode d'extraction des différentes circonstances factuelles devient donc indispensable. Malheureusement, les circonstances factuelles sont quasi infinies et donc pratiquement impossible à dénombrer. Il serait ainsi extrêmement difficile d'annoter manuellement des échantillons de décisions pour chaque circonstance possible afin de résoudre ce problème par classification. Il est donc plus intéressant d'adopter une approche non-supervisée qui peut extraire les différentes situations mentionnées dans un corpus donné sachant que les documents de ce corpus sont de la même catégorie de demande.
+
+L’objectif est donc de regrouper dans l’ensemble des décisions qui traitent de problèmes similaires. La tâche peut être formulée comme une tâche de regroupement non-supervisé (clustering) ou d’extraction de thématiques (topic modeling). 
+\section{Formulation du Problème}
+\label{sec:similarite:probleme}
+
+
+\section{Synthèse bibliographique: regroupement non-supervisé de documents par thématique}
+\label{sec:similarite:biblio}
+
+\subsection{Clustering de documents}
+
+\subsubsection{Choix de l’algorithme de clustering}
+
+Le clustering est une tâche d’organisation d’un ensemble d’objets qui consiste à affecter chaque objet à une catégorie inconnue au départ. Les catégories sont donc créées automatiquement au cours du même processus contrairement à la classification dite supervisée qui manipule des catégories prédéfinies par la tâche et généralement à la main. Les catégories peuvent être disjointes ou à chevauchements, et plates ou hiérarchiques. 
+L’algorithme à utiliser dépend généralement de la forme qu’on souhaite donner à l’organisation, par ex. Si les chevauchements sont négligeables ou pas, ou bien si la structure hiérarchique permettrait de mieux expliquer et distinguer les différences inter-groupes et les ressemblances intra-groupes. Nous souhaitons organiser des décisions de justices en fonction des circonstances factuelles auxquelles ces documents sont liés.  On pourrait par exemple faire une restriction des données aux cas où chaque document n’appartient qu’à une classe et proposer un système de clustering disjoint.
+
+\paragraph{Carte auto-organisatrice de Kohonen}
+
+
+\subsubsection{Métrique de similarité ou de dissimilarité (Comment mésurer la similarité?)}
+Une métrique $f$ est une fonction qui quantifie la "distance" entre toute paire d'éléments $x$ et $y$ d'un ensemble, induisant ainsi une mésure de similarité \footnote{\url{http://slazebni.cs.illinois.edu/spring17/lec09_similarity.pdf}}. Elle satisfait aux propriétés :
+\begin{enumerate}
+\item de non-négativité: $f(x,y) \geq 0$
+\item d'identité discernable: $f(x,y) = 0  \Leftrightarrow x = y$
+\item de symétrie: $f(x,y) = f(y, x)$
+\item d'inégalité triangulaire: $f(x,z) \leq f(x,y) + f(y,z)$ \label{enum:sim:ineq-tri}
+\end{enumerate}
+
+On parle de \textbf{pseudo-métrique} lorsque la condition \ref{enum:sim:ineq-tri} n'est pas satisfaite.
+
+Les métriques \textbf{pré-définis} sont spécifiées sans aucune connaissances à priori des données (ex. distance euclidienne: $f(x,y) = \vert\vert x - y \vert\vert_{L2} = (x-y)^T(x-y)$). Par contre, les métriques \textbf{apprises} sont définies à partir de connaissances des données labélisées. Ces métriques sont apprises pour répondre à la difficulté d'identifier la métrique appropriée pour un problème. Un apprentissage non-supervisé typique consiste à appliquer une transformation linéaire apprise $L$ aux données afin d'étendre les dimensions qui contiennent plus d'information et contracter celles qui expliquent moins les données. La métrique est apprise sur les données sans aucune paire d'éléments pour laquelle la distance est connue d'avance. Par exemple, la distance de Mahalanobis pondère la distance euclidienne entre deux points par l'écart type des données: $f(x,y) = (x-y)^T M^{-1}(x-y)$ (où $M$ est par ex. la matrice de covariance à moyenne soustraite de tous les points). Si des données labelisées sont disponibles c-à-d. les points sont catégorisés (associé à une classe prédéfinie), 
+
+
+\subsubsection{Déterminer le nombre approprié de clusters}
+    Au delà de l’algorithme à utiliser, le nombre k approprié de groupes (clusters) doit être déterminé mais pas prédéfini. La principale raison étant que ce nombre est censé inconnu et que le regroupement est censé inconnu et être révélé automatiquement.
+La technique traditionnelle part d’un faible nombre de clusters et l’incrémente progressivement. Sur un espace à deux dimensions,  l‘évolution d’une fonction évaluation en fonction du nombre est observée.  La technique est dite du “coude” ou “genou” (elbow/knee) et est basé sur l’idée selon laquelle on devrait choisir un nombre de clusters tel que l’ajout d’un autre ne donne pas une meilleure modélisation des données. Le coude correspond donc au point (nb de clusters) où l’on considère insignifiante la décroissance de la valeur de la métrique d’évaluation. Cette métrique est généralement la variance intra-cluster qui est la somme des erreurs au carré  :
+\[J(k) = \sum\limits_{j=1}^k\sum\limits_{x_i \in C_j}\vert\vert x_i-\overline{x_j}\vert\vert^2\]
+
+$C_j$: ensemble des objets du cluster $j$
+
+$\overline{x_j}$: échantillons moyens du cluster $j$
+
+Comme on peut le remarquer, il s’agit d’une métrique non-supervisée (pas besoin de données labellisées) qu’il faut minimiser. C’est une fonction monotone décroissante ou croissante. Le choix de ce coude est visuel et peut sembler ambigu. Salvador et Chan (2004) propose d’utiliser l’intersection des deux lignes approximant la courbe. Mais plus récemment, Zhang et al. (2016) trouve que cette approche n’est pas appropriée pour les cas où le graphe d’évaluation n’est ni lisse, ni monotone. Zhang et al. (2016) propose d’exploiter la courbure du graphe i.e. la valeur dont un objet géométrique s'écarte d'être plat ou droit dans le cas d'une ligne.
+
+\subsubsection{Définir une représentation appropriée pour les textes}
+
+\subsubsection{Labeliser les clusters}
+
+\subsubsection{Evaluation du clustering généré}
+\subsubsection{Évaluation supervisée}
+L'idée de l'évaluation supervisée est basée sur la disponibilité de données labelisées i.e. pour lesquelles on sait d'avance quelles classes sont attendues. Une première idée consiste à comparer la constitution des groupes générés aux groupes prédéfinis. Pour cela plusieurs mesures sont utilisées dans la littérature, notamment le trio populaire précision, rappel et F1-mesure . Ces mésures ont pour interprétation la mesure de la capacité de l'algorithme utilisé de mettre dans un même cluster des objets similaires (appartenant au même groupe prédéfini) et dans des clusters différents des objets dissimilaires (de groupes prédéfinis différents). 
+  
+  Le clustering étant une approche non supervisée aidant à la représentations d'objets pour d'autres tâches supervisés, il est possible de considérer le clustering qui contribue le plus aux performances de la tâche cible. \citet{candillier2006clustEvalCascad} illustrent par exemple l'évaluation et la comparaison d'algorithmes de clustering en exploitant une tâche de classification. Les clusters générés enrichissant la représentation vectorielle des objets. L'idée est de comparer les performances d'un classifieur dans les deux situations: avec ou sans l'enrichissement du clustering. Le jeu de données est divisé en 2 et 
+
+
+\subsubsection{Évaluation non-supervisée}
+
+\subsection{Topic modeling}
+
+
+\section{Méthode: apprentissage d'une fonction de similarité pour le clustering de document}
+Les algorithmes de clustering et de classification s'appuient généralement sur une représentation vectorielle à partir de laquelle une valeur de similarité est calculée de manière non supervisée et avec une formule mathématique statique. Dans le cas des textes, Il n'est pas toujours évident de définir la représentation vectorielle associée à une sémantique précise et objective. De plus il existe un large évantail de schémas de représentations vectorielles. Elles vont des représentations très adhoc du type TF-IDF, au représentations apprises comme le doc2vec et en passant par les agrégations pondérées de modèles distribués de mots (word2vec par ex.). 
+
+L'idée dans notre approche est de proposée une formulation de la similarité entre deux documents qui est basée sur le degré de perturbation observé entre documents. Cette fonction de similarité est apprise à partir d'une base synthétique d'entrainement de similarité entre paire de texte. 
+\begin{postulat}
+La distance entre deux documents est une fonction au degré de perturbation permetant de transformer un document en un autre. \label{post:similarite:distance}
+\end{postulat}
+La similarité est définie en fonction de la notion de perturbation du contenu d'un texte (Postulat \ref{post:similarite:distance}): après une légère perturbation, un texte reste assez similaire à l'original; et après une forte perturbation, le texte sera très différent de l'identique. la similarité (resp. la distance) décroit (resp. croit inversement) donc avec l'intensité de la perturbation. Nous définissons une densité de probabilité de perturbation $P \in [0; 1]$ associée à la probabilité de modifier un mot (suppression / remplacement par un mot très différent). 
+
+Considérons que pour tout texte $x$, $W_x$ désigne l'ensemble des mots dans $x$
+Nous définissons un patron de métriques:
+\begin{equation}
+\begin{array}{cccccc}
+d & : & C \times C & \to & \mathbb{R} & \\
+ & & x, y & \mapsto & d(x, y) & = f(P_{x,y}) \\
+\end{array}
+\end{equation}
+
+$C$ : corpus
+
+$P_{x,y}$ : ensemble des modifications de $x$ nécessaire pour obtenir $y$ i.e. les paires $(w_x, w_y)$ telles que $w_x \in W_x$ a été remplacé par $w_y \in W_y$  .
+
+$d$ désigne la métrique.
+
+Une simple implémentation de $d$ peut être de considérer le taux de mots modifiés dans $x$: 
+\begin{equation}
+d(x,y) = \frac{\vert\vert P_{x,y} \vert\vert}{\vert\vert W_x \vert\vert}
+\end{equation}
+ Un tel modèle ne considère ni l'ordre des mots, ni celui des phrases, ni la différence d'importance entre les mots, la complexité de la modification (une substitution est plus complexe qu'une suppression ou une insertion), ni le degré sémantique des perturbations. ce dernier peut être estimé en lissant le taux de perturbation à l'aide de la distance sémantique entre les mots substitués (le vecteur représentant le mot vide étant le vecteur nul par ex.):
+\begin{equation}
+d(x,y) = \sum\limits_{(w_x, w_y) \in Px,y} d_w(w_x,w_y),
+\end{equation}
+$d_w$ désignant la distance sémantique entre les mots.
+Il est difficile de calculer de telle distance sur un grand corpus étant donné la longueur de notre document.
+
+Nous pouvons ainsi générer une jeu artificiel de données pour l'entrainement d'un modèle regréssif de la métrique entre deux textes $x$ et $y$. Pour cela, nous partons d'un ensemble $C$ de documents et pour chacun de ces documents, noté $x$, nous générons aléatoirement une valeur seuil de probabilité de perturbation en deça duquel un mot de $x$ est modifié. Par la suite, le texte  $y$, résultant de la modification de $x$, est généré en modifiant séquentiellement les mots de $x$ :
+
+\begin{algorithm}[H]
+ \KwData{texte x, valeur seuil de probabilité p}
+ \KwResult{y, d(x,y)}
+ $y = "" $\; 
+ \For{w in y}{
+ 	v = random(0, 1)\;
+    \eIf{v < p}{
+       y += modifie(w)\;
+     }{
+     y += w
+     }
+ }
+ \Return $y$\;
+ \caption{Génère une perturbation de $x$} \label{algo:perturbation}
+\end{algorithm}
+
+
+\begin{algorithm}[H]
+ \KwData{un mot $w$}
+ \KwResult{un mot $w'$} 
+ \Return "" ou $\arg\min\limits_{w'} d_w(w, w')$\;
+ \caption{modifie} \label{algo:modifiemot}
+\end{algorithm}
+
+Après avoir généré la base de données $B = \lbrace (d_i, d_i', s(d_i, d_i'))\rbrace$, on entraine un mdoèle regressif pour prédire la similarité entre 2 documents en fonction de leur représentation vectorielle. Ce modèle regressif peut être utilisé comme métrique de similarité dans un algorithme de clustering comme l'algorithme des K-moyennes.
+
+\textcolor{red}{Issues:}
+\begin{itemize}
+\item les docs sont généralement de tailles différentes, ne faudrait il pas intégrer une perturbation ajout de mots?
+\item il faudrait intégrer la composante taille du document
+\item comment assurer les propriétés d'une fonction similarité? par exemple si aucune perturbation n'est opérée, alors la similarité est maximale et si tous les mots sont modifiés alors la similarité est minimale
+\item $s = 1-p$ ne fonctionnerait pas comme similarité parce que le p est la proba de modifier un mot (ce qui n'assure pas qu'on l'ait modifié). Du coup, une même perturbation pourrait avoir deux mesures de similarité différentes avec le texte de départ. Pire encore, si aucune perturbation n'a eu lieu, la similarité avec l'original ne sera pas maximale. Je propose d'utiliser le taux de perturbation à la place de $p$ dans le calcul de $s$. Ce taux correspond à la proportion de mots modifiés.
+\item Ne faudrait il pas prendre en compte un poids pour les mots, car peut-être la modification de certains mots ne devrait pas avoir le même impact sur la similarité ou le taux de perturbation que celle d'autres mots. 
+\item ne faudrait il pas intégré une autre similarité plus proche de notre objectif qu'on déduirait des données labelisées (appartenance ou pas au même cluster)
+\end{itemize}
+
+\section{Expérimentations et interprétation des résultats}
+\label{sec:similarite:experimentations}
+\subsection{Données}
+Pour l'évaluation supervisée, nous disposons d'une base annotée sur la catégorie de demande "dommage-intérêts / action en responsabilité civile professionnelle contre les avocats" qui concerne les contentieux implicant des avocats.
+L'expert annotateur a identifié quatre cas différents (a, b, c, d) décrits en annexe. En gros:
+- pour le cas a) il s'agit d'un avocat qui est négligent et envoie son assignation de manière tardive (champ sémantique: retard/délai/prescription)
+- pour le cas b) il s'agit d'un avocat qui n'a pas donné un conseil opportun, qui n'a pas soulevé le bon argument
+- pour le cas c) un avocat qui n'a pas rédigé un acte valide ou réussi à obtenir un avantage fiscal (champ sémantique: rédacteur d'actes)
+- pour le cas d) il s'agit d'un avocat attaqué par son adversaire et non pas par son propre client
+Le dataset comprend 81 documents répartis dans 4 groupes avec 6 documents appartenant chacun à 2 groupes.
+
+Pour l'évaluation non supervisée, les 6 catégories de demande utilisée pour l'extraction de demandes sont utilisés.
+
+
+\section{Conclusion}
+\label{sec:similarite:conclusion}
