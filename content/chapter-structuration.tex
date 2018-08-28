@@ -138,7 +138,7 @@ Etant donné que les descripteurs dépendent généralement de l'intuition du mo
 Les méthodes de sélection utilisées dans la littérature sont généralement basées sur des algorithmes Filtre (\textit{filters}) qui associent à chaque descripteur un score, ou des algorithmes Symbiose (\textit{wrappers}) qui préparent, évaluent et comparent des combinaisons de descripteurs. D'une part, les filtres ont l'avantage d'être rapide à exécuter par rapport aux emballages beaucoup plus lents. D'autre part, les filtres sont moins performants car ils ne permettent pas d'éviter les cas de redondances et ne prennent pas en compte l'effet de la combinaison de variables. C'est ainsi que les filtres peuvent être utilisés avant les emballages afin de comparer uniquement les combinaisons des caractéristiques significatives. Au départ proposés et utilisés en classification multi-dimmensionnelle, les algorithmes de sélections de caractéristiques ont été appliqués avec succès pour l'extraction d'entités. \citet{klinger2009FeaturefilterCRF} ont 
 
 \subsection{Sélection du schéma d'étiquetage}
-Nous traitons d'entités dont les mentions comprennent un ou plusieurs éléments atomiques. Pour améliorer les performance d'un modèle d'étiquetage, certaines parties des entités peuvent être mise en évidence à travers une représentation appropriée de segment. Nous comparons dans cette étude quelques schémas d'étiquetage dont certains sont décrits par \citet{konkol2015tagModel}. Le schéma IO utilisé par défaut ne met l'accent sur aucune partie de l'entité et affecte le même label à chaque élément de l'entité. D'autres schémas distinguent soit le premier élément (BIO), soit le dernier (IEO), soit les deux (BIEO). Le modèle BIEO est souvent étendu à BIESO (ou BILOU) dans le cas où on souhaite distinguer les mentions à un seul élément (par ex. ville ou numéro RG). Les lettres des sigles de ces modèles servent de préfixes aux labels et portent la signification suivante:
+Nous traitons d'entités dont les mentions comprennent un ou plusieurs éléments atomiques. Pour améliorer les performance d'un modèle d'étiquetage, certaines parties des entités peuvent être mise en évidence à travers une représentation appropriée de segment. Nous comparons dans cette étude quelques schémas d'étiquetage dont certains sont décrits par \citet{konkol2015tagModel}. Le schéma IO utilisé par défaut ne met l'accent sur aucune partie de l'entité et affecte le même label à chaque élément de l'entité. D'autres schémas distinguent soit le premier élément (BIO), soit le dernier (IEO), soit les deux (BIEO). Les schémas IEO2 BIO2 sont des variantes respectives des schémas IEO et BIO. Elles utilisent resp. les préfixes E- et B- pour étiqueter les entités à mot unique, contrairement à IEO1 et BIO1 qui utilisent plutôt le préfixe I-. Le modèle BIEO est souvent étendu à BIESO (ou BILOU) dans le cas où on souhaite distinguer les mentions à un seul élément (par ex. ville ou numéro RG). Les lettres des sigles de ces modèles servent de préfixes aux labels et portent la signification suivante:
 
 \begin{itemize}
 \item B - "\textit{beginning}": début;
@@ -178,6 +178,16 @@ Nous proposons de travailler uniquement avec le contenu textuel des documents. C
 \caption{Application des modèles entrainés: après la collecte et le pretraitement des documents, l'étiqueteur de ligne est d'abord appliqué pour détecter les sections, puis les étiqueteurs d'entités peuvent être appliqués simultanement dans differentes sections.}\label{p4_archAppli}
 \end{figure}
 
+L'entrainement des modèles sur les exemples manuellement annotés est aussi décomposé en étapes. Nous proposons de sélectionner le schéma d'étiquetage, puis de sélectionner les sous-ensembles minimaux de caractéristiques manuellement définies, avant d'entrainer les modèles HMM et CRF (Figure \ref{fig:structuration:training}). La sélection de caractéristiques ne concerne pas l'implémentation en réseau de neuronnes du CRF.
+
+
+\begin{figure}[!h]
+%\sidecaption
+\centering
+\includegraphics [width=\textwidth]{structuration-training.png}
+\caption{Entrainement des modèles.}\label{fig:structuration:training}
+\end{figure}
+
 \subsection{Joindre les deux tâches à l'aide d'un réseaux de neuronnes à double-tache d'étiquetage}
 
 
@@ -186,7 +196,7 @@ L'objectif de cette section est de discuter des différents aspects d'optimisati
 
 \label{sec:structuration:experimentations}
 \subsection{Configuration des expérimentations}
-\subsubsection{Données}
+\subsubsection{Annotation des données de référence}
 Pour évaluer les méthodes de TAL, \citet{xiao2010corpuscreation} (\textcolor{red}{démontre l'importance...}) suggère de choisir un jeu de données échantillon suffisant en assurant l'équilibre dans la variété des données et la représentativité du langage. Cette en suivant cette recommendation que nous avons prétraité et annoté manuellement un ensemble de 503 documents à l'aide de la plateforme GATE Developer\footnote{https://gate.ac.uk/family/developer.html}. Cet outil permet de marquer avec le pointeur de la souris les passage à annoter; ce qui facilite l'annotation manuelle. Des balises XML sont rajoutées en arrières plan dans le document pour marquer les passages sélectionnés.
 
 Chaque document comprend en moyenne 262,257 lignes et 3955,215 mots. La représentativité du corpus a été simulée en choisissant aléatoirement les décisions tout en faisant variés la ville et l'année. Les deux dernières colonnes du Tableau \ref{p4_relevantinfo} présente la distribution des entités labelisées dans le jeu de données. En se basant sur un sous-ensemble de 13 documents labelisés par 2 annotateurs différents, nous avons calculé des taux d'inter-agrément en utilisant la statistique Kapp de Cohen. Ces mesures d'inter-agrément ont été calculées au niveau des caractère parce que certains mots peuvent être coupés par des annotations incorrectes. (par ex. \textit{<juridiction>cour d'appe</juridiction>\underline{l}} vs. \textit{<juridiction>cour d'appe\underline{l}</juridiction>}), ou les annotateurs pourraient ne pas être d'accord un apostrophe doit être inclu ou pas (par ex. \textit{ \underline{l'}<norme>article 700} vs. \textit{ <norme>\underline{l'}article 700}). Les taux de Kappa de 0,705 et 0,974 ont été obtenu pour l'annotation des entités et des sections respectivement. D'après la ctégorisation de \citet{viera2005kappa}, le niveau d'agrément est \textit{substentiel} pour les entités (0,61-0,80) et \textit{presque parfait} pour les sections (0.81 - 0.99).
@@ -245,5 +255,18 @@ Id thème & Mots représentatifs  \\ \hline
 \end{center}
 \caption{Mots représentatifs des 10 premiers thèmes sur les 100 inférés}\label{p4_topics}
 \end{table}
+
+
+\subsection{Sélection du schémas d'étiquetage}
+Dans le but dévaluer comment la représentation de segment affecte les performances, nous avons implémenté quatre représentations (IO, IEO2, BIO2, BIEO).  Nos avons réalisé un simple découpage des données en deux ensembles: $25 \%$ pour l'entrainement et $75 \%$ pour les tests. Les performances sont reportés  dans le Tableau \ref{}
+
+
+
+\subsection{Sélection des descripteurs}
+
+
+\subsection{Croissance de l'apprentissage avec l'expérience}
+
+
 \section{Conclusion}
 \label{sec:structuration:conclusion}

@@ -27,17 +27,17 @@ L’algorithme à utiliser dépend généralement de la forme qu’on souhaite d
 
 
 \subsubsection{Métrique de similarité ou de dissimilarité (Comment mésurer la similarité?)}
-Une métrique $f$ est une fonction qui quantifie la "distance" entre toute paire d'éléments $x$ et $y$ d'un ensemble, induisant ainsi une mésure de similarité \footnote{\url{http://slazebni.cs.illinois.edu/spring17/lec09_similarity.pdf}}. Elle satisfait aux propriétés :
+Une métrique $f$ est une fonction qui quantifie la "distance" entre toute paire d'éléments $x$ et $y$ d'un ensemble, induisant ainsi une mésure de similarité \footnote{\url{http://slazebni.cs.illinois.edu/spring17/lec09_similarity.pdf}}. Elle satisfait aux propriétés suivantes:
 \begin{enumerate}
-\item de non-négativité: $f(x,y) \geq 0$
-\item d'identité discernable: $f(x,y) = 0  \Leftrightarrow x = y$
-\item de symétrie: $f(x,y) = f(y, x)$
-\item d'inégalité triangulaire: $f(x,z) \leq f(x,y) + f(y,z)$ \label{enum:sim:ineq-tri}
+\item $f(x,y) \geq 0$ (non-négativité)
+\item $f(x,y) = 0  \Leftrightarrow x = y$ (identité discernable)
+\item $f(x,y) = f(y, x)$ (symétrie)
+\item $f(x,z) \leq f(x,y) + f(y,z)$ (inégalité triangulaire) \label{enum:sim:ineq-tri}
 \end{enumerate}
 
 On parle de \textbf{pseudo-métrique} lorsque la condition \ref{enum:sim:ineq-tri} n'est pas satisfaite.
 
-Les métriques \textbf{pré-définis} sont spécifiées sans aucune connaissances à priori des données (ex. distance euclidienne: $f(x,y) = \vert\vert x - y \vert\vert_{L2} = (x-y)^T(x-y)$). Par contre, les métriques \textbf{apprises} sont définies à partir de connaissances des données labélisées. Ces métriques sont apprises pour répondre à la difficulté d'identifier la métrique appropriée pour un problème. Un apprentissage non-supervisé typique consiste à appliquer une transformation linéaire apprise $L$ aux données afin d'étendre les dimensions qui contiennent plus d'information et contracter celles qui expliquent moins les données. La métrique est apprise sur les données sans aucune paire d'éléments pour laquelle la distance est connue d'avance. Par exemple, la distance de Mahalanobis pondère la distance euclidienne entre deux points par l'écart type des données: $f(x,y) = (x-y)^T M^{-1}(x-y)$ (où $M$ est par ex. la matrice de covariance à moyenne soustraite de tous les points). Si des données labelisées sont disponibles c-à-d. les points sont catégorisés (associé à une classe prédéfinie), 
+Les métriques \textbf{pré-définis} sont spécifiées sans aucune connaissances à priori des données (ex. les distances de Minkowski: $f(x,y) = \vert\vert x - y \vert\vert_{Lp} = \sqrt[p]{\sum \vert x_i - y_i \vert ^p}$). Par contre, les métriques \textbf{apprises} sont définies à partir de connaissances des données labélisées. Ces métriques sont apprises pour répondre à la difficulté d'identifier la métrique appropriée pour un problème. Un apprentissage non-supervisé typique consiste à appliquer une transformation linéaire apprise $L$ aux données afin d'étendre les dimensions qui contiennent plus d'information et contracter celles qui expliquent moins les données. La métrique est apprise sur les données sans aucune paire d'éléments pour laquelle la distance est connue d'avance. Par exemple, la distance de Mahalanobis pondère la distance euclidienne entre deux points par l'écart type des données: $f(x,y) = (x-y)^T M^{-1}(x-y)$ (où $M$ est par ex. la matrice de covariance à moyenne soustraite de tous les points). Si des données labelisées sont disponibles c-à-d. les points sont catégorisés (associé à une classe prédéfinie), 
 
 
 \subsubsection{Déterminer le nombre approprié de clusters}
@@ -68,6 +68,8 @@ L'idée de l'évaluation supervisée est basée sur la disponibilité de donnée
 
 \subsection{Topic modeling}
 
+
+\section{Méthode 1: K-medoids et word mover's distance (dans le contexte de la catégorie)}
 
 \section{Méthode: apprentissage d'une fonction de similarité pour le clustering de document}
 Les algorithmes de clustering et de classification s'appuient généralement sur une représentation vectorielle à partir de laquelle une valeur de similarité est calculée de manière non supervisée et avec une formule mathématique statique. Dans le cas des textes, Il n'est pas toujours évident de définir la représentation vectorielle associée à une sémantique précise et objective. De plus il existe un large évantail de schémas de représentations vectorielles. Elles vont des représentations très adhoc du type TF-IDF, au représentations apprises comme le doc2vec et en passant par les agrégations pondérées de modèles distribués de mots (word2vec par ex.). 

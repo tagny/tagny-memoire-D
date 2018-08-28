@@ -16,12 +16,12 @@ Une catégorie de demande regroupe les prétentions qui sont de même nature par
 \begin{tabular}{|p{0.45\textwidth}|p{0.15\textwidth}|p{0.3\textwidth}|}
 \hline
 \textbf{Expression nominative  }                                     & \textbf{Objet}                                                       & \textbf{Fondement}                                                                 \\ \hline
-dommages-intérêts pour abus de procédure                    & dommages-intérêts                                           & Articles 32-1 code de procédure civile + 1382 code de procédure civile \\ \hline
-amende civile pour abus de procédure                        & amende civile                                               & Articles 32-1 code de procédure civile + 559 code de procédure civile  \\ \hline
+dommages-intérêts pour abus de procédure (danais)                    & dommages-intérêts                                           & Articles 32-1 code de procédure civile + 1382 code de procédure civile \\ \hline
+amende civile pour abus de procédure (acpa)                        & amende civile                                               & Articles 32-1 code de procédure civile + 559 code de procédure civile  \\ \hline
 frais irrépétibles                                          & dommages-intérêts                                           & Article 700 du code de procédure civle                                 \\ \hline
-dommages-intérêts pour trouble de voisinage                 & dommages-intérêts                                           & principe de responsabilité pour trouble anormal de voisinage           \\ \hline
-déclaration de créance au passif de la procédure collective & déclaration de créance & L622-24 code de commerce                                               \\ \hline
-dommages-intérêts pour concurence déloyale                  & dommages-intérêts                                           & Article 1382 du code civil                                             \\ \hline
+dommages-intérêts pour trouble de voisinage (doris)                 & dommages-intérêts                                           & principe de responsabilité pour trouble anormal de voisinage           \\ \hline
+déclaration de créance au passif de la procédure collective (dcppc) & déclaration de créance & L622-24 code de commerce                                               \\ \hline
+dommages-intérêts pour concurence déloyale (concdel)                  & dommages-intérêts                                           & Article 1382 du code civil                                             \\ \hline
 \end{tabular}
 \caption{Exemples de catégories de demandes}\label{tab:quanta:exemple-categorie}
 \end{table}
@@ -86,7 +86,7 @@ Nous nous sommes intéressés aux demandes dont les quanta sont des sommes d'arg
 %\texttt{\small $\backslash$p{Digit}($\backslash$p{Digit}|[',.]|\ $\backslash$s)*(euro[s]{0,1}|franc[s]{0,1}|\euro{}|F|CFP|EUR|EUROS)( |\$)}
 La terminologie utilisée est aussi un bon indicateur des demandes et résultats. En effet, le vocabulaire utilisé est très souvent propre aux types de demandes, et réciproquement, ce vocabulaire permet d'exprimer des demandes de même nature. Par exemple le dernier élément de la Fig. \ref{fig:quanta:expr-dmd} comprend le terme "\textit{pour procédure abusive}" qui est près d'une somme d'argent (\textit{3000 \euro{}}); il est donc probable que ce type de terme assez particulier soit un bon indicateur de la position des quanta. Par ailleurs, des verbes particuliers sont utilisés pour exprimer les prétentions et résultats : infirmer, confirmer, cosntater, débouter, dire, ... Comme autres formes récurrentes, on pourrait citer l'ordre des demandes (resp. résultats). Généralement, on a les constats, les références aux jugements antérieurs, les demandes principales (?) et secondaires (?).
 
-\section{Formulation du problème}
+\section{Formulation du problème et données}
 \label{sec:quanta:formulation}
 Pour formuler le problème, nous avons tenu compte de deux difficultées principales :
 \begin{enumerate}
@@ -94,12 +94,12 @@ Pour formuler le problème, nous avons tenu compte de deux difficultées princip
     \item l'existence de plusieurs catégories (500+) qui rend difficile l'annotation d'un jeu de données de référence pour couvrir toutes ces catégories.
 \end{enumerate}
 
-Nous avons par conséquent opter pour la définition d'approches génériques adaptables à chaque catégorie et qui puissent permettre d'annoter manuellement des données de référence de manière incrémentale pour les nouvelles catégories. Chaque application des approches définies permet ainsi d'extraire uniquement les demandes d'une seule catégorie. C'est pourquoi l'annotation manuelle des références est réalisée par catégorie afin qu'elle soit plus facile pour les experts. Le protocole d'annotation se déroule en étape: 
+Nous avons par conséquent opter pour la définition d'approches génériques adaptables à chaque catégorie et qui puissent permettre d'annoter manuellement des données de référence de manière incrémentale pour les nouvelles catégories. Chaque application des approches définies permet ainsi d'extraire uniquement les demandes d'une seule catégorie. L'annotation manuelle d'exemples a été par conséquent définie par catégorie afin que la tâche soit plus facile pour les experts. Le protocole d'annotation se déroule en étape: 
 \begin{enumerate}
     \item choix d'une catégorie: définition d'un nom, de l'objet et du fondement;
     \item recherche par mots-clés des documents suceptibles de contenir la catégorie (par exemple sur le siteWeb de LexisNexis);
     \item Parmi les documents trouvés, choisir quelques uns de ceux qui contiennent effectivement des demandes de la catégorie; 
-    \item lire chaque document choisi pour identifier les demandes tout en remplissant le tableau des demandes de références dont un extrait est illustré par le Tableau \ref{tab:quanta:tab-annotations}.
+    \item lire chaque document choisi pour identifier toutes les demandes présentes de la catégories tout en remplissant le tableau des demandes de références dont un extrait est illustré par le Tableau \ref{tab:quanta:tab-annotations}.
 \end{enumerate}
 
 \begin{table}[!htb]
@@ -107,12 +107,21 @@ Nous avons par conséquent opter pour la définition d'approches génériques ad
 \caption{Structure du tableau d'annotations manuelles à remplir: les noms des champs sont sur les 2 premières lignes et les demandes sont données en exemple pour la catégorie \textit{dommages-intérêts sur le fondement de l'article 700 du code de procédure civile} (décision 14/06911 de la cour d'appel de Lyon).} \label{tab:quanta:tab-annotations}
 \end{table}
 
+Pour cette étude, un expert a extrait manuellement des demandes des 6 catégories du Tableau \ref{tab:quanta:exemple-categorie}. La répartition, des documents traités durant ce processus, est donnée par l'histogramme de la Figure \ref{fig:quanta:hist-repartition-docs}. On remarque pour toutes les catégories, les documents à une seule demande sont en général majoritaires (barres bleues). Quelques documents ne comprenant aucune demande de la catégorie d'intérêt ont été aussi rassemblés (barres grises). Il faut surtout noter que malgré le fait que les demandes ne soient pas annotées dans les documents mais dans un tableau, l'annotation reste une tâche très difficile; ceci justifie le très faible nombre de documents traités. le maximum pour une catégorie n'a été que de 198 documents (barres vertes).
+
+\begin{figure}[h!]
+\includegraphics[width=\textwidth]{chartDataset.png}
+\caption{Répartitions des demandes dans les documents annotées pour chaque catégorie.}\label{fig:quanta:hist-repartition-docs}
+\end{figure}
+
 Le problème est ainsi décomposé grossièrement en 3 tâches:
-\begin{enumerate}
-\item identification des catégories présentes dans le document pour n'appliquer l'extraction  que de ces catégories;
-\item identification des attributs des demandes de chaque catégorie détectée: quanta demandés, quantas obtenus, et sens du résultat;
-\item résolution des coréférences: Liaison des données relatives à la même demande
-\end{enumerate}
+\begin{description}
+\item[Tâche 1:] identification des catégories présentes dans le document pour n'appliquer l'extraction  que de ces catégories;
+\item[Tâche 2:] identification des attributs des demandes de chaque catégorie détectée: quanta demandés, quantas obtenus, et sens du résultat;
+\item[Tâche 3:] résolution des coréférences: Liaison des données relatives à la même demande.
+\end{description}
+
+
 
  Dans la section suivante, nous synthétisons l'analogie avec des problématiques couramment traités et explorons les approches proposées dans des travaux publiés.
 
@@ -161,38 +170,50 @@ $p_\theta(t_i, r_i, a \vert i, N_i, x)$ \cite{yang2016jointEntityEvt} %\linebrea
 \end{table}
 
 
-\section{Méthode1: Localisation à Base d'Expressions clés prédéfinies et Apprises Automatiquement}
-\label{sec:quanta:baseline}
+\section{Tâche 1: Détection des catégories présentes par classification}
+Etant données l'ensemble $D_{\overline{c_i}}$ des documents ne comprenant aucune demande de la catégorie d'intérêt $c_i$, nous proposons de modéliser la tâche de détection des catégories en une tâche de classification binaire. Pour chaque catégorie, un classifieur binaire de document est entrainé pour déterminer si le document analysé contient ou pas une demande de la catégorie. Pour cela, chaque document $d_j$ est représenté sour une forme vectorielle traditionnele du type TF-IDF (\textit{term frequency - inverse document frequency}) où chaque dimension représente un mot dont le poids est le produit normalisé d'un poids $gw$ global au corpus du mot et d'un poids $lw$ local au document: $w(t_k, d_j) = lw(t_k, d_j) \times gw(t_k) \times nf(d_j)$, où $nf$ est le facteur de normalisation. 
 
-\subsection{Sélection des termes clés de la catégories: ngram2vec > cluster de ngram > sélection des clusters associés à la catégorie }
+Nous avons évalué la classification binaire avec quatre classifieurs traditionnels: le classifieur naïf bayésien, l'arbre de décision, les K plus proches voisins (KNN), et la machine à vecteurs de support. A chaque entrainement, s'exécute une sélection de modèle par validation criosée sur les données d'entrainement; elle a pour but de sélectionner la métrique locale et la métrique globale appropriée. Les résultats obtenu par 5-folds cross validation sont présentés sur le tableau \ref{tab:quanta:resultat-detect-cat}.  D'après les résultats, La tâche 1 est relativement aisée car les classifieurs traditionnels détectent parfaitement la présence ou non d'une catégorie dans les documents.
 
-\url{https://github.com/azpoliak/eco}
+\begin{table}
+\scriptsize
+\centering
+\begin{tabular}{l|c@{\hskip 0.1in}lllc@{\hskip 0.1in}lllc@{\hskip 0.1in}lllc@{\hskip 0.1in}lll}
+\hline\noalign{\smallskip}
+       &   \multicolumn{3}{c}{Naïf Bayésien}    &    \multicolumn{3}{c}{Arbre de décision}   &  \multicolumn{3}{c}{KNN}  & \multicolumn{3}{c}{SVM}     \\       
+\noalign{\smallskip}
+\hline
+\noalign{\smallskip}
+  Categorie  & P     & R     & F1    & P     & R     & F1    & P     & R     & F1    & P     & R     & F1    \\        
+\noalign{\smallskip}
+\hline
+\noalign{\smallskip}
+acpa    & 1.0 & 1.0 & 1.0 & 0.996 & 0.955 & 0.972 & 1.0 & 1.0 & 1.0 & 0.996 & 0.955 & 0.972 \\
+concdel & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 0.995 & 0.967 & 0.979 \\
+danais  & 0.988 & 0.989 & 0.988 & 0.996 & 0.995 & 0.995 & 0.995 & 0.995 & 0.995 & 0.993 & 0.993 & 0.993 \\
+dcppc   & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 \\
+doris   & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 \\
+styx    & 1.0 & 1.0 & 1.0 & 0.984 & 0.983 & 0.983 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 \\
+\hline
+\end{tabular}
+\caption{Resultats d'une 5-fold cross-validation sur $D$ pour la detection categorie  (P= Precision, R=Rappel, F1 = F1-mesure)}\label{tab:quanta:resultat-detect-cat}
+\end{table}
 
-\section{Méthode2: Chaine d'extraction à base de classification}
 
-\section{Méthode3: Extraction par prédiction structurée}
+\section{Tâche 2: identification du sens du résultat par classification}
 
-\section{Expérimentations et interprétation des résultats}
-\label{sec:quanta:xp}
+\section{Tâches 2 et 3: identification des attributs des demandes}
+\label{sec:quanta:attributs}
 
-\subsection{Annotation de données d'évaluation}
-\label{sec:quanta:xp:dataset}
-\begin{figure}
-\includegraphics[width=\textwidth]{chartDataset.png}
-\caption{Répartitions des demandes dans les documents annotées pour chaque catégorie.}\label{stat-alldata-dmd}
-\end{figure}
+\subsection{Méthode 1: extraction naïve à l'aide termes-clés}
+\label{subsec:quanta:attributs:règles}
 
-\subsection{Métriques d'évaluation}
-\label{sec:quanta:xp:metrics}
-% \begin{figure}[htb]
-% 	\includegraphics[width=\textwidth]{gfx/Clean-Thesis-Figure}
-% 	\caption{Figure example: \textit{(a)} example part one, \textit{(c)} example part two; \textit{(c)} example part three}
-% 	\label{fig:system:example1}
-% \end{figure}
 
-\subsection{Cas des décisions à une demande}
+\subsection{Méthode 2: chaine de classification de sommes d'argent}
 
-\subsection{Cas général}
+
+\subsection{Méthode 3: prédiction structurée jointe}
+
 
 \section{Conclusion}
 \label{sec:quanta:conclusion}
