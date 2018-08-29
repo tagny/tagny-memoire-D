@@ -16,17 +16,15 @@ L’objectif est donc de regrouper dans l’ensemble des décisions qui traitent
 \section{Synthèse bibliographique: regroupement non-supervisé de documents par thématique}
 \label{sec:similarite:biblio}
 
-\subsection{Clustering de documents}
-
-\subsubsection{Choix de l’algorithme de clustering}
+\subsection{Choix de l’algorithme de clustering}
 
 Le clustering est une tâche d’organisation d’un ensemble d’objets qui consiste à affecter chaque objet à une catégorie inconnue au départ. Les catégories sont donc créées automatiquement au cours du même processus contrairement à la classification dite supervisée qui manipule des catégories prédéfinies par la tâche et généralement à la main. Les catégories peuvent être disjointes ou à chevauchements, et plates ou hiérarchiques. 
 L’algorithme à utiliser dépend généralement de la forme qu’on souhaite donner à l’organisation, par ex. Si les chevauchements sont négligeables ou pas, ou bien si la structure hiérarchique permettrait de mieux expliquer et distinguer les différences inter-groupes et les ressemblances intra-groupes. Nous souhaitons organiser des décisions de justices en fonction des circonstances factuelles auxquelles ces documents sont liés.  On pourrait par exemple faire une restriction des données aux cas où chaque document n’appartient qu’à une classe et proposer un système de clustering disjoint.
 
-\paragraph{Carte auto-organisatrice de Kohonen}
+\subsubsection{Carte auto-organisatrice de Kohonen}
 
 
-\subsubsection{Métrique de similarité ou de dissimilarité (Comment mésurer la similarité?)}
+\subsection{Métrique de similarité ou de dissimilarité (Comment mésurer la similarité?)}
 Une métrique $f$ est une fonction qui quantifie la "distance" entre toute paire d'éléments $x$ et $y$ d'un ensemble, induisant ainsi une mésure de similarité \footnote{\url{http://slazebni.cs.illinois.edu/spring17/lec09_similarity.pdf}}. Elle satisfait aux propriétés suivantes:
 \begin{enumerate}
 \item $f(x,y) \geq 0$ (non-négativité)
@@ -40,7 +38,7 @@ On parle de \textbf{pseudo-métrique} lorsque la condition \ref{enum:sim:ineq-tr
 Les métriques \textbf{pré-définis} sont spécifiées sans aucune connaissances à priori des données (ex. les distances de Minkowski: $f(x,y) = \vert\vert x - y \vert\vert_{Lp} = \sqrt[p]{\sum \vert x_i - y_i \vert ^p}$). Par contre, les métriques \textbf{apprises} sont définies à partir de connaissances des données labélisées. Ces métriques sont apprises pour répondre à la difficulté d'identifier la métrique appropriée pour un problème. Un apprentissage non-supervisé typique consiste à appliquer une transformation linéaire apprise $L$ aux données afin d'étendre les dimensions qui contiennent plus d'information et contracter celles qui expliquent moins les données. La métrique est apprise sur les données sans aucune paire d'éléments pour laquelle la distance est connue d'avance. Par exemple, la distance de Mahalanobis pondère la distance euclidienne entre deux points par l'écart type des données: $f(x,y) = (x-y)^T M^{-1}(x-y)$ (où $M$ est par ex. la matrice de covariance à moyenne soustraite de tous les points). Si des données labelisées sont disponibles c-à-d. les points sont catégorisés (associé à une classe prédéfinie), 
 
 
-\subsubsection{Déterminer le nombre approprié de clusters}
+\subsection{Déterminer le nombre approprié de clusters}
     Au delà de l’algorithme à utiliser, le nombre k approprié de groupes (clusters) doit être déterminé mais pas prédéfini. La principale raison étant que ce nombre est censé inconnu et que le regroupement est censé inconnu et être révélé automatiquement.
 La technique traditionnelle part d’un faible nombre de clusters et l’incrémente progressivement. Sur un espace à deux dimensions,  l‘évolution d’une fonction évaluation en fonction du nombre est observée.  La technique est dite du “coude” ou “genou” (elbow/knee) et est basé sur l’idée selon laquelle on devrait choisir un nombre de clusters tel que l’ajout d’un autre ne donne pas une meilleure modélisation des données. Le coude correspond donc au point (nb de clusters) où l’on considère insignifiante la décroissance de la valeur de la métrique d’évaluation. Cette métrique est généralement la variance intra-cluster qui est la somme des erreurs au carré  :
 \[J(k) = \sum\limits_{j=1}^k\sum\limits_{x_i \in C_j}\vert\vert x_i-\overline{x_j}\vert\vert^2\]
@@ -51,13 +49,15 @@ $\overline{x_j}$: échantillons moyens du cluster $j$
 
 Comme on peut le remarquer, il s’agit d’une métrique non-supervisée (pas besoin de données labellisées) qu’il faut minimiser. C’est une fonction monotone décroissante ou croissante. Le choix de ce coude est visuel et peut sembler ambigu. Salvador et Chan (2004) propose d’utiliser l’intersection des deux lignes approximant la courbe. Mais plus récemment, Zhang et al. (2016) trouve que cette approche n’est pas appropriée pour les cas où le graphe d’évaluation n’est ni lisse, ni monotone. Zhang et al. (2016) propose d’exploiter la courbure du graphe i.e. la valeur dont un objet géométrique s'écarte d'être plat ou droit dans le cas d'une ligne.
 
-\subsubsection{Définir une représentation appropriée pour les textes}
+\subsection{Définir une représentation appropriée pour les textes}
 \url{https://arxiv.org/pdf/1509.01626.pdf}
 
 \url{http://ad-publications.informatik.uni-freiburg.de/theses/Bachelor_Jon_Ezeiza_2017_presentation.pdf}
-\subsubsection{Labeliser les clusters}
 
-\subsubsection{Evaluation du clustering généré}
+
+\subsection{Labeliser les clusters}
+
+\subsection{Evaluation du clustering généré}
 \subsubsection{Évaluation supervisée}
 L'idée de l'évaluation supervisée est basée sur la disponibilité de données labelisées i.e. pour lesquelles on sait d'avance quelles classes sont attendues. Une première idée consiste à comparer la constitution des groupes générés aux groupes prédéfinis. Pour cela plusieurs mesures sont utilisées dans la littérature, notamment le trio populaire précision, rappel et F1-mesure . Ces mésures ont pour interprétation la mesure de la capacité de l'algorithme utilisé de mettre dans un même cluster des objets similaires (appartenant au même groupe prédéfini) et dans des clusters différents des objets dissimilaires (de groupes prédéfinis différents). 
   
@@ -66,12 +66,17 @@ L'idée de l'évaluation supervisée est basée sur la disponibilité de donnée
 
 \subsubsection{Évaluation non-supervisée}
 
-\subsection{Topic modeling}
+
+\section{Méthode 1: K-médoïdes et word mover's distance (dans le contexte de la catégorie)}
+
+Les approches de clustering sont généralement appliquées à une représentation vectorielle des objets. Particulièrement la méthodes des K-moyennes qui met à jour le centroïde en faisant la moyenne des menbres de son cluster. Cependant, \cite{kusner2015wordmoverdist} ont proposé récemment \textit{la distance du déplaceur de mot} (\textit{word mover's distance - WMD}), une métrique non-supervisée qui permet à la méthode des \textit{K plus proches voisins} (KNN) d'obtenir des performances sans précédents. De plus, l'algorithme de clustering K-médoïdes \citep{kaufman1987kmedoids}, similaire aux K-moyennes, choisi toujours comme centroid le membre du cluster qui minimise la distance aux restes des membres; ce qui n'impose pas de représentation vectorielle. Ainsi, nous pouvons utiliser aisément utiliser la métrique WMD dans  l'algorithme des K-médoïdes. Tout en nous appuyant sur un algortihme établi de clustering, nous évitons aussi la recherche de la meilleure représentation vectorielle qui influence souvent les performances du clustering. 
+
+Algorithme: \url{http://isiarticles.com/bundles/Article/pre/pdf/79087.pdf}
+
+\section{Méthode 2: cartes auto-organisatrice de Kohonen et concaténation de plongement sémantique de phrases (sentence embedding)}
 
 
-\section{Méthode 1: K-medoids et word mover's distance (dans le contexte de la catégorie)}
-
-\section{Méthode: apprentissage d'une fonction de similarité pour le clustering de document}
+\section{Méthode 3: Apprentissage d'une métrique fondée la modification du document}
 Les algorithmes de clustering et de classification s'appuient généralement sur une représentation vectorielle à partir de laquelle une valeur de similarité est calculée de manière non supervisée et avec une formule mathématique statique. Dans le cas des textes, Il n'est pas toujours évident de définir la représentation vectorielle associée à une sémantique précise et objective. De plus il existe un large évantail de schémas de représentations vectorielles. Elles vont des représentations très adhoc du type TF-IDF, au représentations apprises comme le doc2vec et en passant par les agrégations pondérées de modèles distribués de mots (word2vec par ex.). 
 
 L'idée dans notre approche est de proposée une formulation de la similarité entre deux documents qui est basée sur le degré de perturbation observé entre documents. Cette fonction de similarité est apprise à partir d'une base synthétique d'entrainement de similarité entre paire de texte. 

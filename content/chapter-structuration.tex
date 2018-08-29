@@ -258,15 +258,263 @@ Id thème & Mots représentatifs  \\ \hline
 
 
 \subsection{Sélection du schémas d'étiquetage}
-Dans le but dévaluer comment la représentation de segment affecte les performances, nous avons implémenté quatre représentations (IO, IEO2, BIO2, BIEO).  Nos avons réalisé un simple découpage des données en deux ensembles: $25 \%$ pour l'entrainement et $75 \%$ pour les tests. Les performances sont reportés  dans le Tableau \ref{}
+Dans le but dévaluer comment la représentation de segment affecte les performances, nous avons implémenté quatre représentations (IO, IEO2, BIO2, BIEO).  Nos avons réalisé un simple découpage des données en deux ensembles: $25 \%$ pour l'entrainement et $75 \%$ pour les tests. Les performances reportées dans le Tableau \ref{fig:structuration:select-segm-repr} sont les performances globales sur la base de test. Seul l'élément (mot/ligne) est utilisé comme dscripteur. La durée d'entrainement est très longue, particulièrement pour la détection d'entité dans l'entête avec le CRF. Il semble évident que cette durée croit proportionnellement avec le nombre de labels possibles (BIEO exige beaucoup plus de temps, et IO exige le minimum de temps). Le schéma IOE semble être plus rapide à que BIO même s'ils ont le même nombre de labels. Nous remarquons aussi que les représentations complexes n'améliorent pas significativement les résultats par rapport au simple IO qui consomme pourtant le moins de temps.
 
+\begin{table}
+\scriptsize
+\caption{Comparaison des schémas d'étiquetage.}\label{fig:structuration:select-segm-repr}
+\begin{center}
+\begin{tabular}{p{1.5cm}|c|cccccccc}
+\hline \noalign{\smallskip}
+Tâche & Modèle & \multicolumn{3}{c}{Niveau mot$^a$} & \multicolumn{3}{c}{Niveau entité$^a$} & Durée & Schéma \\
+ & & Précision & Rappel & F1 &  Précision & Recall & F1 & d'entrainement$^b$ & \\ \hline %\noalign{\smallskip}\svhline\noalign{\smallskip}
+\multirow{8}{*}{Sections}  & \multirow{4}{*}{CRF} & 91.75 & 91.75 & 91.75 & 64.49 & 56.55 & 60.26 &  4.685  & IO \\
+&  & 88.95 & 88.95 & 88.95 & 48.12 & 38.26 & 42.63  & 11.877 & IEO2 \\
+&  & 87.09 & 87.09 & 87.09 & 46.79 & 37.20 & 41.45 & 12.256 & BIO2 \\
+ &  & 86.00 & 86.00 & 86.00 & 58.98 & 41.86 & 48.97  & 35.981 & BIEO \\ \cline{2-10}
+& \multirow{4}{*}{HMM} & 32.64 & 32.64 & 32.64 & 22.16 & 18.91 & 20.41 & 6.564 & IO \\
+&  & 32.92 & 32.92 & 32.92 & 17.73 & 16.09 & 16.87  &   7.827  & IEO2 \\
+ &  & 32.39 & 32.39 & 32.39 & 31.93 & 26.65 & 29.05 & 8.391 & BIO2 \\
+  &  & 33.06 & 33.06 & 33.06 & 32.47 & 27.53 & 29.80 & 8.7 & BIEO \\ \hline %
+\multirow{8}{1.5cm}{Entités d'entête}  & \multirow{4}{*}{CRF} & 86.86 & 78.96 & 82.73 & 80.84 & 65.17 & 72.17  & 70.525 & IO \\
+ &  & 87.77 & 79.65 & 83.51 & 82.46 & 65.19 & 72.82  & 228.751 & IEO2 \\
+ &  & 87.41 & 78.14 & 82.51 & 81.66 & 66.80 & 73.49 & 230.865 & BIO2 \\
+ &  & 87.72 & 79.55 & 83.44 & 84.38 & 68.35 & 75.53 &  475.249 & BIEO \\ \cline{2-10}
+  & \multirow{4}{*}{HMM} & 79.12 & 67.75 & 73.00 & 61.48 & 35.05 & 44.64 & 6.345 & IO \\
+  &  & 78.82 & 68.69 & 73.40 & 66.63 & 40.16 & 50.11& 8.298 & IEO2 \\ 
+  &  & 80.68 & 67.48 & 73.49 & 70.37 & 45.32 & 55.14 & 7.908 & BIO2 \\
+ &  & 80.05 & 69.01 & 74.12 & 74.73 & 50.77 & 60.46 & 9.973 & BIEO \\ \hline
+\multirow{8}{*}{Normes}  & \multirow{4}{*}{CRF} & 95.60 & 92.96 & 94.26 & 88.06 & 83.50 & 85.72 & 28 & IO \\%
+&  & 95.40 & 93.18 & 94.27 & 88.75 & 85.65 & 87.17 & 32.136 & IEO2 \\
+ &  & 95.20 & 93.30 & 94.24 & 85.65 & 83.13 & 84.37 & 50.769 & BIO2 \\
+  &  & 95.46 & 91.57 & 93.47 & 88.83 & 84.71 & 86.72 & 50.566 & BIEO \\ \cline{2-10}
+  & \multirow{4}{*}{HMM} & 89.83 & 88.78 & 89.30 & 73.74 & 75.02 & 74.37 &  41.389 & IO \\%  
+   &  & 88.20 & 89.23 & 88.71 & 78.01 & 81.27 & 79.61 & 44.086 & IEO2 \\
+  &  & 89.25 & 87.83 & 88.53 & 73.89 & 76.63 & 75.24 & 46.634 & BIO2 \\
+  &  & 87.39 & 88.10 & 87.74 & 77.76 & 82.35 & 79.99 & 45.52& BIEO \\ 
+\noalign{\smallskip}\hline\noalign{\smallskip}
+\end{tabular}
+\end{center}
+
+$^a$ Resultats sur une simple division du jeu de données en $25\%$ pour l'entrainement et  $75\%$ pour les tests (entrainement limité à 100 itérations au max)
+
+$^b$ Durée en secondes avant l'arrêt de l'entrainement
+\end{table}
 
 
 \subsection{Sélection des descripteurs}
+Pour comparer les méthodes BDS et SFFS, nous exploitons le schéma IO. Durant nos expérimentations, le SFFS a exécuté 185 entrainements pour le modèle CRF de d'identification des sections. La méthode BDS quant à elle à durée plus de 15h pour 600 sessions d'entrainement. Malgré la sauvegarde des scores F1 pour éviiter d'exécuter plusieurs fois l'entraimenent pour les mêmes sous-ensembles de descripteurs, le processus de sélection est resté toujours très long pour les deux algorithmes. Nous avons testé individuellement chacun des descripteurs candidat pour les modèles HMM. Les résultats sont repportés dans le Tableau \ref{fig:structuration:select-feats}.
 
+Les descripteurs sélectionnés forment ds sous-ensembles inattendus étant donné que certains descripteurs spéciaux des voisins ont été choisis. Par exemple, dans le cas de la détection de section, la ligne suivante semble être beaucoup plus indicatrice que la première. Il est aussi intéressant de noter que les descripteurs basés sur notre observation apparaissent dans les sous-ensembles sélectionnés (par ex. isAfterIntervenant, isKEYWORD). Remarquons aussi que la longueur absolue des lignes (absLength)  joue un rôle majeur dans l'identification des sections vu qu'il a été sélectionné à la fois pour le CRF et le HMM (sélection BDS). Avec ses sous-ensembles sélectionnés de descripteurs, les modèles sont plus performants que lorsqu'ils ne doivent exploiter que l'élément ou tout l'ensemble des descripteurs candidats.  Cette amélioration des résultats reste insignifiante lorsqu'on considère la longue durée d'exécution des algorithmes. Ainsi, un algorithme meilleur et plus rapide devrait être utilisé à la place du SFFS et du BDS.
+
+\begin{table}[!h]
+\scriptsize
+\caption{Effects of selected feature subsets on results.}\label{fig:structuration:select-feats}
+\begin{center}
+\begin{tabular}{l|c|ccc|ccc|c}
+\hline\noalign{\smallskip}
+Detection Task & Tagger & \multicolumn{3}{c}{niveau mot$^a$} & \multicolumn{3}{c}{niveau entité$^a$}& Sous-ensemble \\
+ & & Précision & Rappel & F1 &  Précision & Rappel & F1 & sélectionné\\
+\noalign{\smallskip}\hline\noalign{\smallskip}
+\multirow{7}{*}{Sections} 		& \multirow{4}{*}{CRF} & 99.31 & 99.31 & 99.31 & 90.28 & 90.68 & 90.48 & BDS$^{b1}$  \\
+  				&  & 99.55 & 99.55 & \textbf{99.55} & 85.69 & 85.84 & 85.76 & \textbf{SFFS}$^{b2}$ \\
+                &  & 99.36 & 99.36 & 99.36 & 88.16 & 88.39 & 88.27 & ALL* \\
+                &  & 91.75 & 91.75 & 91.75 & 64.49 & 56.55 & 60.26 & token \\  \cline{2-9}
+                 & \multirow{3}{*}{HMM} & 90.99 & 90.99 & \textbf{90.99}  & 4.18 & 3.63 & 3.89 & \textbf{absLength} \\ 
+ & & 86.97 & 86.97 & 86.97 & 4.08 & 3.30 & 3.65 & relLength \\   
+  &  & 37.59 & 37.59 & 37.59  & 18.81 & 18.81 & 18.81 & token \\ \hline
+\multirow{7}{*}{Entités d'entête}	& \multirow{4}{*}{CRF} & 94.00 & 91.42 & 92.69 & 92.26 & 88.76 & 90.47 & BDS$^{c1}$  \\
+				&  & 94.10 & 91.93 & \textbf{93.00} & 92.64 & 88.96 & 90.76 & \textbf{SFFS}$^{c2}$  \\ 
+                &  & 94.20 & 91.86 & 93.02 & 93.05 & 89.59 & 91.28 & ALL \\
+                &  & 86.86 & 78.96 & 82.73 & 80.84 & 65.17 & 72.17 & token \\ \cline{2-9}
+                  &  \multirow{3}{*}{HMM}  & 76.90 & 80.41 & \textbf{78.61} & 62.66 & 52.16 & 56.93 &  \textbf{token} \\ 
+  &    & 66.48 & 69.67 & 68.04 & 39.34 & 28.36 & 32.96 &  lemma\_W0 \\ 
+  &    & 39.63 & 37.50 & 38.54 & 15.49 & 5.35 & 7.95 &  POS \\ \hline
+\multirow{6}{*}{Normes} 			& \multirow{4}{*}{CRF} & 95.91 & 96.72 & 96.31 & 91.14 & 90.45 & 90.80 & \textbf{BDS}$^{d1}$ \\ 
+				&  & 95.68 & 95.45 & 95.57 & 90.34 & 88.27 & 89.29 & SFFS$^{d2}$ \\ 
+                &  & 95.07 & 96.69 & 95.87 & 90.87 & 90.64 & 90.76 & ALL \\
+                &  & 95.60 & 92.96 & \textbf{94.26} & 88.06 & 83.50 & 85.72 & token \\ \cline{2-9}
+                 &  \multirow{2}{*}{HMM} & 89.21 & 94.25 & 91.66 & 72.67 & 77.28 & 74.90 &  \textbf{token} \\ 
+  &   & 90.31 & 92.81 & 91.54 & 69.24 & 69.46 & 69.35 &  lemma\_W0 \\ 
+%  \noalign{\smallskip}\svhline\noalign{\smallskip}
+%  & & token-level & entity-level & \\ \hline
+\noalign{\smallskip}\hline\noalign{\smallskip}
+\end{tabular}
+\end{center}
+
+$^a$ Resultats sur un simple découpage des données de $25\%$ pour l'entrainement,  $75\%$ pour le test avec 100 itérations d'entrainement au maximum  pour le CRF, et $80\%$ pour l'entrainement et $20\%$ pour le test avec 50 itérations au maximum pour l'entrainement du HMM
+
+$^{b1}$ Selection par BDS pour les sections : [p0, n0, relNum, absLength, t0, t1, t2]
+
+$^{b2}$ Selection par SFFS pour les sections: [n0, nRelLength, relNum, t0, t1, t2]
+
+ $^{c1}$ Selection par BDS pour les entités d'entête:  [POSW1, isAfterAPPELANT, numInLine, w-2topic0, POSW2, isAfterINTERVENANT, isAfterINTIME, POSW-2, isLONELYINITIAL, token, lemma\_W0, lemmaW-2, isALLPUN, w-1, w1, w2, isALLCAP]
+
+$^{c2}$ Selection par SFFS pour les  entités d'entête: [numInLine, w-2topic0, lemmaW-2, isAfterINTERVENANT, isAfterINTIME, w-1, w1, w2, isALLCAP, token]
+
+$^{d1}$ Selection par BDS pour les normes: [POSW1, w-2topic0, isKEYWORD, lemmaW2, DIGIT-IN, token, lemmaW1, lemmaW-2, POS, isALLPUN, w-1, w2, PUN-IN, w-2]
+
+$^{d2}$ Selection par SFFS pour les normes: [POSW1, lemmaW-2, w-1, DIGIT-IN]
+\end{table}
 
 \subsection{Croissance de l'apprentissage avec l'expérience}
+Certaines expérimentations ont été conduites pour évaluer comment les modèles s'améliorent lorsqu'on augmente le nombre de données d'entrainement. Pour cela, nous avons calculé les performances des modèles pour de différentes taille de la base d'entrainement. Les données ont été divisées en $75\%-25\%$ pour resp. l'entrainement et le test. Seules 20 fractions de l'ensembles d'entrainement ont été testées (de 5\% à 100\%). A chasue session entrainement-test, le même jeu de test a été utilisé pour les différentes fractions de l'ensemble d'entrainement. Les courbes d'apprentissage des modèles CRF et HMM sont représentées resp. sur les Figures \ref{fig:structuration:learning-curves-crf} et \ref{fig:structuration:learning-curves-hmm}. Il est évident que les scores F1 croissent avec plus de données d'entrainement pour les CRF et HMM, mais cette amélioration devient très faible au-delà de 60\% de données d'entrainement quelque soit la tâche. Il est possible que les exemples rajoutés à partir de là partagent la même structure qu'une majorité d'autres. Ainsi, cette étude doit être étendue à la sélection des exemples les plus utiles. \citet{raman2003exampleSelection} a demonstré les avantages des algorithmes de sélection d'exemples combinés à la sélection de caractéristique pour la classification. Les mêmes méthodes sont probablement applicables à l'étiquetage de séquence.
 
+\begin{figure}[!htb]
+\centering
+\begin{subfigure}[t]{0.95\textwidth}
+\centering
+\includegraphics[width=0.95\textwidth]{lc-crf.png}
+\caption{CRF} \label{fig:structuration:learning-curves-crf}
+\end{subfigure} 
+
+\begin{subfigure}[t]{0.95\textwidth}
+\centering
+\includegraphics[width=0.95\textwidth]{lc-hmm.png}
+\caption{HMM} \label{fig:structuration:learning-curves-hmm}
+\end{subfigure}
+\caption{Courbes d'apprentissages aux niveaux élément et entité} \label{fig:structuration:learning-curves}
+\end{figure}
+
+\subsection{Evaluation détaillée pour chaque type d'entité et section}
+Nous discutons ici la capacité des modèles à identifier individuellement chaque type d'entité et de section. Les test ont été conduits avec tous les descripteurs pour les modèles CRF. Seuls \textit{absLength} et \textit{token} ont été utilisé comme descripteurs dans les modèles HMM pour l'identification des sections et des entités resp.. Le schéma d'étiquetage est IO. Le nombre d'itération maximal a été fixé à 500 pour assurer la convergence lors de l'entrainement même si les modèles HMM ne convergeaient jamais après 500 itérations. Les Tableaux \ref{tab:structuration:perf-detail-token} et \ref{tab:structuration:perf-detail-entity} présentent les résultats d'une 5-fold validation croisée au niveau des éléments et des entités, resp.. D'un point de vue général, les modèles HMM se comportent assez bien au niveau élément avec un seul descripteur, particulièrement pour l'identification des sections et des normes. Le modèle HMM est capable de labeliser les normes grâce à la mention des mêmes normes entre les décisions et la syntaxe presque standard que respectent les mentions (\verb=article [IDENTIFIANT] [TEXTE D'ORIGINE]=). Le modèle HMM n'est cependant pas efficace pour détecter entièrement les mots des entités d'où le faible score enregistré au niveau entité. Quant aux CRF, leurs résultats sont bons pour toutes les tâches et à tous les niveaux d'évaluation malgré certaines limites observées sur l'identification des mentions de parties.
+
+\begin{table}[!htb]
+\centering
+\scriptsize
+\begin{subfigure}[t]{0.45\textwidth}
+\centering
+\begin{tabular}{|l|ccc|}
+\hline
+        & Precision  &  Recall   & F1 \\\hline
+I-corps &   92.46 &  95.25 &  93.83 \\
+I-dispositif &   53.44 &  48.46 &  50.83 \\
+I-entete &   97.91 &  91.93 &  94.83 \\\hline
+Overall &   90.63 &  90.63 &  90.63 \\\hline
+ \noalign{\smallskip}\hline\noalign{\smallskip}
+I-appelant &   34.46 &  16.87 &  22.65 \\
+I-avocat &   85.17 &  98.75 &  91.46 \\
+I-date  &   75.67 &  72.45 &  74.02 \\
+I-fonction &   88.81 &  64.46 &  74.70 \\
+I-formation &   79.38 &  94.38 &  86.23 \\
+I-intervenant &   82.07 &  38.04 &  51.98 \\
+I-intime &   50.40 &  68.09 &  57.93 \\
+I-juge  &   73.40 &  88.73 &  80.34 \\
+I-juridiction &   85.15 &  98.37 &  91.28 \\
+I-rg    &   68.53 &  22.14 &  33.47 \\
+I-ville &   91.50 &  82.41 &  86.72 \\\hline
+Overall &   76.21 &  82.26 &  79.12 \\\hline
+ \noalign{\smallskip}\hline\noalign{\smallskip}
+I-norme &   88.23 &  93.70 &  90.89 \\\hline
+\end{tabular}
+\caption{Modèles HMM avec les descripteurs \textit{absLength} and \textit{token} pour l'identification resp. de section et d'entités et le schéma d'étiquetage IO.}\label{tab:structuration:perf-detail-token-hmm}
+\end{subfigure} 
+\hfill
+\begin{subfigure}[t]{0.45\textwidth}
+\centering
+\begin{tabular}{|l|ccc|}
+\hline
+         & Precision &  Recall  & F1 \\\hline
+I-corps &   99.57 &  99.69 &  99.63 \\
+I-dispositif &   98.63 &  97.59 &  98.11 \\
+I-entete &   99.51 &  99.55 &  99.53 \\\hline
+Overall &   99.48 &  99.48 &  99.48 \\\hline
+ \noalign{\smallskip}\hline\noalign{\smallskip}
+I-appelant &   84.34 &  76.27 &  80.10 \\
+I-avocat &   98.02 &  98.15 &  98.09 \\
+I-date  &   98.00 &  96.60 &  97.30 \\
+I-fonction &   95.23 &  95.13 &  95.18 \\
+I-formation &   98.80 &  99.45 &  99.12 \\
+I-intervenant &   83.38 &  68.26 &  75.07 \\
+I-intime &   82.54 &  83.33 &  82.93 \\
+I-juge  &   97.55 &  97.23 &  97.39 \\
+I-juridiction &   98.91 &  99.69 &  99.30 \\
+I-rg    &   97.81 &  97.44 &  97.62 \\
+I-ville &   98.94 &  99.15 &  99.04 \\\hline
+Overall &   95.13 &  94.51 &  94.82 \\\hline
+ \noalign{\smallskip}\hline\noalign{\smallskip}
+I-norme &   97.14 &  96.09 &  96.62 \\\hline
+\end{tabular}
+\caption{Modèles CRF avec tous les descripteurs et le schéma IO}\label{tab:structuration:perf-detail-token-crf}
+\end{subfigure} 
+\caption{Précision, Rappel, F1-mesures pour chaque type d'entité et section au niveau élément.}\label{tab:structuration:perf-detail-token}
+\end{table}
+
+
+
+
+\begin{table}[!htb]
+\centering
+\scriptsize
+\begin{subfigure}[t]{0.45\textwidth}
+\centering
+\begin{tabular}{|l|ccc|}
+\hline
+        & Precision &  Recall  & F1 \\\hline
+corps   &    0.99 &   0.99 &   0.99 \\
+dispositif &   12.05 &   7.33 &   9.11 \\
+entete  &   10.47 &  10.50 &  10.48 \\\hline
+Overall &    7.22 &   6.27 &   6.71 \\\hline
+ \noalign{\smallskip}\hline\noalign{\smallskip}
+appelant &   17.84 &   5.60 &   8.52 \\
+avocat  &   44.29 &  39.15 &  41.56 \\
+date    &   66.87 &  62.15 &  64.43 \\
+fonction &   89.84 &  64.13 &  74.84 \\
+formation &   61.50 &  65.86 &  63.61 \\
+intervenant &   14.29 &   4.00 &   6.25 \\
+intime  &   30.28 &  27.47 &  28.80 \\
+juge    &   73.54 &  83.21 &  78.07 \\
+juridiction &   81.31 &  87.66 &  84.37 \\
+rg      &   68.53 &  22.41 &  33.77 \\
+ville   &   89.52 &  84.70 &  87.05 \\\hline
+Overall &   64.59 &  54.56 &  59.15 \\\hline
+ \noalign{\smallskip}\hline\noalign{\smallskip}
+norme   &   71.94 &  78.45 &  75.05 \\\hline
+\end{tabular}
+\caption{Modèles HMM avec les descripteurs \textit{absLength} and \textit{token} pour l'identification resp. de section et d'entités et le schéma d'étiquetage IO.} \label{tab:structuration:perf-detail-entity-hmm}
+\end{subfigure} 
+\hfill
+\begin{subfigure}[t]{0.45\textwidth}
+\centering
+\begin{tabular}{|l|ccc|}
+\hline
+         & Precision &  Recall  & F1 \\\hline
+corps   &   89.57 &  90.10 &  89.83 \\
+dispositif &   98.02 &  97.82 &  97.92 \\
+entete  &   92.11 &  92.48 &  92.29 \\\hline
+Overall &   93.22 &  93.47 &  93.34 \\\hline
+ \noalign{\smallskip}\hline\noalign{\smallskip}
+appelant &   84.05 &  77.29 &  80.53 \\
+avocat  &   90.97 &  90.30 &  90.63 \\
+date    &   97.96 &  96.60 &  97.27 \\
+fonction &   96.89 &  96.94 &  96.92 \\
+formation &   98.40 &  98.95 &  98.68 \\
+intervenant &   62.50 &  40.00 &  48.78 \\
+intime  &   79.31 &  78.93 &  79.12 \\
+juge    &   96.58 &  96.35 &  96.47 \\
+juridiction &   98.86 &  99.54 &  99.20 \\
+rg      &   97.57 &  98.02 &  97.79 \\
+ville   &   98.85 &  99.15 &  99.00 \\\hline
+Overall &   93.77 &  92.93 &  93.35 \\\hline
+ \noalign{\smallskip}\hline\noalign{\smallskip}
+norme   &   92.66 &  91.38 &  92.01 \\\hline
+\end{tabular}
+\caption{Modèles CRF avec tous les descripteurs et le schéma IO}\label{tab:structuration:perf-detail-entity-crf}
+\end{subfigure} 
+\caption{Précision, Rappel, F1-mesures pour chaque type d'entité et section au niveau entité.}\label{tab:structuration:perf-detail-entity}
+\end{table}
+
+Certaines erreurs sont probablement dûe à la proximité des entités de types différents. D'après la matrice de confusion (Figure \ref{fig:structuration:matrices-confusions}), les \textit{intervenants} sont souvent classifiés comme \textit{intimé} ou \textit{avocat} probablement parce qu'il s'agit d'individus mentionnés les uns à la suite des autres dans l'entête (les \textit{intervenants} sont mentionnés juste après les \textit{avocats} des \textit{intimés}). Certaines mentions d'\textit{appelant} sont aussi classifiées comme \textit{intimés} dans plusieurs documents. La proximité crèe aussi des confusions entre des sections qui se suivent c'est-à-dire entre ENTETE et CORPS, et entre CORPS ET DISPOSITIF.  
+
+\begin{figure}[!htb]
+    \centering
+    %\includegraphics{}
+    \textcolor{red}{Matrices de confusion}
+    \caption{Matrices de confusion}
+    \label{fig:structuration:matrices-confusions}
+\end{figure}
+
+Il est aussi intéressant de remarquer que certaines entitées sont repétées dans le document. Par exemple, les des parties sont mentionnées précédemment à une autre mention qui donne plus de détail sur eux. Certaines normes sont aussi citées de manière repétée et en alternant souvent les formes allongées et les formes longues. Malgré le fait que les mentions repétées ne sont pas identiques, de telles redondance aident à réduire le risque de manquer une entité. Cette aspect peut être exploité afin de combler l'imperfection des modèles.
 
 \section{Conclusion}
 \label{sec:structuration:conclusion}
