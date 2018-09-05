@@ -3,6 +3,9 @@
 
 \section{Introduction}
 \label{sec:structuration:motivation}
+
+\textcolor{red}{GENERALISER LE NOMBRE DE SECTION ET PRESENTER LES RESULTATS PUBLIES COMME ETANT UN CAS PARTICULIER}
+
 Ce chapitre traite de la détection de sections et d'entités dans les décisions jurisprudentielles françaises. Ces décisions sont des documents non structurés qui partagent généralement la même structure qu'on peut définir par les sections: \textit{entête}, \textit{exposé du litige}, \textit{motifs}, \textit{dispositif}. Chaque section comprend des information sur l'affaire: 
 \begin{enumerate}
 \item la section ENTETE contient diverses métadonnées de référence (date, lieu, identifiant, parties impliquées, juges, affaires antérieurs liés, ...); 
@@ -166,8 +169,9 @@ Il est possible d'aller plus loin en mettant l'accent sur les mots avant  (O-JUG
 Un autre intérêt très important de modèle plus complexes que IO est de pouvoir distinguer des entités qui se suivent sans être séparées d'une ponctuation visible. Cet aspect est notamment important dans les décisions de justice par exemple lorsque des noms de parties soient listés dans la section ENTETE en n'étant séparés que d'un simple retour à la ligne (\textcolor{red}{Illustration?}).
 
 \section{Approches proposées}
-\subsection{Chaine d'extraction et exploration de caractéristiques pertinentes}
 \label{sec:structuration:proposition}
+\subsection{Chaine d'extraction et exploration de caractéristiques pertinentes}
+\subsubsection{Architecture}
 Nous proposons de travailler uniquement avec le contenu textuel des documents. Ce contenu est extrait des documents téléchargés en eliminant les éléments inutiles, principalement des espaces vides. Ces éléments sont typiques des documents formatés (.rtf, .doc(x), .pdf). Ils ne fournissent pas une indication standard sur le début des sections. Le choix de ne pas exploiter le formatage des documents permet d'avoir à gérer un nombre plus faible de diversités entre les textes tout appliquant le même processus de traitement à tout document indépendament de sont format d'origine. Une simple architecture d'étiquetage de sections et d'entités juridiques a été conçu avec cet uniformisation des documents comme point d'entrée. Ainsi, les documents sont collectés pui prétraités suivant leur format d'origine (extraction du texte et séparation des décisions apparaissant dans le même document).  Ensuite, après le sectionnement des décisions, les entitées sont identifiées dans les différentes sections. Cette section décrit quelques aspects de conception à prendre en compte dans le but d'obtenir de bons résultats à partir d'un tel système.
 
 \begin{figure}[!h]
@@ -188,7 +192,19 @@ L'entrainement des modèles sur les exemples manuellement annotés est aussi dé
 \caption{Entrainement des modèles.}\label{fig:structuration:training}
 \end{figure}
 
+\subsubsection{Descripteurs candidats}
+\begin{table}[b]
+    \centering
+    \begin{tabular}{c|c}
+         &  \\
+         & 
+    \end{tabular}
+    \caption{Caractéristiques candidates pour l'identification de sections et d'entitées}
+    \label{tab:my_label}
+\end{table}
+
 \subsection{Joindre les deux tâches à l'aide d'un réseaux de neuronnes à double-tache d'étiquetage}
+
 
 
 \section{Expérimentations et interprétation des résultats}

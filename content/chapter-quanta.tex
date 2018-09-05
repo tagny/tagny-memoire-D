@@ -1,6 +1,6 @@
 % !TEX root = ../thesis-example.tex
 %
-\chapter{Extraction d'Information sur les Demandes}
+\chapter{Extraction de Données sur les Demandes}
 \label{sec:quanta}
 
 \section{Introduction}
@@ -171,6 +171,8 @@ $p_\theta(t_i, r_i, a \vert i, N_i, x)$ \cite{yang2016jointEntityEvt} %\linebrea
 
 
 \section{Tâche 1: Détection des catégories présentes par classification}
+\textcolor{red}{COMMENT SAVOIR QU'UN DOCUMENT N'A QU'UNE SEULE DEMANDE? CLASSIFICATION POSSIBLE?}
+
 Etant données l'ensemble $D_{\overline{c_i}}$ des documents ne comprenant aucune demande de la catégorie d'intérêt $c_i$, nous proposons de modéliser la tâche de détection des catégories en une tâche de classification binaire. Pour chaque catégorie, un classifieur binaire de document est entrainé pour déterminer si le document analysé contient ou pas une demande de la catégorie. Pour cela, chaque document $d_j$ est représenté sour une forme vectorielle traditionnele du type TF-IDF (\textit{term frequency - inverse document frequency}) où chaque dimension représente un mot dont le poids est le produit normalisé d'un poids $gw$ global au corpus du mot et d'un poids $lw$ local au document: $w(t_k, d_j) = lw(t_k, d_j) \times gw(t_k) \times nf(d_j)$, où $nf$ est le facteur de normalisation. 
 
 Nous avons évalué la classification binaire avec quatre classifieurs traditionnels: le classifieur naïf bayésien, l'arbre de décision, les K plus proches voisins (KNN), et la machine à vecteurs de support. A chaque entrainement, s'exécute une sélection de modèle par validation criosée sur les données d'entrainement; elle a pour but de sélectionner la métrique locale et la métrique globale appropriée. Les résultats obtenu par 5-folds cross validation sont présentés sur le tableau \ref{tab:quanta:resultat-detect-cat}.  D'après les résultats, La tâche 1 est relativement aisée car les classifieurs traditionnels détectent parfaitement la présence ou non d'une catégorie dans les documents.
@@ -205,15 +207,15 @@ styx    & 1.0 & 1.0 & 1.0 & 0.984 & 0.983 & 0.983 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 
 \section{Tâches 2 et 3: identification des attributs des demandes}
 \label{sec:quanta:attributs}
 
-\subsection{Méthode 1: extraction naïve à l'aide termes-clés}
+\subsection{Méthode 1: extraction à l'aide termes-clés prédéfinis et appris}
 \label{subsec:quanta:attributs:règles}
-
+\textcolor{red}{Cité la localisation des unités de mésure / considérer le découpage en phrases à la place du découpage avec les verbes introductifs. Formaliser l'algorithme (si possible donner la complexité et le temps d'extraction moyen par document)}
 
 \subsection{Méthode 2: chaine de classification de sommes d'argent}
 
 
 \subsection{Méthode 3: prédiction structurée jointe}
-
+?Apprentissage sur les documents à une seule demande pour limiter les bruits?
 
 \section{Conclusion}
 \label{sec:quanta:conclusion}

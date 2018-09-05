@@ -81,7 +81,7 @@ Les algorithmes de clustering et de classification s'appuient généralement sur
 
 L'idée dans notre approche est de proposée une formulation de la similarité entre deux documents qui est basée sur le degré de perturbation observé entre documents. Cette fonction de similarité est apprise à partir d'une base synthétique d'entrainement de similarité entre paire de texte. 
 \begin{postulat}
-La distance entre deux documents est une fonction au degré de perturbation permetant de transformer un document en un autre. \label{post:similarite:distance}
+La distance entre deux documents est une fonction du degré de perturbation permetant de transformer un document en un autre. \label{post:similarite:distance}
 \end{postulat}
 La similarité est définie en fonction de la notion de perturbation du contenu d'un texte (Postulat \ref{post:similarite:distance}): après une légère perturbation, un texte reste assez similaire à l'original; et après une forte perturbation, le texte sera très différent de l'identique. la similarité (resp. la distance) décroit (resp. croit inversement) donc avec l'intensité de la perturbation. Nous définissons une densité de probabilité de perturbation $P \in [0; 1]$ associée à la probabilité de modifier un mot (suppression / remplacement par un mot très différent). 
 
@@ -106,7 +106,7 @@ Un simple estimateur de $d$ peut être de considérer le taux de mots modifiés 
 \end{equation}
  Un tel modèle ne considère ni l'ordre des mots, ni celui des phrases, ni la différence d'importance entre les mots, la complexité de la modification (une substitution est plus complexe qu'une suppression ou une insertion), ni le degré sémantique des perturbations. ce dernier peut être estimé en lissant le taux de perturbation à l'aide de la distance sémantique entre les mots substitués (le vecteur représentant le mot vide étant le vecteur nul par ex.):
 \begin{equation}
-\widetilde{d}(x,y) = \sum\limits_{(w_x, w_y) \in Px,y} d_w(w_x,w_y) \label{equation:similarite:somme-dist-mots}
+\widetilde{d}(x,y) = \sum\limits_{(w_x, w_y) \in P_{x,y}} d_w(w_x,w_y) \label{equation:similarite:somme-dist-mots}
 \end{equation}
 $d_w$ désignant la distance sémantique entre les mots.
 Il est difficile de calculer de telle distance sur un grand corpus étant donné la longueur de notre document.
@@ -117,14 +117,17 @@ Nous pouvons ainsi générer une jeu artificiel de données pour l'entrainement 
  \KwData{texte $x$, valeur seuil de probabilité p}
  \KwResult{$y$, $\widetilde{d}(x,y)$}
  $y = "" $\; 
+ $P_{x,y} = \emptyset$\;
  \For{w in y}{
  	$v = random(0,1)$\;
     \eIf{v < p}{
-       $y += modifie(w)$; // Algorithme \ref{algo:similarite:modifiemot}
+       $w' += modifie(w)$; // Algorithme \ref{algo:similarite:modifiemot} \;
+       $y += w'$ \;
+       $P_{x,y} = P_{x,y} \cup \lbrace (w, w') \rbrace$\;
      }{
      $y += w$\;
      }
-     $\widetilde{d}(x,y) = \sum\limits_{(w_x, w_y) \in Px,y} d_w(w_x,w_y)$\;
+     $\widetilde{d}(x,y) = \sum\limits_{(w_x, w_y) \in P_{x,y}} d_w(w_x,w_y)$\;
  }
  \Return $y, \widetilde{d}(x,y)$\;
  \caption{Génère une perturbation de $x$} \label{algo:similarite:perturbation}
@@ -163,6 +166,9 @@ Le dataset comprend 81 documents répartis dans 4 groupes avec 6 documents appar
 Pour l'évaluation non supervisée, les 6 catégories de demande utilisée pour l'extraction de demandes sont utilisés en plus.
 
 \subsection{Apprentissage de la métrique}
+
+
+\subsection{Utilisation de la métrique apprise pour le clustering}
 
 
 \section{Conclusion}
