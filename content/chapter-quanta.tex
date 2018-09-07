@@ -15,10 +15,10 @@ Une catégorie de demande regroupe les prétentions qui sont de même nature par
 \scriptsize
 \begin{tabular}{|p{0.45\textwidth}|p{0.15\textwidth}|p{0.3\textwidth}|}
 \hline
-\textbf{Expression nominative  }                                     & \textbf{Objet}                                                       & \textbf{Fondement}                                                                 \\ \hline
+\textbf{Expression nominative (label)  }                                     & \textbf{Objet}                                                       & \textbf{Fondement}                                                                 \\ \hline
 dommages-intérêts pour abus de procédure (danais)                    & dommages-intérêts                                           & Articles 32-1 code de procédure civile + 1382 code de procédure civile \\ \hline
 amende civile pour abus de procédure (acpa)                        & amende civile                                               & Articles 32-1 code de procédure civile + 559 code de procédure civile  \\ \hline
-frais irrépétibles                                          & dommages-intérêts                                           & Article 700 du code de procédure civle                                 \\ \hline
+frais irrépétibles  (styx)                                        & dommages-intérêts                                           & Article 700 du code de procédure civle                                 \\ \hline
 dommages-intérêts pour trouble de voisinage (doris)                 & dommages-intérêts                                           & principe de responsabilité pour trouble anormal de voisinage           \\ \hline
 déclaration de créance au passif de la procédure collective (dcppc) & déclaration de créance & L622-24 code de commerce                                               \\ \hline
 dommages-intérêts pour concurence déloyale (concdel)                  & dommages-intérêts                                           & Article 1382 du code civil                                             \\ \hline
@@ -209,13 +209,115 @@ styx    & 1.0 & 1.0 & 1.0 & 0.984 & 0.983 & 0.983 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 
 
 \subsection{Méthode 1: extraction à l'aide termes-clés prédéfinis et appris}
 \label{subsec:quanta:attributs:règles}
-\textcolor{red}{Cité la localisation des unités de mésure / considérer le découpage en phrases à la place du découpage avec les verbes introductifs. Formaliser l'algorithme (si possible donner la complexité et le temps d'extraction moyen par document)}
+%\textcolor{red}{Cité la localisation des unités de mésure / considérer le découpage en phrases à la place du découpage avec les verbes introductifs. Formaliser l'algorithme (si possible donner la complexité et le temps d'extraction moyen par document)}
+
+Pour chacune des catégories détectées, nous proposons ici une chaine d'extraction à base de termes-clés. Il s'agit d'une approche qui tente de reproduire une lecture naïve du document. Elle est ainsi basée sur des sortes de formes d'expression repétitives et inspirées de nos lectures des documents. La technique consiste à retrouver et à marquer les passages où sont exprimées les demandes et les résultats, puis les quanta y sont localisés à proximité de termes-clés de la catégorie. Par exemple, la Figure \ref{fig:quanta:exemple-proximite} présente un extrait de passage exprimant une demande d'\textit{amende civile pour procédure abusive}. La Figure \ref{fig:quanta:exemple-proximite-original} présente l'extrait original et la Figure \ref{fig:quanta:exemple-proximite-marquage} présente le résultat de notre marquage automatique que nous proposons. Les passages, les sommes d'argent, et les termes-clefs sont marqués avec les balises XML resp. \verb=<demande>=, \verb=<argent>=, \verb=<terme-clef>=. Dans cet exemple, on remarque bien que le quantum demandé (\textit{1.500 euros}) se trouve très près de terme-clefs associables à la catégorie \textit{acpa} ("\textit{amende civile}" et "\textit{pour procédure abusive}"). 
+\begin{figure}
+\scriptsize
+\centering
+\begin{subfigure}[t]{0.95\textwidth}
+\fbox{\parbox{\textwidth}{
+    " ... 
+
+- débouter M. S. de ... % l' ensemble de ses demandes
+
+\textbf{- le condamner à payer une amende civile de 1.500 euros pour procédure abusive} ...
+
+- le condamner à payer la somme ..."
+    }}
+\caption{Extrait original avant marquage}\label{fig:quanta:exemple-proximite-original}
+\end{subfigure} 
+
+
+\begin{subfigure}[t]{0.95\textwidth}
+\fbox{\parbox{\textwidth}{
+    " ... 
+
+- débouter M. S. de ... % l' ensemble de ses demandes
+
+- le \textbf{<demande categorie="acpa">}\underline{condamner} à payer une <terme-clef categorie="acpa">\textbf{amende civile}</terme-clef> de <argent> \textbf{1.500 euros} </argent> <terme-clef categorie="acpa"> \textbf{pour procédure abusive}</terme-clef> ...
+
+- le\textbf{</demande>} \underline{condamner} à payer la somme ..."
+    }}
+\caption{Extrait après marquage: les sommes d'argent, passages et termes-clefs sont marqués automatiquement}\label{fig:quanta:exemple-proximite-marquage}
+\end{subfigure}
+\caption{Exemple de passage de demande: le quantum demandé est une somme d'argent à proximité des terme-clés}
+    \label{fig:quanta:exemple-proximite}
+\end{figure}
+
+Les passages de demande se distinguent de ceux des résultats par leur position dans le document (les demandes dans la section LITIGE et les résultats dans la section DISPOSITIF) et par les verbes qui les introduisent (très souvent à l'infinitif pour les demandes et au présent pour les résultats). Nous avons ainsi prédéfini, indépendemment de la catégorie traitée, une liste de mots qui sont généralement des verbes (Tableau \ref{tab:quanta:mots-introductifs}) pour délimiter les demandes et résultats dans leur section respectives.
+
+\begin{table}
+\centering
+\scriptsize
+ \begin{tabular}{|p{0.28\textwidth}|p{0.3\textwidth}|p{0.12\textwidth}|p{0.11\textwidth}|}
+ \hline
+ \textbf{Demande} & \multicolumn{3}{c|}{\textbf{Résultat} (organisé par polarité)} \\ \hline
+  & \textbf{accepte}  &\textbf{sursis à statuer} & \textbf{rejette}  \\ \hline
+ \textit{accorder, admettre, admission, allouer, condamnation, condamner, fixer, laisser, prononcer, ramener, surseoir} & \textit{accorde, accordons, admet, admettons, alloue, allouons, condamne, condamnons, déclare, déclarons, fixe, fixons, laisse, laissons, prononce, prononçons} & \textit{réserve, réservons, surseoit, sursoyons} & \textit{déboute, déboutons, rejette, rejettons} \\ \hline
+ \end{tabular}
+  \caption{Mots introduisant les énoncés de demandes et de résultats}\label{tab:quanta:mots-introductifs}
+ \end{table}
+
+Les termes prédéfinis délimitent les passages de demande et résultat indépendemment de toute catégorie, mais nous ne souhaitons analyser les passages associés à la catégorie particulière traitée. Il est donc nécessaire d'identifier les termes-clés indiquant l'expression de cette catégorie. Nous proposons un apprentissage semi-supervisé de ces termes. l'apprentissage est "supervisé" parce qu'on dispose de 2 corpus annotées pour chaque catégorie $c$: les documents à demande de la catégorie ($D_c$) et des documents sans demande de la catégorie ($D_{\overline{c}}$). L'apprentissage est "semi" parce qu'on ne dispose pas d'exemples de termes caractéristiques de la catégorie, mais uniquement de candidat qui sont en fait les termes de $D_c$. Nous avons utilisé des métriques/tests statistiques d'analyse de proportion pour sélectionner les termes qui sont plus importants dans le corpus $D_c$ que dans $D_{\overline{c}}$. Ces métriques sont listées dans le Tableau \ref{tab:quanta:globalweights}.
+
+\begin{table} \label{tab:quanta:globalweights}
+\caption{Métriques globales de termes: les métriques supervisées sont notées $f(t_k,c_i)$ et les non-supervisées sont notées $g(t_k)$}
+\scriptsize
+\begin{tabular}{p{0.48\textwidth}@{\hskip 0.2in}p{0.45\textwidth}}
+\hline\noalign{\smallskip}
+ Description & Formule \\
+\noalign{\smallskip}
+\hline
+\noalign{\smallskip}
+Inverse document frequency \cite{sparck1972idf}: simply computes the importance score of $t_k$ all over a corpus $D$ & $idf(t_k) = \log_2 (\frac{N}{N_{t_k}})$  \\ \noalign{\smallskip}
+Delta Document Frequency & $deltadf(w,c_i) = DF_{t_k,c_i} - DF_{t_k,\overline{c_i}}$\\ \noalign{\smallskip}
+Test of Marascuilo & $mar(t_k, c_i) = $ \begin{equation*} 
+\,
+\dfrac{\left(
+\splitdfrac{\splitdfrac{\splitdfrac{(N_{t_k,c_i} - N_{t_k}N_{t_k,c_i}/N)^2}{+ (N_{t_k,\overline{c_i}} - N_{t_k}N_{\overline{c_i}}/N)^2}}{+ (N_{\overline{t_k},c_i} - N_{c_i}N_{\overline{t_k}}/N)^2}}{+ (N_{\overline{t_k},\overline{}} - N_{\overline{t_k}}N_{\overline{c_i}}/N)^2}\right)}{N}
+\end{equation*} \\ \noalign{\smallskip}
+Chi square & $chi2(t_k,c_i) = \frac{N ((N_{t_k,c_i} N_{\overline{t_k},\overline{c_i}}) - (N_{t_k,\overline{c_i}} N_{\overline{t_k},c_i}))^2}{N_{t_k} N_{\overline{t_k}} N_{c_i} N_{\overline{c_i}}}$ \\ \noalign{\smallskip}
+Correlation coefficient of "Ng, Goh, Low" \cite{ng1997ngl} :   & $ngl(t_k,c_i) = \frac{\sqrt{N} ((N_{t_k,c_i} N_{\overline{t_k},\overline{c_i}}) - (N_{t_k,\overline{c_i}} N_{\overline{t_k},c_i}))}{\sqrt{N_{t_k} N_{\overline{t_k}} N_{c_i} N_{\overline{c_i}}}}$\\ \noalign{\smallskip}
+Coefficient of "Galavotti, Sebastiani, and Simi"  \cite{galavotti2000gss}& $gss(t_k,c_i) = (N_{t_k,c_i} N_{\overline{t_k},\overline{c_i}}) -  (N_{t_k,\overline{c_i}} N_{\overline{t_k},c_i})$ \\ \noalign{\smallskip}
+Relevance frequency & $rf(t_k, c_i) = \log\left(2 + \frac{N_{t_k, c_i}}{max(1, N_{t_k, \overline{c_i}})}\right)$\\ \noalign{\smallskip}
+Information gain & $ig(t_k, c_i) = $ \begin{equation*}
+\splitdfrac{\splitdfrac{\splitdfrac{(N_{t_k,c_i} * \log (N_{t_k,c_i} / (N_{t_k}N_{c_i})))}
+{+ (N_{\overline{t_k},c_i} * \log (N_{\overline{t_k},c_i} / (N_{\overline{t_k}}N_{c_i})))}}
+{+ (N_{t_k,\overline{c_i}} * \log (N_{t_k,\overline{c_i}} / (N_{t_k}N_{\overline{c_i}})))}}
+{+ (N_{\overline{t_k},\overline{c_i}} * \log (N_{\overline{t_k},\overline{c_i}} / (N_{\overline{t_k}}N_{\overline{c_i}})))}
+\end{equation*} \\ \noalign{\smallskip}
+ Kulback-Leibler divergence & $kld(t_k, c_i)=(N_{t_k,c_i} / N_{t_k}) * \log (\frac{N_{t_k,c_i} N}{N_{t_k}N_{c_i}})$\\ \noalign{\smallskip}
+ Delta Smoothed IDF & $dsidf(t_k, c_i)=\log (\frac{(N_{\overline{c_i}}N_{t_k,c_i}) + 0.5}{(N_{c_i}N_{t_k,\overline{c_i}}) + 0.5} $\\ \noalign{\smallskip}
+ Delta BM25 IDF & $dbidf(t_k, c_i) = \log (\frac{(N_{\overline{c_i}} - N_{t_k,\overline{c_i}} + 0.5) * (N_{t_k,c_i} + 0.5)}{(N_{c_i} - N_{t_k,c_i} + 0.5) * N_{t_k,\overline{c_i}} + 0.5)} $\\ \noalign{\smallskip}
+\hline
+\end{tabular}
+\end{table}
+
 
 \subsection{Méthode 2: chaine de classification de sommes d'argent}
+Classifieur de sommes d'argent et de paire de somme d'argent. Features
+\begin{itemize}
+    \item Cluster de sommes d'argent en fonction du contexte, Fourchette de la valeur (intervalle défini par rapport au corpus général)
+    \item Fenêtre: unigram, bigram, cluster, terme-clef
+    \item phrase: 
+    \item section:
+\end{itemize}
+
+Résolution des coréférences: Représentation de la paire: agrégation par concaténation, max, ou soustraction
+
+
+Résolution des doublons: classification de paires apprise sur un dataset généré à partir du comportement observé des détecteur de quanta sur le corpus d'entrainement. (a1, a2) -> (similaire, différent). UNIQUEMENT POUR DES SOMME DE VALEURS EGALES
 
 
 \subsection{Méthode 3: prédiction structurée jointe}
 ?Apprentissage sur les documents à une seule demande pour limiter les bruits?
+\begin{equation}
+P(D|T,A) = \sum\limits_{i=1}^{\vert D \vert} p_{\theta_1}(d_i = (a_j, a_l) | T, a_j, a_l, A) \cdot p_{\theta_2}(q_{d_i} = a_j | T, a_j, A) \cdot p_{\theta_3}(q_{r_i} = a_l | T, a_l, A)    
+\end{equation}
+
+
+
 
 \section{Conclusion}
 \label{sec:quanta:conclusion}
