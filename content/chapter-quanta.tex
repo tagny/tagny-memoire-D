@@ -1,6 +1,6 @@
 % !TEX root = ../thesis-example.tex
 %
-\chapter{Extraction de Données sur les Demandes}
+\chapter{Extraction de Données Relatives aux Demandes}
 \label{sec:quanta}
 
 \section{Introduction}
@@ -80,7 +80,7 @@ acquisitive de la parcelle BH 377 située [...].}
 D'une part, la séparation des demandes et des résultats rend difficile la résolution de coréférence entre prétentions et résultats. En effet, une décision jurisprudentielle porte sur plusieurs demandes de catégorie différentes dont il faut identifier la catégorie, le quantum demandé, le sens du résultat et le quantum obtenu. Il est important de faire correspondre un quantum demandé extrait au sens et au quantum du résultat qui font référence à la même demande. Le problème de coréférence est généré aussi par la redondance; par ex. les résultats exprimés dans les MOTIFS sont résumés dans le DISPOSITIF. D'autre part, les références aux jugements antérieurs exigent de résoudre des références aux résultats de jugements antérieurs qui sont, heureusement, rappelés dans le même document. Notons aussi que les difficultés liés aux agrégations (par ex. "\textit{infirmer ... en toutes ces dispositions}") et aux restrictions/sélections (par ex. "\textit{infirme le jugement ... sauf en ce qu'il a condamné M. A. ...}") devraient être résolues. Par ailleurs, les catégories de demandes sont nombreuses (500+ code NAC(?)) mais ne sont pas toutes présentes dans toutes les décisions. Toutes ses contraintes démontrent bien la diversité et l'état non-structuré des documents. Elles induisent des difficultés pour l'annotation manuelle de suffisamment données de référence et la modélisation de l'approche d'extraction. Cependant, nous avons remarqué quelques indicateurs qui pourraient être exploité implicitement ou explicitement.
 
 Nous nous sommes intéressés aux demandes dont les quanta sont des sommes d'argent. Les mentions de somme d'argent suivent généralement la forme "\verb=NOMBRE MONNAIE=" (par ex. 3000 \euro{}, 15 503 676 francs, un euro, 339.000 XPF). Nous remarquons que les nombres sont très rarement écrites en lettre. Ainsi, en repertoriant les unités monnétaires mentionnées dans les décisions, il est possible d'annoter les sommes d'argent à l'aide d'une expression régulière (Equation \ref{equation:quanta:regex-argent}) (?)\textcolor{red}{évaluation}.
-\begin{equation} \small
+\begin{equation} \scriptsize
     \backslash p{Digit}(\backslash p{Digit}|[',.]|\backslash s)*(euro[s]\left\{0,1\right\}|franc[s]\left\{0,1\right\}|\euro{}|F|CFP|XPF|EUR|EUROS)( |\$)\label{equation:quanta:regex-argent}
 \end{equation}
 %\texttt{\small $\backslash$p{Digit}($\backslash$p{Digit}|[',.]|\ $\backslash$s)*(euro[s]{0,1}|franc[s]{0,1}|\euro{}|F|CFP|EUR|EUROS)( |\$)}
@@ -104,7 +104,8 @@ Nous avons par conséquent opter pour la définition d'approches génériques ad
 
 \begin{table}[!htb]
 \includegraphics[width=\textwidth]{tab-annotations.png}
-\caption{Structure du tableau d'annotations manuelles à remplir: les noms des champs sont sur les 2 premières lignes et les demandes sont données en exemple pour la catégorie \textit{dommages-intérêts sur le fondement de l'article 700 du code de procédure civile} (décision 14/06911 de la cour d'appel de Lyon).} \label{tab:quanta:tab-annotations}
+\scriptsize{Les noms des champs sont sur les 2 premières lignes et les demandes sont données en exemple pour la catégorie \textit{dommages-intérêts sur le fondement de l'article 700 du code de procédure civile} (décision 14/06911 de la cour d'appel de Lyon).}
+\caption{Structure et extrait du tableau d'annotations manuelles des demandes.} \label{tab:quanta:tab-annotations}
 \end{table}
 
 Pour cette étude, un expert a extrait manuellement des demandes des 6 catégories du Tableau \ref{tab:quanta:exemple-categorie}. La répartition, des documents traités durant ce processus, est donnée par l'histogramme de la Figure \ref{fig:quanta:hist-repartition-docs}. On remarque pour toutes les catégories, les documents à une seule demande sont en général majoritaires (barres bleues). Quelques documents ne comprenant aucune demande de la catégorie d'intérêt ont été aussi rassemblés (barres grises). Il faut surtout noter que malgré le fait que les demandes ne soient pas annotées dans les documents mais dans un tableau, l'annotation reste une tâche très difficile; ceci justifie le très faible nombre de documents traités. le maximum pour une catégorie n'a été que de 198 documents (barres vertes).
@@ -129,7 +130,7 @@ Le problème est ainsi décomposé grossièrement en 3 tâches:
 \label{sec:quanta:biblio}
 Chacune de ses tâches se rapproche d'une tâche traitée dans la litérature, et nous donne ainsi des voies de solution. En effet, la détection de catégories dans les décisions peut être modélisée comme un problème de classification de document. Les deux dernières tâches se rapprochent plus de problématiques d'extraction d'entités complexes à champs/attributs comme l'extraction d'évènements, le remplissage de champs, ou encore l'extraction d'entités ou de rôles sémantiques et la résolution de coréférencement.
 
-\subsection{Analogie avec des problématiques de la litératures}
+\subsection{Analogie avec des problématiques d'extraction d'information}
 \begin{itemize}
 \item Extraction d'évènement : 
 \end{itemize}

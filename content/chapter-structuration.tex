@@ -16,8 +16,9 @@ Ce chapitre traite de la détection de sections et d'entités dans les décision
 
  Même si toutes les décisions respectent cette organisation, la structure à l'intérieur des sections peut varier d'un document à l'autre. Compte tenu de la répartition très sémantique des informations entre les sections, il nous a paru logique de détecter les sections dans un premier temps pour mieux organiser les différentes tâches d'extraction. Par la suite, des données sur les entités ou les demandes par exemple peuvent être plus facilement extraites en fonction des sections où elles se retrouvent généralement. Nous nous focalisons en particulier ici sur la détection d'entités telles que la date à laquelle le jugement a été prononcé, le type de juridiction, sa localisation (ville), les noms de juges, des parties et des avocats. La Table \ref{p4_relevantinfo} liste les différentes entités ciblées et fournit des exemples illustrant la forme de leurs mentions dans les arrêts français (décisions de juridictions de second degré).
 
-\begin{table}[!htb]
-\begin{tabular}[c]{|p{0.2\textwidth}|c|p{0.37\textwidth}|cc|}
+\begin{table}[!h]
+\scriptsize
+\begin{tabular}[c]{|p{0.17\textwidth}|c|p{0.37\textwidth}|cc|}
 \hline
 \textbf{Entités} & \textbf{Label} & \textbf{Exemples} & \multicolumn{2}{c|}{\textbf{\#mentions}$^a$}\\
   & & & \textbf{Médiane}$^b$& \textbf{Total}$^c$ \\ \hline
@@ -60,7 +61,7 @@ Les décisions sont disponibles auprès des juridictions mais on note qu'un cert
 
 
 
-\section{Synthèse bibliographique: Reconnaissance d'entités par étiquetage de séquence et décisions de justices}
+\section{Reconnaissance d'entités par étiquetage de séquence}
 \label{sec:structuration:biblio}
 
 \subsection{Approches générales de détection d'entités}
@@ -78,12 +79,14 @@ Quatre catégories d'approches de détection d'entités ont été distinguées \
 \end{itemize}
 Certains travaux ont combiné diverses approches pour extraire les entités à partir de documents juridiques,  par exemple,  par la description de l'information contextuelle en utilisant des règles pour répondre au problème d'ambigüité des méthodes à recherche lexicale \citep{mikheev1999NERlexicalWithRules,hanisch2005prominer}. 
 
-\subsection{Détections d'entités dans des documents juridiques}
-Les modèles HMM et CRF ont été utilisés dans de multiples travaux pour reconnaître des entités juridiques. Ils peuvent être combinés à d'autres approches dans un système global. Après avoir segmenter les documents à l'aide d'un modèle CRF, \citet{dozier2010legalnerr} ont combiné plusieurs approches pour reconnaître des entités dans les décisions de la cour suprême des Etats-Unis. Ils ont définis des détecteurs distincts à base de règles pour identifier séparémment la juridiction (zone géographique), le type de document, et les noms des juges, en plus de l'introduction d'une recherche lexicale pour détecter la cour, ainsi qu'un classifieur entrainé pour reconnaître le titre. Ces différents détecteurs ont atteint des performances prometteuses, mais avec des rappels limités entre $ 72 \% $ et $ 87 \% $. \citep{cardellino2017legalNERCL} quant à eux ont utilisé le CRF et les réseaux de neurones (\textcolor{red}{OÙ pays?}). Les basses performances qu'ils rapportent pour l'extraction dans les jugements illustre bien la difficulté de la détection d'entités juridiques. Plus récemment encore, \citet{andrew2018legalNerAndRelation} obtiennent de bons résultats en combinant l'extraction d'entités non-juridiques par CRF à l'extraction de relations par une grammaire GATE JAPE \citep{thakker2009gatejape}.
+\subsection{Détection d'entités dans des documents juridiques}
+
+Les modèles HMM et CRF ont été utilisés dans de multiples travaux pour reconnaître des entités juridiques. Ils peuvent être combinés à d'autres approches dans un système global. Après avoir segmenter les documents à l'aide d'un modèle CRF, \citet{dozier2010legalnerr} ont combiné plusieurs approches pour reconnaître des entités dans les décisions de la cour suprême des Etats-Unis. Ils ont définis des détecteurs distincts à base de règles pour identifier séparémment la juridiction (zone géographique), le type de document, et les noms des juges, en plus de l'introduction d'une recherche lexicale pour détecter la cour, ainsi qu'un classifieur entrainé pour reconnaître le titre. Ces différents détecteurs ont atteint des performances prometteuses, mais avec des rappels limités entre $ 72 \% $ et $ 87 \% $. \citep{cardellino2017legalNERCL} quant à eux ont utilisé le CRF et les réseaux de neurones (\textcolor{red}{OÙ pays?}). Les basses performances qu'ils rapportent pour l'extraction dans les jugements illustre bien la difficulté de la détection d'entités juridiques. Plus récemment encore, \citet{andrew2018legalNerAndRelation} obtiennent de bons résultats en combinant l'extraction d'entités non-juridiques par CRF à l'extraction de relations par une grammaire GATE JAPE \citep{thakker2009gatejape} sur des décisions du Luxembourg rédigées en français.
 
 La comparaison avec d'autres approches démontre bien que les modèles probabilistes atteignent de très bonnes performances lors de l'extraction d'information dand les documents juridiques. Par exemple, le HMM a été comparé à l'Algorithme de Perceptron à Marges Inégales (PAUM) \citep{li2002PAUM} pour reconnaître les institutions et références d'autres décisions de justice, ainsi que les citations d'actes juridiques (loi, contrat, etc.) dans les décisions judiciaires de la République Tchèque \citep{Kriz2014nerinczechdecisions}. Les deux modèles ont données de bonnes performances avec des scores F1 de $ 89 \% $ et $ 97 \% $ pour le HMM utilisant les trigrammes comme descripteurs de mots, et des scores F1 de $ 87 \% $ et $ 97 \% $ pour le PAUM en utilisant des 5-grammes de lemmes et les rôles grammaticaux (\textit{Part-Of-Speech tag}) comme descripteurs. 
 
 \subsection{Modèles d'étiquetage de texte pour l'extraction d'information}
+
 Considérons un texte T comme étant une séquence d'observations $t_{1:n}$, avec chaque $t_i$ étant un segment de texte (mots, ligne, phrase, etc.). En considérant une collection de labels, l'étiquetage de T consiste à affecter à les labels appropriés à chaque $t_i$. La segmentation de T est un étiquetage particulier qui implique de découper T en des groupes qui ne se chevauchent pas (des partitions), tels que les segments d'un groupe constituent nécessairement une sous-séquence de T. En d'autres termes, segmenter T revient à labeliser ses segments en considérant une contrainte particulière (\textcolor{red}{Laquelle?}). Parmi les multiples modèles d'étiquetage de séquences, nous nous sommes proposés d'étudier les performances de quelques modèles établis décrits ci-après.
 \subsubsection{HMM}
 Un modèle HMM est une machine à état fini défini par un ensemble d'états $ \lbrace s_1, s_2, ..., s_m \rbrace $. Un modèle HMM a pour fonction d'affecter une probabilité jointe 
@@ -99,24 +102,28 @@ Les probabilités de transition et d'émission peuvent être inférer en utilisa
 
 \subsubsection{CRF}
 \label{sec:structuration:biblio:CRF}
+
 Même si l'algorithme Viterbi est aussi utilisé pour appliquer le CRF à l'étiquetage de séquence, les structures du CRF et du HMM diffèrent. Au lieu de maximiser la probabilité jointe $ P(L, T)$ comme le HMM, un CRF \citep{lafferty2001crfie} cherche la séquence de labels $L^*$ qui maximise la probabilité conditionnelle suivante: $$P(L|T) = \frac{1}{Z}\exp \left(\sum\limits_{i=1}^n\sum\limits_{j=1}^F \lambda_j f_j(l_{i-1},l_i,t_{1:n},i)\right)$$ où $Z$ est le facteur de normalisation. Les fonctions potentielles $f(\cdot)$ sont les caractéristiques utilisés par les modèles CRF. Deux types de fonctions caractéristiques sont définies: les caractéristiques de transition qui dépendent des labels aux positions courantes et précédentes ($l_{i-1}$ and $ l_{i}$ respectivement) et de $T$; et les caractéristiques d'état qui sont des fonctions de l'état courant $ l_{i} $ et de la séquence $ T $. Ces fonctions $f(\cdot)$ sont définies à l'aide soit par de fonctions à valeur binaire ou réelle $b(T,i)$ qui combine les descripteurs d'une positiond'une position $i$ dans $T$ \citep{Wallach2004crfintro}. Pour labéliser les références aux règles de loi par exemple, un CRF pourrait inclure par exemple les fonctions potentielles pour labéliser "\textit{700}" dans ce contexte "\textit{... l'article 700 du code de procédure civile...}":
+{\scriptsize
 \[f_1(l_{i-1},l_i,t_{1:n},i) = \left\lbrace \begin{array}{ll}
-b_1(T,i) & \text{if } l_{i-1} = \text{NORME} \wedge l_i = \text{NORME} \\
+b_1(T,i) & \text{si } l_{i-1} = \text{NORME} \wedge l_i = \text{NORME} \\
 0 & \text{otherwise}
 \end{array} \right.\]
 \[f_2(l_{i-1},l_i,t_{1:n},i) = \left\lbrace \begin{array}{ll}
-b_2(T,i) & \text{if }l_i = \text{NORME} \\
+b_2(T,i) & \text{si }l_i = \text{NORME} \\
 0 & \text{otherwise}
 \end{array} \right.\]
-with
+avec
 \[b_1(T,i) = \left\lbrace \begin{array}{ll}
-1 & \text{if } (t_{i-1} =\text{article) }\wedge (POS_{i-1}=\text{NOM}) \\&  \wedge  (NP1_{i-1}=\text{<unknown>)} \wedge (NS1_{i-1}=\text{@card@)} \\
+1 & \text{si } (t_{i-1} =\text{article) }\wedge (POS_{i-1}=\text{NOM}) \\&  \wedge  (NP1_{i-1}=\text{<unknown>)} \wedge (NS1_{i-1}=\text{@card@)} \\
 0 & \text{otherwise} 
 \end{array} \right.\]
 \[b_2(T,i) = \left\lbrace \begin{array}{ll}
-1 & \text{if } (t_i =\text{700) }\wedge (POS_i=\text{NUM})  \wedge (NP1_i=\text{article)} \wedge (NS1_i=\text{code)} \\
+1 & \text{si } (t_i =\text{700) }\wedge (POS_i=\text{NUM})  \wedge (NP1_i=\text{article)} 
+\wedge (NS1_i=\text{code)} \\
 0 & \text{otherwise}
 \end{array} \right.\]
+}
 $t_i$ étant une observation dans $T$, POS étant le rôle grammatical de $t_i$ (NUM = valeur numerique, NOM=nom), et NP1 et NS1 sont les lemmes des mots avant et après $t_i$, respectivement. Les symboles \textit{<unknown>} et \textit{@card@} encode les lemmes inconnus et les lemmes de numbres respectivement. Pouvant être activées au même moment, les fonctions $f_1$ et $f_2$ définissent des descripteurs se chevauchant. Avec plusieurs fonctions activées, la croyance dans le fait que $l_i = NORME$ est renforcée par la somme $\lambda_1 + \lambda_2$ des poids  des functions activées \citep{Zhu2010CRFlecture}.  Un modèle CRF emploie une fonction $f_j$ lorsuqe ses conditions sont satisfaites et $\lambda_j > 0$. Les diverse fonctions pondérées $f_j$ sont définies par des descripteurs caractérisant le texte et les labels des données d'entrainement. La phase d'entrainement consiste principalement à estimer le vecteur de paramètres $\lambda = (\lambda_1,...,\lambda_F)$ à partir des de textes annotés manuellement $ \lbrace (T_1, L_1), ..., (T_M, L_M) \rbrace $, $ T_k $ étant un texte et $ L_k $ la séquence de labels correspondande. La valeur optimal retenue pour estimer de $\lambda$ est celle maximisant la fonction objectif   
 $\sum\limits_ {k = 1} ^ M \log P (L_k \vert T_k) $ sur les données d'entrainement. En général, outre le maximum de vraisemblance, cette optimisation est résolue à l'aide de l'algorithme de descente du gradient dont l'exécution peut-être accélérée à l'aide de l'algorithme L-BFGS \citep{liu1989l-bfgs}.
 
@@ -153,7 +160,7 @@ Nous traitons d'entités dont les mentions comprennent un ou plusieurs élément
 
 La figure \ref{p4_sample-tagmod} illustrate l'utilisation des ces différents modèles sur un extrait de décision de justice:
 \begin{figure}[!h]
-\scriptsize
+\tiny
 \begin{tabular}{l|ccccccccccc}
  & \textit{composée} & \textit{de} & \textit{Madame} & \textit{Martine} & \textit{JEAN} & , & \textit{Président} & \textit{de} & \textit{chambre} & , & \textit{de} \\ 
 IO & O & O & I-JUGE & I-JUGE & I-JUGE & O & I-FONCTION & I-FONCTION & I-FONCTION & O & O \\
@@ -179,7 +186,8 @@ Nous proposons de travailler uniquement avec le contenu textuel des documents. C
 \centering
 \includegraphics [width=0.45\textwidth]{structuration-preprocess.png}
 \includegraphics [width=0.45\textwidth]{structuration-pipeline-application.png}
-\caption{Application des modèles entrainés: après la collecte et le pretraitement des documents, l'étiqueteur de ligne est d'abord appliqué pour détecter les sections, puis les étiqueteurs d'entités peuvent être appliqués simultanement dans differentes sections.}\label{p4_archAppli}
+{\scriptsize Après la collecte et le pretraitement des documents, l'étiqueteur de ligne est d'abord appliqué pour détecter les sections, puis les étiqueteurs d'entités peuvent être appliqués simultanement dans differentes sections.}
+\caption{Application des modèles entrainés d'étiquetage de section et entités.}\label{p4_archAppli}
 \end{figure}
 
 L'entrainement des modèles sur les exemples manuellement annotés est aussi décomposé en étapes. Nous proposons de sélectionner le schéma d'étiquetage, puis de sélectionner les sous-ensembles minimaux de caractéristiques manuellement définies, avant d'entrainer les modèles HMM et CRF (Figure \ref{fig:structuration:training}). La sélection de caractéristiques ne concerne pas l'implémentation en réseau de neuronnes du CRF.
@@ -203,11 +211,11 @@ L'entrainement des modèles sur les exemples manuellement annotés est aussi dé
     \label{tab:my_label}
 \end{table}
 
-\subsection{Joindre les deux tâches à l'aide d'un réseaux de neuronnes à double-tache d'étiquetage}
+\subsection{Réseaux de neuronnes double-tache}
+Découpage des 
 
 
-
-\section{Expérimentations et interprétation des résultats}
+\section{Expérimentations et discussions}
 L'objectif de cette section est de discuter des différents aspects d'optimisation des performance des modèles CRF, HMM et BiLSTM-CRF, et de les comparer lorsqu'ils sont entrainés dans les conditions optimales déterminées empiriquement. Il est question de discuter l'effet des caractéristiques définies, de comparer des algorithmes de sélection de caractéristiques et des schémas d'étiquetage, de vérifier l'effet de l'augmentation des données d'entrainement sur la performance des modèles.
 
 \label{sec:structuration:experimentations}
@@ -276,13 +284,13 @@ Id thème & Mots représentatifs  \\ \hline
 \subsection{Sélection du schémas d'étiquetage}
 Dans le but dévaluer comment la représentation de segment affecte les performances, nous avons implémenté quatre représentations (IO, IEO2, BIO2, BIEO).  Nos avons réalisé un simple découpage des données en deux ensembles: $25 \%$ pour l'entrainement et $75 \%$ pour les tests. Les performances reportées dans le Tableau \ref{fig:structuration:select-segm-repr} sont les performances globales sur la base de test. Seul l'élément (mot/ligne) est utilisé comme dscripteur. La durée d'entrainement est très longue, particulièrement pour la détection d'entité dans l'entête avec le CRF. Il semble évident que cette durée croit proportionnellement avec le nombre de labels possibles (BIEO exige beaucoup plus de temps, et IO exige le minimum de temps). Le schéma IOE semble être plus rapide à que BIO même s'ils ont le même nombre de labels. Nous remarquons aussi que les représentations complexes n'améliorent pas significativement les résultats par rapport au simple IO qui consomme pourtant le moins de temps.
 
-\begin{table}
+\begin{table}[h]
 \scriptsize
 \caption{Comparaison des schémas d'étiquetage.}\label{fig:structuration:select-segm-repr}
 \begin{center}
 \begin{tabular}{p{1.5cm}|c|cccccccc}
 \hline \noalign{\smallskip}
-Tâche & Modèle & \multicolumn{3}{c}{Niveau mot$^a$} & \multicolumn{3}{c}{Niveau entité$^a$} & Durée & Schéma \\
+Tâche & Modèle & \multicolumn{3}{c}{Niveau atomique$^a$} & \multicolumn{3}{c}{Niveau entité$^a$} & Durée & Schéma \\
  & & Précision & Rappel & F1 &  Précision & Recall & F1 & d'entrainement$^b$ & \\ \hline %\noalign{\smallskip}\svhline\noalign{\smallskip}
 \multirow{8}{*}{Sections}  & \multirow{4}{*}{CRF} & 91.75 & 91.75 & 91.75 & 64.49 & 56.55 & 60.26 &  4.685  & IO \\
 &  & 88.95 & 88.95 & 88.95 & 48.12 & 38.26 & 42.63  & 11.877 & IEO2 \\
@@ -329,7 +337,7 @@ Les descripteurs sélectionnés forment ds sous-ensembles inattendus étant donn
 \begin{center}
 \begin{tabular}{l|c|ccc|ccc|c}
 \hline\noalign{\smallskip}
-Detection Task & Tagger & \multicolumn{3}{c}{niveau mot$^a$} & \multicolumn{3}{c}{niveau entité$^a$}& Sous-ensemble \\
+Detection Task & Tagger & \multicolumn{3}{c}{niveau atomique$^a$} & \multicolumn{3}{c}{niveau entité$^a$}& Sous-ensemble \\
  & & Précision & Rappel & F1 &  Précision & Rappel & F1 & sélectionné\\
 \noalign{\smallskip}\hline\noalign{\smallskip}
 \multirow{7}{*}{Sections} 		& \multirow{4}{*}{CRF} & 99.31 & 99.31 & 99.31 & 90.28 & 90.68 & 90.48 & BDS$^{b1}$  \\
@@ -373,29 +381,12 @@ $^{d1}$ Selection par BDS pour les normes: [POSW1, w-2topic0, isKEYWORD, lemmaW2
 $^{d2}$ Selection par SFFS pour les normes: [POSW1, lemmaW-2, w-1, DIGIT-IN]
 \end{table}
 
-\subsection{Croissance de l'apprentissage avec l'expérience}
-Certaines expérimentations ont été conduites pour évaluer comment les modèles s'améliorent lorsqu'on augmente le nombre de données d'entrainement. Pour cela, nous avons calculé les performances des modèles pour de différentes taille de la base d'entrainement. Les données ont été divisées en $75\%-25\%$ pour resp. l'entrainement et le test. Seules 20 fractions de l'ensembles d'entrainement ont été testées (de 5\% à 100\%). A chasue session entrainement-test, le même jeu de test a été utilisé pour les différentes fractions de l'ensemble d'entrainement. Les courbes d'apprentissage des modèles CRF et HMM sont représentées resp. sur les Figures \ref{fig:structuration:learning-curves-crf} et \ref{fig:structuration:learning-curves-hmm}. Il est évident que les scores F1 croissent avec plus de données d'entrainement pour les CRF et HMM, mais cette amélioration devient très faible au-delà de 60\% de données d'entrainement quelque soit la tâche. Il est possible que les exemples rajoutés à partir de là partagent la même structure qu'une majorité d'autres. Ainsi, cette étude doit être étendue à la sélection des exemples les plus utiles. \citet{raman2003exampleSelection} a demonstré les avantages des algorithmes de sélection d'exemples combinés à la sélection de caractéristique pour la classification. Les mêmes méthodes sont probablement applicables à l'étiquetage de séquence.
 
-\begin{figure}[!htb]
-\centering
-\begin{subfigure}[t]{0.95\textwidth}
-\centering
-\includegraphics[width=0.95\textwidth]{lc-crf.png}
-\caption{CRF} \label{fig:structuration:learning-curves-crf}
-\end{subfigure} 
-
-\begin{subfigure}[t]{0.95\textwidth}
-\centering
-\includegraphics[width=0.95\textwidth]{lc-hmm.png}
-\caption{HMM} \label{fig:structuration:learning-curves-hmm}
-\end{subfigure}
-\caption{Courbes d'apprentissages aux niveaux élément et entité} \label{fig:structuration:learning-curves}
-\end{figure}
 
 \subsection{Evaluation détaillée pour chaque type d'entité et section}
 Nous discutons ici la capacité des modèles à identifier individuellement chaque type d'entité et de section. Les test ont été conduits avec tous les descripteurs pour les modèles CRF. Seuls \textit{absLength} et \textit{token} ont été utilisé comme descripteurs dans les modèles HMM pour l'identification des sections et des entités resp.. Le schéma d'étiquetage est IO. Le nombre d'itération maximal a été fixé à 500 pour assurer la convergence lors de l'entrainement même si les modèles HMM ne convergeaient jamais après 500 itérations. Les Tableaux \ref{tab:structuration:perf-detail-token} et \ref{tab:structuration:perf-detail-entity} présentent les résultats d'une 5-fold validation croisée au niveau des éléments et des entités, resp.. D'un point de vue général, les modèles HMM se comportent assez bien au niveau élément avec un seul descripteur, particulièrement pour l'identification des sections et des normes. Le modèle HMM est capable de labeliser les normes grâce à la mention des mêmes normes entre les décisions et la syntaxe presque standard que respectent les mentions (\verb=article [IDENTIFIANT] [TEXTE D'ORIGINE]=). Le modèle HMM n'est cependant pas efficace pour détecter entièrement les mots des entités d'où le faible score enregistré au niveau entité. Quant aux CRF, leurs résultats sont bons pour toutes les tâches et à tous les niveaux d'évaluation malgré certaines limites observées sur l'identification des mentions de parties.
 
-\begin{table}[!htb]
+\begin{table}[!h]
 \centering
 \scriptsize
 \begin{subfigure}[t]{0.45\textwidth}
@@ -453,13 +444,10 @@ I-norme &   97.14 &  96.09 &  96.62 \\\hline
 \end{tabular}
 \caption{Modèles CRF avec tous les descripteurs et le schéma IO}\label{tab:structuration:perf-detail-token-crf}
 \end{subfigure} 
-\caption{Précision, Rappel, F1-mesures pour chaque type d'entité et section au niveau élément.}\label{tab:structuration:perf-detail-token}
+\caption{Précision, Rappel, F1-mesures pour chaque type d'entité et section au niveau atomique.}\label{tab:structuration:perf-detail-token}
 \end{table}
 
-
-
-
-\begin{table}[!htb]
+\begin{table}[!h]
 \centering
 \scriptsize
 \begin{subfigure}[t]{0.45\textwidth}
@@ -520,9 +508,12 @@ norme   &   92.66 &  91.38 &  92.01 \\\hline
 \caption{Précision, Rappel, F1-mesures pour chaque type d'entité et section au niveau entité.}\label{tab:structuration:perf-detail-entity}
 \end{table}
 
+
+\subsection{Analyse des erreurs}
+\subsubsection{Confusion de classes}
 Certaines erreurs sont probablement dûe à la proximité des entités de types différents. D'après la matrice de confusion (Figure \ref{fig:structuration:matrices-confusions}), les \textit{intervenants} sont souvent classifiés comme \textit{intimé} ou \textit{avocat} probablement parce qu'il s'agit d'individus mentionnés les uns à la suite des autres dans l'entête (les \textit{intervenants} sont mentionnés juste après les \textit{avocats} des \textit{intimés}). Certaines mentions d'\textit{appelant} sont aussi classifiées comme \textit{intimés} dans plusieurs documents. La proximité crèe aussi des confusions entre des sections qui se suivent c'est-à-dire entre ENTETE et CORPS, et entre CORPS ET DISPOSITIF.  
 
-\begin{figure}[!htb]
+\begin{figure}[h!]
     \centering
     %\includegraphics{}
     \textcolor{red}{Matrices de confusion}
@@ -530,7 +521,29 @@ Certaines erreurs sont probablement dûe à la proximité des entités de types 
     \label{fig:structuration:matrices-confusions}
 \end{figure}
 
+\subsubsection{Redondance des mentions d'entitées}
 Il est aussi intéressant de remarquer que certaines entitées sont repétées dans le document. Par exemple, les des parties sont mentionnées précédemment à une autre mention qui donne plus de détail sur eux. Certaines normes sont aussi citées de manière repétée et en alternant souvent les formes allongées et les formes longues. Malgré le fait que les mentions repétées ne sont pas identiques, de telles redondance aident à réduire le risque de manquer une entité. Cette aspect peut être exploité afin de combler l'imperfection des modèles.
+
+\subsubsection{Découpage atomique}
+
+\subsubsection{Impact de la quantité d'exemples annotées}
+Certaines expérimentations ont été conduites pour évaluer comment les modèles s'améliorent lorsqu'on augmente le nombre de données d'entrainement. Pour cela, nous avons calculé les performances des modèles pour de différentes taille de la base d'entrainement. Les données ont été divisées en $75\%-25\%$ pour resp. l'entrainement et le test. Seules 20 fractions de l'ensembles d'entrainement ont été testées (de 5\% à 100\%). A chasue session entrainement-test, le même jeu de test a été utilisé pour les différentes fractions de l'ensemble d'entrainement. Les courbes d'apprentissage des modèles CRF et HMM sont représentées resp. sur les Figures \ref{fig:structuration:learning-curves-crf} et \ref{fig:structuration:learning-curves-hmm}. Il est évident que les scores F1 croissent avec plus de données d'entrainement pour les CRF et HMM, mais cette amélioration devient très faible au-delà de 60\% de données d'entrainement quelque soit la tâche. Il est possible que les exemples rajoutés à partir de là partagent la même structure qu'une majorité d'autres. Ainsi, cette étude doit être étendue à la sélection des exemples les plus utiles. \citet{raman2003exampleSelection} a demonstré les avantages des algorithmes de sélection d'exemples combinés à la sélection de caractéristique pour la classification. Les mêmes méthodes sont probablement applicables à l'étiquetage de séquence.
+
+\begin{figure}[!htb]
+\centering
+\begin{subfigure}[t]{0.95\textwidth}
+\centering
+\includegraphics[width=0.95\textwidth]{lc-crf.png}
+\caption{CRF} \label{fig:structuration:learning-curves-crf}
+\end{subfigure} 
+
+\begin{subfigure}[t]{0.95\textwidth}
+\centering
+\includegraphics[width=0.95\textwidth]{lc-hmm.png}
+\caption{HMM} \label{fig:structuration:learning-curves-hmm}
+\end{subfigure}
+\caption{Courbes d'apprentissages aux niveaux élément et entité} \label{fig:structuration:learning-curves}
+\end{figure}
 
 \section{Conclusion}
 \label{sec:structuration:conclusion}
