@@ -1,5 +1,5 @@
 \chapter{Sectionnement et Annotation d'entités}
-\label{sec:structuration}
+\label{chap:structuration}
 
 \section{Introduction}
 \label{sec:structuration:motivation}
@@ -9,14 +9,17 @@
 Ce chapitre traite de la détection de sections et d'entités dans les décisions jurisprudentielles françaises. Ces décisions sont des documents non structurés qui partagent généralement la même structure qu'on peut définir par les sections: \textit{entête}, \textit{exposé du litige}, \textit{motifs}, \textit{dispositif}. Chaque section comprend des information sur l'affaire: 
 \begin{enumerate}
 \item la section ENTETE contient diverses métadonnées de référence (date, lieu, identifiant, parties impliquées, juges, affaires antérieurs liés, ...); 
+\item La section CORPS qu'on peut diviser de manière plus fine pour distinguer:
+\begin{itemize}
 \item la section LITIGE comprend une description des faits, des procédures (jugements antérieurs, appel, assignations, ...), des demandes et raisonnements des parties; 
 \item la section MOTIFS détaille le raisonnement et les arguments des juges;
+\end{itemize}
 \item la section DISPOSITIF est la décision finale qui résume la réponse des juges aux différentes demandes des parties.
 \end{enumerate}
 
  Même si toutes les décisions respectent cette organisation, la structure à l'intérieur des sections peut varier d'un document à l'autre. Compte tenu de la répartition très sémantique des informations entre les sections, il nous a paru logique de détecter les sections dans un premier temps pour mieux organiser les différentes tâches d'extraction. Par la suite, des données sur les entités ou les demandes par exemple peuvent être plus facilement extraites en fonction des sections où elles se retrouvent généralement. Nous nous focalisons en particulier ici sur la détection d'entités telles que la date à laquelle le jugement a été prononcé, le type de juridiction, sa localisation (ville), les noms de juges, des parties et des avocats. La Table \ref{p4_relevantinfo} liste les différentes entités ciblées et fournit des exemples illustrant la forme de leurs mentions dans les arrêts français (décisions de juridictions de second degré).
 
-\begin{table}[!h]
+\begin{table}[!ht]
 \scriptsize
 \begin{tabular}[c]{|p{0.17\textwidth}|c|p{0.37\textwidth}|cc|}
 \hline
@@ -34,6 +37,7 @@ Avocat & \textbf{avocat} & "Me Dominique A., avocat au barreau de Papeete" & 3 &
 Juge & \textbf{juge} & "Monsieur André R.", "Mme BOUSQUEL" & 4 & 2089\\ \hline
 Fonction de juge & \textbf{fonction} & "Conseiller", "Président" & 4 & 2062\\ \hline
 Norme & \textbf{norme} & "l' article 700 NCPC", "articles 901 et 903" & 12 & 7641 \\ \hline
+Argent & \textbf{argent} & "un euro", "" & 14$^*$ & 1777$^*$ \\ \hline
 \noalign{\smallskip}\hline\noalign{\smallskip}
 Non-entité & \textbf{O} & \textit{mot ne faisant partie d'aucune mention d'entité} & - & -\\ \hline
 \end{tabular} 
@@ -43,6 +47,8 @@ $^a$ nombre de mentions d'entités dans le corpus annoté pour les expérimentat
 $^b$ nombre médian de mentions par document dans le corpus annoté
 
 $^c$ nombre total d'occurrences dans le corpus annoté
+
+$^*$ Les statistiques sur les sommes d'argent ne concernent que 100 documents annotés (max=106, min=1, moyenne=17.77), contre 500 documents pour les autres entités.
 \caption{Entités et labels correspondant utilisés pour labeliser leurs mots. }\label{p4_relevantinfo}
 \end{table}
 
@@ -85,7 +91,7 @@ Les modèles HMM et CRF ont été utilisés dans de multiples travaux pour recon
 
 La comparaison avec d'autres approches démontre bien que les modèles probabilistes atteignent de très bonnes performances lors de l'extraction d'information dand les documents juridiques. Par exemple, le HMM a été comparé à l'Algorithme de Perceptron à Marges Inégales (PAUM) \citep{li2002PAUM} pour reconnaître les institutions et références d'autres décisions de justice, ainsi que les citations d'actes juridiques (loi, contrat, etc.) dans les décisions judiciaires de la République Tchèque \citep{Kriz2014nerinczechdecisions}. Les deux modèles ont données de bonnes performances avec des scores F1 de $ 89 \% $ et $ 97 \% $ pour le HMM utilisant les trigrammes comme descripteurs de mots, et des scores F1 de $ 87 \% $ et $ 97 \% $ pour le PAUM en utilisant des 5-grammes de lemmes et les rôles grammaticaux (\textit{Part-Of-Speech tag}) comme descripteurs. 
 
-\subsection{Modèles d'étiquetage de texte pour l'extraction d'information}
+\subsection{Modèles d'étiquetage de texte}
 
 Considérons un texte T comme étant une séquence d'observations $t_{1:n}$, avec chaque $t_i$ étant un segment de texte (mots, ligne, phrase, etc.). En considérant une collection de labels, l'étiquetage de T consiste à affecter à les labels appropriés à chaque $t_i$. La segmentation de T est un étiquetage particulier qui implique de découper T en des groupes qui ne se chevauchent pas (des partitions), tels que les segments d'un groupe constituent nécessairement une sous-séquence de T. En d'autres termes, segmenter T revient à labeliser ses segments en considérant une contrainte particulière (\textcolor{red}{Laquelle?}). Parmi les multiples modèles d'étiquetage de séquences, nous nous sommes proposés d'étudier les performances de quelques modèles établis décrits ci-après.
 \subsubsection{HMM}
@@ -179,19 +185,16 @@ Un autre intérêt très important de modèle plus complexes que IO est de pouvo
 \label{sec:structuration:proposition}
 \subsection{Chaine d'extraction et exploration de caractéristiques pertinentes}
 \subsubsection{Architecture}
-Nous proposons de travailler uniquement avec le contenu textuel des documents. Ce contenu est extrait des documents téléchargés en eliminant les éléments inutiles, principalement des espaces vides. Ces éléments sont typiques des documents formatés (.rtf, .doc(x), .pdf). Ils ne fournissent pas une indication standard sur le début des sections. Le choix de ne pas exploiter le formatage des documents permet d'avoir à gérer un nombre plus faible de diversités entre les textes tout appliquant le même processus de traitement à tout document indépendament de sont format d'origine. Une simple architecture d'étiquetage de sections et d'entités juridiques a été conçu avec cet uniformisation des documents comme point d'entrée. Ainsi, les documents sont collectés pui prétraités suivant leur format d'origine (extraction du texte et séparation des décisions apparaissant dans le même document).  Ensuite, après le sectionnement des décisions, les entitées sont identifiées dans les différentes sections. Cette section décrit quelques aspects de conception à prendre en compte dans le but d'obtenir de bons résultats à partir d'un tel système.
-
 \begin{figure}[!h]
 %\sidecaption
 \centering
 \includegraphics [width=0.45\textwidth]{structuration-preprocess.png}
 \includegraphics [width=0.45\textwidth]{structuration-pipeline-application.png}
+
 {\scriptsize Après la collecte et le pretraitement des documents, l'étiqueteur de ligne est d'abord appliqué pour détecter les sections, puis les étiqueteurs d'entités peuvent être appliqués simultanement dans differentes sections.}
 \caption{Application des modèles entrainés d'étiquetage de section et entités.}\label{p4_archAppli}
 \end{figure}
-
-L'entrainement des modèles sur les exemples manuellement annotés est aussi décomposé en étapes. Nous proposons de sélectionner le schéma d'étiquetage, puis de sélectionner les sous-ensembles minimaux de caractéristiques manuellement définies, avant d'entrainer les modèles HMM et CRF (Figure \ref{fig:structuration:training}). La sélection de caractéristiques ne concerne pas l'implémentation en réseau de neuronnes du CRF.
-
+Nous proposons de travailler uniquement avec le contenu textuel des documents. Ce contenu est extrait des documents téléchargés en eliminant les éléments inutiles, principalement des espaces vides. Ces éléments sont typiques des documents formatés (.rtf, .doc(x), .pdf). Ils ne fournissent pas une indication standard sur le début des sections. Le choix de ne pas exploiter le formatage des documents permet d'avoir à gérer un nombre plus faible de diversités entre les textes tout appliquant le même processus de traitement à tout document indépendament de sont format d'origine. Une simple architecture d'étiquetage de sections et d'entités juridiques a été conçu avec cet uniformisation des documents comme point d'entrée. Ainsi, les documents sont collectés pui prétraités suivant leur format d'origine (extraction du texte et séparation des décisions apparaissant dans le même document).  Ensuite, après le sectionnement des décisions, les entitées sont identifiées dans les différentes sections. Cette section décrit quelques aspects de conception à prendre en compte dans le but d'obtenir de bons résultats à partir d'un tel système.
 
 \begin{figure}[!h]
 %\sidecaption
@@ -199,6 +202,9 @@ L'entrainement des modèles sur les exemples manuellement annotés est aussi dé
 \includegraphics [width=\textwidth]{structuration-training.png}
 \caption{Entrainement des modèles.}\label{fig:structuration:training}
 \end{figure}
+
+
+L'entrainement des modèles sur les exemples manuellement annotés est aussi décomposé en étapes. Nous proposons de sélectionner le schéma d'étiquetage, puis de sélectionner les sous-ensembles minimaux de caractéristiques manuellement définies, avant d'entrainer les modèles HMM et CRF (Figure \ref{fig:structuration:training}). La sélection de caractéristiques ne concerne pas l'implémentation en réseau de neuronnes du CRF.
 
 \subsubsection{Descripteurs candidats}
 \begin{table}[b]
@@ -223,7 +229,7 @@ L'objectif de cette section est de discuter des différents aspects d'optimisati
 \subsubsection{Annotation des données de référence}
 Pour évaluer les méthodes de TAL, \citet{xiao2010corpuscreation} (\textcolor{red}{démontre l'importance...}) suggère de choisir un jeu de données échantillon suffisant en assurant l'équilibre dans la variété des données et la représentativité du langage. Cette en suivant cette recommendation que nous avons prétraité et annoté manuellement un ensemble de 503 documents à l'aide de la plateforme GATE Developer\footnote{https://gate.ac.uk/family/developer.html}. Cet outil permet de marquer avec le pointeur de la souris les passage à annoter; ce qui facilite l'annotation manuelle. Des balises XML sont rajoutées en arrières plan dans le document pour marquer les passages sélectionnés.
 
-Chaque document comprend en moyenne 262,257 lignes et 3955,215 mots. La représentativité du corpus a été simulée en choisissant aléatoirement les décisions tout en faisant variés la ville et l'année. Les deux dernières colonnes du Tableau \ref{p4_relevantinfo} présente la distribution des entités labelisées dans le jeu de données. En se basant sur un sous-ensemble de 13 documents labelisés par 2 annotateurs différents, nous avons calculé des taux d'inter-agrément en utilisant la statistique Kapp de Cohen. Ces mesures d'inter-agrément ont été calculées au niveau des caractère parce que certains mots peuvent être coupés par des annotations incorrectes. (par ex. \textit{<juridiction>cour d'appe</juridiction>\underline{l}} vs. \textit{<juridiction>cour d'appe\underline{l}</juridiction>}), ou les annotateurs pourraient ne pas être d'accord un apostrophe doit être inclu ou pas (par ex. \textit{ \underline{l'}<norme>article 700} vs. \textit{ <norme>\underline{l'}article 700}). Les taux de Kappa de 0,705 et 0,974 ont été obtenu pour l'annotation des entités et des sections respectivement. D'après la ctégorisation de \citet{viera2005kappa}, le niveau d'agrément est \textit{substentiel} pour les entités (0,61-0,80) et \textit{presque parfait} pour les sections (0.81 - 0.99).
+Chaque document comprend en moyenne 262,257 lignes et 3955,215 mots. La représentativité du corpus a été simulée en choisissant aléatoirement les décisions tout en faisant variés la ville et l'année. Les deux dernières colonnes du Tableau \ref{p4_relevantinfo} présente la distribution des entités labelisées dans le jeu de données. En se basant sur un sous-ensemble de 13 documents labelisés par 2 annotateurs différents, nous avons calculé des taux d'inter-agrément en utilisant la statistique Kapp de Cohen. Ces mesures d'inter-agrément ont été calculées au niveau des caractère parce que certains mots peuvent être coupés par des annotations incorrectes. (par ex. \textit{<juridiction>cour d'appe</juridiction>\underline{l}} vs. \textit{<juridiction>cour d'appe\underline{l}</juridiction>}), ou les annotateurs pourraient ne pas être d'accord un apostrophe doit être inclu ou pas (par ex. \textit{ \underline{l'}<norme>article 700} vs. \textit{ <norme>\underline{l'}article 700}). Les taux de Kappa de 0,705 et 0,974 ont été obtenu pour l'annotation des entités et des sections respectivement. D'après la catégorisation de \citet{viera2005kappa}, le niveau d'agrément observé est \textit{substentiel} pour les entités (0,61-0,80) et \textit{presque parfait} pour les sections (0,81 - 0,99).
 
 \subsubsection{Protocole d'évaluation}
 Nous avons utilisé la Précision, le rappel et la F1-mesure comme mesures d'évaluation car elles sont généralement utilisées comme référence en extraction d'information. Nous comparons deux niveaux de performances: i) à quel point le système est en mesure de bien labeliser chaque élément/mot d'entité (niveau-mot), et ii) à quel point le modèle labélise entièrement une entité (niveau-entité). Nous présentons aussi des performances au niveau micro i.e. les performances du classifieur en général sans distinction des classes. A tous les niveau d'évaluation, la F1-mesure se calcule à l'aide de la formule \ref{NER-f1-mesure}.  
@@ -288,10 +294,10 @@ Dans le but dévaluer comment la représentation de segment affecte les performa
 \scriptsize
 \caption{Comparaison des schémas d'étiquetage.}\label{fig:structuration:select-segm-repr}
 \begin{center}
-\begin{tabular}{p{1.5cm}|c|cccccccc}
+\begin{tabular}{p{0.9cm}|c|cccccccc}
 \hline \noalign{\smallskip}
-Tâche & Modèle & \multicolumn{3}{c}{Niveau atomique$^a$} & \multicolumn{3}{c}{Niveau entité$^a$} & Durée & Schéma \\
- & & Précision & Rappel & F1 &  Précision & Recall & F1 & d'entrainement$^b$ & \\ \hline %\noalign{\smallskip}\svhline\noalign{\smallskip}
+Tâche & Modèle & \multicolumn{3}{c}{Niveau atomique$^a$} & \multicolumn{3}{c}{Niveau entité$^a$} & \multirow{2}{*}{Durée$^b$} & Schéma \\
+ & & Précision & Rappel & F1 &  Précision & Recall & F1 &  & \\ \hline %\noalign{\smallskip}\svhline\noalign{\smallskip}
 \multirow{8}{*}{Sections}  & \multirow{4}{*}{CRF} & 91.75 & 91.75 & 91.75 & 64.49 & 56.55 & 60.26 &  4.685  & IO \\
 &  & 88.95 & 88.95 & 88.95 & 48.12 & 38.26 & 42.63  & 11.877 & IEO2 \\
 &  & 87.09 & 87.09 & 87.09 & 46.79 & 37.20 & 41.45 & 12.256 & BIO2 \\
@@ -322,7 +328,7 @@ Tâche & Modèle & \multicolumn{3}{c}{Niveau atomique$^a$} & \multicolumn{3}{c}{
 
 $^a$ Resultats sur une simple division du jeu de données en $25\%$ pour l'entrainement et  $75\%$ pour les tests (entrainement limité à 100 itérations au max)
 
-$^b$ Durée en secondes avant l'arrêt de l'entrainement
+$^b$ Durée d'entrainement en secondes avant l'arrêt de l'entrainement
 \end{table}
 
 
@@ -383,7 +389,7 @@ $^{d2}$ Selection par SFFS pour les normes: [POSW1, lemmaW-2, w-1, DIGIT-IN]
 
 
 
-\subsection{Evaluation détaillée pour chaque type d'entité et section}
+\subsection{Evaluation détaillée pour chaque classe}
 Nous discutons ici la capacité des modèles à identifier individuellement chaque type d'entité et de section. Les test ont été conduits avec tous les descripteurs pour les modèles CRF. Seuls \textit{absLength} et \textit{token} ont été utilisé comme descripteurs dans les modèles HMM pour l'identification des sections et des entités resp.. Le schéma d'étiquetage est IO. Le nombre d'itération maximal a été fixé à 500 pour assurer la convergence lors de l'entrainement même si les modèles HMM ne convergeaient jamais après 500 itérations. Les Tableaux \ref{tab:structuration:perf-detail-token} et \ref{tab:structuration:perf-detail-entity} présentent les résultats d'une 5-fold validation croisée au niveau des éléments et des entités, resp.. D'un point de vue général, les modèles HMM se comportent assez bien au niveau élément avec un seul descripteur, particulièrement pour l'identification des sections et des normes. Le modèle HMM est capable de labeliser les normes grâce à la mention des mêmes normes entre les décisions et la syntaxe presque standard que respectent les mentions (\verb=article [IDENTIFIANT] [TEXTE D'ORIGINE]=). Le modèle HMM n'est cependant pas efficace pour détecter entièrement les mots des entités d'où le faible score enregistré au niveau entité. Quant aux CRF, leurs résultats sont bons pour toutes les tâches et à tous les niveaux d'évaluation malgré certaines limites observées sur l'identification des mentions de parties.
 
 \begin{table}[!h]

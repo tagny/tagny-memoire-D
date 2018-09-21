@@ -1,5 +1,5 @@
- 0000000\chapter{Extraction des Circonstances Factuelles}
-\label{sec:similarite}
+ \chapter{Extraction des Circonstances Factuelles}
+\label{chap:similarite}
 
 %\epigraph{Le plus important, c'est d'avoir un langage métaphorique ; car c'est le seul mérite qu'on ne puisse emprunter à un autre et qui dénote un esprit naturellement bien doué ; vu que, bien placer une métaphore, c'est avoir égard aux rapports de ressemblance.}{Aristote, Poétique}
 % 
@@ -66,17 +66,17 @@ L'idée de l'évaluation supervisée est basée sur la disponibilité de donnée
 
 \subsubsection{Évaluation non-supervisée}
 
+\section{Méthodes proposées}
 
-\section{Méthode 1: K-médoïdes et word mover's distance (dans le contexte de la catégorie)}
+\subsection{K-médoïdes et word mover's distance (dans le contexte de la catégorie)}
 
-Les approches de clustering sont généralement appliquées à une représentation vectorielle des objets. Particulièrement la méthodes des K-moyennes qui met à jour le centroïde en faisant la moyenne des menbres de son cluster. Cependant, \cite{kusner2015wordmoverdist} ont proposé récemment \textit{la distance du déplaceur de mot} (\textit{word mover's distance - WMD}), une métrique non-supervisée qui permet à la méthode des \textit{K plus proches voisins} (KNN) d'obtenir des performances sans précédents. De plus, l'algorithme de clustering K-médoïdes \citep{kaufman1987kmedoids}, similaire aux K-moyennes, choisi toujours comme centroid le membre du cluster qui minimise la distance aux restes des membres; ce qui n'impose pas de représentation vectorielle. Ainsi, nous pouvons utiliser aisément utiliser la métrique WMD dans  l'algorithme des K-médoïdes. Tout en nous appuyant sur un algortihme établi de clustering, nous évitons aussi la recherche de la meilleure représentation vectorielle qui influence souvent les performances du clustering. 
+Les approches de clustering sont généralement appliquées à une représentation vectorielle des objets. Particulièrement la méthodes des K-moyennes qui met à jour le centroïde en faisant la moyenne des menbres de son cluster. Cependant, \cite{kusner2015wordmoverdist} ont proposé récemment \textit{la distance du déplaceur de mot} (\textit{word mover's distance - WMD}), une métrique non-supervisée qui permet à la méthode des \textit{K plus proches voisins} (KNN) d'obtenir des performances sans précédents. De plus, l'algorithme de clustering K-médoïdes \citep{kaufman1987kmedoids}, similaire aux K-moyennes, choisi comme centroid le membre du cluster qui minimise la distance aux restes des membres; ce qui n'impose pas de représentation vectorielle. Ainsi, nous pouvons utiliser la métrique WMD dans  l'algorithme des K-médoïdes. Tout en nous appuyant sur un algortihme établi de clustering, nous évitons aussi la recherche de la meilleure représentation vectorielle qui influence souvent les performances du clustering. 
 
 Algorithme: \url{http://isiarticles.com/bundles/Article/pre/pdf/79087.pdf}
 
-\section{Méthode 2: cartes auto-organisatrice de Kohonen et concaténation de plongement sémantique de phrases (sentence embedding)}
+%\section{Méthode 2: cartes auto-organisatrice de Kohonen et concaténation de plongement sémantique de phrases (sentence embedding)}
 
-
-\section{Méthode 3: Apprentissage d'une métrique fondée la modification du document}
+\subsection{Apprentissage d'une métrique fondée la modification du document}
 Les algorithmes de clustering et de classification s'appuient généralement sur une représentation vectorielle à partir de laquelle une valeur de similarité est calculée de manière non supervisée et avec une formule mathématique statique. Dans le cas des textes, Il n'est pas toujours évident de définir la représentation vectorielle associée à une sémantique précise et objective. De plus il existe un large évantail de schémas de représentations vectorielles. Elles vont des représentations très adhoc du type TF-IDF, au représentations apprises comme le doc2vec et en passant par les agrégations pondérées de modèles distribués de mots (word2vec par ex.). 
 
 L'idée dans notre approche est de proposée une formulation de la similarité entre deux documents qui est basée sur le degré de perturbation observé entre documents. Cette fonction de similarité est apprise à partir d'une base synthétique d'entrainement de similarité entre paire de texte. 
@@ -106,28 +106,28 @@ Un simple estimateur de $d$ peut être de considérer le taux de mots modifiés 
 \end{equation}
  Un tel modèle ne considère ni l'ordre des mots, ni celui des phrases, ni la différence d'importance entre les mots, la complexité de la modification (une substitution est plus complexe qu'une suppression ou une insertion), ni le degré sémantique des perturbations. ce dernier peut être estimé en lissant le taux de perturbation à l'aide de la distance sémantique entre les mots substitués (le vecteur représentant le mot vide étant le vecteur nul par ex.):
 \begin{equation}
-\widetilde{d}(x,y) = \sum\limits_{(w_x, w_y) \in P_{x,y}} d_w(w_x,w_y) \label{equation:similarite:somme-dist-mots}
+\widetilde{d}(x,y) = \frac{\sum\limits_{(w_x, w_y) \in P_{x,y}} d_w(w_x,w_y)}{card(W_x)} \label{equation:similarite:somme-dist-mots}
 \end{equation}
-$d_w$ désignant la distance sémantique entre les mots.
-Il est difficile de calculer de telle distance sur un grand corpus étant donné la longueur de notre document.
+$d_w$ désignant la distance sémantique entre les mots. Ainsi, les substitutions sont pondérées par la distance cosinus entre les vecteurs des mots échangés.
 
-Nous pouvons ainsi générer une jeu artificiel de données pour l'entrainement d'un modèle regréssif de la métrique entre deux textes $x$ et $y$. Pour cela, nous partons d'un ensemble $C$ de documents et pour chacun de ces documents, noté $x$, nous générons aléatoirement une valeur seuil de probabilité de perturbation en deça duquel un mot de $x$ est modifié. Par la suite, le texte  $y$, résultant de la modification de $x$, est généré en modifiant séquentiellement les mots de $x$ :
+Il est difficile de calculer de telle distance sur un grand corpus étant donné la longueur de notre document. 
+Nous ne pouvons que l'estimer. Pour cela, nous générons un jeu artificiel de données pour l'entrainement d'un modèle regréssif d'estimation de la métrique entre deux textes $x$ et $y$. En effet, nous partons d'un ensemble $C$ de documents et pour chacun de ces documents, noté $x$, nous générons aléatoirement une valeur seuil de probabilité de perturbation en deça duquel un mot de $x$ est modifié. Par la suite, le texte  $y$, résultant de la modification de $x$, est généré en modifiant séquentiellement les mots de $x$ :
 
 \begin{algorithm}[H]
- \KwData{texte $x$, valeur seuil de probabilité p}
+ \KwData{texte $x$, valeur seuil de probabilité $p$}
  \KwResult{$y$, $\widetilde{d}(x,y)$}
- $y = "" $\; 
+ $y = [] $\; 
  $P_{x,y} = \emptyset$\;
- \For{w in y}{
+ \For{$w_x$ in $x$}{
  	$v = random(0,1)$\;
     \eIf{v < p}{
-       $w' += modifie(w)$; // Algorithme \ref{algo:similarite:modifiemot} \;
-       $y += w'$ \;
-       $P_{x,y} = P_{x,y} \cup \lbrace (w, w') \rbrace$\;
+       $w_y += modifie(w_x)$; // Algorithme \ref{algo:similarite:modifiemot} \;
+       $y += w_y$ \;
+       $P_{x,y} = P_{x,y} \cup \lbrace (w_x, w_y) \rbrace$\;
      }{
      $y += w$\;
      }
-     $\widetilde{d}(x,y) = \sum\limits_{(w_x, w_y) \in P_{x,y}} d_w(w_x,w_y)$\;
+     $\widetilde{d}(x,y) = \frac{\sum\limits_{(w_x, w_y) \in P_{x,y}} d_w(w_x,w_y)}{card(W_x)}$\;
  }
  \Return $y, \widetilde{d}(x,y)$\;
  \caption{Génère une perturbation de $x$} \label{algo:similarite:perturbation}
@@ -135,9 +135,10 @@ Nous pouvons ainsi générer une jeu artificiel de données pour l'entrainement 
 
 
 \begin{algorithm}[H]
- \KwData{un mot $w$}
+ \KwData{un mot $w$, le vocabulaire $W$ }
  \KwResult{un mot $w'$} 
- \Return "" ou $\arg\min\limits_{w'} d_w(w, w')$\;
+ $w' = $ un mot différent de $w$ choisi aléatoirement dans $W$
+ \Return $w'$
  \caption{modifie} \label{algo:similarite:modifiemot}
 \end{algorithm}
 
@@ -157,10 +158,13 @@ Après avoir généré l'ensemble $B = \lbrace (d_i, d_i', s(d_i, d_i'))\rbrace$
 \subsection{Données}
 Pour l'évaluation supervisée, nous disposons d'une base annotée sur la catégorie de demande "dommage-intérêts / action en responsabilité civile professionnelle contre les avocats" qui concerne les contentieux implicant des avocats.
 L'expert annotateur a identifié quatre cas différents (a, b, c, d) décrits en annexe. En gros:
-- pour le cas a) il s'agit d'un avocat qui est négligent et envoie son assignation de manière tardive (champ sémantique: retard/délai/prescription)
-- pour le cas b) il s'agit d'un avocat qui n'a pas donné un conseil opportun, qui n'a pas soulevé le bon argument
-- pour le cas c) un avocat qui n'a pas rédigé un acte valide ou réussi à obtenir un avantage fiscal (champ sémantique: rédacteur d'actes)
-- pour le cas d) il s'agit d'un avocat attaqué par son adversaire et non pas par son propre client
+\begin{itemize}
+\item pour le cas a) il s'agit d'un avocat qui est négligent et envoie son assignation de manière tardive (champ sémantique: retard/délai/prescription)
+\item pour le cas b) il s'agit d'un avocat qui n'a pas donné un conseil opportun, qui n'a pas soulevé le bon argument
+\item pour le cas c) un avocat qui n'a pas rédigé un acte valide ou réussi à obtenir un avantage fiscal (champ sémantique: rédacteur d'actes)
+\item pour le cas d) il s'agit d'un avocat attaqué par son adversaire et non pas par son propre client.
+\end{itemize}
+
 Le dataset comprend 81 documents répartis dans 4 groupes avec 6 documents appartenant chacun à 2 groupes.
 
 Pour l'évaluation non supervisée, les 6 catégories de demande utilisée pour l'extraction de demandes sont utilisés en plus.
