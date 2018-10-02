@@ -290,7 +290,7 @@ Information gain & $ig(t_k, c_i) = $ \begin{equation*}
 \end{equation*} \\ \noalign{\smallskip}
  Kulback-Leibler divergence & $kld(t_k, c_i)=(N_{t_k,c_i} / N_{t_k}) * \log (\frac{N_{t_k,c_i} N}{N_{t_k}N_{c_i}})$\\ \noalign{\smallskip}
  Delta Smoothed IDF & $dsidf(t_k, c_i)=\log (\frac{(N_{\overline{c_i}}N_{t_k,c_i}) + 0.5}{(N_{c_i}N_{t_k,\overline{c_i}}) + 0.5} $\\ \noalign{\smallskip}
- Delta BM25 IDF & $dbidf(t_k, c_i) = \log (\frac{(N_{\overline{c_i}} - N_{t_k,\overline{c_i}} + 0.5) * (N_{t_k,c_i} + 0.5)}{(N_{c_i} - N_{t_k,c_i} + 0.5) * N_{t_k,\overline{c_i}} + 0.5)} $\\ \noalign{\smallskip}
+ Delta BM25 IDF \cite{jones2000bm25idf} & $dbidf(t_k, c_i) = \log (\frac{(N_{\overline{c_i}} - N_{t_k,\overline{c_i}} + 0.5) * (N_{t_k,c_i} + 0.5)}{(N_{c_i} - N_{t_k,c_i} + 0.5) * N_{t_k,\overline{c_i}} + 0.5)} $\\ \noalign{\smallskip}
 \hline
 \end{tabular}
 \end{table}

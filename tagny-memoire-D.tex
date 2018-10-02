@@ -2,7 +2,11 @@
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[round]{natbib}
-\usepackage[english,frenchb]{babel}
+\usepackage[frenchb]{babel}
+%\usepackage[fixlanguage]{babelbib}
+%\selectbiblanguage{french}
+%\bibliographystyle{babalpha}
+\bibliographystyle{apalike}
 \usepackage{amsmath}
 \usepackage{mathtools}
 \usepackage{amsfonts}
@@ -137,7 +141,6 @@
 \input{content/conclusion} % INCLUDE: conclusion
 
 %Bibliographie
-\bibliographystyle{apalike}
 \def\bibname{Bibliographie}
 \addcontentsline{toc}{chapter}{\bibname}
 \bibliography{bib/references-pub.bib}

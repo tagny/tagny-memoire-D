@@ -1192,7 +1192,7 @@ and Souissi-Benrejab, Fattouma},
 @InProceedings{Schwartz2015legaltopicmodel,
   Title                    = {A Legal Citation Recommendation Engine Using Topic Modeling and Semantic Similarity},
   Author                   = {Schwartz, Talia and Berger, Michael and Hernandez, Juan},
-  Booktitle                = {Proceedings of Law and Big Data workshop (presentation), The 15th International Conference on Artificial Intelligence \& Law (ICAIL)},
+  Booktitle                = {Proceedings of Law and Big Data workshop (presentation), The 15th International Conference on Artificial Intelligence \& Law},
   Year                     = {2015}
 }
 
