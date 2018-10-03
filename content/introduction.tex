@@ -70,7 +70,9 @@ Pour la phase de prédiction, on doit regrouper des paquets de décisions homog�
 
 \section{Problématiques techniques soulevées}
 \label{sec:intro:probleme}
-L'analyse automatique de décisions jurisprudentielles fait références à de nombreux problèmes rencontrés par les juristes lors de leur analyse manuelle (\textcolor{red}{par exemple?}). La chaîne de traitement à mettre en \oe uvre consiste en quatre phases principales s'enchainant comme le présente la figure \ref{fig:intro:pipeline-globale}. Les problématiques relatives à chacune de ces phases sont détaillées dans les sous-sections suivantes.
+L'analyse automatique de décisions jurisprudentielles fait références à de nombreux problèmes rencontrés par les juristes lors de leur analyse manuelle (\textcolor{red}{par exemple?}). 
+
+La chaîne de traitement à mettre en \oe uvre consiste en quatre phases principales s'enchainant comme le présente la figure \ref{fig:intro:pipeline-globale}. Les problématiques relatives à chacune de ces phases sont détaillées dans les sous-sections suivantes.
 \begin{figure}[h]
 \includegraphics[width=\textwidth]{pipeline-cassandra.pdf}
 \caption{Chaine d'analyse du corpus jurisprudentiel à mettre en \oe uvre} \label{fig:intro:pipeline-globale}
@@ -104,11 +106,14 @@ On s'attend à ce que les catégories de situations (d'affaires) soient suggér�
 
 \section{Méthodologie}
 \label{sec:intro:methodologie}
-Proposition d'approches taillées sur mesure et conçues par combinaison et adaptation des techniques établies de la la bibliographie.
+%Proposition d'approches taillées sur mesure et conçues par combinaison et adaptation des techniques établies de la la bibliographie.
+
+
+Les problématiques propres aux textes juridiques trouvent généralement des analogies avec les problématiques de recherche en analyse de données textuelles. Ainsi l'énorme progrès réalisé dans ce domaine a permis d'obtenir de nombreuses approches transposable au textes juridiques. Cependant, l'adaptation est généralement nécessaire pour obtenir des résultats de bonne qualité hors des domaines pour lesquels ces approches ont été développées \citep{Waltl2016lexia}. De plus, la recherche en analyse de données se fait sur des données qui n'illustrent généralement pas la réelle complexité des données réelles. Etant donné que nous avons effectué l'une des premières études d'analyse de jugements français, nous avons axé notre travail sur le rapprochement des problématiques techniques liées à l'analyse des décisions jurisprudentielles aux problématiques généralement traitées en analyse de données textuelles en général. Il s'agissait ensuite d'établir des protocole d'évaluation et d'annotations nécessaires de données nécessaires. Selon les problématiques identifiées et les protocoles d'évaluations définies, des techniques établies de la littérature ont été adaptés et expérimentés sur les données réelles annotées par des experts.
 
 \section{Résultats}
 \label{sec:intro:résultats}
-
+Le projet vise à fournir des outils d'extraction d'information afin de contribuer à la création de nouvelles vues, perspectives et représentations des décisions de justices. Ces outils doivent plus distinctement permettre d'analyser de manière descriptive et prédictive, résumer dans une structure sémantique propre au domaine judiciaire, explorer, visualiser en terme de différence spatiale et d'évolution temporelle, l'énorme corpus de décisions jurisprudentielles qui croit rapidement d'année en année.
 
 \section{Structure du mémoire}
 \label{sec:intro:organisation}
