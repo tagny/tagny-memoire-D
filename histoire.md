@@ -42,7 +42,7 @@ Ces chapitres décrivent avec précision et illustrations, les problématiques e
 *  catégorisation des documents par circonstances factuelles: évaluations supervisées et non supervisées
 
 ## le chapitre de démonstration (évaluation extrinsèque)
-Ce chapitre décrit l'utilisabilité des approches proposées et illustre leur usage sur une quantité de données approchant une échelle réelle. L'illustration tourne autour de l'analyse descriptive de la masse de documents que nous avons rassemblés. Des mises à l'échelle sont indiquées sur le niveau d'erreur présent dans la base de données.
+Ce chapitre décrit l'utilisabilité des approches proposées et illustre leur usage sur une quantité de données approchant une échelle réelle. L'illustration tourne autour de l'analyse descriptive de la masse de documents que nous avons rassemblés. Des mises à l'échelle sont indiquées sur le niveau d'erreur présent dans la base de données. Comme dans les conférence le chapitre doit tenir sur 4/5 pages au maximum. 
 
 ## conclusion
 *  Résumé des contributions avec précision sur leur atouts et leur limite. 
@@ -50,3 +50,47 @@ Ce chapitre décrit l'utilisabilité des approches proposées et illustre leur u
 *  Discussion sur les conséquences d'un tel outil sur le futur du domaine d'application
 
 
+# Manip A faire 
+
+*  voir s'il est possible de tout remettre en python pour la démo (les modèles deep étant en python peut-être pas toucher au code en JAVA de modélisation de séquences)
+
+## Structuration et NER
+*  plus de features apprises: topic, LSA, word clustering, ngram
+*  intégrer l'affinement du sectionnement à 4 / 5 sections
+*  justifier et comparer l'impact des éléments atomiques : ligne / mots (pour le sectionnement)
+*  comparer différents schémas d'étiquetage pour les modèles deep learning
+*  étudier l'impact du nombre d'exemples d'apprentissage pour les modèles deep learning
+*  proposer un enchainement logique à la sélections des différents aspects de modélisation
+*  si possible proposer un modèle joint de sectionnement et de NER (en considérant une phrase comme étant une ligne d'un doc == étiquetage au niveau des lignes)
+
+## extraction des demandes
+*  distinguer le cas à une demande des cas à plusieurs dans les expérimentations
+*  discuter l'impact du nombre de documents annotés pour chaque modèle
+*  justifier la non utilisabilité directe des méthodes existantes
+*  améliorer le modèle à base de règles:
+    *  dmd: verbe introductif de demande et résultats/demande antérieurs
+    *  sélection des triggers: partir du meilleurs sur les N (par ex. 100) premiers et continuer jusqu'à ce qu'il n'y ait plus d'amélioration
+    *  extraction des quanta en exploitant les motifs
+    *  comparer les méthodes statistiques d'apprentissage des triggers (quelle métrique est la meilleure en moyenne)
+    *  si possibles traiter distinctement les jugements antérieurs et les références
+*  concevoir et expérimenter la chaine de classifieur:
+    *  un classifieur pour les quanta dmd, un autre pour les quanta rst, et un dernier pour les paires de quanta dmd et rst
+*  concevoir et expérimenter un modèle probabiliste joint quanta-demande:
+    *  modélisation log-linéaires faiblement supervisée: erreurs dans les données d'entrainement (faut positif, redondance)
+    *  exploitation des triggers appris statistiquement
+*  Intégrer la classification pour le sens du résultat dans les xp pour docs à 1 seule dmd
+
+
+##  extraction des circonstances factuelles
+*  comparaisons grossières des mth classiques et des modèles vectorielles
+*  modéliser les 2 méthodes proposer de telles sortes qu'elles améliorent les résultats et qu'elles soit plus stables
+*  proposer un comparatif qualitatif des techniques de labélisation de cluster
+
+
+## Démonstrateur
+*  améliorer/alléger le code de l'application web
+*  rajouter des fonctionnalités d'analyses descriptives (comparaisons dans le temps et l'espace)
+*  Schématiser l'architecture de l'appli à l'aide de diagrammes UML (modèle des données, interaction entre composants, modèles de séquences)
+*  Evaluation intrinsèque de la fiabilité du système à l'échelle des données intégrées dans la BD
+    *  scénario de requête
+*  Publier l'appli sur internet taj.mines-ales.fr
