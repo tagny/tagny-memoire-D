@@ -50,6 +50,9 @@ Ce chapitre décrit l'utilisabilité des approches proposées et illustre leur u
 *  Discussion sur les conséquences d'un tel outil sur le futur du domaine d'application
 
 
+# Rédaction à faire
+
+
 # Manip A faire 
 
 *  voir s'il est possible de tout remettre en python pour la démo (les modèles deep étant en python peut-être pas toucher au code en JAVA de modélisation de séquences)
@@ -67,6 +70,7 @@ Ce chapitre décrit l'utilisabilité des approches proposées et illustre leur u
 *  distinguer le cas à une demande des cas à plusieurs dans les expérimentations
 *  discuter l'impact du nombre de documents annotés pour chaque modèle
 *  justifier la non utilisabilité directe des méthodes existantes
+*  évaluer l'annotation des sommes d'argent par regex (vs. par CRF)
 *  améliorer le modèle à base de règles:
     *  dmd: verbe introductif de demande et résultats/demande antérieurs
     *  sélection des triggers: partir du meilleurs sur les N (par ex. 100) premiers et continuer jusqu'à ce qu'il n'y ait plus d'amélioration
@@ -85,6 +89,7 @@ Ce chapitre décrit l'utilisabilité des approches proposées et illustre leur u
 *  comparaisons grossières des mth classiques et des modèles vectorielles
 *  modéliser les 2 méthodes proposer de telles sortes qu'elles améliorent les résultats et qu'elles soit plus stables
 *  proposer un comparatif qualitatif des techniques de labélisation de cluster
+*  S'il y a du temps, proposer une approche de topic modeling en trouvant un moyen d'éliminer les termes dont on est sur qu'ils n'ont rien à voir avec les circonstances factuelles (par exemple les termes très courant - forte féquence / des void words, les termes caractéristiques des catégories de demandes)
 
 
 ## Démonstrateur
@@ -94,3 +99,4 @@ Ce chapitre décrit l'utilisabilité des approches proposées et illustre leur u
 *  Evaluation intrinsèque de la fiabilité du système à l'échelle des données intégrées dans la BD
     *  scénario de requête
 *  Publier l'appli sur internet taj.mines-ales.fr
+

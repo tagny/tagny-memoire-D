@@ -5,7 +5,7 @@
 
 \section{Introduction}
 \label{sec:quanta:introduction}
-Au coeur de l'analyse des décisions de justice se trouve le concept de demande. Il s'agit d'une réclammation ou requête effectuée par une des parties devant le juge. Par exemple, une partie peut demander des dommages-intérêts en réparation d'un préjudice subi, ou bien un divorce, ou bien des indemnités auxquelles elle pense avoir droit, ou encore un simple constat ... Les demandes sont fondamentales car l'argumentation durant le déroulement de l'affaire n'a qu'un seul but : faire accepter ses demandes et faire rejetter celle de la partie adverse. L'extraction des demandes et des résultats correspondant, dans un corpus, permet ainsi d'avoir une estimation quantifiée de la décision des juges sur des types de demandes. Les informations qui nous intéressent sont la \textbf{catégorie de la demande}, le \textbf{quantum ou montant demandé}, le \textbf{sens du résultat} (la demande a-t-elle été acceptée ou rejettée?), et le \textbf{quantum ou montant obtenu} (décidé par les juges). Pour pouvoir extraire les demandes et les résultats, il est nécessaire de comprendre comment ils sont exprimés et coreférencés dans les décisions jurisprudentielles. Leur expression peut comporter plus ou moins de complexité avec souvent des références à des jugements antérieurs, des agrégations ou des restrictions (Figure \ref{fig:quanta:expr-dmd-rst}).
+Au coeur de l'analyse des décisions de justice se trouve le concept de demande. Il s'agit d'une réclammation ou requête effectuée par une des parties devant le juge. Par exemple, une partie peut demander des dommages-intérêts en réparation d'un préjudice subi, ou bien un divorce, ou bien des indemnités auxquelles elle pense avoir droit, ou encore une étude d'expert ... Les demandes sont fondamentales car l'argumentation durant le déroulement de l'affaire a deux buts : faire accepter ses demandes et faire rejetter celle de la partie adverse. L'extraction des demandes et des résultats correspondant, dans un corpus, permet ainsi d'avoir une estimation quantifiée de la décision des juges sur des types de demandes. Les informations qui nous intéressent sont la \textbf{catégorie de la demande}, le \textbf{quantum ou montant demandé}, le \textbf{sens du résultat} (la demande a-t-elle été acceptée ou rejettée?), et le \textbf{quantum ou montant obtenu} (décidé par les juges). Pour pouvoir extraire les demandes et les résultats, il est nécessaire de comprendre comment ils sont exprimés et coreférencés dans les décisions jurisprudentielles. Leur expression peut comporter plus ou moins de complexité avec souvent des références à des jugements antérieurs, des agrégations ou des restrictions (Figure \ref{fig:quanta:expr-dmd-rst}).
 
 \subsection{Données cibles à extraire}
 \subsubsection{Catégorie de demande}
@@ -88,17 +88,17 @@ La terminologie utilisée est aussi un bon indicateur des demandes et résultats
 
 \section{Formulation du problème et données}
 \label{sec:quanta:formulation}
-Pour formuler le problème, nous avons tenu compte de deux difficultées principales :
+Pour formuler le problème, nous avons tenu compte principalement de deux aspects:
 \begin{enumerate}
     \item la présence de plusieurs demandes de catégories similaires et différentes dans une même décision;
-    \item l'existence de plusieurs catégories (500+) qui rend difficile l'annotation d'un jeu de données de référence pour couvrir toutes ces catégories.
+    \item l'existence d'un grand nombre de catégories (500+); ce qui rend difficile l'annotation d'un jeu de données de référence pour couvrir toutes ces catégories.
 \end{enumerate}
 
-Nous avons par conséquent opter pour la définition d'approches génériques adaptables à chaque catégorie et qui puissent permettre d'annoter manuellement des données de référence de manière incrémentale pour les nouvelles catégories. Chaque application des approches définies permet ainsi d'extraire uniquement les demandes d'une seule catégorie. L'annotation manuelle d'exemples a été par conséquent définie par catégorie afin que la tâche soit plus facile pour les experts. Le protocole d'annotation se déroule en étape: 
+Nous avons par conséquent opter pour la définition d'approches génériques adaptables à chaque catégorie. L'idée est de pouvoir  traiter progressivement les catégories et par conséquent, annoter progressivement des données de référence. Chaque exécution des approches définies permet ainsi d'extraire uniquement les demandes d'une seule catégorie. L'annotation manuelle d'exemples a été par conséquent définie par catégorie afin que la tâche soit plus facile pour les experts. Le protocole d'annotation se déroule en étapes: 
 \begin{enumerate}
     \item choix d'une catégorie: définition d'un nom, de l'objet et du fondement;
-    \item recherche par mots-clés des documents suceptibles de contenir la catégorie (par exemple sur le siteWeb de LexisNexis);
-    \item Parmi les documents trouvés, choisir quelques uns de ceux qui contiennent effectivement des demandes de la catégorie; 
+    \item recherche par mots-clés des documents suceptibles de contenir la catégorie (par exemple sur le site internet de LexisNexis);
+    \item parmi les documents trouvés, choisir quelques uns de ceux qui contiennent effectivement des demandes de la catégorie; 
     \item lire chaque document choisi pour identifier toutes les demandes présentes de la catégories tout en remplissant le tableau des demandes de références dont un extrait est illustré par le Tableau \ref{tab:quanta:tab-annotations}.
 \end{enumerate}
 
@@ -108,25 +108,25 @@ Nous avons par conséquent opter pour la définition d'approches génériques ad
 \caption{Structure et extrait du tableau d'annotations manuelles des demandes.} \label{tab:quanta:tab-annotations}
 \end{table}
 
-Pour cette étude, un expert a extrait manuellement des demandes des 6 catégories du Tableau \ref{tab:quanta:exemple-categorie}. La répartition, des documents traités durant ce processus, est donnée par l'histogramme de la Figure \ref{fig:quanta:hist-repartition-docs}. On remarque pour toutes les catégories, les documents à une seule demande sont en général majoritaires (barres bleues). Quelques documents ne comprenant aucune demande de la catégorie d'intérêt ont été aussi rassemblés (barres grises). Il faut surtout noter que malgré le fait que les demandes ne soient pas annotées dans les documents mais dans un tableau, l'annotation reste une tâche très difficile; ceci justifie le très faible nombre de documents traités. le maximum pour une catégorie n'a été que de 198 documents (barres vertes).
+Pour notre étude, un expert a extrait manuellement des demandes des 6 catégories du Tableau \ref{tab:quanta:exemple-categorie}. La répartition, des documents traités durant ce processus, est donnée par l'histogramme de la Figure \ref{fig:quanta:hist-repartition-docs}. On remarque que, pour toutes les catégories, les documents à une seule demande sont en général majoritaires (barres bleues). Quelques documents ne comprenant aucune demande de la catégorie d'intérêt ont été aussi rassemblés (barres grises). Il faut aussi noter que malgré la non annotation des demandes directement dans les documents mais plutôt dans un tableau (annotation externe), l'annotation reste une tâche très difficile. Le très faible nombre de documents traités en est la conséquence. Le nombre  maximum pour une catégorie n'a été que de 198 documents (barres vertes) \textcolor{red}{[SUR QUELLE DURÉE? QUELLE EST LA VITESSE MOYENNE D'EXTRACTION MANUELLE DES DEMANDES DANS UN DOCUMENT?]}.
 
 \begin{figure}[h!]
 \includegraphics[width=\textwidth]{chartDataset.png}
 \caption{Répartitions des demandes dans les documents annotées pour chaque catégorie.}\label{fig:quanta:hist-repartition-docs}
 \end{figure}
 
-Le problème est ainsi décomposé grossièrement en 3 tâches:
+Le problème est ainsi décomposé grossièrement en tâches:
 \begin{description}
 \item[Tâche 1:] identification des catégories présentes dans le document pour n'appliquer l'extraction  que de ces catégories;
 \item[Tâche 2:] identification des attributs des demandes de chaque catégorie détectée: quanta demandés, quantas obtenus, et sens du résultat;
-\item[Tâche 3:] résolution des coréférences: Liaison des données relatives à la même demande.
+\item[Tâche 3:] résolution des références ou liens: Liaison des données relatives à la même demande.
 \end{description}
 
-
+L'annotation des sommes d'argent doit être réalisée préalablement à la 2$^\text{ème}$ tâche.
 
  Dans la section suivante, nous synthétisons l'analogie avec des problématiques couramment traités et explorons les approches proposées dans des travaux publiés.
 
-\section{Synthèse bibliographique associée}
+\section{Travaux connexes}
 \label{sec:quanta:biblio}
 Chacune de ses tâches se rapproche d'une tâche traitée dans la litérature, et nous donne ainsi des voies de solution. En effet, la détection de catégories dans les décisions peut être modélisée comme un problème de classification de document. Les deux dernières tâches se rapprochent plus de problématiques d'extraction d'entités complexes à champs/attributs comme l'extraction d'évènements, le remplissage de champs, ou encore l'extraction d'entités ou de rôles sémantiques et la résolution de coréférencement.
 
@@ -136,11 +136,11 @@ Chacune de ses tâches se rapproche d'une tâche traitée dans la litérature, e
 \end{itemize}
 \begin{table}[h]
 \small
-\begin{tabular}{|p{0.13\textwidth}|p{0.3\textwidth}|p{0.4\textwidth}|}
+\begin{tabular}{|p{0.2\textwidth}|p{0.3\textwidth}|p{0.4\textwidth}|}
 \hline
 \textbf{Champs} & \textbf{\cite{ace2005event}} & \textbf{Analogie chez les demandes} \\ \hline
 \textbf{Type} &  Die & Catégorie="Dommages-intérêts pour procédure abusive" \\ \hline
-\textbf{Expression} (\textit{extend}) & "Il est \textbf{mort} hier d'une insuffisance rénale."  & (\textit{voir page précédente}) \\ \hline
+\textbf{Passage} (\textit{extend}) & "Il est mort hier d'une insuffisance rénale."  & (\textit{Figure \ref{fig:quanta:expr-dmd-rst}}) \\ \hline
 \textbf{Déclencheur} & "mort" & "procédure abusive"\\ \hline
 \textbf{Argument} & Victim-Arg="il" \linebreak Time-Arg="hier"  & Quantum-demandé="3000\euro{}"\linebreak  Quantum-obtenu="0 \euro{}"\ \\ \hline
 \textbf{Attribut} & Polarity=POSITIVE, Tense=PAST & Sens-résultat="Rejeté" \\ \hline
@@ -153,7 +153,7 @@ Chacune de ses tâches se rapproche d'une tâche traitée dans la litérature, e
 \end{itemize}
 
 \subsection{Approches}
-\begin{table}[h!]
+\begin{table}[!h]
 \small
 \begin{tabular}{|p{0.25\textwidth}|p{0.7\textwidth}|}
 \hline
@@ -172,13 +172,15 @@ $p_\theta(t_i, r_i, a \vert i, N_i, x)$ \cite{yang2016jointEntityEvt} %\linebrea
 
 
 \section{Tâche 1: Détection des catégories présentes par classification}
-\textcolor{red}{COMMENT SAVOIR QU'UN DOCUMENT N'A QU'UNE SEULE DEMANDE? CLASSIFICATION POSSIBLE?}
+\subsection{Méthode}
 
 Etant données l'ensemble $D_{\overline{c_i}}$ des documents ne comprenant aucune demande de la catégorie d'intérêt $c_i$, nous proposons de modéliser la tâche de détection des catégories en une tâche de classification binaire. Pour chaque catégorie, un classifieur binaire de document est entrainé pour déterminer si le document analysé contient ou pas une demande de la catégorie. Pour cela, chaque document $d_j$ est représenté sour une forme vectorielle traditionnele du type TF-IDF (\textit{term frequency - inverse document frequency}) où chaque dimension représente un mot dont le poids est le produit normalisé d'un poids $gw$ global au corpus du mot et d'un poids $lw$ local au document: $w(t_k, d_j) = lw(t_k, d_j) \times gw(t_k) \times nf(d_j)$, où $nf$ est le facteur de normalisation. 
 
+\subsection{Résultats}
+
 Nous avons évalué la classification binaire avec quatre classifieurs traditionnels: le classifieur naïf bayésien, l'arbre de décision, les K plus proches voisins (KNN), et la machine à vecteurs de support. A chaque entrainement, s'exécute une sélection de modèle par validation criosée sur les données d'entrainement; elle a pour but de sélectionner la métrique locale et la métrique globale appropriée. Les résultats obtenu par 5-folds cross validation sont présentés sur le tableau \ref{tab:quanta:resultat-detect-cat}.  D'après les résultats, La tâche 1 est relativement aisée car les classifieurs traditionnels détectent parfaitement la présence ou non d'une catégorie dans les documents.
 
-\begin{table}
+\begin{table}[!h]
 \scriptsize
 \centering
 \begin{tabular}{l|c@{\hskip 0.1in}lllc@{\hskip 0.1in}lllc@{\hskip 0.1in}lllc@{\hskip 0.1in}lll}
@@ -208,11 +210,11 @@ styx    & 1.0 & 1.0 & 1.0 & 0.984 & 0.983 & 0.983 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 
 \section{Tâches 2 et 3: identification des attributs des demandes}
 \label{sec:quanta:attributs}
 
-\subsection{Méthode 1: extraction à l'aide termes-clés prédéfinis et appris}
-\label{subsec:quanta:attributs:règles}
+\subsection{Méthode 1: extraction par règles et termes-clés}
+\label{subsec:quanta:attributs:regles}
 %\textcolor{red}{Cité la localisation des unités de mésure / considérer le découpage en phrases à la place du découpage avec les verbes introductifs. Formaliser l'algorithme (si possible donner la complexité et le temps d'extraction moyen par document)}
 
-Pour chacune des catégories détectées, nous proposons ici une chaine d'extraction à base de termes-clés. Il s'agit d'une approche qui tente de reproduire une lecture naïve du document. Elle est ainsi basée sur des sortes de formes d'expression repétitives et inspirées de nos lectures des documents. La technique consiste à retrouver et à marquer les passages où sont exprimées les demandes et les résultats, puis les quanta y sont localisés à proximité de termes-clés de la catégorie. Par exemple, la Figure \ref{fig:quanta:exemple-proximite} présente un extrait de passage exprimant une demande d'\textit{amende civile pour procédure abusive}. La Figure \ref{fig:quanta:exemple-proximite-original} présente l'extrait original et la Figure \ref{fig:quanta:exemple-proximite-marquage} présente le résultat de notre marquage automatique que nous proposons. Les passages, les sommes d'argent, et les termes-clefs sont marqués avec les balises XML resp. \verb=<demande>=, \verb=<argent>=, \verb=<terme-clef>=. Dans cet exemple, on remarque bien que le quantum demandé (\textit{1.500 euros}) se trouve très près de terme-clefs associables à la catégorie \textit{acpa} ("\textit{amende civile}" et "\textit{pour procédure abusive}"). 
+Pour chacune des catégories détectées, nous proposons ici une chaine d'extraction à base de termes-clés. Il s'agit d'une approche qui tente de reproduire une lecture naïve du document. Elle est ainsi basée sur des sortes de formes d'expression répétitives et inspirées de nos lectures des documents. La technique consiste à retrouver et à marquer les passages où sont exprimées les demandes et les résultats, puis les quanta y sont localisés à proximité de termes-clés de la catégorie. Par exemple, la Figure \ref{fig:quanta:exemple-proximite} présente un extrait de passage exprimant une demande d'\textit{amende civile pour procédure abusive}. La Figure \ref{fig:quanta:exemple-proximite-original} présente l'extrait original et la Figure \ref{fig:quanta:exemple-proximite-marquage} présente le résultat de notre marquage automatique que nous proposons. Les passages, les sommes d'argent, et les termes-clefs sont marqués avec les balises XML resp. \verb=<demande>=, \verb=<argent>=, \verb=<terme-clef>=. Dans cet exemple, on remarque bien que le quantum demandé (\textit{1.500 euros}) se trouve très près de terme-clefs associables à la catégorie \textit{acpa} ("\textit{amende civile}" et "\textit{pour procédure abusive}"). 
 \begin{figure}
 \scriptsize
 \centering
@@ -246,8 +248,7 @@ Pour chacune des catégories détectées, nous proposons ici une chaine d'extrac
     \label{fig:quanta:exemple-proximite}
 \end{figure}
 
-Les passages de demande se distinguent de ceux des résultats par leur position dans le document (les demandes dans la section LITIGE et les résultats dans la section DISPOSITIF) et par les verbes qui les introduisent (très souvent à l'infinitif pour les demandes et au présent pour les résultats). Nous avons ainsi prédéfini, indépendemment de la catégorie traitée, une liste de mots qui sont généralement des verbes (Tableau \ref{tab:quanta:mots-introductifs}) pour délimiter les demandes et résultats dans leur section respectives.
-
+Les passages de demande se distinguent de ceux des résultats par leur position dans le document (les demandes dans la section LITIGE et les résultats dans la section DISPOSITIF) et par les verbes qui les introduisent (très souvent à l'infinitif pour les demandes et au présent pour les résultats). Nous avons ainsi prédéfini, indépendamment de la catégorie traitée, une liste de mots qui sont généralement des verbes (Tableau \ref{tab:quanta:mots-introductifs}) pour délimiter les demandes et résultats dans leur section respectives. La recherche de passages à l'aide listes de termes n'est pas unique à notre étude. \cite{wyner2010extractlegalelts} utilise par exemple des termes de jugement dans des règles JAPE pour annoter les énoncés de résultats (toute phrase contenant un terme de jugement) : \textit{affirm, grant, deny, reverse, overturn, remand, ...}
 \begin{table}
 \centering
 \scriptsize
@@ -255,12 +256,12 @@ Les passages de demande se distinguent de ceux des résultats par leur position 
  \hline
  \textbf{Demande} & \multicolumn{3}{c|}{\textbf{Résultat} (organisé par polarité)} \\ \hline
   & \textbf{accepte}  &\textbf{sursis à statuer} & \textbf{rejette}  \\ \hline
- \textit{accorder, admettre, admission, allouer, condamnation, condamner, fixer, laisser, prononcer, ramener, surseoir} & \textit{accorde, accordons, admet, admettons, alloue, allouons, condamne, condamnons, déclare, déclarons, fixe, fixons, laisse, laissons, prononce, prononçons} & \textit{réserve, réservons, surseoit, sursoyons} & \textit{déboute, déboutons, rejette, rejettons} \\ \hline
+ \textit{accorder, admettre, admission, allouer, condamnation, condamner, fixer, laisser, prononcer, ramener, surseoir} & \textit{accorde, accordons, admet, admettons, alloue, allouons, condamne, condamnons, déclare, déclarons, fixe, fixons, laisse, laissons, prononce, prononçons} & \textit{réserve, réservons, sursoit, sursoyons} & \textit{déboute, déboutons, rejette, rejetons} \\ \hline
  \end{tabular}
   \caption{Mots introduisant les énoncés de demandes et de résultats}\label{tab:quanta:mots-introductifs}
  \end{table}
 
-Les termes prédéfinis délimitent les passages de demande et résultat indépendemment de toute catégorie, mais nous ne souhaitons analyser les passages associés à la catégorie particulière traitée. Il est donc nécessaire d'identifier les termes-clés indiquant l'expression de cette catégorie. Nous proposons un apprentissage semi-supervisé de ces termes. l'apprentissage est "supervisé" parce qu'on dispose de 2 corpus annotées pour chaque catégorie $c$: les documents à demande de la catégorie ($D_c$) et des documents sans demande de la catégorie ($D_{\overline{c}}$). L'apprentissage est "semi" parce qu'on ne dispose pas d'exemples de termes caractéristiques de la catégorie, mais uniquement de candidat qui sont en fait les termes de $D_c$. Nous avons utilisé des métriques/tests statistiques d'analyse de proportion pour sélectionner les termes qui sont plus importants dans le corpus $D_c$ que dans $D_{\overline{c}}$. Ces métriques sont listées dans le Tableau \ref{tab:quanta:globalweights}.
+Les termes prédéfinis délimitent les passages de demande et résultat indépendamment de toute catégorie, mais nous ne souhaitons analyser les passages associés à la catégorie particulière traitée. Il est donc nécessaire d'identifier les termes-clés indiquant l'expression de cette catégorie. Nous proposons un apprentissage semi-supervisé de ces termes. l'apprentissage est "supervisé" parce qu'on dispose de 2 corpus annotées pour chaque catégorie $c$: les documents à demande de la catégorie ($D_c$) et des documents sans demande de la catégorie ($D_{\overline{c}}$). L'apprentissage est "semi" parce qu'on ne dispose pas d'exemples de termes caractéristiques de la catégorie, mais uniquement de candidat qui sont en fait les termes de $D_c$. Nous avons utilisé des métriques/tests statistiques d'analyse de proportion pour sélectionner les termes qui sont plus importants dans le corpus $D_c$ que dans $D_{\overline{c}}$. Ces métriques sont listées dans le Tableau \ref{tab:quanta:globalweights}.
 
 \begin{table} \label{tab:quanta:globalweights}
 \caption{Métriques globales de termes: les métriques supervisées sont notées $f(t_k,c_i)$ et les non-supervisées sont notées $g(t_k)$}
