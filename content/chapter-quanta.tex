@@ -130,7 +130,12 @@ L'annotation des sommes d'argent doit être réalisée préalablement à la 2$^\
 \label{sec:quanta:biblio}
 Chacune de ses tâches se rapproche d'une tâche traitée dans la litérature, et nous donne ainsi des voies de solution. En effet, la détection de catégories dans les décisions peut être modélisée comme un problème de classification de document. Les deux dernières tâches se rapprochent plus de problématiques d'extraction d'entités complexes à champs/attributs comme l'extraction d'évènements, le remplissage de champs, ou encore l'extraction d'entités ou de rôles sémantiques et la résolution de coréférencement.
 
-\subsection{Analogie avec des problématiques d'extraction d'information}
+\subsection{Problématiques analogues}% avec des problématiques d'extraction d'information}
+
+La structure des demandes est assimilable à celle de structures complexes en recherche sur l'extraction d'information. Le concept qui semble le plus similaire est celui d'évènement. Il s'agit probablement de l'une des structures les plus complexes de l'extraction d'information. Plusieurs campagnes en ont fait l'objet de compétitions par des définitions et des catégorisations et caractérisations aussi précises que possibles. La campagne \citep{ace2005event}, par exemple, structure un évènement en lui associant un type, un énoncé, des déclencheurs, des arguments, et des attributs. Nous retrouvons des composants respectivement similaires chez les demandes (Tableau \ref{tab:quanta:analogieevt}): la catégorie, les passages d'énoncés de demande et résultat, les termes-clés caractéristiques de la catégorie (sa famille de termes en quelque sorte), les quanta comme arguments et le sens du résultat comme attribut (plus précisément comme polarité).
+
+
+Mais ces formulations ne couvrent pas toujours avec exhaustivité l'expressivité des énoncés d'évènements. En effet, certains travaux se limitent à une extraction généralement limitée au niveau d'une phrase et très peux s'essayent à proposer des solutions à l'échelle d'un document ou d'un corpus pour les situations où les données ne se trouvent pas toutes dans une même phrases. Ainsi, plus la portée est grande plus la tâche est complexe. C'est pourtant bien cette complexité qui caractérise les données réelles. 
 \begin{itemize}
 \item Extraction d'évènement : 
 \end{itemize}
@@ -145,14 +150,14 @@ Chacune de ses tâches se rapproche d'une tâche traitée dans la litérature, e
 \textbf{Argument} & Victim-Arg="il" \linebreak Time-Arg="hier"  & Quantum-demandé="3000\euro{}"\linebreak  Quantum-obtenu="0 \euro{}"\ \\ \hline
 \textbf{Attribut} & Polarity=POSITIVE, Tense=PAST & Sens-résultat="Rejeté" \\ \hline
 \end{tabular}
-\caption{Exemple d'analogie entre les évènements et l'extraction de demande}
+\caption{Exemple d'analogie entre les évènements et l'extraction de demande} \label{tab:quanta:analogieevt}
 \end{table}
 \begin{itemize}
 \item Remplissage de champs des entités \textbf{Demande} (\textit{slot-filling)}: \textbf{Catégorie, Quantum-demandé, Quantum-obtenu, Sens-résultat}
 \item Extraction d'entités et relations ou résolution de coréférence: par ex. \textbf{(quantum demandé, quantum obtenu)}
 \end{itemize}
 
-\subsection{Approches}
+\subsection{Approches d'extraction de structures composées}
 \begin{table}[!h]
 \small
 \begin{tabular}{|p{0.25\textwidth}|p{0.7\textwidth}|}
@@ -169,6 +174,14 @@ $p_\theta(t_i, r_i, a \vert i, N_i, x)$ \cite{yang2016jointEntityEvt} %\linebrea
 \end{tabular}
 \caption{Type d'approches}
 \end{table}
+
+
+\subsection{Extraction de la terminologie d'un domaine}
+La recherche sur l'extraction des évènements s'appuie sur l'identification des termes-clés, appelés déclencheurs, caractéristiques des types d'évènements car ils semblent être des indicateurs incontournables non seulement de l'énoncé mais aussi les repères de localisation des arguments. Qu'ils soient identifiés au préalablement ou conjointement avec les arguments, les déclencheurs sont jusqu'à présent appris de manière supervisée c'est-à-dire à partir d'exemples annotés manuellement de déclencheurs dans des exemples d'énoncés d'évènement. L'annotation manuelle de tels termes étant fastidieuse et risquant de manquer d'exhaustivité dans les cas de données réelles, il serait préférable de les apprendre lorsqu'on ne dispose pas d'exemples de déclencheurs. C'est notamment notre situation, où nous avons besoin des termes caractéristiques des catégories de demandes. Fort heureusement, la recherche d'information, l'apprentissage d'ontologie et d'autres tâche d'analyse de texte comme la classification de documents ont encourager le développement d'approches d'extraction de termes-clés. On distingue principalement les filtres d'une part et les méthodes statistiques d'autres part.
+
+\subsubsection{Filtres}
+
+\subsubsection{Méthodes statistiques}
 
 
 \section{Tâche 1: Détection des catégories présentes par classification}
