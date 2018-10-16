@@ -68,7 +68,7 @@ L'idée de l'évaluation supervisée est basée sur la disponibilité de donnée
 
 \section{Méthodes proposées}
 
-\subsection{K-médoïdes et word mover's distance (dans le contexte de la catégorie)}
+\subsection{K-médoïdes et \og Word Mover's Distance \fg}
 
 Les approches de clustering sont généralement appliquées à une représentation vectorielle des objets. Particulièrement la méthodes des K-moyennes qui met à jour le centroïde en faisant la moyenne des menbres de son cluster. Cependant, \cite{kusner2015wordmoverdist} ont proposé récemment \textit{la distance du déplaceur de mot} (\textit{word mover's distance - WMD}), une métrique non-supervisée qui permet à la méthode des \textit{K plus proches voisins} (KNN) d'obtenir des performances sans précédents. De plus, l'algorithme de clustering K-médoïdes \citep{kaufman1987kmedoids}, similaire aux K-moyennes, choisi comme centroid le membre du cluster qui minimise la distance aux restes des membres; ce qui n'impose pas de représentation vectorielle. Ainsi, nous pouvons utiliser la métrique WMD dans  l'algorithme des K-médoïdes. Tout en nous appuyant sur un algortihme établi de clustering, nous évitons aussi la recherche de la meilleure représentation vectorielle qui influence souvent les performances du clustering. 
 
