@@ -1,5 +1,3 @@
-% !TEX root = ../thesis-example.tex
-%
 \chapter{Extraction de Données Relatives aux Demandes}
 \label{chap:quanta}
 
@@ -80,16 +78,12 @@ acquisitive de la parcelle BH 377 située [...].}
 
 Nous nous sommes intéressés aux demandes dont les quanta sont des sommes d'argent. Les mentions de somme d'argent suivent généralement la forme "\verb=NOMBRE MONNAIE=" (par ex. 3000 \euro{}, 15 503 676 francs, un euro, 339.000 XPF). Nous remarquons que les nombres sont très rarement écrites en lettre. Ainsi, en repertoriant les unités monnétaires mentionnées dans les décisions, il est possible d'annoter les sommes d'argent à l'aide d'une expression régulière (Equation \ref{equation:quanta:regex-argent}) (?)\textcolor{red}{évaluation}.
 \begin{equation} %\scriptsize
-%\splitdfrac{\splitdfrac{\splitdfrac{(N_{t_k,c_i} * \log (N_{t_k,c_i} / (N_{t_k}N_{c_i})))}
-%		{+ (N_{\overline{t_k},c_i} * \log (N_{\overline{t_k},c_i} / (N_{\overline{t_k}}N_{c_i})))}}
-%	{+ (N_{t_k,\overline{c_i}} * \log (N_{t_k,\overline{c_i}} / (N_{t_k}N_{\overline{c_i}})))}}
-%{+ (N_{\overline{t_k},\overline{c_i}} * \log (N_{\overline{t_k},\overline{c_i}} / (N_{\overline{t_k}}N_{\overline{c_i}})))}
-\splitdfrac{\backslash p{Digit}(\backslash p{Digit}|[',.]|\backslash s)*}{(euro[s]\left\{0,1\right\}|franc[s]\left\{0,1\right\}|\euro{}|F|CFP|XPF|EUR|EUROS)( |\$)}\label{equation:quanta:regex-argent} % Ђ 
+\splitdfrac{\backslash [0-9](\backslash [0-9]|[',.]|\backslash s)*}{(euro[s]\left\{0,1\right\}|franc[s]\left\{0,1\right\}|\euro{}|F|CFP|XPF|EUR|EUROS)( |\$)}\label{equation:quanta:regex-argent} % Ђ 
 \end{equation}
 %\texttt{\small $\backslash$p{Digit}($\backslash$p{Digit}|[',.]|\ $\backslash$s)*(euro[s]{0,1}|franc[s]{0,1}|\euro{}|F|CFP|EUR|EUROS)( |\$)}
 La terminologie utilisée est aussi un bon indicateur des demandes et résultats. En effet, le vocabulaire utilisé est très souvent propre aux types de demandes, et réciproquement, ce vocabulaire permet d'exprimer des demandes de même nature. Par exemple le dernier élément de la Fig. \ref{fig:quanta:expr-dmd} comprend le terme "\textit{pour procédure abusive}" qui est près d'une somme d'argent (\textit{3000 \euro{}}); il est donc probable que ce type de terme assez particulier soit un bon indicateur de la position des quanta. Par ailleurs, des verbes particuliers sont utilisés pour exprimer les prétentions et résultats : infirmer, confirmer, cosntater, débouter, dire, ... Comme autres formes récurrentes, on pourrait citer l'ordre des demandes (resp. résultats). Généralement, on a les constats, les références aux jugements antérieurs, les demandes principales (?) et secondaires (?).
 
-\section{Formulation du problème et données}
+\section{Formulation du problème}
 \label{sec:quanta:formulation}
 Pour formuler le problème, nous avons tenu compte principalement de deux aspects:
 \begin{enumerate}
@@ -111,13 +105,6 @@ Nous avons par conséquent opter pour la définition d'approches génériques ad
 \caption{Structure et extrait du tableau d'annotations manuelles des demandes.} \label{tab:quanta:tab-annotations}
 \end{table}
 
-Pour notre étude, un expert a extrait manuellement des demandes des 6 catégories du Tableau \ref{tab:quanta:exemple-categorie}. La répartition, des documents traités durant ce processus, est donnée par l'histogramme de la Figure \ref{fig:quanta:hist-repartition-docs}. On remarque que, pour toutes les catégories, les documents à une seule demande sont en général majoritaires (barres bleues). Quelques documents ne comprenant aucune demande de la catégorie d'intérêt ont été aussi rassemblés (barres grises). Il faut aussi noter que malgré la non annotation des demandes directement dans les documents mais plutôt dans un tableau (annotation externe), l'annotation reste une tâche très difficile. Le très faible nombre de documents traités en est la conséquence. Le nombre  maximum pour une catégorie n'a été que de 198 documents (barres vertes) \textcolor{red}{[DURÉE D'ANNOTATION? QUELLE EST LA VITESSE MOYENNE D'EXTRACTION MANUELLE DES DEMANDES DANS UN DOCUMENT?]}.
-
-\begin{figure}[h!]
-\includegraphics[width=\textwidth]{chartDataset.png}
-\caption{Répartitions des demandes dans les documents annotées pour chaque catégorie.}\label{fig:quanta:hist-repartition-docs}
-\end{figure}
-
 Le problème est ainsi décomposé grossièrement en tâches:
 \begin{description}
 \item[Tâche 1:] Détection des catégories présentes dans le document pour n'appliquer l'extraction  que de ces catégories;
@@ -134,7 +121,7 @@ L'annotation des sommes d'argent doit être réalisée préalablement à la 2$^\
 
 \section{Travaux connexes}
 \label{sec:quanta:biblio}
-Chacune de ses tâches se rapproche d'une tâche traitée dans la litérature, et nous donne ainsi des voies de solution. En effet, la détection de catégories dans les décisions peut être modélisée comme un problème de classification de document. Les deux dernières tâches se rapprochent plus de problématiques d'extraction d'entités complexes à champs/attributs comme l'extraction d'évènements, le remplissage de champs, ou encore l'extraction d'entités ou de rôles sémantiques et la résolution de coréférencement.
+Chacune de ses tâches se rapproche d'une tâche traitée dans la littérature, et nous donne ainsi des voies de solution. En effet, la détection de catégories dans les décisions peut être modélisée comme un problème de classification de document. Les deux dernières tâches se rapprochent plus de problématiques d'extraction d'entités complexes à champs/attributs comme l'extraction d'évènements, le remplissage de champs, ou encore l'extraction d'entités ou de rôles sémantiques et la résolution de référencement.
 
 \subsection{Problèmes analogues: inférence de structures}% avec des problématiques d'extraction d'information}
 
@@ -160,10 +147,10 @@ Mais ces formulations ne couvrent pas toujours avec exhaustivité l'expressivit�
 \end{table}
 \begin{itemize}
 \item Remplissage de champs des entités \textbf{Demande} (\textit{slot-filling)}: \textbf{Catégorie, Quantum-demandé, Quantum-obtenu, Sens-résultat}
-\item Extraction d'entités et relations ou résolution de coréférence: par ex. \textbf{(quantum demandé, quantum obtenu)}
+\item Extraction d'entités et relations ou résolution de référence: par ex. \textbf{(quantum demandé, quantum obtenu)}
 \end{itemize}
 
-\subsection{Approches d'extraction de structures composées}
+\subsection{Approches d'extraction de structures}
 L'extraction d'information composée passe par une formulation modulaire du problème en tâches plus simples. Par exemple, on a d'abord l'extraction respective déclencheurs, les arguments et les attributs. Ensuite, la résolution de référence vient construire les structures en reliant les différents valeurs de champs extraites précédemment. A partir de là, on définit une approche d'extraction qui peut modéliser soit une chaine de d'inférences élémentaires ou pipeline, soit une inférence jointe capable d'extraire toute la structure d'un seul coup. Les pipelines sont une approximation grossière victime de la propagation d'erreurs entre module [?]. Bien que les modules sont simples, ils ne corrigent malheureusement pas les erreurs des niveaux précédents. L'inférence jointe permet non seulement d'éviter ou de réduire tout au moins la propagation d'erreurs mais aussi d'exploiter la dépendance mutuelle qui existe entre les étages [?]. Cependant, ce n'est pas toujours une bonne idée de joindre tous les modules; il faut bien choisir les étapes à joindre.
 
 
@@ -203,43 +190,12 @@ RF, MARASCUILO, TEST DE PROPORTIONS, CHI2, ...
 \cite{LossioVentura2014biotex}, \cite{Bonin2010multiwordncvalue}
 
 
-\section{Tâche 1: Détection des catégories présentes par classification}
-\subsection{Méthode}
+\section{Détection des catégories par classification}
 
 Etant données l'ensemble $D_{\overline{c_i}}$ des documents ne comprenant aucune demande de la catégorie d'intérêt $c_i$, nous proposons de modéliser la tâche de détection des catégories en une tâche de classification binaire. Pour chaque catégorie, un classifieur binaire de document est entrainé pour déterminer si le document analysé contient ou pas une demande de la catégorie. Pour cela, chaque document $d_j$ est représenté sour une forme vectorielle traditionnele du type TF-IDF (\textit{term frequency - inverse document frequency}) où chaque dimension représente un mot dont le poids est le produit normalisé d'un poids $gw$ global au corpus du mot et d'un poids $lw$ local au document: $w(t_k, d_j) = lw(t_k, d_j) \times gw(t_k) \times nf(d_j)$, où $nf$ est le facteur de normalisation. 
 
-\subsection{Résultats}
 
-Nous avons évalué la classification binaire avec quatre classifieurs traditionnels: le classifieur naïf bayésien, l'arbre de décision, les K plus proches voisins (KNN), et la machine à vecteurs de support. A chaque entrainement, s'exécute une sélection de modèle par validation criosée sur les données d'entrainement; elle a pour but de sélectionner la métrique locale et la métrique globale appropriée. Les résultats obtenu par 5-folds cross validation sont présentés sur le tableau \ref{tab:quanta:resultat-detect-cat}.  D'après les résultats, La tâche 1 est relativement aisée car les classifieurs traditionnels détectent parfaitement la présence ou non d'une catégorie dans les documents.
-
-\begin{table}[!h]
-\scriptsize
-\centering
-\begin{tabular}{l|c@{\hskip 0.1in}lllc@{\hskip 0.1in}lllc@{\hskip 0.1in}lllc@{\hskip 0.1in}lll}
-\hline\noalign{\smallskip}
-       &   \multicolumn{3}{c}{Naïf Bayésien}    &    \multicolumn{3}{c}{Arbre de décision}   &  \multicolumn{3}{c}{KNN}  & \multicolumn{3}{c}{SVM}     \\       
-\noalign{\smallskip}
-\hline
-\noalign{\smallskip}
-  Categorie  & P     & R     & F1    & P     & R     & F1    & P     & R     & F1    & P     & R     & F1    \\        
-\noalign{\smallskip}
-\hline
-\noalign{\smallskip}
-acpa    & 1.0 & 1.0 & 1.0 & 0.996 & 0.955 & 0.972 & 1.0 & 1.0 & 1.0 & 0.996 & 0.955 & 0.972 \\
-concdel & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 0.995 & 0.967 & 0.979 \\
-danais  & 0.988 & 0.989 & 0.988 & 0.996 & 0.995 & 0.995 & 0.995 & 0.995 & 0.995 & 0.993 & 0.993 & 0.993 \\
-dcppc   & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 \\
-doris   & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 \\
-styx    & 1.0 & 1.0 & 1.0 & 0.984 & 0.983 & 0.983 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 \\
-\hline
-\end{tabular}
-\caption{Resultats d'une 5-fold validation croisée pour la detection categorie  (P= Precision, R=Rappel, F1 = F1-mesure)}\label{tab:quanta:resultat-detect-cat}
-\end{table}
-
-
-\section{Tâche 2: identification du sens du résultat par classification}
-
-\section{Tâches 2 et 3: identification des attributs des demandes}
+\section{Extraction des demandes}
 \label{sec:quanta:attributs}
 
 L'étude consiste en la proposition et la comparaison empirique d'adaptations des approches d'extraction de structure à savoir: l'usage de règles, le chainage d'extracteur élémentaire, et l'inférence jointe.
@@ -331,7 +287,7 @@ Information gain & $ig(t_k, c_i) = $ \begin{equation*}
 \end{table}
 
 
-\subsection{Méthode 2: chaine de classification}
+\subsection{Méthode 2: classification des sommes d'argent}
 Les deux champs directement accessibles à partir du texte, sont les quanta demandé ($q_d$) et accordé ($q_r$). Pour les demandes à quanta, il est possible de restreindre l'extraction à ces deux variables. Le sens du résultat ($s_r$) est déduit de la valeur extraite du quantum accordé : \[s_r = \left\lbrace \begin{array}{ll}
 "accepte" & \text{si } q_r > 0 \\
 "rejette" & \text{otherwise} \end{array} \right.\]
@@ -364,9 +320,84 @@ Prétraitement: normalisation des sommes d'argent dans les document (par ex. 300
 P(D|T,A) = \sum\limits_{i=1}^{\vert D \vert} p_{\theta_1}(d_i = (a_j, a_l) | T, a_j, a_l, A) \cdot p_{\theta_2}(q_{d_i} = a_j | T, a_j, A) \cdot p_{\theta_3}(q_{r_i} = a_l | T, a_l, A)    
 \end{equation}
 
-\subsection{Résultats}
+\subsection{Résultats expérimentaux}
+\subsubsection{Annotation des données d'évaluation}
+\begin{figure}[h!]
+	\includegraphics[width=\textwidth]{chartDataset.png}
+	\caption{Répartitions des demandes dans les documents annotées pour chaque catégorie.}\label{fig:quanta:hist-repartition-docs}
+\end{figure}
+Pour une catégorie $c_i$ de l'ensemble $C$ des catégories existantes, les données de références sont annotées dans un tableau. Chaque ligne décrit une demande. L'annotateur devrait associer deux corpus au tableau. Le premier corpus $D_{c_i}$ comprends les documents d'où proviennent les demandes annotées pour $c_i$. Le second corpus $D_{\overline{c_i}}$ contient des exemples de documents ne contenant aucune demande de catégorie $c_i$. Le corpus $D_{\overline{c_i}}$ permet de s'assurer que le système n'extrait pas de demande dans des documents ne discutant pas de $c_i$.  Pour notre étude, un expert a extrait manuellement des demandes des 6 catégories du Tableau \ref{tab:quanta:exemple-categorie}. Nous considérons que les demandes de type $c_i$, présentes dans le corpus $D_{c_i} \cup D_{\overline{c_i}}$, ont été toutes annotées dans le tableau. La répartition, des documents traités durant ce processus, est donnée par l'histogramme de la Figure \ref{fig:quanta:hist-repartition-docs}.  On remarque que, pour toutes les catégories, les documents à une seule demande sont en général majoritaires (barres bleues). Quelques documents ne comprenant aucune demande de la catégorie d'intérêt ont été aussi rassemblés (barres grises). Il faut aussi noter que malgré la non annotation des demandes directement dans les documents mais plutôt dans un tableau (annotation externe), l'annotation reste une tâche très difficile. Le très faible nombre de documents traités en est la conséquence. Le nombre  maximum pour une catégorie n'a été que de 198 documents (barres vertes) \textcolor{red}{[DURÉE D'ANNOTATION? QUELLE EST LA VITESSE MOYENNE D'EXTRACTION MANUELLE DES DEMANDES DANS UN DOCUMENT?]}.
 
-\subsection{Discussions}
+
+
+\subsubsection{Métriques d'évaluation}
+ Nous évaluons les approches proposées sur l'extraction de 3 données: le quantum demandé $q_d$, le sens du résultat $s_r$ et le quantum obtenu $q_r$. Une demande est donc un triplet $(q_d, s_r, q_r)$. Il est possible d'évaluer le système pour un sous-ensemble $x$ de ce triplet sur les demandes extraites d'un corpus annotées $D$. Nous utilisons les métriques traditionnellement employées en extraction d'information: la précision (Eq. \ref{eq:quanta:precisiondmd}), le rappel (Eq. \ref{eq:quanta:recalldmd}), et la F1-mesure (Eq. \ref{eq:quanta:f1dmd}). 
+ \begin{equation}
+ Precision_{c_i,x,D} = \frac{TP_{c_i,x,D}}{TP_{c_i,x,D} + FP_{c_i,x,D}}  \label{eq:quanta:precisiondmd}
+\end{equation}
+
+\begin{equation}
+Rappel_{c_i,x,D} = \frac{TP_{c_i,x,D}}{TP_{c_i,x,D} + FN_{c_i,x,D}} \label{eq:quanta:recalldmd}
+\end{equation}
+
+\begin{equation}
+F1_{c_i,x,D} =2 \times \frac{Precision_{c_i,x,D} \times Rappel_{c_i,x,D}}{Precision_{c_i,x,D} + Rappel_{c_i,x,D}} \label{eq:quanta:f1dmd}
+\end{equation}
+
+Ces mesures sont définies à partir des nombres de vrais positifs ($TP$), faux positifs ($FP$) et faux négatifs ($FN$). Au niveau d'un document $d$:
+\begin{itemize}
+\item le nombre de vrais positifs $TP_{c_i, x, d}$ est le nombre de demandes extraites de $d$ par le système, qui sont effectivement de la catégorie $c_i$ ;
+\item le nombre de faux positifs $FP_{c_i, x, d}$ est le nombre de demandes extraites de $d$ par le système, mais qui ne sont pas des demandes de $c_i$ (demandes en trop);
+\item le nombre de faux négatifs $FP_{c_i, x, d}$ est le nombre de demandes annotées comme étant de $c_i$ mais qui n'ont pas pu être extraites par le système (demandes manquées).
+\end{itemize}
+
+Au niveau d'un corpus d'évaluation $D$, ces métriques de base sont simplement les sommes de leur correspondant au niveau des documents (Équations \ref{eq:quanta:tpdmd}, \ref{eq:quanta:fpdmd}, et \ref{eq:quanta:fndmd}).
+
+\begin{equation}
+TP_{c_i,x,D} = \sum\limits_{d_j \in D} TP_{c_i,x,d_j} \label{eq:quanta:tpdmd}
+\end{equation}
+
+\begin{equation}
+FP_{c_i,x,D} = \sum\limits_{d_j \in D} FP_{c_i,x,d_j} \label{eq:quanta:fpdmd}
+\end{equation}
+
+\begin{equation}
+FN_{c_i,x,D} = \sum\limits_{d_j \in D} FN_{c_i,x,d_j} \label{eq:quanta:fndmd}
+\end{equation}
+
+
+La définition de la qualité d'une donnée extraite reste la question fondamentale de l'évaluation. Durant l'annotation, les données sont reportées dans le tableau sous une forme qui peut être différente de la mention dans le document. Par exemple,  La valeur observée et la valeur reportée restent néanmoins égales. Il est donc nécessaire de ne comparer que les valeurs. Pour le sens du résultat, la valeur est catégorique, et par conséquent, facilement comparable. En effet, il suffit de comparer les labels. Par contre, les quanta sont des sommes d'argent i.e. des quantités à valeur et unité monétaire. Pour simplifier, nous avons considéré que l'unité est la même pour les données extraites et annotées pour un même document. Pour obtenir la valeur, nous ramenons la mention extraite à un nombre décimal. Le symbole de la décimale étant la virgule (\og , \fg) en Français, il suffit d'éliminer, de la somme d'argent, tous les caractères différents des chiffres et de la virgule; puis remplacer la virgule par un point. Par exemple, la valeur de \og 3 000 \euro \fg est $3000$, celle de \og 265 ' 550 , 83 euros \fg est $265550.83$ ).
+
+
+
+\subsubsection{Détection des catégories par classification}
+
+Nous avons évalué la classification binaire avec quatre classifieurs traditionnels: le classifieur naïf bayésien, l'arbre de décision, les K plus proches voisins (KNN), et la machine à vecteurs de support. A chaque entrainement, s'exécute une sélection de modèle par validation criosée sur les données d'entrainement; elle a pour but de sélectionner la métrique locale et la métrique globale appropriée. Les résultats obtenu par 5-folds cross validation sont présentés sur le tableau \ref{tab:quanta:resultat-detect-cat}.  D'après les résultats, La tâche 1 est relativement aisée car les classifieurs traditionnels détectent parfaitement la présence ou non d'une catégorie dans les documents. \textcolor{red}{[DEFINITION DES MÉTRIQUES POUR LA CLASSIFICATION]}
+
+\begin{table}[!h]
+	\scriptsize
+	\centering
+	\begin{tabular}{l|c@{\hskip 0.1in}lllc@{\hskip 0.1in}lllc@{\hskip 0.1in}lllc@{\hskip 0.1in}lll}
+		\hline\noalign{\smallskip}
+		&   \multicolumn{3}{c}{Naïf Bayésien}    &    \multicolumn{3}{c}{Arbre de décision}   &  \multicolumn{3}{c}{KNN}  & \multicolumn{3}{c}{SVM}     \\       
+		\noalign{\smallskip}
+		\hline
+		\noalign{\smallskip}
+		Categorie  & P     & R     & F1    & P     & R     & F1    & P     & R     & F1    & P     & R     & F1    \\        
+		\noalign{\smallskip}
+		\hline
+		\noalign{\smallskip}
+		acpa    & 1.0 & 1.0 & 1.0 & 0.996 & 0.955 & 0.972 & 1.0 & 1.0 & 1.0 & 0.996 & 0.955 & 0.972 \\
+		concdel & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 0.995 & 0.967 & 0.979 \\
+		danais  & 0.988 & 0.989 & 0.988 & 0.996 & 0.995 & 0.995 & 0.995 & 0.995 & 0.995 & 0.993 & 0.993 & 0.993 \\
+		dcppc   & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 \\
+		doris   & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 \\
+		styx    & 1.0 & 1.0 & 1.0 & 0.984 & 0.983 & 0.983 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 \\
+		\hline
+	\end{tabular}
+	\caption{Resultats d'une 5-fold validation croisée pour la detection categorie  (P= Precision, R=Rappel, F1 = F1-mesure)}\label{tab:quanta:resultat-detect-cat}
+\end{table}
+
 \subsubsection{Impact du nombres d'exemples}
 \subsubsection{Analyse des erreurs}
 \subsubsection{Perspectives d'amélioration}
