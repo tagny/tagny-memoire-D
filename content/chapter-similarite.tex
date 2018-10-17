@@ -13,7 +13,7 @@ L’objectif est donc de regrouper dans l’ensemble des décisions qui traitent
 \label{sec:similarite:probleme}
 
 
-\section{Synthèse bibliographique: regroupement non-supervisé de documents par thématique}
+\section{Regroupement non-supervisé de documents}
 \label{sec:similarite:biblio}
 
 \subsection{Choix de l’algorithme de clustering}
@@ -155,8 +155,10 @@ Après avoir généré l'ensemble $B = \lbrace (d_i, d_i', s(d_i, d_i'))\rbrace$
 
 \section{Expérimentations et interprétation des résultats}
 \label{sec:similarite:experimentations}
-\subsection{Données}
-Pour l'évaluation supervisée, nous disposons d'une base annotée sur la catégorie de demande "dommage-intérêts / action en responsabilité civile professionnelle contre les avocats" qui concerne les contentieux implicant des avocats.
+
+
+\subsection{Annotations de données d'évaluation}
+Pour l'évaluation supervisée, nous disposons d'une base annotée sur la catégorie de demande "dommage-intérêts / action en responsabilité civile professionnelle contre les avocats" qui concerne les contentieux impliquant des avocats.
 L'expert annotateur a identifié quatre cas différents (a, b, c, d) décrits en annexe. En gros:
 \begin{itemize}
 \item pour le cas a) il s'agit d'un avocat qui est négligent et envoie son assignation de manière tardive (champ sémantique: retard/délai/prescription)
@@ -172,7 +174,8 @@ Pour l'évaluation non supervisée, les 6 catégories de demande utilisée pour 
 \subsection{Apprentissage de la métrique}
 
 
-\subsection{Utilisation de la métrique apprise pour le clustering}
+\subsection{Comparaison d'approches}
+Comparer la vectorisation du document sur tout son contenu vs. sur la restriction aux énoncés de demande de la catégorie (du type "constater", "dire et juger") vs restriction aux conclusions (le raisonnement des parties décrits les circonstances factuelles) + motifs sur la catégorie
 
 
 \section{Conclusion}
