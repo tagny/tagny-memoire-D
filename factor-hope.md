@@ -31,5 +31,5 @@ Code Java: `taj.data_representation_pls.CorpusPreprocessor.replaceWordByClusterI
 
 ### Vectorisation TF-IDF
 
-Code Java: `extraction.circonstances_factuelles.Vectorization`
+Code Java: `extraction.circonstances_factuelles.Vectorization` appelé dans `extraction.circonstances_factuelles.ExtracteurDeCirconstancesFactuelles.generateMatricesFromTxt`
 
