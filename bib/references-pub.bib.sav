@@ -1532,7 +1532,7 @@ Events},
   pages     = {716--722},
 }
 
-@Article{Aletras2016p,
+@Article{Aletras2016predictDecisionECHR,
   author        = {Aletras, Nikolaos and Tsarapatsanis, Dimitrios and Preo{\c{t}}iuc-Pietro, Daniel and Lampos, Vasileios},
   title         = {{Predicting judicial decisions of the European Court of Human Rights: A Natural Language Processing perspective}},
   journal       = {PeerJ Computer Science},

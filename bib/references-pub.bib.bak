@@ -22,21 +22,20 @@
   Url                      = {https://arxiv.org/ftp/arxiv/papers/1509/1509.04385.pdf}
 }
 
-@Article{Ashley2009,
-  Title                    = {{Automatically classifying case texts and predicting outcomes}},
-  Author                   = {Ashley, Kevin D. and Br{\"{u}}ninghaus, Stefanie},
-  Journal                  = {Artificial Intelligence and Law},
-  Year                     = {2009},
-  Number                   = {2},
-  Pages                    = {125--165},
-  Volume                   = {17},
-
-  Doi                      = {10.1007/s10506-009-9077-9},
-  ISBN                     = {0924-8463},
-  ISSN                     = {09248463},
-  Keywords                 = {Case-based reasoning,Classifying case texts,Predicting case outcomes,predicting,text process},
-  Mendeley-tags            = {text process,predicting},
-  Url                      = {http://link.springer.com/content/pdf/10.1007%2Fs10506-009-9077-9.pdf}
+@Article{Ashley2009classifCases,
+  author        = {Ashley, Kevin D. and Br{\"{u}}ninghaus, Stefanie},
+  title         = {{Automatically classifying case texts and predicting outcomes}},
+  journal       = {Artificial Intelligence and Law},
+  year          = {2009},
+  volume        = {17},
+  number        = {2},
+  pages         = {125--165},
+  issn          = {09248463},
+  doi           = {10.1007/s10506-009-9077-9},
+  isbn          = {0924-8463},
+  keywords      = {Case-based reasoning,Classifying case texts,Predicting case outcomes,predicting,text process},
+  mendeley-tags = {text process,predicting},
+  url           = {http://link.springer.com/content/pdf/10.1007%2Fs10506-009-9077-9.pdf},
 }
 
 @Article{Berka2011rbr-cbr,
@@ -1485,10 +1484,10 @@ Events},
   url       = {https://link.springer.com/content/pdf/10.1007%2F978-3-642-17432-2_45.pdf},
 }
 
-@InProceedings{sulea2017legalclass,
-  author       = {{\c Sulea, Octavia-Maria and Zampieri, Marcos and Malmasi, Shervin and Vela, Mihaela and P. Dinu, Liviu and van Genabith, Josef}},
+@InProceedings{sulea2017legalEnsSVM,
+  author       = {\c Sulea, Octavia-Maria and Zampieri, Marcos and Malmasi, Shervin and Vela, Mihaela and P. Dinu, Liviu and van Genabith, Josef},
   title        = {{Exploring the Use of Text Classification in the Legal Domain}},
-  booktitle    = {{Proceedings of2ndWorkshop on Automated Semantic Analysis of Information in Legal Texts}},
+  booktitle    = {{Proceedings of 2nd Workshop on Automated Semantic Analysis of Information in Legal Texts}},
   year         = {2017},
   pages        = {5},
   address      = {London, United Kingdom},
@@ -1507,24 +1506,41 @@ Events},
 }
 
 @InProceedings{Wyner2010extractcasefactor,
-  author        = {Wyner, Adam Zacharie and Peters, Wim},
-  title         = {{Lexical Semantics and Expert Legal Knowledge towards the Identification of Legal Case Factors}},
-  booktitle     = {Proceedings of JURIX},
-  year          = {2010},
-  volume        = {10},
-  pages         = {127--136},
-  __markedentry = {[tagny:]},
+  author    = {Wyner, Adam Zacharie and Peters, Wim},
+  title     = {{Lexical Semantics and Expert Legal Knowledge towards the Identification of Legal Case Factors}},
+  booktitle = {Proceedings of JURIX},
+  year      = {2010},
+  volume    = {10},
+  pages     = {127--136},
 }
 
 @InCollection{WynerMoens2010mineargument,
-  author        = {Wyner, Adam and Mochales-Palau, Raquel and Moens, Marie-Francine and Milward, David},
-  title         = {Approaches to text mining arguments from legal cases},
-  booktitle     = {{Semantic Processing of Legal Texts: where the Language of Law Meets the Law of Language}},
-  publisher     = {Springer-Verlag},
-  year          = {2010},
-  pages         = {60--79},
-  address       = {Berlin, Heidelberg},
+  author    = {Wyner, Adam and Mochales-Palau, Raquel and Moens, Marie-Francine and Milward, David},
+  title     = {Approaches to text mining arguments from legal cases},
+  booktitle = {{Semantic Processing of Legal Texts: where the Language of Law Meets the Law of Language}},
+  publisher = {Springer-Verlag},
+  year      = {2010},
+  pages     = {60--79},
+  address   = {Berlin, Heidelberg},
+}
+
+@InProceedings{Sulea2017predictareadecision,
+  author    = {{\c{S}}ulea, Octavia-Maria and Zampieri, Marcos and Vela, Mihaela and van Genabith, Josef},
+  title     = {{Predicting the Law Area and Decisions of French Supreme Court Cases}},
+  booktitle = {{Proceedings of the International Conference Recent Advances in Natural Language Processing, RANLP 2017}},
+  year      = {2017},
+  pages     = {716--722},
+}
+
+@Article{Aletras2016predictDecisionECHR,
+  author        = {Aletras, Nikolaos and Tsarapatsanis, Dimitrios and Preo{\c{t}}iuc-Pietro, Daniel and Lampos, Vasileios},
+  title         = {{Predicting judicial decisions of the European Court of Human Rights: A Natural Language Processing perspective}},
+  journal       = {PeerJ Computer Science},
+  year          = {2016},
+  volume        = {2},
+  pages         = {e93},
   __markedentry = {[tagny:6]},
+  publisher     = {PeerJ Inc.},
 }
 
 @Comment{jabref-meta: databaseType:bibtex;}
