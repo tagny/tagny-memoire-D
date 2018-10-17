@@ -36,33 +36,39 @@ Le sujet de ce mémoire vise à assister l'analyse quantitative de la prise de d
 
 \subsubsection{Approches orientées structure ou pas}
 
-\subsection{Analyses de données textuelles juridiques}
+\subsection{Analyses de données textuelles judiciaires}
 % Survey open tasks: https://arxiv.org/pdf/1707.02919.pdf
 % information rechechée ou tâches, contexte geographique - technique, motivation, méthodes
 % https://www.law.com/legaltechnews/products-and-software/
 
+Nous discutons ici des travaux explorant l'application de méthodes d'analyse de données textuelles sur des documents judiciaires. La section est structurée suivant les tâches ciblées par ces études.
+
 \subsubsection{Annotation dans le document}
 
-\subsubsection{Extraction d'information}
-% argument (Grammaire) : http://wyner.info/research/Papers/WynerMochalesPalauMoensMilward2009.pdf
+L'annotation consiste à enrichir les documents pour préparer les documents pour d'autres analyses, faciliter la recherche d'affaires pertinentes, et faire la lumière sur des connaissances linguistiques sous-jacentes au raisonnement juridique. Les éléments annotés peuvent être des très courts segments de texte mentionnant des entités juridiques \citep{Waltl2016lexia, wyner2010extractlegalelts} comme la date, le lieu (juridiction), les noms de juges, des citations de loi.  L'annotation de passages plus longs identifie des concepts juridiques plus complexes comme les faits \citep{wyner2010extractlegalelts, Wyner2010extractcasefactor, Shulayeva2017recognfactprincip}, les définitions \citep{Waltl2016lexia}, des citations de principes juridiques \citep{Shulayeva2017recognfactprincip}, ou des arguments \citep{WynerMoens2010mineargument}.
+
+%\subsubsection{Extraction d'information}
+% argument (Grammaire) :\cite{WynerMoens2010mineargument} http://wyner.info/research/Papers/WynerMochalesPalauMoensMilward2009.pdf
 % terminologie : https://pdfs.semanticscholar.org/4d49/2d103672723d5683e4fc5b468e49ffaece3b.pdf
-%\subsection{Classification de documents}
 
 \subsubsection{Classification de texte}
+La classification permet d'organiser un corpus en rangeant les textes dans des catégories prédéfinies.  \citep{Aletras2016predictDecisionECHR} identifie s'il y a eu une violation d'un article choisi de la convention des droits de l'homme sur les jugements \footnote{HUDOC ECHR Database: \url{http://hudoc.echr.coe.int}} de la Court Européenne des Droits de l'Hommes (ECHR) . Avec un SVM et une représentation vectorielle basée sur les n-grammes les plus fréquents et leur cluster sémantique, ils obtiennent une précision moyenne de 79\% sur les 3 articles qu'ils ont manipulés. \cite{sulea2017legalEnsSVM}, d'autre part, traitent de l'identification des résultats dans des arrêts \footnote{Documents de \url{https://www.legifrance.gouv.fr}} de la Court Française de Cassation. Après un essai avec un SVM \cite{Sulea2017predictareadecision}, ils améliorent les résultats à l'aide d'un classifieur ensembliste de SVM à moyenne de probabilités, parvenant ainsi à des F1-mesures de plus de 95\%. 
+
+L'objectif n'est pas toujours l'identification du sens de la décision. \cite{Ashley2009classifCases} entrainent un classifieur (les plus-proches-voisins) pour chacun des 27 facteurs prédéfinis pour savoir s'il s'applique à la décision (phase SMILE). La partie remportant le procès est prédite par un algorithme séquentiel qui compare les parties (plaignant et défendeur) suivant le niveau de préférence des questions juridiques dégagées par les facteurs tel qu'observé dans la base d'entrainement (phase IBP).  D'autres catégorisations, comme la formation judiciaire ou la période du prononcé \cite{Sulea2017predictareadecision,sulea2017legalEnsSVM}, sont toutes aussi utiles pour faciliter la recherche d'information.
 
 \subsubsection{Similarité et catégorisation non supervisée}
 % https://scholar.google.com/scholar?oe=utf-8&client=firefox-b-ab&um=1&ie=UTF-8&lr&cites=2644458803665738328
 % https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=6&cad=rja&uact=8&ved=2ahUKEwik05PbjdvdAhUI_qQKHU9UC6QQFjAFegQIAxAC&url=http%3A%2F%2Fweb2py.iiit.ac.in%2Fpublications%2Fdefault%2Fdownload%2Finproceedings.pdf.8d3930f256a00e9c.436f6d707574655f323031315f53757368616e74615f4b756d61722e706466.pdf&usg=AOvVaw3CQX2nPEbeTXt6LhlRoOj6
 
 
-\subsubsection{Qualité}
-%\cite{Galgani2015lexa} montrent qu'il est possible en un temps raisonnable d'annoter des texte
-
-
-%\subsection{Extraction d'information}
-
 \section{Conclusion}
 \label{sec:literature:conclusion}
+\subsection{Types d'approches appliquées}
+Un grand nombre de travaux défendent des études de faisabilité. Ils se limitent à appliquer une approche basique d'analyse de données sur une faible quantité de données.
 
-Un grand nombre de travaux défendent des études de faisabilité. Ils se limitent à appliquer une approche de base d'analyse de données sur une faible quantité de données. Certains articles récents font l'effort de reporter des résultats quantifiés d'évaluation de l'accord inter-annotateurs et du système développé (par ex. \citep{Shulayeva2017recognfactprincip}). D'autres ne s'appuient que sur des captures d'écran de l'outil développé pour défendre l'architecture proposée (par ex. \citep{wyner2010extractlegalelts,Waltl2016lexia}).
+
+\subsection{Évaluation et qualité}
+ Certains articles récents font l'effort de reporter des résultats quantifiés d'évaluation de l'accord inter-annotateurs et du système développé (par ex. \citep{Shulayeva2017recognfactprincip}). Les résultats de la classification des documents sont généralement obtenus à l'issu une validation croisée \cite{Sulea2017predictareadecision,sulea2017legalEnsSVM,Aletras2016predictDecisionECHR}. D'autres ne s'appuient que sur des captures d'écran de l'outil développé pour défendre l'architecture proposée (par ex. \citep{wyner2010extractlegalelts,Waltl2016lexia}).
+
+%\cite{Galgani2015lexa} montrent qu'il est possible en un temps raisonnable d'annoter des texte
 

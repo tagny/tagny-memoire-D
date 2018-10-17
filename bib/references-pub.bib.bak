@@ -569,13 +569,13 @@ and Souissi-Benrejab, Fattouma},
 }
 
 @InProceedings{wyner2010extractlegalelts,
-  author  = {Wyner, Adam Zacharie},
-  title   = {Towards annotating and extracting textual legal case elements},
-  year    = {2010},
-  editor  = {Enrico Francesconi and Simonetta Montemagni and Piercarlo Rossi and Daniela Tiscornia},
-  pages   = {9--18},
-  month   = jul,
-  journal = {Proceedings of LOAIT 2010 (IV Workshop on Legal Ontologies and Artificial Intelligent Techniques)},
+  author    = {Wyner, Adam Zacharie},
+  title     = {Towards annotating and extracting textual legal case elements},
+  booktitle = {{Proceedings of LOAIT 2010 (IV Workshop on Legal Ontologies and Artificial Intelligent Techniques)}},
+  year      = {2010},
+  editor    = {Enrico Francesconi and Simonetta Montemagni and Piercarlo Rossi and Daniela Tiscornia},
+  pages     = {9--18},
+  month     = jul,
 }
 
 @Article{xiao2004information,
@@ -1038,15 +1038,14 @@ and Souissi-Benrejab, Fattouma},
 }
 
 @InProceedings{moens2002case-basedreasoning,
-  Title                    = {What information retrieval can learn from case-based reasoning},
-  Author                   = {Moens, Marie-Francine},
-  Booktitle                = {Legal Knowledge and Information Systems},
-  Year                     = {2002},
-  Organization             = {Jurix 2002: The Fifteenth Annual Conference},
-  Pages                    = {83--91},
-  Publisher                = {T.J.M. Bench-Capon, A. Daskalopulu and R.G.F. Winkels (eds.)},
-
-  Url                      = {https://www.researchgate.net/profile/Marie-Francine_Moens/publication/250777261_What_Information_Retrieval_Can_Learn_from_Case-Based_Reasoning/links/0a85e52ecd015d41d4000000.pdf}
+  author       = {Moens, Marie-Francine},
+  title        = {What information retrieval can learn from case-based reasoning},
+  booktitle    = {Legal Knowledge and Information Systems},
+  year         = {2002},
+  editor       = {Bench-Capon, T. J. M. and Daskalopulu, A. and Winkels, R. G. F.},
+  pages        = {83--91},
+  organization = {Jurix 2002: The Fifteenth Annual Conference},
+  url          = {https://www.researchgate.net/profile/Marie-Francine_Moens/publication/250777261_What_Information_Retrieval_Can_Learn_from_Case-Based_Reasoning/links/0a85e52ecd015d41d4000000.pdf},
 }
 
 @InProceedings{nallapati2010blinddomaintransferner,
@@ -1279,23 +1278,12 @@ and Souissi-Benrejab, Fattouma},
   Pages                    = {65--72}
 }
 
-@InProceedings{wyner2010casefactors,
-  Title                    = {Lexical Semantics and Expert Legal Knowledge towards the Identification of Legal Case Factors},
-  Author                   = {Wyner, Adam and Peters, Wim},
-  Booktitle                = {JURIX},
-  Year                     = {2010},
-  Pages                    = {127--136},
-  Volume                   = {10},
-
-  Url                      = {\url{http://wyner.info/research/Papers/WynerPetersCaseFactorsJURIX2010Final.pdf}}
-}
-
 @InProceedings{wyner2012GateAnnotation,
-  Title                    = {Semantic Annotations for Legal Text Processing using {GATE Teamware}},
-  Author                   = {Wyner, Adam and Peters, Wim},
-  Booktitle                = {Semantic Processing of Legal Texts (SPLeT-2012) Workshop Programme},
-  Year                     = {2012},
-  Pages                    = {34}
+  author    = {Wyner, Adam and Peters, Wim},
+  title     = {{Semantic Annotations for Legal Text Processing using GATE Teamware}},
+  booktitle = {{Semantic Processing of Legal Texts (SPLeT-2012) Workshop Programme}},
+  year      = {2012},
+  pages     = {34},
 }
 
 @InProceedings{yamron1998hidden,
@@ -1309,11 +1297,11 @@ and Souissi-Benrejab, Fattouma},
 }
 
 @InProceedings{yang2016jointEntityEvt,
-  Title                    = {Joint Extraction of Events and Entities within a Document Context},
-  Author                   = {Yang, Bishan and Mitchell, Tom},
-  Booktitle                = {Proceedings of NAACL-HLT},
-  Year                     = {2016},
-  Pages                    = {289--299}
+  author    = {Yang, Bishan and Mitchell, Tom},
+  title     = {{Joint Extraction of Events and Entities within a Document Context}},
+  booktitle = {Proceedings of NAACL-HLT},
+  year      = {2016},
+  pages     = {289--299},
 }
 
 @Manual{ace2005event,
@@ -1475,28 +1463,26 @@ Events},
 }
 
 @Article{Shulayeva2017recognfactprincip,
-  author        = {Shulayeva, Olga and Siddharthan, Advaith and Wyner, Adam},
-  title         = {Recognizing cited facts and principles in legal judgements},
-  journal       = {Artificial Intelligence and Law},
-  year          = {2017},
-  volume        = {25},
-  number        = {1},
-  pages         = {107--126},
-  __markedentry = {[tagny:]},
-  publisher     = {Springer},
+  author    = {Shulayeva, Olga and Siddharthan, Advaith and Wyner, Adam},
+  title     = {Recognizing cited facts and principles in legal judgements},
+  journal   = {Artificial Intelligence and Law},
+  year      = {2017},
+  volume    = {25},
+  number    = {1},
+  pages     = {107--126},
+  publisher = {Springer},
 }
 
 @Article{Galgani2015lexa,
-  author        = {Galgani, Filippo and Compton, Paul and Hoffmann, Achim},
-  title         = {Lexa: Building knowledge bases for automatic legal citation classification},
-  journal       = {Expert Systems with Applications},
-  year          = {2015},
-  volume        = {42},
-  number        = {17-18},
-  pages         = {6391--6407},
-  __markedentry = {[tagny:6]},
-  publisher     = {Elsevier},
-  url           = {https://link.springer.com/content/pdf/10.1007%2F978-3-642-17432-2_45.pdf},
+  author    = {Galgani, Filippo and Compton, Paul and Hoffmann, Achim},
+  title     = {Lexa: Building knowledge bases for automatic legal citation classification},
+  journal   = {Expert Systems with Applications},
+  year      = {2015},
+  volume    = {42},
+  number    = {17-18},
+  pages     = {6391--6407},
+  publisher = {Elsevier},
+  url       = {https://link.springer.com/content/pdf/10.1007%2F978-3-642-17432-2_45.pdf},
 }
 
 @InProceedings{sulea2017legalclass,
@@ -1510,13 +1496,35 @@ Events},
   organization = {ASAIL’2017},
 }
 
-@Article{,
+@Article{kim2017lawhealthnlp,
+  author  = {Kim, Mi Young},
   title   = {{Natural Language Processing and Machine Learning Techniques in Real World (Law and Health)}},
   journal = {Robot Autom Eng J.},
   year    = {2017},
   volume  = {1},
   number  = {3},
   note    = {555562},
+}
+
+@InProceedings{Wyner2010extractcasefactor,
+  author        = {Wyner, Adam Zacharie and Peters, Wim},
+  title         = {{Lexical Semantics and Expert Legal Knowledge towards the Identification of Legal Case Factors}},
+  booktitle     = {Proceedings of JURIX},
+  year          = {2010},
+  volume        = {10},
+  pages         = {127--136},
+  __markedentry = {[tagny:]},
+}
+
+@InCollection{WynerMoens2010mineargument,
+  author        = {Wyner, Adam and Mochales-Palau, Raquel and Moens, Marie-Francine and Milward, David},
+  title         = {Approaches to text mining arguments from legal cases},
+  booktitle     = {{Semantic Processing of Legal Texts: where the Language of Law Meets the Law of Language}},
+  publisher     = {Springer-Verlag},
+  year          = {2010},
+  pages         = {60--79},
+  address       = {Berlin, Heidelberg},
+  __markedentry = {[tagny:6]},
 }
 
 @Comment{jabref-meta: databaseType:bibtex;}
