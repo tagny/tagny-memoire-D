@@ -3,7 +3,7 @@
 
 \section{Introduction}
 \label{sec:quanta:introduction}
-Au coeur de l'analyse des décisions de justice se trouve le concept de demande. Il s'agit d'une réclammation ou requête effectuée par une des parties devant le juge. Par exemple, une partie peut demander des dommages-intérêts en réparation d'un préjudice subi, ou bien un divorce, ou bien des indemnités auxquelles elle pense avoir droit, ou encore une étude d'expert ... Les demandes sont fondamentales car l'argumentation durant le déroulement de l'affaire a deux buts : faire accepter ses demandes et faire rejetter celle de la partie adverse. L'extraction des demandes et des résultats correspondant, dans un corpus, permet ainsi d'avoir une estimation quantifiée de la décision des juges sur des types de demandes. Les informations qui nous intéressent sont la \textbf{catégorie de la demande}, le \textbf{quantum ou montant demandé}, le \textbf{sens du résultat} (la demande a-t-elle été acceptée ou rejettée?), et le \textbf{quantum ou montant obtenu} (décidé par les juges). Pour pouvoir extraire les demandes et les résultats, il est nécessaire de comprendre comment ils sont exprimés et coreférencés dans les décisions jurisprudentielles. Leur expression peut comporter plus ou moins de complexité avec souvent des références à des jugements antérieurs, des agrégations ou des restrictions (Figure \ref{fig:quanta:expr-dmd-rst}).
+Au c\oe{}ur de l'analyse des décisions de justice se trouve le concept de demande. Il s'agit d'une réclamation ou requête effectuée par une des parties devant le juge. Par exemple, une partie peut demander des dommages-intérêts en réparation d'un préjudice subi, ou bien un divorce, ou bien des indemnités auxquelles elle pense avoir droit, ou encore une étude d'expert ... Les demandes sont fondamentales car l'argumentation durant le déroulement de l'affaire a deux buts : faire accepter ses demandes et faire rejeter celle de la partie adverse. L'extraction des demandes et des résultats correspondant, dans un corpus, permet ainsi d'avoir une estimation quantifiée de la décision des juges sur des types de demandes. Les informations qui nous intéressent sont la \textbf{catégorie de la demande}, le \textbf{quantum ou montant demandé}, le \textbf{sens du résultat} (la demande a-t-elle été acceptée ou rejetée?), et le \textbf{quantum ou montant obtenu} (décidé par les juges). Pour pouvoir extraire les demandes et les résultats, il est nécessaire de comprendre comment ils sont exprimés et co-référencés dans les décisions jurisprudentielles. Leur expression peut comporter plus ou moins de complexité avec souvent des références à des jugements antérieurs, des agrégations ou des restrictions (Figure \ref{fig:quanta:expr-dmd-rst}).
 
 \subsection{Données cibles à extraire}
 \subsubsection{Catégorie de demande}
@@ -16,16 +16,16 @@ Une catégorie $c$ de demande regroupe les prétentions qui sont de même nature
 \textbf{Expression nominative (label)  }                                     & \textbf{Objet}                                                       & \textbf{Fondement}                                                                 \\ \hline
 dommages-intérêts pour abus de procédure (danais)                    & dommages-intérêts                                           & Articles 32-1 code de procédure civile + 1382 code de procédure civile \\ \hline
 amende civile pour abus de procédure (acpa)                        & amende civile                                               & Articles 32-1 code de procédure civile + 559 code de procédure civile  \\ \hline
-frais irrépétibles  (styx)                                        & dommages-intérêts                                           & Article 700 du code de procédure civle                                 \\ \hline
+frais irrépétibles  (styx)                                        & dommages-intérêts                                           & Article 700 du code de procédure civile                                 \\ \hline
 dommages-intérêts pour trouble de voisinage (doris)                 & dommages-intérêts                                           & principe de responsabilité pour trouble anormal de voisinage           \\ \hline
 déclaration de créance au passif de la procédure collective (dcppc) & déclaration de créance & L622-24 code de commerce                                               \\ \hline
-dommages-intérêts pour concurence déloyale (concdel)                  & dommages-intérêts                                           & Article 1382 du code civil                                             \\ \hline
+dommages-intérêts pour concurrence déloyale (concdel)                  & dommages-intérêts                                           & Article 1382 du code civil                                             \\ \hline
 \end{tabular}
 \caption{Exemples de catégories de demandes}\label{tab:quanta:exemple-categorie}
 \end{table}
 
 \subsubsection{Quantum demandé}
-Le quantum demandé quantifie l'objet de la demande. Nous le notons $q_d$. Par exemple, dans l'exemple de la Figure \ref{fig:quanta:expr-dmd}, "3000 \euro{}" est le quantum demandé pour dommages-intérêts pour procédure abusive. Bien que, dans cette étude, nous ne nous intéressons particulièrement qu'aux montants d'argent, le quantum peut être une durée (garde d'enfant, ou emprisonement, ...). Toutes les catégories demandes n'ont pas un quantum (par ex. une demande de divorce) et seul le sens du résultat sera la données à extraire dans ce cas.
+Le quantum demandé quantifie l'objet de la demande. Nous le notons $q_d$. Par exemple, dans l'exemple de la Figure \ref{fig:quanta:expr-dmd}, "3000 \euro{}" est le quantum demandé pour dommages-intérêts pour procédure abusive. Bien que, dans cette étude, nous ne nous intéressons particulièrement qu'aux montants d'argent, le quantum peut être une durée (garde d'enfant, ou emprisonnement, ...). Toutes les catégories demandes n'ont pas un quantum (par ex. une demande de divorce) et seul le sens du résultat sera la données à extraire dans ce cas.
 
 \subsubsection{Sens du résultat}
 Le sens du résultat est l'interprétation de la réponse des juges à une demande. Nous le notons $s_r$. En général, le sens peut être positif si la demande a été \textbf{acceptée} ou négatif si la demande a été \textbf{rejetée}. Il arrive aussi que le résultat soit reporté à un jugement futur (un \textbf{sursis à statuer} est alors prononcé). 
@@ -74,14 +74,14 @@ acquisitive de la parcelle BH 377 située [...].}
 \end{subfigure}
 \caption{Expressions \textcolor{gray}{simples}, ou comprenant des  \textcolor{blue}{références} et  des \textcolor{brown}{agrégations} (extraits de la décision 14/01082 de la cour d'appel de Saint-Denis (Réunion))}\label{fig:quanta:expr-dmd-rst}
 \end{figure}
- Cette pseudo-structure n'est pas standard et elle impose de nombreux défis à relever. D'une part, la séparation des demandes et des résultats rend difficile la résolution de référence entre prétentions et résultats. En effet, une décision jurisprudentielle porte sur plusieurs demandes de catégorie différentes dont il faut identifier la catégorie, le quantum demandé, le sens du résultat et le quantum obtenu. Il est important de faire correspondre un quantum demandé extrait au sens et au quantum du résultat qui font référence à la même demande. Le problème de coréférence est généré aussi par la redondance; par ex. les résultats exprimés dans les MOTIFS sont résumés dans le DISPOSITIF. D'autre part, les références aux jugements antérieurs exigent de résoudre des références aux résultats de jugements antérieurs qui sont, heureusement, rappelés dans le même document. Notons aussi que les difficultés liés aux agrégations (par ex. "\textit{infirmer ... en toutes ces dispositions}") et aux restrictions/sélections (par ex. "\textit{infirme le jugement ... sauf en ce qu'il a condamné M. A. ...}") devraient être résolues. Par ailleurs, les catégories de demandes sont nombreuses (500+ code NAC(?)) mais ne sont pas toutes présentes dans toutes les décisions. Toutes ses contraintes démontrent bien la diversité et l'état non-structuré des documents. Elles induisent des difficultés pour l'annotation manuelle de suffisamment données de référence et la modélisation de l'approche d'extraction. Cependant, nous avons remarqué quelques indicateurs qui pourraient être exploité implicitement ou explicitement.
+ Cette pseudo-structure n'est pas standard et elle impose de nombreux défis à relever. D'une part, la séparation des demandes et des résultats rend difficile la résolution de référence entre prétentions et résultats. En effet, une décision jurisprudentielle porte sur plusieurs demandes de catégorie différentes dont il faut identifier la catégorie, le quantum demandé, le sens du résultat et le quantum obtenu. Il est important de faire correspondre un quantum demandé extrait au sens et au quantum du résultat qui font référence à la même demande. Le problème de co-référence est généré aussi par la redondance; par ex. les résultats exprimés dans les MOTIFS sont résumés dans le DISPOSITIF. D'autre part, les références aux jugements antérieurs exigent de résoudre des références aux résultats de jugements antérieurs qui sont, heureusement, rappelés dans le même document. Notons aussi que les difficultés liés aux agrégations (par ex. "\textit{infirmer ... en toutes ces dispositions}") et aux restrictions/sélections (par ex. "\textit{infirme le jugement ... sauf en ce qu'il a condamné M. A. ...}") devraient être résolues. Par ailleurs, les catégories de demandes sont nombreuses (500+ code NAC(?)) mais ne sont pas toutes présentes dans toutes les décisions. Toutes ses contraintes démontrent bien la diversité et l'état non-structuré des documents. Elles induisent des difficultés pour l'annotation manuelle de suffisamment données de référence et la modélisation de l'approche d'extraction. Cependant, nous avons remarqué quelques indicateurs qui pourraient être exploité implicitement ou explicitement.
 
-Nous nous sommes intéressés aux demandes dont les quanta sont des sommes d'argent. Les mentions de somme d'argent suivent généralement la forme "\verb=NOMBRE MONNAIE=" (par ex. 3000 \euro{}, 15 503 676 francs, un euro, 339.000 XPF). Nous remarquons que les nombres sont très rarement écrites en lettre. Ainsi, en repertoriant les unités monnétaires mentionnées dans les décisions, il est possible d'annoter les sommes d'argent à l'aide d'une expression régulière (Equation \ref{equation:quanta:regex-argent}) (?)\textcolor{red}{évaluation}.
+Nous nous sommes intéressés aux demandes dont les quanta sont des sommes d'argent. Les mentions de somme d'argent suivent généralement la forme "\verb=NOMBRE MONNAIE=" (par ex. 3000 \euro{}, 15 503 676 francs, un euro, 339.000 XPF). Nous remarquons que les nombres sont très rarement écrites en lettre. Ainsi, en répertoriant les unités monétaires mentionnées dans les décisions, il est possible d'annoter les sommes d'argent à l'aide d'une expression régulière (Équation \ref{equation:quanta:regex-argent}) (?)\textcolor{red}{évaluation}.
 \begin{equation} %\scriptsize
 \splitdfrac{\backslash [0-9](\backslash [0-9]|[',.]|\backslash s)*}{(euro[s]\left\{0,1\right\}|franc[s]\left\{0,1\right\}|\euro{}|F|CFP|XPF|EUR|EUROS)( |\$)}\label{equation:quanta:regex-argent} % Ђ 
 \end{equation}
 %\texttt{\small $\backslash$p{Digit}($\backslash$p{Digit}|[',.]|\ $\backslash$s)*(euro[s]{0,1}|franc[s]{0,1}|\euro{}|F|CFP|EUR|EUROS)( |\$)}
-La terminologie utilisée est aussi un bon indicateur des demandes et résultats. En effet, le vocabulaire utilisé est très souvent propre aux types de demandes, et réciproquement, ce vocabulaire permet d'exprimer des demandes de même nature. Par exemple le dernier élément de la Fig. \ref{fig:quanta:expr-dmd} comprend le terme "\textit{pour procédure abusive}" qui est près d'une somme d'argent (\textit{3000 \euro{}}); il est donc probable que ce type de terme assez particulier soit un bon indicateur de la position des quanta. Par ailleurs, des verbes particuliers sont utilisés pour exprimer les prétentions et résultats : infirmer, confirmer, cosntater, débouter, dire, ... Comme autres formes récurrentes, on pourrait citer l'ordre des demandes (resp. résultats). Généralement, on a les constats, les références aux jugements antérieurs, les demandes principales (?) et secondaires (?).
+La terminologie utilisée est aussi un bon indicateur des demandes et résultats. En effet, le vocabulaire utilisé est très souvent propre aux types de demandes, et réciproquement, ce vocabulaire permet d'exprimer des demandes de même nature. Par exemple le dernier élément de la Fig. \ref{fig:quanta:expr-dmd} comprend le terme "\textit{pour procédure abusive}" qui est près d'une somme d'argent (\textit{3000 \euro{}}); il est donc probable que ce type de terme assez particulier soit un bon indicateur de la position des quanta. Par ailleurs, des verbes particuliers sont utilisés pour exprimer les prétentions et résultats : infirmer, confirmer, constater, débouter, dire, ... Comme autres formes récurrentes, on pourrait citer l'ordre des demandes (resp. résultats). Généralement, on a les constats, les références aux jugements antérieurs, les demandes principales (?) et secondaires (?).
 
 \section{Formulation du problème}
 \label{sec:quanta:formulation}
@@ -94,7 +94,7 @@ Pour formuler le problème, nous avons tenu compte principalement de deux aspect
 Nous avons par conséquent opter pour la définition d'approches génériques adaptables à chaque catégorie. L'idée est de pouvoir  traiter progressivement les catégories et par conséquent, annoter progressivement des données de référence. Chaque exécution des approches définies permet ainsi d'extraire uniquement les demandes d'une seule catégorie. L'annotation manuelle d'exemples a été par conséquent définie par catégorie afin que la tâche soit plus facile pour les experts. Le protocole d'annotation se déroule en étapes: 
 \begin{enumerate}
     \item choix d'une catégorie: définition d'un nom, de l'objet et du fondement;
-    \item recherche par mots-clés des documents suceptibles de contenir la catégorie (par exemple sur le site internet de LexisNexis);
+    \item recherche par mots-clés des documents susceptibles de contenir la catégorie (par exemple sur le site internet de LexisNexis);
     \item parmi les documents trouvés, choisir quelques uns de ceux qui contiennent effectivement des demandes de la catégorie; 
     \item lire chaque document choisi pour identifier toutes les demandes présentes de la catégories tout en remplissant le tableau des demandes de références dont un extrait est illustré par le Tableau \ref{tab:quanta:tab-annotations}.
 \end{enumerate}
@@ -176,11 +176,42 @@ $p_\theta(t_i, r_i, a \vert i, N_i, x)$ \cite{yang2016jointEntityEvt} %\linebrea
 La recherche sur l'extraction des évènements s'appuie sur l'identification des termes-clés, appelés déclencheurs, caractéristiques des types d'évènements car ils semblent être des indicateurs incontournables non seulement de l'énoncé mais aussi les repères de localisation des arguments. Qu'ils soient identifiés au préalablement ou conjointement avec les arguments, les déclencheurs sont jusqu'à présent appris de manière supervisée c'est-à-dire à partir d'exemples annotés manuellement de déclencheurs dans des exemples d'énoncés d'évènement. L'annotation manuelle de tels termes étant fastidieuse et risquant de manquer d'exhaustivité dans les cas de données réelles, il serait préférable de les apprendre lorsqu'on ne dispose pas d'exemples de déclencheurs. C'est notamment notre situation, où nous avons besoin des termes caractéristiques des catégories de demandes. Fort heureusement, la recherche d'information, l'apprentissage d'ontologie et d'autres tâche d'analyse de texte comme la classification de documents ont encourager le développement d'approches d'extraction de termes-clés. On distingue principalement les filtres d'une part et les méthodes statistiques d'autres part.
 
 
-
 \subsubsection{Filtres}
-% LISTES POUR CHAQUE CATÉGORIE
+% LISTES TERMES EXTRAITS POUR CHAQUE CATÉGORIE
 \subsubsection{Méthodes statistiques}
 % LISTES POUR CHAQUE CATÉGORIE
+\begin{table} 
+	\caption{Métriques globales de termes: les métriques supervisées sont notées $f(t_k,c_i)$ et les non-supervisées sont notées $g(t_k)$} \label{tab:quanta:globalweights}
+	\scriptsize
+	\begin{tabular}{p{0.48\textwidth}@{\hskip 0.2in}p{0.45\textwidth}}
+		\hline\noalign{\smallskip}
+		Description & Formule \\
+		\noalign{\smallskip}
+		\hline
+		\noalign{\smallskip}
+		Inverse document frequency \cite{sparck1972idf}: simply computes the importance score of $t_k$ all over a corpus $D$ & $idf(t_k) = \log_2 (\frac{N}{N_{t_k}})$  \\ \noalign{\smallskip}
+		Delta Document Frequency & $deltadf(w,c_i) = DF_{t_k,c_i} - DF_{t_k,\overline{c_i}}$\\ \noalign{\smallskip}
+		Test of Marascuilo & $mar(t_k, c_i) = $ \begin{equation*} 
+		\,
+		\dfrac{\left(
+			\splitdfrac{\splitdfrac{\splitdfrac{(N_{t_k,c_i} - N_{t_k}N_{t_k,c_i}/N)^2}{+ (N_{t_k,\overline{c_i}} - N_{t_k}N_{\overline{c_i}}/N)^2}}{+ (N_{\overline{t_k},c_i} - N_{c_i}N_{\overline{t_k}}/N)^2}}{+ (N_{\overline{t_k},\overline{}} - N_{\overline{t_k}}N_{\overline{c_i}}/N)^2}\right)}{N}
+		\end{equation*} \\ \noalign{\smallskip}
+		Chi square & $chi2(t_k,c_i) = \frac{N ((N_{t_k,c_i} N_{\overline{t_k},\overline{c_i}}) - (N_{t_k,\overline{c_i}} N_{\overline{t_k},c_i}))^2}{N_{t_k} N_{\overline{t_k}} N_{c_i} N_{\overline{c_i}}}$ \\ \noalign{\smallskip}
+		Correlation coefficient of "Ng, Goh, Low" \cite{ng1997ngl} :   & $ngl(t_k,c_i) = \frac{\sqrt{N} ((N_{t_k,c_i} N_{\overline{t_k},\overline{c_i}}) - (N_{t_k,\overline{c_i}} N_{\overline{t_k},c_i}))}{\sqrt{N_{t_k} N_{\overline{t_k}} N_{c_i} N_{\overline{c_i}}}}$\\ \noalign{\smallskip}
+		Coefficient of "Galavotti, Sebastiani, and Simi"  \cite{galavotti2000gss}& $gss(t_k,c_i) = (N_{t_k,c_i} N_{\overline{t_k},\overline{c_i}}) -  (N_{t_k,\overline{c_i}} N_{\overline{t_k},c_i})$ \\ \noalign{\smallskip}
+		Relevance frequency & $rf(t_k, c_i) = \log\left(2 + \frac{N_{t_k, c_i}}{max(1, N_{t_k, \overline{c_i}})}\right)$\\ \noalign{\smallskip}
+		Information gain & $ig(t_k, c_i) = $ \begin{equation*}
+		\splitdfrac{\splitdfrac{\splitdfrac{(N_{t_k,c_i} * \log (N_{t_k,c_i} / (N_{t_k}N_{c_i})))}
+				{+ (N_{\overline{t_k},c_i} * \log (N_{\overline{t_k},c_i} / (N_{\overline{t_k}}N_{c_i})))}}
+			{+ (N_{t_k,\overline{c_i}} * \log (N_{t_k,\overline{c_i}} / (N_{t_k}N_{\overline{c_i}})))}}
+		{+ (N_{\overline{t_k},\overline{c_i}} * \log (N_{\overline{t_k},\overline{c_i}} / (N_{\overline{t_k}}N_{\overline{c_i}})))}
+		\end{equation*} \\ \noalign{\smallskip}
+		Kulback-Leibler divergence & $kld(t_k, c_i)=(N_{t_k,c_i} / N_{t_k}) * \log (\frac{N_{t_k,c_i} N}{N_{t_k}N_{c_i}})$\\ \noalign{\smallskip}
+		Delta Smoothed IDF & $dsidf(t_k, c_i)=\log (\frac{(N_{\overline{c_i}}N_{t_k,c_i}) + 0.5}{(N_{c_i}N_{t_k,\overline{c_i}}) + 0.5} $\\ \noalign{\smallskip}
+		Delta BM25 IDF \cite{jones2000bm25idf} & $dbidf(t_k, c_i) = \log (\frac{(N_{\overline{c_i}} - N_{t_k,\overline{c_i}} + 0.5) * (N_{t_k,c_i} + 0.5)}{(N_{c_i} - N_{t_k,c_i} + 0.5) * N_{t_k,\overline{c_i}} + 0.5)} $\\ \noalign{\smallskip}
+		\hline
+	\end{tabular}
+\end{table}
 \paragraph{Mesures non-supervisées}
 NValue, CValue, IDF et co.
 \paragraph{Mesures supervisées}
@@ -192,7 +223,7 @@ RF, MARASCUILO, TEST DE PROPORTIONS, CHI2, ...
 
 \section{Détection des catégories par classification}
 
-Etant données l'ensemble $D_{\overline{c_i}}$ des documents ne comprenant aucune demande de la catégorie d'intérêt $c_i$, nous proposons de modéliser la tâche de détection des catégories en une tâche de classification binaire. Pour chaque catégorie, un classifieur binaire de document est entrainé pour déterminer si le document analysé contient ou pas une demande de la catégorie. Pour cela, chaque document $d_j$ est représenté sour une forme vectorielle traditionnele du type TF-IDF (\textit{term frequency - inverse document frequency}) où chaque dimension représente un mot dont le poids est le produit normalisé d'un poids $gw$ global au corpus du mot et d'un poids $lw$ local au document: $w(t_k, d_j) = lw(t_k, d_j) \times gw(t_k) \times nf(d_j)$, où $nf$ est le facteur de normalisation. 
+Étant données l'ensemble $D_{\overline{c_i}}$ des documents ne comprenant aucune demande de la catégorie d'intérêt $c_i$, nous proposons de modéliser la tâche de détection des catégories en une tâche de classification. Pour chaque catégorie, un classifieur binaire de document est entrainé pour déterminer si le document analysé contient ou pas une demande de la catégorie. Pour cela, chaque document $d_j$ est représenté sous une forme vectorielle traditionnelle du type TF-IDF (\textit{term frequency - inverse document frequency}) où chaque dimension représente un mot dont le poids est le produit normalisé d'un poids $gw$ global au corpus du mot et d'un poids $lw$ local au document: $w(t_k, d_j) = lw(t_k, d_j) \times gw(t_k) \times nf(d_j)$, où $nf$ est le facteur de normalisation. 
 
 
 \section{Extraction des demandes}
@@ -200,42 +231,49 @@ Etant données l'ensemble $D_{\overline{c_i}}$ des documents ne comprenant aucun
 
 L'étude consiste en la proposition et la comparaison empirique d'adaptations des approches d'extraction de structure à savoir: l'usage de règles, le chainage d'extracteur élémentaire, et l'inférence jointe.
 
+
 \subsection{Méthode 1: extraction par règles et termes-clés}
 \label{subsec:quanta:attributs:regles}
+
 %\textcolor{red}{Cité la localisation des unités de mésure / considérer le découpage en phrases à la place du découpage avec les verbes introductifs. Formaliser l'algorithme (si possible donner la complexité et le temps d'extraction moyen par document)}
+Pour chacune des catégories détectées, nous proposons ici une chaine d'extraction à base de termes-clés. Il s'agit d'une approche qui tente de reproduire une lecture naïve du document. Elle est ainsi basée sur des sortes de formes d'expression répétitives et inspirées de nos lectures des documents. La technique consiste à marquer les énoncés de demandes et résultats. Dans ces passages, les quanta sont localisés à proximité de termes-clés caractérisant la catégorie. Par exemple, la Figure \ref{fig:quanta:exemple-proximite} présente un extrait de passage exprimant une demande d'\textit{amende civile pour procédure abusive}.
 
-Pour chacune des catégories détectées, nous proposons ici une chaine d'extraction à base de termes-clés. Il s'agit d'une approche qui tente de reproduire une lecture naïve du document. Elle est ainsi basée sur des sortes de formes d'expression répétitives et inspirées de nos lectures des documents. La technique consiste à retrouver et à marquer les passages où sont exprimées les demandes et les résultats, puis les quanta y sont localisés à proximité de termes-clés de la catégorie. Par exemple, la Figure \ref{fig:quanta:exemple-proximite} présente un extrait de passage exprimant une demande d'\textit{amende civile pour procédure abusive}. La Figure \ref{fig:quanta:exemple-proximite-original} présente l'extrait original et la Figure \ref{fig:quanta:exemple-proximite-marquage} présente le résultat de notre marquage automatique que nous proposons. Les passages, les sommes d'argent, et les termes-clefs sont marqués avec les balises XML resp. \verb=<demande>=, \verb=<argent>=, \verb=<terme-clef>=. Dans cet exemple, on remarque bien que le quantum demandé (\textit{1.500 euros}) se trouve très près de terme-clefs associables à la catégorie \textit{acpa} ("\textit{amende civile}" et "\textit{pour procédure abusive}"). 
-\begin{figure}
-\scriptsize
-\centering
-\begin{subfigure}[t]{0.95\textwidth}
-\fbox{\parbox{\textwidth}{
-    " ... 
+\subsubsection{Annotation des énoncés et termes-clés}
 
-- débouter M. S. de ... % l' ensemble de ses demandes
+ La Figure \ref{fig:quanta:exemple-proximite-original} présente l'extrait original et la Figure \ref{fig:quanta:exemple-proximite-marquage} présente le résultat de notre marquage automatique que nous proposons. Les passages, les sommes d'argent, et les termes-clefs sont marqués avec les balises XML resp. \verb=<demande>=, \verb=<argent>=, \verb=<terme-clef>=. Dans cet exemple, on remarque bien que le quantum demandé (\textit{1.500 euros}) se trouve très près de terme-clefs associables à la catégorie \textit{acpa} ("\textit{amende civile}" et "\textit{pour procédure abusive}"). 
 
-\textbf{- le condamner à payer une amende civile de 1.500 euros pour procédure abusive} ...
-
-- le condamner à payer la somme ..."
-    }}
-\caption{Extrait original avant marquage}\label{fig:quanta:exemple-proximite-original}
-\end{subfigure} 
-
-
-\begin{subfigure}[t]{0.95\textwidth}
-\fbox{\parbox{\textwidth}{
-    " ... 
-
-- débouter M. S. de ... % l' ensemble de ses demandes
-
-- le \textbf{<demande categorie="acpa">}\underline{condamner} à payer une <terme-clef categorie="acpa">\textbf{amende civile}</terme-clef> de <argent> \textbf{1.500 euros} </argent> <terme-clef categorie="acpa"> \textbf{pour procédure abusive}</terme-clef> ...
-
-- le\textbf{</demande>} \underline{condamner} à payer la somme ..."
-    }}
-\caption{Extrait après marquage: les sommes d'argent, passages et termes-clefs sont marqués automatiquement}\label{fig:quanta:exemple-proximite-marquage}
-\end{subfigure}
-\caption{Exemple de passage de demande: le quantum demandé est une somme d'argent à proximité des terme-clés}
-    \label{fig:quanta:exemple-proximite}
+\begin{figure}[!htb]
+	\scriptsize
+	\centering
+	\begin{subfigure}[t]{0.95\textwidth}
+		\fbox{\parbox{\textwidth}{
+				" ... 
+				
+				- débouter M. S. de ... % l' ensemble de ses demandes
+				
+				\textbf{- le condamner à payer une amende civile de 1.500 euros pour procédure abusive} ...
+				
+				- le condamner à payer la somme ..."
+		}}
+		\caption{Extrait original d'énoncé de demande avant marquage}\label{fig:quanta:exemple-proximite-original}
+	\end{subfigure} 
+	
+	
+	\begin{subfigure}[t]{0.95\textwidth}
+		\fbox{\parbox{\textwidth}{
+				" ... 
+				
+				- débouter M. S. de ... % l' ensemble de ses demandes
+				
+				- le \textbf{<demande categorie="acpa">}\underline{condamner} à payer une <terme-clef categorie="acpa">\textbf{amende civile}</terme-clef> de <argent> \textbf{1.500 euros} </argent> <terme-clef categorie="acpa"> \textbf{pour procédure abusive}</terme-clef> ...
+				
+				- le\textbf{</demande>} \underline{condamner} à payer la somme ..."
+		}}
+		\caption{Énoncé, sommes d'argent, et termes-clés marqués}\label{fig:quanta:exemple-proximite-marquage}
+	\end{subfigure}
+	%\caption{Exemple de passage de demande: le quantum demandé est une somme d'argent à proximité des terme-clés}
+	\caption{Illustration de la proximité des quantas et termes-clés}
+	\label{fig:quanta:exemple-proximite}
 \end{figure}
 
 Les énoncés de demande se distinguent de ceux des résultats par leur position dans le document (les demandes dans la section LITIGE et les résultats dans les sections MOTIFS et DISPOSITIF) et par les verbes qui les introduisent (très souvent à l'infinitif pour les demandes et au présent pour les résultats). Nous avons ainsi prédéfini, indépendamment de la catégorie traitée, une liste de mots qui sont généralement des verbes (Tableau \ref{tab:quanta:mots-introductifs}) pour délimiter les demandes et résultats dans leur section respectives. La recherche de passages à l'aide listes de termes n'est pas unique à notre étude. \cite{wyner2010extractlegalelts} utilise par exemple des termes de jugement dans des règles JAPE pour annoter les énoncés de résultats (toute phrase contenant un terme de jugement) : \textit{affirm, grant, deny, reverse, overturn, remand, ...}
@@ -251,48 +289,33 @@ Les énoncés de demande se distinguent de ceux des résultats par leur position
   \caption{Mots introduisant les énoncés de demandes et de résultats}\label{tab:quanta:mots-introductifs}
  \end{table}
 
-Les termes prédéfinis délimitent les passages de demande et résultat indépendamment de toute catégorie, mais nous ne souhaitons analyser que les passages de la catégorie traitée. Il est donc nécessaire d'identifier les termes-clés indiquant l'expression de cette catégorie. Nous proposons un apprentissage semi-supervisé de ces termes. L'apprentissage est "supervisé" parce qu'on dispose de 2 corpus annotées pour chaque catégorie $c$: les documents à demande de la catégorie ($D_c$) et des documents sans demande de la catégorie ($D_{\overline{c}}$). L'apprentissage est "semi" parce qu'on ne dispose pas d'exemples de termes caractéristiques de la catégorie, mais uniquement de candidat qui sont en fait les termes de $D_c$. Nous avons utilisé des métriques/tests statistiques d'analyse de proportion pour sélectionner les termes qui sont plus importants dans le corpus $D_c$ que dans $D_{\overline{c}}$. Ces métriques sont listées dans le Tableau \ref{tab:quanta:globalweights}.
+Les termes prédéfinis délimitent les passages de demande et résultat indépendamment de toute catégorie, mais nous ne souhaitons analyser que les passages de la catégorie traitée. Il est donc nécessaire d'identifier les termes-clés indiquant l'expression de cette catégorie. 
 
-\begin{table} \label{tab:quanta:globalweights}
-\caption{Métriques globales de termes: les métriques supervisées sont notées $f(t_k,c_i)$ et les non-supervisées sont notées $g(t_k)$}
-\scriptsize
-\begin{tabular}{p{0.48\textwidth}@{\hskip 0.2in}p{0.45\textwidth}}
-\hline\noalign{\smallskip}
- Description & Formule \\
-\noalign{\smallskip}
-\hline
-\noalign{\smallskip}
-Inverse document frequency \cite{sparck1972idf}: simply computes the importance score of $t_k$ all over a corpus $D$ & $idf(t_k) = \log_2 (\frac{N}{N_{t_k}})$  \\ \noalign{\smallskip}
-Delta Document Frequency & $deltadf(w,c_i) = DF_{t_k,c_i} - DF_{t_k,\overline{c_i}}$\\ \noalign{\smallskip}
-Test of Marascuilo & $mar(t_k, c_i) = $ \begin{equation*} 
-\,
-\dfrac{\left(
-\splitdfrac{\splitdfrac{\splitdfrac{(N_{t_k,c_i} - N_{t_k}N_{t_k,c_i}/N)^2}{+ (N_{t_k,\overline{c_i}} - N_{t_k}N_{\overline{c_i}}/N)^2}}{+ (N_{\overline{t_k},c_i} - N_{c_i}N_{\overline{t_k}}/N)^2}}{+ (N_{\overline{t_k},\overline{}} - N_{\overline{t_k}}N_{\overline{c_i}}/N)^2}\right)}{N}
-\end{equation*} \\ \noalign{\smallskip}
-Chi square & $chi2(t_k,c_i) = \frac{N ((N_{t_k,c_i} N_{\overline{t_k},\overline{c_i}}) - (N_{t_k,\overline{c_i}} N_{\overline{t_k},c_i}))^2}{N_{t_k} N_{\overline{t_k}} N_{c_i} N_{\overline{c_i}}}$ \\ \noalign{\smallskip}
-Correlation coefficient of "Ng, Goh, Low" \cite{ng1997ngl} :   & $ngl(t_k,c_i) = \frac{\sqrt{N} ((N_{t_k,c_i} N_{\overline{t_k},\overline{c_i}}) - (N_{t_k,\overline{c_i}} N_{\overline{t_k},c_i}))}{\sqrt{N_{t_k} N_{\overline{t_k}} N_{c_i} N_{\overline{c_i}}}}$\\ \noalign{\smallskip}
-Coefficient of "Galavotti, Sebastiani, and Simi"  \cite{galavotti2000gss}& $gss(t_k,c_i) = (N_{t_k,c_i} N_{\overline{t_k},\overline{c_i}}) -  (N_{t_k,\overline{c_i}} N_{\overline{t_k},c_i})$ \\ \noalign{\smallskip}
-Relevance frequency & $rf(t_k, c_i) = \log\left(2 + \frac{N_{t_k, c_i}}{max(1, N_{t_k, \overline{c_i}})}\right)$\\ \noalign{\smallskip}
-Information gain & $ig(t_k, c_i) = $ \begin{equation*}
-\splitdfrac{\splitdfrac{\splitdfrac{(N_{t_k,c_i} * \log (N_{t_k,c_i} / (N_{t_k}N_{c_i})))}
-{+ (N_{\overline{t_k},c_i} * \log (N_{\overline{t_k},c_i} / (N_{\overline{t_k}}N_{c_i})))}}
-{+ (N_{t_k,\overline{c_i}} * \log (N_{t_k,\overline{c_i}} / (N_{t_k}N_{\overline{c_i}})))}}
-{+ (N_{\overline{t_k},\overline{c_i}} * \log (N_{\overline{t_k},\overline{c_i}} / (N_{\overline{t_k}}N_{\overline{c_i}})))}
-\end{equation*} \\ \noalign{\smallskip}
- Kulback-Leibler divergence & $kld(t_k, c_i)=(N_{t_k,c_i} / N_{t_k}) * \log (\frac{N_{t_k,c_i} N}{N_{t_k}N_{c_i}})$\\ \noalign{\smallskip}
- Delta Smoothed IDF & $dsidf(t_k, c_i)=\log (\frac{(N_{\overline{c_i}}N_{t_k,c_i}) + 0.5}{(N_{c_i}N_{t_k,\overline{c_i}}) + 0.5} $\\ \noalign{\smallskip}
- Delta BM25 IDF \cite{jones2000bm25idf} & $dbidf(t_k, c_i) = \log (\frac{(N_{\overline{c_i}} - N_{t_k,\overline{c_i}} + 0.5) * (N_{t_k,c_i} + 0.5)}{(N_{c_i} - N_{t_k,c_i} + 0.5) * N_{t_k,\overline{c_i}} + 0.5)} $\\ \noalign{\smallskip}
-\hline
-\end{tabular}
-\end{table}
+\subsubsection{Apprentissage des termes-clés d'une catégorie}
+
+ Nous proposons un apprentissage semi-supervisé de ces termes. L'apprentissage est "supervisé" parce qu'on dispose de 2 corpus annotées pour chaque catégorie $c$: les documents à demande de la catégorie ($D_c$) et des documents sans demande de la catégorie ($D_{\overline{c}}$). L'apprentissage est "semi" parce qu'on ne dispose pas d'exemples de termes caractéristiques de la catégorie, mais uniquement de candidat qui sont en fait les termes de $D_c$. Nous avons utilisé des métriques/tests statistiques d'analyse de proportion pour sélectionner les termes qui sont plus importants dans le corpus $D_c$ que dans $D_{\overline{c}}$. Ces métriques sont listées dans le Tableau \ref{tab:quanta:globalweights}.
+ 
+ \begin{enumerate}
+ 	\item  pondération et tri décroissant des termes du corpus $D_c \cup D_{\overline{c}}$
+ 	\item  Sélection des N meilleurs termes (par ex. N=100)
+ 	\item Filtre des termes donnant le meilleur score sur les données de développement
+ \end{enumerate}
+
+
 
 
 \subsection{Méthode 2: classification des sommes d'argent}
+
+\begin{figure}[!htb]
+ \includegraphics[scale=0.6]{extractDmd-archClassifArgent.png}
+ \caption{Extraction des demandes par classification des sommes d'argent}\label{fig:quanta:classif}
+\end{figure}
+
 Les deux champs directement accessibles à partir du texte, sont les quanta demandé ($q_d$) et accordé ($q_r$). Pour les demandes à quanta, il est possible de restreindre l'extraction à ces deux variables. Le sens du résultat ($s_r$) est déduit de la valeur extraite du quantum accordé : \[s_r = \left\lbrace \begin{array}{ll}
 "accepte" & \text{si } q_r > 0 \\
-"rejette" & \text{otherwise} \end{array} \right.\]
+"rejette" & \text{sinon.} \end{array} \right.\]
 
-L'idée est d'extraire les quanta demandés et obtenus puis de d'identifier les paires $(q_d, q_r)$ qui représentent des demandes. Le système recherche les mentions de sommes d'argent qui sont des quanta. L'extraction des quanta est réalisable soit par classification individuelle des sommes d'argent, soit par inférence du groupe de quanta. 
+L'idée est d'extraire les quanta demandés et obtenus puis de d'identifier les paires $(q_d, q_r)$ qui représentent des demandes. Le système recherche les mentions de sommes d'argent qui sont des quanta. La  détection des quanta est réalisable soit par classification individuelle des sommes d'argent, soit par inférence probabiliste du groupe de quanta. 
 
 
 La performance d'une telle approche repose sur deux aspects principaux: la définition des  caractéristiques des objets à classifier, et la résolution des doublons. 
@@ -323,7 +346,7 @@ Il s'agit ici des mentions de sommes d'argent à valeurs égales. Certaines sont
 \subsection{Méthode 3: prédiction jointe de structure}
 ?Apprentissage sur les documents à une seule demande pour limiter les bruits?
 
-Prétraitement: normalisation des sommes d'argent dans les document (par ex. 3000 euros <argent valeur="3000 euros">ARGENT\_i</argent> $i$ étant la position d'apparition de la mention)
+Pré-traitement: normalisation des sommes d'argent dans les document (par ex. 3000 euros <argent valeur="3000 euros">ARGENT\_i</argent> $i$ étant la position d'apparition de la mention)
 
 \begin{equation}
 P(D|T,A) = \sum\limits_{i=1}^{\vert D \vert} p_{\theta_1}(d_i = (a_j, a_l) | T, a_j, a_l, A) \cdot p_{\theta_2}(q_{d_i} = a_j | T, a_j, A) \cdot p_{\theta_3}(q_{r_i} = a_l | T, a_l, A)    
@@ -381,7 +404,7 @@ La définition de la qualité d'une donnée extraite reste la question fondament
 
 \subsubsection{Détection des catégories par classification}
 
-Nous avons évalué la classification binaire avec quatre classifieurs traditionnels: le classifieur naïf bayésien, l'arbre de décision, les K plus proches voisins (KNN), et la machine à vecteurs de support. A chaque entrainement, s'exécute une sélection de modèle par validation criosée sur les données d'entrainement; elle a pour but de sélectionner la métrique locale et la métrique globale appropriée. Les résultats obtenu par 5-folds cross validation sont présentés sur le tableau \ref{tab:quanta:resultat-detect-cat}.  D'après les résultats, La tâche 1 est relativement aisée car les classifieurs traditionnels détectent parfaitement la présence ou non d'une catégorie dans les documents. \textcolor{red}{[DEFINITION DES MÉTRIQUES POUR LA CLASSIFICATION]}
+Nous avons évalué la classification binaire avec quatre classifieurs traditionnels: le classifieur naïf bayésien, l'arbre de décision, les K plus proches voisins (KNN), et la machine à vecteurs de support. A chaque entrainement, s'exécute une sélection de modèle par validation croisée sur les données d'entrainement; elle a pour but de sélectionner la métrique locale et la métrique globale appropriée. Les résultats obtenu par 5-folds cross validation sont présentés sur le tableau \ref{tab:quanta:resultat-detect-cat}.  D'après les résultats, La tâche 1 est relativement aisée car les classifieurs traditionnels détectent parfaitement la présence ou non d'une catégorie dans les documents. \textcolor{red}{[DEFINITION DES MÉTRIQUES D'ÉVALUATION DE LA CLASSIFICATION]}
 
 \begin{table}[!h]
 	\scriptsize
@@ -404,7 +427,7 @@ Nous avons évalué la classification binaire avec quatre classifieurs tradition
 		styx    & 1.0 & 1.0 & 1.0 & 0.984 & 0.983 & 0.983 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 \\
 		\hline
 	\end{tabular}
-	\caption{Resultats d'une 5-fold validation croisée pour la detection categorie  (P= Precision, R=Rappel, F1 = F1-mesure)}\label{tab:quanta:resultat-detect-cat}
+	\caption{Résultats d'une 5-fold validation croisée pour la détection catégorie  (P= Précision, R=Rappel, F1 = F1-mesure)}\label{tab:quanta:resultat-detect-cat}
 \end{table}
 
 \subsubsection{Impact du nombres d'exemples}
