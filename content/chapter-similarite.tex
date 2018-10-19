@@ -76,7 +76,7 @@ Les approches de clustering sont généralement appliquées à une représentati
 Algorithme: \url{http://isiarticles.com/bundles/Article/pre/pdf/79087.pdf}
 
 
-Un des désavantage de l'algorithme des K-médoïdes est son long temps de calcul dû à ???. Nous avons, par conséquent, remplacé la distance euclidienne par la WMD dans la version plus rapide de \cite{Park2009fastkmedoids} des K-médoïdes.
+Un des désavantage de l'algorithme des K-médoïdes est son long temps de calcul dû à ???. Nous avons, par conséquent, remplacé la distance euclidienne par la WMD dans la version plus rapide de \cite{Park2009fastkmedoids} avec nombre de clusters prédéfinis, et celle de \cite{sabzi2011fuzzykmedoids} qui intègre une optimisation du nombre de clusters.
 %\section{Méthode 2: cartes auto-organisatrice de Kohonen et concaténation de plongement sémantique de phrases (sentence embedding)}
 
 \subsection{Apprentissage d'une métrique fondée la modification du document}
@@ -110,7 +110,7 @@ $d_w$ désignant la distance sémantique entre les mots. Ainsi, les substitution
 Il est difficile de calculer de telle distance sur un grand corpus étant donné la longueur de notre document. 
 Nous ne pouvons que l'estimer. Pour cela, nous générons un jeu artificiel de données pour l'entrainement d'un modèle regréssif d'estimation de la métrique entre deux textes $x$ et $y$. En effet, nous partons d'un ensemble $C$ de documents et pour chacun de ces documents, noté $x$, nous générons aléatoirement une valeur seuil de probabilité de perturbation en deça duquel un mot de $x$ est modifié. Par la suite, le texte  $y$, résultant de la modification de $x$, est généré en modifiant séquentiellement les mots de $x$ :
 
-\begin{algorithm}[H]
+\begin{algorithm}[H] % Version française avec : https://pierre.chachatelier.fr/latex/index.php
  \KwData{texte $x$, valeur seuil de probabilité $p$}
  \KwResult{$y$, $\widetilde{d}(x,y)$}
  $y = [] $\; 
@@ -134,7 +134,7 @@ Nous ne pouvons que l'estimer. Pour cela, nous générons un jeu artificiel de d
 \begin{algorithm}[H]
  \KwData{un mot $w$, le vocabulaire $W$ }
  \KwResult{un mot $w'$} 
- $w' = $ un mot différent de $w$ choisi aléatoirement dans $W$
+ $w' = $ un mot différent de $w$ choisi aléatoirement dans $W$\;
  \Return $w'$
  \caption{modifie} \label{algo:similarite:modifiemot}
 \end{algorithm}
