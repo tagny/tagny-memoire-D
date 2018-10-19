@@ -75,6 +75,8 @@ Les approches de clustering sont généralement appliquées à une représentati
 
 Algorithme: \url{http://isiarticles.com/bundles/Article/pre/pdf/79087.pdf}
 
+
+Un des désavantage de l'algorithme des K-médoïdes est son long temps de calcul dû à ???. Nous avons, par conséquent, remplacé la distance euclidienne par la WMD dans la version plus rapide de \cite{Park2009fastkmedoids} des K-médoïdes.
 %\section{Méthode 2: cartes auto-organisatrice de Kohonen et concaténation de plongement sémantique de phrases (sentence embedding)}
 
 \subsection{Apprentissage d'une métrique fondée la modification du document}
@@ -86,7 +88,7 @@ La distance entre deux documents est une fonction du degré de perturbation perm
 \end{postulat}
 La similarité est définie en fonction de la notion de perturbation du contenu d'un texte (Postulat \ref{post:similarite:distance}): après une légère perturbation, un texte reste assez similaire à l'original; et après une forte perturbation, le texte sera très différent de l'identique. la similarité (resp. la distance) décroit (resp. croit inversement) donc avec l'intensité de la perturbation. Nous définissons une densité de probabilité de perturbation $P \in [0; 1]$ associée à la probabilité de modifier un mot (suppression / remplacement par un mot très différent). 
 
-Considérons que pour tout texte $x$, $W_x$ désigne l'ensemble des mots dans $x$
+Considérons que pour tout texte $x$, $W_x$ désigne l'ensemble des mots dans $x$.
 Nous définissons un patron de métriques:
 \begin{equation}
 \begin{array}{cccccc}
@@ -95,13 +97,7 @@ d & : & C \times C & \to & \mathbb{R} & \\
 \end{array}
 \end{equation}
 
-$C$ : corpus
-
-$P_{x,y}$ : ensemble des modifications de $x$ nécessaire pour obtenir $y$ i.e. les paires $(w_x, w_y)$ telles que $w_x \in W_x$ a été remplacé par $w_y \in W_y$  .
-
-$d$ désigne la métrique.
-
-Un simple estimateur de $d$ peut être de considérer le taux de mots modifiés dans $x$: 
+$C$ est le corpus. $P_{x,y}$ est l'ensemble des modifications de $x$ nécessaire pour obtenir $y$ i.e. les paires $(w_x, w_y)$ telles que $w_x \in W_x$ a été remplacé par $w_y \in W_y$. $d$ désigne la métrique. Un simple estimateur de $d$ peut être de considérer le taux de mots modifiés dans $x$: 
 \begin{equation}
 \widetilde{d}(x,y) = \frac{card(P_{x,y})}{card(W_x)}
 \end{equation}
