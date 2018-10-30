@@ -3,7 +3,7 @@
 
 \section{Objectif et Motivation}
 \label{sec:sensresultat:motivation}
-Comme le précédent, ce chapitre est relatif à l'extraction de données sur les demandes, mais  il est question ici d'extraire uniquement le sens du résultat d'une demande connaissant sa catégorie. Cette étude est intéressante parce que le problème devient plus simple. En se passant de la localisation précise des quanta ou plus globalement des passages d'expression des demandes et résultats, l'extraction du sens du résultat peut être formulée comme une tâche de classification de documents. Nous modélisons la tâche comme une classification binaire où un algorithme est entraîné à déterminer si la demande a été rejetée (sens = rejette) ou acceptée (sens = accepte). Nous avons proposé cette modélisation sur une restriction du problème définie par les postulats \ref{postulat:sens:unedemande} et \ref{postulat:sens:sensbinaire}.
+Comme le précédent, ce chapitre est relatif à l'extraction de données sur les demandes. Cependant, il est question ici d'extraire uniquement le sens du résultat d'une demande connaissant sa catégorie. Cette étude est intéressante parce que le problème devient plus simple. En se passant de la localisation précise des quanta ou plus globalement des passages d'expression des demandes et résultats, l'extraction du sens du résultat peut être formulée comme une tâche de classification de documents. Nous modélisons la tâche comme une classification binaire où un algorithme est entraîné à déterminer si la demande a été rejetée (sens = rejette) ou acceptée (sens = accepte). Nous avons proposé cette modélisation sur une restriction du problème définie par les postulats \ref{postulat:sens:unedemande} et \ref{postulat:sens:sensbinaire}.
 
 \begin{postulat}\label{postulat:sens:unedemande}
 Pour toute catégorie de demande $C$, la majorité des documents ne contiennent qu'une demande de catégorie $C$. \textcolor{red}{COMMENT SAVOIR QU'UN DOCUMENT N'A QU'UNE SEULE DEMANDE? CLASSIFICATION POSSIBLE?}
@@ -76,8 +76,10 @@ Cette approche combine la covariance Gini pour $u_{(h)j}$ et le coefficient Logi
 
 \section{Expérimentations et résultats}
 \label{sec:sensresultat:experimentations}
+Nous discutons ici les performances de divers algorithmes populaires et l'impact de la quantité et du déséquilibre des données, de la restriction à des passages en particulier, ainsi que leur capacité à faire abstraction des autres demandes du document. 
+
 \subsection{Protocole d'évaluation}
-Nous discutons ici les performances de divers algorithmes populaires et l'impact de la quantité et du déséquilibre des données, de la restriction à des passages en particulier, aisin que leur capacité à faire abstraction des autres demandes du document. Deux métriques d'évaluation sont utilisées: la précision et la F1-mesure. Du fait du déséquilibre entre les classes, la moyenne des performances sur les deux classe sera micro (agrégation de la contribution individuelle de chaque classe: $F1_{moyenne} = (F1({accepte}) + F1({rejette})) / 2$).
+Deux métriques d'évaluation sont utilisées: la précision et la F1-mesure. Du fait du déséquilibre entre les classes, la moyenne des performances sur les deux classe sera micro (agrégation de la contribution individuelle de chaque classe: $F1_{moyenne} = (F1({accepte}) + F1({rejette})) / 2$).
 
 Les données utilisées sont les mêmes que celles du chapitre précédent. Nous avons seulement fait une restriction sur les documents n'ayant qu'une seule demande annotée pour la catégorie considérée. Le déséquilibre entre les classes est illustrée par la figure \ref{fig:sensresultat:stat-1dmd}. En effet, la demande est plus souvent rejetée qu'acceptée pour les catégorie ACPA, CONCDEL, DANAIS et STYX. Le contraire est observé pour DCPPC et DORIS.
 \begin{figure}[htb]

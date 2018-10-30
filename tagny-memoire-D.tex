@@ -71,7 +71,6 @@
       \addto \captionsenglish {\renewcommand*{\andname}{and}}
       \addto \captionsfrench  {\renewcommand*{\andname}{et}}
 
-\include{config/style_chapitre}
 %\include{entete_pied}
 \makenomenclature
 \renewcommand{\nomname}{Glossaire}
@@ -101,6 +100,8 @@
 
 
 \frontmatter
+% changement du style des chapitres
+\include{config/style_chapitre}
 
 %\include{content/cover}
 %\include{content/thanks}
@@ -135,7 +136,7 @@
 \backmatter
 
 % changement du style des chapitres
-\include{config/style_chapitre}
+\include{config/style_chapitre3}
 
 \input{content/conclusion} % INCLUDE: conclusion
 

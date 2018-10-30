@@ -352,7 +352,10 @@ Pré-traitement: normalisation des sommes d'argent dans les document (par ex. 30
 P(D|T,A) = \sum\limits_{i=1}^{\vert D \vert} p_{\theta_1}(d_i = (a_j, a_l) | T, a_j, a_l, A) \cdot p_{\theta_2}(q_{d_i} = a_j | T, a_j, A) \cdot p_{\theta_3}(q_{r_i} = a_l | T, a_l, A)    
 \end{equation}
 
-\subsection{Résultats expérimentaux}
+\subsection{Interprétation des résultats expérimentaux}
+Nous analysons ici la capacité des approches proposées à reconnaître efficacement la présence des catégories prédéfinies dans les documents, et à extraire les valeurs des attributs des différentes demandes qui y sont décrites. 
+
+
 \subsubsection{Annotation des données d'évaluation}
 \begin{figure}[h!]
 	\includegraphics[width=\textwidth]{chartDataset.png}
@@ -363,6 +366,9 @@ Pour une catégorie $c_i$ de l'ensemble $C$ des catégories existantes, les donn
 
 
 \subsubsection{Métriques d'évaluation}
+\paragraph{Reconnaissance de catégorie}
+
+\paragraph{Demandes et attributs}
  Nous évaluons les approches proposées sur l'extraction de 3 données: le quantum demandé $q_d$, le sens du résultat $s_r$ et le quantum obtenu $q_r$. Une demande est donc un triplet $(q_d, s_r, q_r)$. Il est possible d'évaluer le système pour un sous-ensemble $x$ de ce triplet sur les demandes extraites d'un corpus annotées $D$. Nous utilisons les métriques traditionnellement employées en extraction d'information: la précision (Eq. \ref{eq:quanta:precisiondmd}), le rappel (Eq. \ref{eq:quanta:recalldmd}), et la F1-mesure (Eq. \ref{eq:quanta:f1dmd}). 
  \begin{equation}
  Precision_{c_i,x,D} = \frac{TP_{c_i,x,D}}{TP_{c_i,x,D} + FP_{c_i,x,D}}  \label{eq:quanta:precisiondmd}
