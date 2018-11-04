@@ -139,13 +139,13 @@ Nous ne pouvons que l'estimer. Pour cela, nous générons un jeu artificiel de d
  \caption{modifie} \label{algo:similarite:modifiemot}
 \end{algorithm}
 
-Après avoir généré l'ensemble $B = \lbrace (d_i, d_i', s(d_i, d_i'))\rbrace$ de données artificielle d'entrainement , on entraine un mdoèle regressif pour prédire la similarité entre 2 documents en fonction de leur représentation vectorielle. Ce modèle regressif peut être utilisé comme métrique de similarité dans un algorithme de clustering comme l'algorithme des K-moyennes.
+Après avoir généré l'ensemble $B = \lbrace (d_i, d_i', s(d_i, d_i'))\rbrace$ de données artificielle d'entraînement , on entraîne un modèle régressif pour prédire la similarité entre 2 documents en fonction de leur représentation vectorielle. Ce modèle régressif peut être utilisé comme métrique de similarité dans un algorithme de clustering comme l'algorithme des K-moyennes.
 
 \textcolor{red}{Issues:}
 \begin{itemize}
-\item les docs sont généralement de tailles différentes, ne faudrait il pas intégrer une perturbation ajout de mots? \textcolor{blue}{combiner les modifications par supression et par substitution}
+\item les docs sont généralement de tailles différentes, ne faudrait il pas intégrer une perturbation ajout de mots? \textcolor{blue}{combiner les modifications par suppression et par substitution}
 \item il faudrait intégrer la composante taille du document: \textcolor{blue}{agréger sur le nombre minimal de phrases des paires de documents}
-\item comment assurer les propriétés d'une fonction similarité? par exemple si aucune perturbation n'est opérée, alors la similarité est maximale et si tous les mots sont modifiés alors la similarité est minimale: \textcolor{blue}{agrégation par soustraction des vecteurs du couple de docs. plus deux doc seront similaire, plus le vecteur de leur paire tendra vers le null}
+\item comment assurer les propriétés d'une fonction similarité? par exemple si aucune perturbation n'est opérée, alors la similarité est maximale et si tous les mots sont modifiés alors la similarité est minimale: \textcolor{blue}{agrégation par soustraction des vecteurs du couple de docs. plus deux doc seront similaire, plus le vecteur de leur paire tendra vers le nul}
 \item Ne faudrait il pas prendre en compte un poids pour les mots, car peut-être la modification de certains mots ne devrait pas avoir le même impact sur la similarité ou le taux de perturbation que celle d'autres mots:  \textcolor{blue}{lissage par la somme des distance des vecteurs de mots substitués Eq. \ref{equation:similarite:somme-dist-mots}}
 \item ne faudrait il pas intégré une métrique proche de la tâche: la ressemblance n'est pas forcément globale à tous le corps du document mais plus à certaines régions; donc un document auquel on rajoute quelques phrases ne devrait pas voir  son sens trop changer:  \textcolor{blue}{peut-être agréger les distances minimales entre les paires de phrases}
 \end{itemize}
