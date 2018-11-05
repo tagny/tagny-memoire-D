@@ -17,8 +17,6 @@ http://www.joetsite.com/wp-content/uploads/2018/07/Vol.-72-25-18.pdf
 
 Template \verb=2011 Comparing_Mining_Algorithms_for_Predicting_the_Sev.pdf=
 
-\citep{pavlinek2017textclassLDA} si temps dispo
-
 \section{Objectif et Motivation}
 \label{sec:sensresultat:motivation}
 Comme le précédent, ce chapitre est relatif à l'extraction de données sur les demandes. Cependant, il est question ici d'extraire uniquement le sens du résultat d'une demande connaissant sa catégorie. Cette étude est intéressante parce que le problème devient plus simple. En se passant de la localisation précise des quanta ou plus globalement des passages d'expression des demandes et résultats, l'extraction du sens du résultat peut être formulée comme une tâche de classification de documents. Nous modélisons la tâche comme une classification binaire où un algorithme est entraîné à déterminer si la demande a été rejetée (sens = rejette) ou acceptée (sens = accepte). Nous avons proposé cette modélisation sur une restriction du problème définie par les postulats \ref{postulat:sens:unedemande} et \ref{postulat:sens:sensbinaire}.
@@ -91,6 +89,10 @@ Dans cette approche, $\forall j > 1$, les $w_{hj} $ sont les coefficients de la 
 
 \subsection{Gini-Logit-PLS}
 Cette approche combine la covariance Gini pour $u_{(h)j}$ et le coefficient Logit pour les $w_{hj}$.
+
+
+\section{Méthode}
+Nous raisonnons toujours suivant une seule catégorie $c$. Notre solution est une chaine à 2 étapes de classification: un filtre des décisions à une demande de la catégorie $c$ et un identificateur de la polarité du résultat. Le premier classifieur discrimine les document entre 2 classes: \og une demande \fg{} et \og plusieurs demandes \fg{}.
 
 \section{Expérimentations et résultats}
 \label{sec:sensresultat:experimentations}
