@@ -1,6 +1,24 @@
 \chapter{Identification du Sens du Résultat par Classification}
 \label{chap:sensresultat}
 
+Hypothèse: Les documents à une seule demande de c sont tellement nombreux que si on peut savoir si un doc n'a qu'une seule demande on peut identifier par classification le sens du résultat sur cette demande.
+
+Démonstration: 
+
+- Nb de doc à 1 dmd: si on projette la distribution des demandes dans les docs annotées, sur le corpus plus large, il est fort probable que les les doc à une demande soit majoritaires
+
+- reconnaissance des docs à 1 dmd:  par classification arbre ou ensemble-SVM à moyenne de probabilités
+
+- identification du sens du résultat: classif arbre ou ensembliste ou Gini-PLS
+
+Confiance dans les résultats (impossible du fait du faible nombre de doc - peut-être sur danais)
+
+http://www.joetsite.com/wp-content/uploads/2018/07/Vol.-72-25-18.pdf
+
+Template \verb=2011 Comparing_Mining_Algorithms_for_Predicting_the_Sev.pdf=
+
+\citep{pavlinek2017textclassLDA} si temps dispo
+
 \section{Objectif et Motivation}
 \label{sec:sensresultat:motivation}
 Comme le précédent, ce chapitre est relatif à l'extraction de données sur les demandes. Cependant, il est question ici d'extraire uniquement le sens du résultat d'une demande connaissant sa catégorie. Cette étude est intéressante parce que le problème devient plus simple. En se passant de la localisation précise des quanta ou plus globalement des passages d'expression des demandes et résultats, l'extraction du sens du résultat peut être formulée comme une tâche de classification de documents. Nous modélisons la tâche comme une classification binaire où un algorithme est entraîné à déterminer si la demande a été rejetée (sens = rejette) ou acceptée (sens = accepte). Nous avons proposé cette modélisation sur une restriction du problème définie par les postulats \ref{postulat:sens:unedemande} et \ref{postulat:sens:sensbinaire}.
