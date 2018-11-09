@@ -364,6 +364,43 @@ Nous analysons ici la capacité des approches proposées à reconnaître efficac
 Pour une catégorie $c_i$ de l'ensemble $C$ des catégories existantes, les données de références sont annotées dans un tableau. Chaque ligne décrit une demande. L'annotateur devrait associer deux corpus au tableau. Le premier corpus $D_{c_i}$ comprends les documents d'où proviennent les demandes annotées pour $c_i$. Le second corpus $D_{\overline{c_i}}$ contient des exemples de documents ne contenant aucune demande de catégorie $c_i$. Le corpus $D_{\overline{c_i}}$ permet de s'assurer que le système n'extrait pas de demande dans des documents ne discutant pas de $c_i$.  Pour notre étude, un expert a extrait manuellement des demandes des 6 catégories du Tableau \ref{tab:quanta:exemple-categorie}. Nous considérons que les demandes de type $c_i$, présentes dans le corpus $D_{c_i} \cup D_{\overline{c_i}}$, ont été toutes annotées dans le tableau. La répartition, des documents traités durant ce processus, est donnée par l'histogramme de la Figure \ref{fig:quanta:hist-repartition-docs}.  On remarque que, pour toutes les catégories, les documents à une seule demande sont en général majoritaires (barres bleues). Quelques documents ne comprenant aucune demande de la catégorie d'intérêt ont été aussi rassemblés (barres grises). Il faut aussi noter que malgré la non annotation des demandes directement dans les documents mais plutôt dans un tableau (annotation externe), l'annotation reste une tâche très difficile. Le très faible nombre de documents traités en est la conséquence. Le nombre  maximum pour une catégorie n'a été que de 198 documents (barres vertes) \textcolor{red}{[DURÉE D'ANNOTATION? QUELLE EST LA VITESSE MOYENNE D'EXTRACTION MANUELLE DES DEMANDES DANS UN DOCUMENT?]}.
 
 
+Avant l'évaluation, nous avons vérifié que les valeurs annotées existaient bel et bien dans les documents. Le calcul du taux de quanta mentionnés donne une idée de la borne supérieure de performance qu'une méthode d'extraction peut atteindre. D'autre part il faut admettre qu'il ne s'agit que d'une comparaison entre sommes d'argent juste pour savoir si une somme, de la même valeur que le quantum, est présente dans le document. Rien n'assure que la somme mentionnée est le quantum recherché.
+
+\begin{table}[!htb]
+	\scriptsize
+	\begin{tabular}{|l|l|l|l|l|l|l|}
+		\hline
+		\textbf{Catégorie} & \textbf{\#$q_d$} & \textbf{\#$(q_d\neq 0)$} & \textbf{\# dans doc.} & \textbf{\# dans Litige} & \textbf{\# dans Motifs} & \textbf{\# dans Dispositif} \\ \hline
+		acpa               & 23                   & 16                                           & 16 (100\%)                   & 16 (100\%)              & 9 (56.25\%)             & 5 (31.25\%)                 \\ \hline
+		concdel            & 58                   & 56                                           & 55 (98.21\%)                 & 55 (98.21\%)            & 7 (12.5\%)              & 2 (3.57\%)                  \\ \hline
+		danais             & 208                  & 182                                          & 182 (100\%)                  & 179(100\%)              & 39 (21.43\%)            & 23 (12.64\%)                \\ \hline
+		dcppc              & 126                  & 126                                          & 122 (96.83\%)                & 109 (86.51\%)           & 71 (56.35\%)            & 65 (51.59\%)                \\ \hline
+		doris              & 94                   & 83                                           & 83 (100\%)                   & 82 (98.80\%)            & 21 (25.30)\%            & 6 (7.23\%)                  \\ \hline
+		styx               & 89                   & 86                                           & 86 (100\%)                   & 86 (100\%)              & 12 (13.95\%)            & 9 (10.47\%)                 \\ \hline
+	\end{tabular}
+\textit{Les pourcentages ne sont calculés que pour les valeurs non nulles}
+\caption{Taux de quanta demandés mentionnés dans les documents annotés} \label{tab:quanta:mentionQd}
+\end{table}
+
+\begin{table}[!htb]
+	\scriptsize
+	\begin{tabular}{|l|l|l|l|l|l|l|}
+		\hline
+		\textbf{Catégorie} & \textbf{\# $q_r$} & \textbf{\# $q_r\neq 0$} & \textbf{\# dans doc.} & \textbf{\# dans Litige} & \textbf{\# dans Motifs} & \textbf{\# dans Dispositif} \\ \hline
+		acpa               & 23                & 6                       & 6 (100\%)             & 3 (50\%)                & 6 (100\%)               & 5 (83.33\%)                 \\ \hline
+		concdel            & 58                & 8                       & 8 (100\%)             & 2 (25\%)                & 8 (100\%)               & 6 (75\%)                    \\ \hline
+		danais             & 208               & 23                      & 23 (100\%)            & 15 (65.22\%)            & 22 (95.65\%)            & 20 (86.96\%)                \\ \hline
+		dcppc              & 126               & 76                      & 75 (98.68\%)          & 55 (72.37\%)            & 56 (73.68\%)            & 64 (84.21\%)                \\ \hline
+		doris              & 94                & 44                      & 44 (100\%)            & 28 (63.64\%)            & 40 (90.91)\%            & 24 (54.55\%)                \\ \hline
+		styx               & 89                & 30                      & 29 (96.67\%)          & 16 (53.33\%)            & 22 (73.33\%)            & 29 (96.67\%)                \\ \hline
+	\end{tabular}
+\textit{Les pourcentages ne sont calculés que pour les valeurs non nulles}
+\caption{Taux de quanta accordés mentionnés dans les documents annotés} \label{tab:quanta:mentionQr}
+\end{table}
+
+Les tableaux \ref{tab:quanta:mentionQd} et \ref{tab:quanta:mentionQr} donne un aperçu de la présence des valeurs de quanta dans les documents annotés, ainsi que leurs occurrences dans les différentes sections Litige, Motifs, et Dispositif. Les pourcentages ne sont calculés que pour les valeurs non nulles car les valeurs nulles ne sont généralement pas mentionnées. Un quantum demandé est noté nul si l'annotateur n'a pas trouvé sa valeur dans le document. Un quantum accordé est noté nul lorsque la demande est rejeté ou si la valeur n'est pas identifiable dans le document.
+
+ Il est évident qu'en général, lorsqu'un quanta est non nul, sa valeur est identifiable dans le document. Sauf exception faite de quelques quanta qui sont calculés sur la base de valeurs mentionnées. Les taux d'occurrence des valeurs de quanta dans les diverses sections, renforce notre hypothèse selon laquelle il est possible de n'extraire les quanta demandés uniquement dans la section Litige, et les quanta accordés dans les sections Motifs et Dispositif. Le sectionnement préalable des documents trouve ainsi son importance. Malheureusement, la restriction de l'extraction dans une section particulière tend à réduire les possibilités de retrouver le quantum. Mais d'autres statistiques démontrent qu'elle réduit les risques de doublons.
 
 \subsubsection{Métriques d'évaluation}
 \paragraph{Reconnaissance de catégorie}
