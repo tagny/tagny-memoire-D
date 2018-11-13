@@ -379,7 +379,7 @@ Avant l'évaluation, nous avons vérifié que les valeurs annotées existaient b
 		styx               & 89                   & 86                                           & 86 (100\%)                   & 86 (100\%)              & 12 (13.95\%)            & 9 (10.47\%)                 \\ \hline
 	\end{tabular}
 \textit{Les pourcentages ne sont calculés que pour les valeurs non nulles}
-\caption{Taux de quanta demandés mentionnés dans les documents annotés} \label{tab:quanta:mentionQd}
+\caption{Taux de quanta demandés ($q_d$) mentionnés dans les documents annotés} \label{tab:quanta:mentionQd}
 \end{table}
 
 \begin{table}[!htb]
@@ -395,12 +395,12 @@ Avant l'évaluation, nous avons vérifié que les valeurs annotées existaient b
 		styx               & 89                & 30                      & 29 (96.67\%)          & 16 (53.33\%)            & 22 (73.33\%)            & 29 (96.67\%)                \\ \hline
 	\end{tabular}
 \textit{Les pourcentages ne sont calculés que pour les valeurs non nulles}
-\caption{Taux de quanta accordés mentionnés dans les documents annotés} \label{tab:quanta:mentionQr}
+\caption{Taux de quanta accordés ($q_r$) mentionnés dans les documents annotés} \label{tab:quanta:mentionQr}
 \end{table}
 
 Les tableaux \ref{tab:quanta:mentionQd} et \ref{tab:quanta:mentionQr} donne un aperçu de la présence des valeurs de quanta dans les documents annotés, ainsi que leurs occurrences dans les différentes sections Litige, Motifs, et Dispositif. Les pourcentages ne sont calculés que pour les valeurs non nulles car les valeurs nulles ne sont généralement pas mentionnées. Un quantum demandé est noté nul si l'annotateur n'a pas trouvé sa valeur dans le document. Un quantum accordé est noté nul lorsque la demande est rejeté ou si la valeur n'est pas identifiable dans le document.
 
- Il est évident qu'en général, lorsqu'un quanta est non nul, sa valeur est identifiable dans le document. Sauf exception faite de quelques quanta qui sont calculés sur la base de valeurs mentionnées. Les taux d'occurrence des valeurs de quanta dans les diverses sections, renforce notre hypothèse selon laquelle il est possible de n'extraire les quanta demandés uniquement dans la section Litige, et les quanta accordés dans les sections Motifs et Dispositif. Le sectionnement préalable des documents trouve ainsi son importance. Malheureusement, la restriction de l'extraction dans une section particulière tend à réduire les possibilités de retrouver le quantum. Mais d'autres statistiques démontrent qu'elle réduit les risques de doublons.
+ Il est évident qu'en général, lorsqu'un quanta est non nul, sa valeur est identifiable dans le document. Sauf exception faite de quelques quanta qui sont calculés sur la base de valeurs mentionnées. Les taux d'occurrence des valeurs de quanta dans les diverses sections, renforce notre hypothèse selon laquelle il est possible de n'extraire les quanta demandés uniquement dans la section Litige, et les quanta accordés dans les sections Motifs et Dispositif. Le sectionnement préalable des documents trouve ainsi son importance. Malheureusement, la restriction de l'extraction dans une section particulière tend souvent à réduire les possibilités de retrouver le quantum qui se trouve dans une autre section. 
 
 \subsubsection{Métriques d'évaluation}
 \paragraph{Reconnaissance de catégorie}
@@ -441,7 +441,7 @@ FN_{c_i,x,D} = \sum\limits_{d_j \in D} FN_{c_i,x,d_j} \label{eq:quanta:fndmd}
 \end{equation}
 
 
-La définition de la qualité d'une donnée extraite reste la question fondamentale de l'évaluation. Durant l'annotation, les données sont reportées dans le tableau sous une forme qui peut être différente de la mention dans le document. Par exemple,  La valeur observée et la valeur reportée restent néanmoins égales. Il est donc nécessaire de ne comparer que les valeurs. Pour le sens du résultat, la valeur est catégorique, et par conséquent, facilement comparable. En effet, il suffit de comparer les labels. Par contre, les quanta sont des sommes d'argent i.e. des quantités à valeur et unité monétaire. Pour simplifier, nous avons considéré que l'unité est la même pour les données extraites et annotées pour un même document. Pour obtenir la valeur, nous ramenons la mention extraite à un nombre décimal. Le symbole de la décimale étant la virgule (\og , \fg) en Français, il suffit d'éliminer, de la somme d'argent, tous les caractères différents des chiffres et de la virgule; puis remplacer la virgule par un point. Par exemple, la valeur de \og 3 000 \euro \fg est $3000$, celle de \og 265 ' 550 , 83 euros \fg est $265550.83$ ).
+La définition de la qualité d'une donnée extraite reste la question fondamentale de l'évaluation. Durant l'annotation, les données sont reportées dans le tableau sous une forme qui peut être différente de la mention dans le document. Par exemple,  La valeur observée et la valeur reportée restent néanmoins égales. Il est donc nécessaire de ne comparer que les valeurs. Pour le sens du résultat, la valeur est catégorique, et par conséquent, facilement comparable. En effet, il suffit de comparer les labels. Par contre, les quanta sont des sommes d'argent i.e. des quantités à valeur et unité monétaire. Pour simplifier, nous avons considéré que l'unité est la même pour les données extraites et annotées pour un même document. Pour obtenir la valeur, nous ramenons la mention extraite à un nombre décimal. Le symbole de la décimale étant la virgule (\og , \fg) en Français, il suffit d'éliminer, de la somme d'argent, tous les caractères différents des chiffres et de la virgule; puis remplacer cette dernière par un point. Par exemple, la valeur de \og 3 000 \euro \fg est $3000$, celle de \og 265 ' 550 , 83 euros \fg est $265550.83$ ).
 
 
 
