@@ -110,7 +110,7 @@ Le problème est ainsi décomposé grossièrement en tâches:
 \item[Tâche 1:] Détection des catégories présentes dans le document pour n'appliquer l'extraction  que de ces catégories;
 \item[Tâche 2:] Extraction des demandes des catégories identifiées:
 \begin{enumerate}
-	\item identification des données: quanta demandés, quantas obtenus, et sens du résultat;
+	\item identification des données: quanta demandés, quanta obtenus, et sens du résultat;
 	\item résolution des références ou des liens entre données de la même demande.
 \end{enumerate}
 \end{description}
@@ -151,7 +151,7 @@ Mais ces formulations ne couvrent pas toujours avec exhaustivité l'expressivit�
 \end{itemize}
 
 \subsection{Approches d'extraction de structures}
-L'extraction d'information composée passe par une formulation modulaire du problème en tâches plus simples. Par exemple, on a d'abord l'extraction respective déclencheurs, les arguments et les attributs. Ensuite, la résolution de référence vient construire les structures en reliant les différents valeurs de champs extraites précédemment. A partir de là, on définit une approche d'extraction qui peut modéliser soit une chaine de d'inférences élémentaires ou pipeline, soit une inférence jointe capable d'extraire toute la structure d'un seul coup. Les pipelines sont une approximation grossière victime de la propagation d'erreurs entre module [?]. Bien que les modules sont simples, ils ne corrigent malheureusement pas les erreurs des niveaux précédents. L'inférence jointe permet non seulement d'éviter ou de réduire tout au moins la propagation d'erreurs mais aussi d'exploiter la dépendance mutuelle qui existe entre les étages [?]. Cependant, ce n'est pas toujours une bonne idée de joindre tous les modules; il faut bien choisir les étapes à joindre.
+L'extraction d'information composée passe par une formulation modulaire du problème en tâches plus simples. Par exemple, on a d'abord l'extraction respective déclencheurs, les arguments et les attributs. Ensuite, la résolution de référence vient construire les structures en reliant les différents valeurs de champs extraites précédemment. A partir de là, on définit une approche d'extraction qui peut modéliser soit une chaîne de d'inférences élémentaires ou pipeline, soit une inférence jointe capable d'extraire toute la structure d'un seul coup. Les pipelines sont une approximation grossière victime de la propagation d'erreurs entre module [?]. Bien que les modules sont simples, ils ne corrigent malheureusement pas les erreurs des niveaux précédents. L'inférence jointe permet non seulement d'éviter ou de réduire tout au moins la propagation d'erreurs mais aussi d'exploiter la dépendance mutuelle qui existe entre les étages [?]. Cependant, ce n'est pas toujours une bonne idée de joindre tous les modules; il faut bien choisir les étapes à joindre.
 
 
 \begin{table}[!h]
@@ -164,7 +164,7 @@ L'extraction d'information composée passe par une formulation modulaire du prob
 
 $p_\theta(t_i, r_i, a \vert i, N_i, x)$ \cite{yang2016jointEntityEvt} %\linebreak 
 \\ \hline
-\textbf{Réseau de neuronnes} pour automatiser la génération des caractéristiques et la modélisation de la structure & (i) \textbf{Architecture multicouche de réseaux de neuronnes récurrents}: encodage de la phrase, encodage des contextes, prédiction du déclencheur, prédiction des rôles, mémoire matricielle d'interdépendance déclencheur-argument \cite{nguyen2016jointtrgarg},  
+\textbf{Réseau de neurones} pour automatiser la génération des caractéristiques et la modélisation de la structure & (i) \textbf{Architecture multicouche de réseaux de neuronnes récurrents}: encodage de la phrase, encodage des contextes, prédiction du déclencheur, prédiction des rôles, mémoire matricielle d'interdépendance déclencheur-argument \cite{nguyen2016jointtrgarg},  
 
 (ii) \textbf{Réseau de pointeur} (\textit{pointer network}): un encodeur de la phrase et des contextes, plusieurs décodeurs (un pour chaque champ) \cite{palm2017e2e-dnn} \\ \hline
 \end{tabular}
@@ -223,7 +223,7 @@ RF, MARASCUILO, TEST DE PROPORTIONS, CHI2, ...
 
 \section{Détection des catégories par classification}
 
-Étant données l'ensemble $D_{\overline{c_i}}$ des documents ne comprenant aucune demande de la catégorie d'intérêt $c_i$, nous proposons de modéliser la tâche de détection des catégories en une tâche de classification. Pour chaque catégorie, un classifieur binaire de document est entrainé pour déterminer si le document analysé contient ou pas une demande de la catégorie. Pour cela, chaque document $d_j$ est représenté sous une forme vectorielle traditionnelle du type TF-IDF (\textit{term frequency - inverse document frequency}) où chaque dimension représente un mot dont le poids est le produit normalisé d'un poids $gw$ global au corpus du mot et d'un poids $lw$ local au document: $w(t_k, d_j) = lw(t_k, d_j) \times gw(t_k) \times nf(d_j)$, où $nf$ est le facteur de normalisation. 
+Étant données l'ensemble $D_{\overline{c_i}}$ des documents ne comprenant aucune demande de la catégorie d'intérêt $c_i$, nous proposons de modéliser la tâche de détection des catégories en une tâche de classification. Pour chaque catégorie, un classifieur binaire de document est entraîné pour déterminer si le document analysé contient ou pas une demande de la catégorie. Pour cela, chaque document $d_j$ est représenté sous une forme vectorielle traditionnelle du type TF-IDF (\textit{term frequency - inverse document frequency}) où chaque dimension représente un mot dont le poids est le produit normalisé d'un poids $gw$ global au corpus du mot et d'un poids $lw$ local au document: $w(t_k, d_j) = lw(t_k, d_j) \times gw(t_k) \times nf(d_j)$, où $nf$ est le facteur de normalisation. 
 
 
 \section{Extraction des demandes}
@@ -236,7 +236,7 @@ L'étude consiste en la proposition et la comparaison empirique d'adaptations de
 \label{subsec:quanta:attributs:regles}
 
 %\textcolor{red}{Cité la localisation des unités de mésure / considérer le découpage en phrases à la place du découpage avec les verbes introductifs. Formaliser l'algorithme (si possible donner la complexité et le temps d'extraction moyen par document)}
-Pour chacune des catégories détectées, nous proposons ici une chaine d'extraction à base de termes-clés. Il s'agit d'une approche qui tente de reproduire une lecture naïve du document. Elle est ainsi basée sur des sortes de formes d'expression répétitives et inspirées de nos lectures des documents. La technique consiste à marquer les énoncés de demandes et résultats. Dans ces passages, les quanta sont localisés à proximité de termes-clés caractérisant la catégorie. Par exemple, la Figure \ref{fig:quanta:exemple-proximite} présente un extrait de passage exprimant une demande d'\textit{amende civile pour procédure abusive}.
+Pour chacune des catégories détectées, nous proposons ici une chaîne d'extraction à base de termes-clés. Il s'agit d'une approche qui tente de reproduire une lecture naïve du document. Elle est ainsi basée sur des sortes de formes d'expression répétitives et inspirées de nos lectures des documents. La technique consiste à marquer les énoncés de demandes et résultats. Dans ces passages, les quanta sont localisés à proximité de termes-clés caractérisant la catégorie. Par exemple, la Figure \ref{fig:quanta:exemple-proximite} présente un extrait de passage exprimant une demande d'\textit{amende civile pour procédure abusive}.
 
 \subsubsection{Annotation des énoncés et termes-clés}
 
@@ -336,7 +336,7 @@ Les caractéristiques des paires consiste en l'agrégation des vecteurs des deux
 \subsubsection{Résolution des doublons}
 Il s'agit ici des mentions de sommes d'argent à valeurs égales. Certaines sont correspondent au même quantum (par ex. quanta du MOTIFS répétés dans le DISPOSITIF). D'autres représentent des quanta différents.
 
- Le problème des doublons se pose déjà sur les données d'entrainement. En effet, nous devons retrouver à quelle mention de somme d'argent correspond chaque quantum du tableau des annotations manuelles. Si on annote tous les doublons comme quanta, se retrouve avec des demandes en plus. Même si on considère qu'il s'agit de la même demande, on n'en est pas sûr. On peut choisir le plus probable parmi les doublons présents.
+ Le problème des doublons se pose déjà sur les données d'entraînement. En effet, nous devons retrouver à quelle mention de somme d'argent correspond chaque quantum du tableau des annotations manuelles. Si on annote tous les doublons comme quanta, se retrouve avec des demandes en plus. Même si on considère qu'il s'agit de la même demande, on n'en est pas sûr. On peut choisir le plus probable parmi les doublons présents.
 
 %Résolution des doublons: classification de paires apprise sur un dataset généré à partir du comportement observé des détecteur de quanta sur le corpus d'entrainement. (a1, a2) -> (similaire, différent). UNIQUEMENT POUR DES SOMME DE VALEURS EGALES
 
@@ -447,7 +447,7 @@ La définition de la qualité d'une donnée extraite reste la question fondament
 
 \subsubsection{Détection des catégories par classification}
 
-Nous avons évalué la classification binaire avec quatre classifieurs traditionnels: le classifieur naïf bayésien, l'arbre de décision, les K plus proches voisins (KNN), et la machine à vecteurs de support. A chaque entrainement, s'exécute une sélection de modèle par validation croisée sur les données d'entrainement; elle a pour but de sélectionner la métrique locale et la métrique globale appropriée. Les résultats obtenu par 5-folds cross validation sont présentés sur le tableau \ref{tab:quanta:resultat-detect-cat}.  D'après les résultats, La tâche 1 est relativement aisée car les classifieurs traditionnels détectent parfaitement la présence ou non d'une catégorie dans les documents. \textcolor{red}{[DEFINITION DES MÉTRIQUES D'ÉVALUATION DE LA CLASSIFICATION]}
+Nous avons évalué la classification binaire avec quatre classifieurs traditionnels: le classifieur naïf bayésien, l'arbre de décision, les K plus proches voisins (KNN), et la machine à vecteurs de support. A chaque entraînement, s'exécute une sélection de modèle par validation croisée sur les données d'entraînement; elle a pour but de sélectionner la métrique locale et la métrique globale appropriée. Les résultats obtenu par 5-folds cross validation sont présentés sur le tableau \ref{tab:quanta:resultat-detect-cat}.  D'après les résultats, La tâche 1 est relativement aisée car les classifieurs traditionnels détectent parfaitement la présence ou non d'une catégorie dans les documents. \textcolor{red}{[DEFINITION DES MÉTRIQUES D'ÉVALUATION DE LA CLASSIFICATION]}
 
 \begin{table}[!h]
 	\scriptsize
