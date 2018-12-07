@@ -99,11 +99,11 @@ d & : & C \times C & \to & \mathbb{R} & \\
 
 $C$ est le corpus. $P_{x,y}$ est l'ensemble des modifications de $x$ nécessaire pour obtenir $y$ i.e. les paires $(w_x, w_y)$ telles que $w_x \in W_x$ a été remplacé par $w_y \in W_y$. $d$ désigne la métrique. Un simple estimateur de $d$ peut être de considérer le taux de mots modifiés dans $x$: 
 \begin{equation}
-\widetilde{d}(x,y) = \frac{card(P_{x,y})}{card(W_x)}
+\widetilde{d}(x,y) = \frac{\vert\vert P_{x,y} \vert\vert}{\vert\vert W_x \vert\vert}
 \end{equation}
  Un tel modèle ne considère ni l'ordre des mots, ni celui des phrases, ni la différence d'importance entre les mots, la complexité de la modification (une substitution est plus complexe qu'une suppression ou une insertion), ni le degré sémantique des perturbations. ce dernier peut être estimé en lissant le taux de perturbation à l'aide de la distance sémantique entre les mots substitués (le vecteur représentant le mot vide étant le vecteur nul par ex.):
 \begin{equation}
-\widetilde{d}(x,y) = \frac{\sum\limits_{(w_x, w_y) \in P_{x,y}} d_w(w_x,w_y)}{card(W_x)} \label{equation:similarite:somme-dist-mots}
+\widetilde{d}(x,y) = \frac{\sum\limits_{(w_x, w_y) \in P_{x,y}} d_w(w_x,w_y)}{\vert\vert W_x \vert\vert} \label{equation:similarite:somme-dist-mots}
 \end{equation}
 $d_w$ désignant la distance sémantique entre les mots. Ainsi, les substitutions sont pondérées par la distance cosinus entre les vecteurs des mots échangés.
 
