@@ -191,7 +191,7 @@ Les modèles HMM et CRF étant tous les deux supervisés, ils doivent être entr
 
 \subsection{Définition de descripteurs candidats}
 
-\subsubsection{Descripteurs candidats pour la détection des sections}
+\subsubsection{Descripteurs pour la détection des sections}
 
 Nous considérons donc la ligne comme élément à étiqueter lors du sectionnement. Nous n'avons pas travailler au niveau des mots afin d'éviter que des mots de la même ligne ne soient classés dans des sections différentes. L'étiquetage des phrases a été aussi évité car en découpant les documents en phrases tel qu'elles sont entendues en français, on a généralement des segments qui s'étendent d'une section à une autre (absence de ponctuation). de plus, l'entête en particulier a plus l'apparence d'un formulaire.
 
@@ -205,7 +205,7 @@ Lors de l'extraction des caractéristiques, le document est considéré comme di
  (\verb|pLength|, \verb|pRelLength|, \verb|nLength|, \verb|nRelLength|).
 \end{itemize}
 
-\subsubsection{Descripteurs candidats pour la détections d'entités}
+\subsubsection{Descripteurs pour la détection d'entités}
 
 La détection d'entités consiste à entraîner soit un modèle CRF, soit un modèle HMM pour étiqueter les différentes segments de texte (mot, ponctuation, numéro, identifiant) suivant qu'ils appartiennent où non à la mention d'une entité. Les deux modèles nécessitent des caractéristiques, dont certaines peuvent être définies sur la base de régularités directement observables dans les textes. Il est également possible d'obtenir des descripteurs à partir du résultat d'autres tâches d'analyse de texte.
 

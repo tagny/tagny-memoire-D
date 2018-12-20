@@ -1,179 +1,182 @@
 \chapter{Extraction de Données Relatives aux Demandes}
+%\chapter{Extraction des demandes et résultats correspondants}
 \label{chap:quanta}
 
 \section{Introduction}
 \label{sec:quanta:introduction}
-Au c\oe{}ur de l'analyse des décisions de justice se trouve le concept de demande. Il s'agit d'une réclamation ou requête effectuée par une des parties devant le juge. Par exemple, une partie peut demander des dommages-intérêts en réparation d'un préjudice subi, ou bien un divorce, ou bien des indemnités auxquelles elle pense avoir droit, ou encore une étude d'expert, etc. Les demandes sont fondamentales car l'argumentation durant le déroulement de l'affaire a deux buts : faire accepter ses demandes et faire rejeter celle de la partie adverse. L'extraction des demandes et des résultats correspondant, dans un corpus, permet ainsi d'avoir une estimation quantifiée des chances de réussite ou d'échec de certains types de demandes. Les informations qui nous intéressent sont la \textbf{catégorie de la demande}, le \textbf{quantum ou montant demandé}, le \textbf{sens du résultat} (par ex. la demande a-t-elle été acceptée ou rejetée?), et le \textbf{quantum ou montant obtenu} (décidé par les juges). Pour pouvoir extraire les demandes et les résultats, il est nécessaire de comprendre comment ils sont exprimés et co-référencés dans les décisions jurisprudentielles. Leur expression peut comporter plus ou moins de complexité avec souvent des références à des jugements antérieurs, des agrégations ou des restrictions (Figure \ref{fig:quanta:expr-dmd-rst}).
+Au c\oe{}ur de l'analyse des décisions de justice se trouve le concept de demande. Il s'agit d'une réclamation ou requête effectuée par une ou plusieurs parties aux juges. Une partie peut demander des dommages-intérêts en réparation d'un préjudice subi, ou bien un divorce, ou bien des indemnités auxquelles elle pense avoir droit, ou encore une étude d'expert, etc. Les demandes sont fondamentales car l'argumentation au cours de l'affaire a deux buts : faire accepter ses demandes et faire rejeter celle de la partie adverse. L'extraction des demandes et des résultats correspondants, dans un corpus, permet ainsi d'avoir une estimation quantifiée des chances de réussite ou d'échec de certains types de demandes. Les informations qui nous intéressent sont la \textbf{catégorie de la demande}, le \textbf{quantum (montant) demandé}, le \textbf{sens du résultat} (par ex. la demande a-t-elle été acceptée ou rejetée?), et le \textbf{quantum obtenu} (décidé par les juges). Pour pouvoir extraire les demandes et les résultats, il est nécessaire de comprendre comment ils sont exprimés et co-référencés dans les décisions jurisprudentielles. Leur expression peut comporter plus ou moins de complexité avec souvent des références à des jugements antérieurs, des agrégations ou des restrictions (Figure \ref{fig:quanta:expr-dmd-rst}).
+
+\begin{figure}[h]
+	\scriptsize
+	\centering
+	\begin{subfigure}[t]{0.95\textwidth}
+		\fbox{\parbox{\textwidth}{Jennifer M., Catherine M. et Sandra M. ... demandent à la Cour de :
+				
+				- les recevoir régulièrement appelantes incidentes du \textcolor{blue}{jugement du 23/05/2014} ;
+				
+				- infirmer \textcolor{blue}{le dit jugement} en \textcolor{brown}{toutes ses dispositions} ; ...
+				
+				Statuant à nouveau ...
+				
+				- \textcolor{brown}{les condamner au paiement d'une somme de  3 000,00 \euro{} pour procédure abusive et aux entiers dépens} ; }}
+		\caption{Exemples d'expression de demandes}\label{fig:quanta:expr-dmd}
+	\end{subfigure} 
+	
+	
+	\begin{subfigure}[t]{0.95\textwidth}
+		\fbox{\parbox{\textwidth}{La cour, ...  
+				
+				CONFIRME \textcolor{blue}{le jugement entreprise} en \textcolor{brown}{toutes ses dispositions}.
+				
+				Y ajoutant
+				
+				\textcolor{gray}{CONSTATE que Amélanie Gitane P. épouse M. est défaillante à rapporter la preuve
+					d'une occupation trentenaire lui permettant d'invoquer la prescription
+					acquisitive de la parcelle BH 377 située [...].}
+				
+				\textcolor{gray}{DEBOUTE Amélanie Gitane P. épouse M. de sa demande en dommages et intérêts.}
+				
+				\textcolor{gray}{CONDAMNE Amélanie Gitane P. épouse M. aux dépens d'appel.}
+				
+				\textcolor{gray}{DIT n'y avoir lieu à l'application de l'article 700 du Code de Procédure Civile.}
+		}}
+		\caption{Exemple d'expression de résultat}\label{fig:quanta:expr-rst}
+	\end{subfigure}
+	\caption{Expressions \textcolor{gray}{simples}, ou comprenant des  \textcolor{blue}{références} et  des \textcolor{brown}{agrégations} (extraits de la décision 14/01082 de la cour d'appel de Saint-Denis (Réunion))}\label{fig:quanta:expr-dmd-rst}
+\end{figure}
+
 
 \subsection{Données cibles à extraire}
+
 \subsubsection{Catégorie de demande}
-Une catégorie $c$ de demande regroupe les prétentions qui sont de même nature par le fait qu'elles partagent deux aspects: l'\textbf{objet} demandé (par ex. dommages-intérêts, amende, déclaration de créance, ...) et le \textbf{fondement} c'est-à-dire les règles ou normes ou principes juridiques qui fondent la demande (par ex. article 700 du code de procédure civile). Des expressions particulières sont souvent utilisées pour faire référence aux catégories (Tableau \ref{tab:quanta:exemple-categorie}).
+
+Une catégorie $c$ de demande regroupe les prétentions qui sont de même nature par le fait qu'elles partagent deux aspects: l'\textbf{objet} demandé (par ex. dommages-intérêts, amende, déclaration de créance) et le \textbf{fondement} c'est-à-dire les règles ou normes ou principes juridiques qui fondent la demande (par ex. article 700 du code de procédure civile). Des expressions particulières sont souvent utilisées pour faire référence aux catégories (Tableau \ref{tab:quanta:exemple-categorie}).
 
 \begin{table}[h!]
 \scriptsize
-\begin{tabular}{|p{0.45\textwidth}|p{0.15\textwidth}|p{0.3\textwidth}|}
+\begin{tabular}{|c|p{0.35\textwidth}|p{0.15\textwidth}|p{0.3\textwidth}|}
 \hline
-\textbf{Expression nominative (label)  }                                     & \textbf{Objet}                                                       & \textbf{Fondement}                                                                 \\ \hline
-dommages-intérêts pour abus de procédure (danais)                    & dommages-intérêts                                           & Articles 32-1 code de procédure civile + 1382 code de procédure civile \\ \hline
-amende civile pour abus de procédure (acpa)                        & amende civile                                               & Articles 32-1 code de procédure civile + 559 code de procédure civile  \\ \hline
-frais irrépétibles  (styx)                                        & dommages-intérêts                                           & Article 700 du code de procédure civile                                 \\ \hline
-dommages-intérêts pour trouble de voisinage (doris)                 & dommages-intérêts                                           & principe de responsabilité pour trouble anormal de voisinage           \\ \hline
-déclaration de créance au passif de la procédure collective (dcppc) & déclaration de créance & L622-24 code de commerce                                               \\ \hline
-dommages-intérêts pour concurrence déloyale (concdel)                  & dommages-intérêts                                           & Article 1382 du code civil                                             \\ \hline
+\textbf{Label} & \textbf{Expression nominative }                                     & \textbf{Objet}                                                       & \textbf{Fondement}                                                                 \\ \hline
+acpa & amende civile pour abus de procédure                         & amende civile                                               & Articles 32-1 code de procédure civile + 559 code de procédure civile  \\ \hline
+concdel & dommages-intérêts pour concurrence déloyale                  & dommages-intérêts                                           & Article 1382 du code civil                                             \\ \hline
+danais & dommages-intérêts pour abus de procédure                   & dommages-intérêts                                           & Articles 32-1 code de procédure civile + 1382 code de procédure civile \\ \hline
+dcppc & déclaration de créance au passif de la procédure collective  & déclaration de créance & L622-24 code de commerce                                               \\ \hline
+doris & dommages-intérêts pour trouble de voisinage                  & dommages-intérêts                                           & principe de responsabilité pour trouble anormal de voisinage           \\ \hline
+styx & frais irrépétibles                                          & dommages-intérêts                                           & Article 700 du code de procédure civile                                 \\ \hline
 \end{tabular}
+\textit{Les labels ont été définis particulièrement pour cette étude, n'existent pas par conséquent dans le langage juridique.}
 \caption{Exemples de catégories de demandes}\label{tab:quanta:exemple-categorie}
 \end{table}
 
 \subsubsection{Quantum demandé}
-Le quantum demandé quantifie l'objet de la demande. Nous le notons $q_d$. Par exemple, dans l'exemple de la Figure \ref{fig:quanta:expr-dmd}, "3000 \euro{}" est le quantum demandé pour dommages-intérêts pour procédure abusive. Bien que, dans cette étude, nous ne nous intéressons particulièrement qu'aux montants d'argent, le quantum peut être une durée (garde d'enfant, ou emprisonnement, ...). Toutes les catégories demandes n'ont pas un quantum (par ex. une demande de divorce) et seul le sens du résultat sera la données à extraire dans ce cas.
+
+Le quantum demandé quantifie l'objet de la demande. Nous le notons $q_d$. Par exemple, dans l'exemple de la Figure \ref{fig:quanta:expr-dmd}, "3000 \euro{}" est le quantum demandé pour dommages-intérêts pour procédure abusive. Bien que, dans cette étude, nous ne nous intéressons particulièrement qu'aux montants d'argent, le quantum peut être une durée (garde d'enfant, ou emprisonnement, etc.). Toutes les catégories demandes n'ont pas un quantum (par ex. une demande de divorce) et seul le sens du résultat sera la donnée à extraire dans ce cas.
 
 \subsubsection{Sens du résultat}
+
 Le sens du résultat est l'interprétation de la réponse des juges à une demande. Nous le notons $s_r$. En général, le sens peut être positif si la demande a été \textbf{acceptée} ou négatif si la demande a été \textbf{rejetée}. Il arrive aussi que le résultat soit reporté à un jugement futur (un \textbf{sursis à statuer} est alors prononcé). 
 
-\subsubsection{Quantum obtenu ou quantum résultat}
-Le quantum obtenu quantifie le résultat ou la réponse des juges. Nous le notons $q_r$. Il est en général inférieur ou égal au quantum demandé. Si la demande est rejetée, le quantum est évidemment nul. il doit être de la même nature que le quantum demandé (montant d'argent ou durée).
+\subsubsection{Quantum obtenu ou résultat}
+
+Le quantum obtenu quantifie le résultat ou la réponse des juges. Nous le notons $q_r$. Il est en général inférieur ou égal au quantum demandé. Si la demande est rejetée, 
+$q_r$ est évidemment nul même si cela n'est pas explicitement mentionné dans le document. Il doit être de la même nature que le quantum demandé (montant d'argent ou durée).
+
 
 \subsection{Expression, défis et indicateurs d'extraction}
+
 Les demandes sont décrites à la fin de la section d'exposé des faits, procédures, moyens et prétentions des parties (section LITIGE). Elles rentrent donc dans les "moyens et prétentions des parties" qui regroupent les demandes et les arguments des parties. Quant aux résultats, ils sont décrits dans la section DISPOSITIF et dans la section MOTIFS (raisonnement des juges). Les demandes sont exprimées en paragraphe où chaque paragraphe correspond soit à une partie, soit à un groupe de partie partageant les mêmes demandes (par ex. des époux). Le paragraphe est parfois organisé en liste dont chaque élément exprime une ou plusieurs demandes, ou fait référence à un jugement antérieur. Les résultats ont aussi la forme de liste dans la section DISPOSITIF. Par contre, dans les motifs de la décision, les raisonnements sont organisés en paragraphes, et ordonnés catégorie après catégorie. Le résultat est donné à la fin du groupe de paragraphes associé à la catégorie.
 
-\begin{figure}[h]
-\scriptsize
-\centering
-\begin{subfigure}[t]{0.95\textwidth}
-\fbox{\parbox{\textwidth}{Jennifer M., Catherine M. et Sandra M. ... demandent à la Cour de :
 
-- les recevoir régulièrement appelantes incidentes du \textcolor{blue}{jugement du 23/05/2014} ;
+ Cette pseudo-structure n'est pas standard et elle impose de nombreux défis à relever. D'une part, la séparation des demandes et des résultats rend difficile la résolution de référence entre prétentions et résultats. En effet, une décision jurisprudentielle porte sur plusieurs demandes de catégorie différentes dont il faut identifier la catégorie, le quantum demandé, le sens du résultat et le quantum obtenu. Il est important de faire correspondre un quantum demandé extrait au sens et au quantum du résultat qui font référence à la même demande. Le problème de co-référence est généré aussi par la redondance; par ex. les résultats exprimés dans les MOTIFS sont résumés dans le DISPOSITIF. D'autre part, les références aux jugements antérieurs exigent de résoudre des références aux résultats de jugements antérieurs qui sont, heureusement, rappelés dans le même document. Notons aussi que les difficultés liés aux agrégations (par ex. "\textit{infirmer ... en toutes ces dispositions}") et aux restrictions/sélections (par ex. "\textit{infirme le jugement ... sauf en ce qu'il a condamné M. A. ...}") devraient être résolues. Par ailleurs, les catégories de demandes sont nombreuses (500+ code NAC(?)) mais ne sont pas toutes présentes dans toutes les décisions. Toutes ses contraintes démontrent bien la diversité et l'état non-structuré des documents. Elles induisent des difficultés pour l'annotation manuelle de suffisamment données de référence et la modélisation de l'approche d'extraction. Cependant, nous avons remarqué quelques indicateurs qui pourraient être exploités implicitement ou explicitement.
 
-- infirmer \textcolor{blue}{le dit jugement} en \textcolor{brown}{toutes ses dispositions} ; ...
-
-Statuant à nouveau ...
-
-- \textcolor{brown}{les condamner au paiement d'une somme de  3 000,00 \euro{} pour procédure abusive et aux entiers dépens} ; }}
-\caption{Exemples d'expression de demandes}\label{fig:quanta:expr-dmd}
-\end{subfigure} 
-
-
-\begin{subfigure}[t]{0.95\textwidth}
-\fbox{\parbox{\textwidth}{La cour, ...  
-
-CONFIRME \textcolor{blue}{le jugement entreprise} en \textcolor{brown}{toutes ses dispositions}.
-
-Y ajoutant
-
-\textcolor{gray}{CONSTATE que Amélanie Gitane P. épouse M. est défaillante à rapporter la preuve
-d'une occupation trentenaire lui permettant d'invoquer la prescription
-acquisitive de la parcelle BH 377 située [...].}
-
-\textcolor{gray}{DEBOUTE Amélanie Gitane P. épouse M. de sa demande en dommages et intérêts.}
-
-\textcolor{gray}{CONDAMNE Amélanie Gitane P. épouse M. aux dépens d'appel.}
-
-\textcolor{gray}{DIT n'y avoir lieu à l'application de l'article 700 du Code de Procédure Civile.}
-}}
-\caption{Exemple d'expression de résultat}\label{fig:quanta:expr-rst}
-\end{subfigure}
-\caption{Expressions \textcolor{gray}{simples}, ou comprenant des  \textcolor{blue}{références} et  des \textcolor{brown}{agrégations} (extraits de la décision 14/01082 de la cour d'appel de Saint-Denis (Réunion))}\label{fig:quanta:expr-dmd-rst}
-\end{figure}
- Cette pseudo-structure n'est pas standard et elle impose de nombreux défis à relever. D'une part, la séparation des demandes et des résultats rend difficile la résolution de référence entre prétentions et résultats. En effet, une décision jurisprudentielle porte sur plusieurs demandes de catégorie différentes dont il faut identifier la catégorie, le quantum demandé, le sens du résultat et le quantum obtenu. Il est important de faire correspondre un quantum demandé extrait au sens et au quantum du résultat qui font référence à la même demande. Le problème de co-référence est généré aussi par la redondance; par ex. les résultats exprimés dans les MOTIFS sont résumés dans le DISPOSITIF. D'autre part, les références aux jugements antérieurs exigent de résoudre des références aux résultats de jugements antérieurs qui sont, heureusement, rappelés dans le même document. Notons aussi que les difficultés liés aux agrégations (par ex. "\textit{infirmer ... en toutes ces dispositions}") et aux restrictions/sélections (par ex. "\textit{infirme le jugement ... sauf en ce qu'il a condamné M. A. ...}") devraient être résolues. Par ailleurs, les catégories de demandes sont nombreuses (500+ code NAC(?)) mais ne sont pas toutes présentes dans toutes les décisions. Toutes ses contraintes démontrent bien la diversité et l'état non-structuré des documents. Elles induisent des difficultés pour l'annotation manuelle de suffisamment données de référence et la modélisation de l'approche d'extraction. Cependant, nous avons remarqué quelques indicateurs qui pourraient être exploité implicitement ou explicitement.
-
-Nous nous sommes intéressés aux demandes dont les quanta sont des sommes d'argent. Les mentions de somme d'argent suivent généralement la forme "\verb=NOMBRE MONNAIE=" (par ex. 3000 \euro{}, 15 503 676 francs, un euro, 339.000 XPF). Nous remarquons que les nombres sont très rarement écrites en lettre. Ainsi, en répertoriant les unités monétaires mentionnées dans les décisions, il est possible d'annoter les sommes d'argent à l'aide d'une expression régulière de la forme \og [\verb|valeur|] [\verb|monnaie|] \fg{} (Équation \ref{equation:quanta:regex-argent}) (?)\textcolor{red}{évaluation}.
-\begin{equation} %\scriptsize
-\splitdfrac{\backslash [0-9](\backslash [0-9]|[',.]|\backslash s)*}{(euro[s]\left\{0,1\right\}|franc[s]\left\{0,1\right\}|\euro{}|F|CFP|XPF|EUR|EUROS)( |\$)}\label{equation:quanta:regex-argent} % Ђ 
-\end{equation}
+On pourrait au préalable annoter les candidats potentiels de quanta. Nous nous sommes intéressés aux demandes dont les quanta sont des sommes d'argent. Les mentions de somme d'argent sont généralement la forme \og \texttt{[valeur] [monnaie]} \fg{} (par ex. \texttt{3000 \euro}, \texttt{15 503 676 francs}, \texttt{un euro}, \texttt{339.000 XPF}). Des centimes apparaissent parfois (par ex. \texttt{dix huit euros et soixante quatorze centimes}, \texttt{26'977 \euro{}  19}).  Ainsi, en répertoriant les unités monétaires mentionnées dans les décisions, il est possible d'annoter les sommes d'argent à l'aide d'une expression régulière comme par exemple \texttt{[0-9]([0-9] |[,.]|\textbackslash s)*(euros|francs|\euro)}. Même s'il est difficile de reconnaître des sommes d'argent écrites en lettre, il faut remarqué que l'équivalent en chiffre est généralement mentionné tout près (par ex. \texttt{neuf mille cinq cent soixante six euros et quatre vingt sept centimes (9566,87 \euro{}  )}). 
+%\begin{equation} %\scriptsize
+%\splitdfrac{\backslash [0-9](\backslash [0-9]|[',.]|\backslash s)*}
+%{(euro[s]\left\{0,1\right\}|franc[s]\left\{0,1\right\}|\euro{}|F|CFP|XPF|EUR|EUROS)( |\$)}\label{equation:quanta:regex-argent} % Ђ 
+%\splitdfrac{\backslash [0-9](\backslash [0-9]|[',.]|\backslash s)*([Ee]uro[s]\left\{0,1\right\}|[Ff]ranc[s]\left\{0,1\right\}|\text{\euro}|\text{\euro}uros|}{F[.]\left\{0,1\right\}|Fr|XPF|CFP|EUR|EUROS|Mark|US|([i]))( |\$)}% Ђ 
+%\end{equation}
 %\texttt{\small $\backslash$p{Digit}($\backslash$p{Digit}|[',.]|\ $\backslash$s)*(euro[s]{0,1}|franc[s]{0,1}|\euro{}|F|CFP|EUR|EUROS)( |\$)}
-La terminologie utilisée est aussi un bon indicateur des demandes et résultats. En effet, le vocabulaire utilisé est très souvent propre aux types de demandes, et réciproquement, ce vocabulaire permet d'exprimer des demandes de même nature. Par exemple le dernier élément de la Fig. \ref{fig:quanta:expr-dmd} comprend le terme "\textit{pour procédure abusive}" qui est près d'une somme d'argent (\textit{3000 \euro{}}); il est donc probable que ce type de terme assez particulier soit un bon indicateur de la position des quanta. Par ailleurs, des verbes particuliers sont utilisés pour exprimer les prétentions et résultats : infirmer, confirmer, constater, débouter, dire, ... Comme autres formes récurrentes, on pourrait citer l'ordre des demandes (resp. résultats). Généralement, on a les constats, les références aux jugements antérieurs, les demandes principales (?) et secondaires (?).
+%\p{Digit}(\p{Digit}|[',.]|\s)*([Ee]uro[s]{0,1}|[Ff]ranc[s]{0,1}|€|€uros|F[.]{0,1}|Fr|XPF|CFP|EUR|EUROS|Mark|US|([i])|([Ђ]))( |$)
+
+La terminologie utilisée est aussi un bon indicateur pour reconnaître des demandes et des résultats. En effet, le vocabulaire utilisé est très souvent propre aux types de demandes. Par exemple le dernier élément de la Figure \ref{fig:quanta:expr-dmd} comprend le terme "\textit{pour procédure abusive}" qui est près d'une somme d'argent (\textit{3000 \euro{}}); il est donc probable que ce type de terme assez particulier soit un bon indicateur de la position des quanta. Par ailleurs, des verbes particuliers sont utilisés pour exprimer les prétentions et résultats : infirmer, confirmer, constater, débouter, dire, ... %Comme autres formes récurrentes, on pourrait citer l'ordre des demandes (resp. résultats). Généralement, on a les constats, les références aux jugements antérieurs, les demandes principales (?) et secondaires (?).
+
 
 \section{Formulation du problème}
 \label{sec:quanta:formulation}
-Pour formuler le problème, nous avons tenu compte principalement de deux aspects:
+Pour formuler le problème, nous avons tenu compte principalement de deux faits:
 \begin{enumerate}
-    \item la présence de plusieurs demandes de catégories similaires et différentes dans une même décision;
-    \item l'existence d'un grand nombre de catégories (500+); ce qui rend difficile l'annotation d'un jeu de données de référence pour couvrir toutes ces catégories.
+    \item Une décision comprend plusieurs demandes de catégories similaires ou différentes;
+    \item  Il existe un grand nombre de catégories (500+); ce qui rend difficile l'annotation d'un jeu de données de référence pour couvrir toutes ces catégories.
 \end{enumerate}
 
-Nous avons par conséquent opter pour la définition d'approches génériques adaptables à chaque catégorie. L'idée est de pouvoir  traiter progressivement les catégories et par conséquent, annoter progressivement des données de référence. Chaque exécution des approches définies permet ainsi d'extraire uniquement les demandes d'une seule catégorie. L'annotation manuelle d'exemples a été par conséquent définie par catégorie afin que la tâche soit plus facile pour les experts. Le protocole d'annotation se déroule en étapes: 
+Nous avons par conséquent opter pour une extraction par catégorie. L'idée est de pouvoir  rajouter progressivement de nouvelles catégories. Une exécution du système d'extraction permet ainsi d'extraire uniquement les demandes d'une seule catégorie. L'annotation manuelle d'exemples est focaliser sur une catégorie à chaque fois afin que la tâche soit plus facile pour les experts. Le protocole d'annotation se déroule en étapes: 
 \begin{enumerate}
-    \item choix d'une catégorie: définition d'un nom, de l'objet et du fondement;
-    \item recherche par mots-clés des documents susceptibles de contenir la catégorie (par exemple sur le site internet de LexisNexis);
-    \item parmi les documents trouvés, choisir quelques uns de ceux qui contiennent effectivement des demandes de la catégorie; 
-    \item lire chaque document choisi pour identifier toutes les demandes présentes de la catégories tout en remplissant le tableau des demandes de références dont un extrait est illustré par le Tableau \ref{tab:quanta:tab-annotations}.
+    \item choisir une catégorie $c$ : définition d'un nom, de l'objet et du fondement;
+    \item rechercher par mots-clés des documents susceptibles de contenir la catégorie (par exemple sur le site internet de LexisNexis);
+    \item parmi les documents trouvés, choisir quelques uns de ceux qui contiennent effectivement des demandes de la catégorie et former ainsi un corpus $D_{c}$; 
+    \item lire chaque document choisi pour identifier toutes les demandes présentes de la catégories tout en remplissant le tableau des demandes de références dont un extrait est illustré par le Tableau \ref{tab:quanta:tab-annotations};
+    \item collecter quelques documents ne contenant pas de demande de la catégorie et constituer ainsi un corpus $D_{\overline{c}}$.
 \end{enumerate}
+
+Le résultat d'une phase d'annotation comprend ainsi un tableau des demandes, deux corpus de décisions $D_{c}$ et $D_{\overline{c}}$.
 
 \begin{table}[!htb]
 \includegraphics[width=\textwidth]{tab-annotations.png}
 \scriptsize{Les noms des champs sont sur les 2 premières lignes et les demandes sont données en exemple pour la catégorie \textit{dommages-intérêts sur le fondement de l'article 700 du code de procédure civile} (décision 14/06911 de la cour d'appel de Lyon).}
-\caption{Structure et extrait du tableau d'annotations manuelles des demandes.} \label{tab:quanta:tab-annotations}
+\caption{Extrait du tableau d'annotations manuelles des demandes.} \label{tab:quanta:tab-annotations}
 \end{table}
 
-Le problème est ainsi décomposé grossièrement en tâches:
+Pour s'adapter à l'annotation manuelle par catégorie, le problème est décomposé grossièrement en deux principales tâches:
 \begin{description}
-\item[Tâche 1:] Détection des catégories présentes dans le document pour n'appliquer l'extraction  que de ces catégories;
-\item[Tâche 2:] Extraction des demandes des catégories identifiées:
+\item[Tâche 1:] Détecter les catégories présentes dans le document pour n'appliquer l'extraction  que de ces catégories;
+\item[Tâche 2:] Pour chaque catégorie identifiée, extraire les demandes:
 \begin{enumerate}
-	\item identification des données: quanta demandés, quanta obtenus, et sens du résultat;
-	\item résolution des références ou des liens entre données de la même demande.
+	\item identification des données: quanta demandés ($q_d$), quanta obtenus ($q_r$), et sens du résultat ($s_r$);
+	\item résolution des références ou des liens entre données de même demande pour former les triplets ($q_d, s_r, q_r$).
 \end{enumerate}
 \end{description}
 
-L'annotation des sommes d'argent doit être réalisée préalablement à la 2$^\text{ème}$ tâche.
+L'annotation des candidats de quanta, les sommes d'argent dans notre cas, doit être réalisée préalablement à la seconde tâche.
 
  Dans la section suivante, nous synthétisons l'analogie avec des problématiques couramment traités et explorons les approches proposées dans des travaux publiés.
 
 \section{Travaux connexes}
 \label{sec:quanta:biblio}
-Chacune de ses tâches se rapproche d'une tâche traitée dans la littérature, et nous donne ainsi des voies de solution. En effet, la détection de catégories dans les décisions peut être modélisée comme un problème de classification de document. Les deux dernières tâches se rapprochent plus de problématiques d'extraction d'entités complexes à champs/attributs comme l'extraction d'évènements, le remplissage de champs, ou encore l'extraction d'entités ou de rôles sémantiques et la résolution de référencement.
+Chacune de ses tâches se rapproche d'une tâche traitée dans la littérature, et nous donne ainsi des voies de solution. En effet, la détection de catégories dans les décisions peut être modélisée comme un problème de classification de document. La seconde tâche se rapproche plus des problématiques d'extraction d'entités complexes à champs/attributs comme l'extraction d'évènements, le remplissage de champs, ou encore l'extraction de relations et la résolution de référencement.
 
-\subsection{Problèmes analogues: inférence de structures}% avec des problématiques d'extraction d'information}
+\subsection{Problèmes analogues: extraction de structures}% avec des problématiques d'extraction d'information}
 
-Les demandes ressemblent aux structures complexes de la littérature sur l'extraction d'information. Le concept qui semble le plus similaire est celui d'évènement. Il s'agit probablement de l'une des structures les plus complexes de l'extraction d'information. Plusieurs campagnes en ont fait l'objet de compétitions par des définitions et des catégorisations et caractérisations aussi précises que possibles. La campagne \citep{ace2005event}, par exemple, structure un évènement en lui associant un type, un énoncé, des déclencheurs, des arguments, et des attributs. Nous retrouvons des composants respectivement similaires chez les demandes (Tableau \ref{tab:quanta:analogieevt}): la catégorie, les passages d'énoncés de demande et résultat, les termes-clés caractéristiques de la catégorie (sa famille de termes en quelque sorte), les quanta comme arguments et le sens du résultat comme attribut (plus précisément comme polarité).
+Les demandes ressemblent aux structures telles que les relations ou les évènements. En effet, les champs définis par \citet{ace2005relation} et \citet{ace2005event} se rapprochent de ceux que visés lors de l'extraction des demandes comme l'illustre le Tableau \ref{tab:quanta:analogie-relation-evt}. Plus précisément, une catégorie de demande correspond à un type d'évènement ou de relation entre deux entités. Les arguments qui participent à l'évènement \og demande \fg{} ou à la relation \og demande-résultat \fg{} sont le quantum demandé et le quantum résultat. Le sens du résultat représente la classe de la structure \og demande \fg{}.
 
-
-Mais ces formulations ne couvrent pas toujours avec exhaustivité l'expressivité des énoncés d'évènements. En effet, certains travaux se limitent à une extraction généralement limitée au niveau d'une phrase et très peux s'essayent à proposer des solutions à l'échelle d'un document ou d'un corpus pour les situations où les données ne se trouvent pas toutes dans une même phrases. Ainsi, plus la portée est grande plus la tâche est complexe. C'est pourtant bien cette complexité qui caractérise les données réelles. 
-\begin{itemize}
-\item Extraction d'évènement : 
-\end{itemize}
 \begin{table}[h]
-\small
-\begin{tabular}{|p{0.2\textwidth}|p{0.3\textwidth}|p{0.4\textwidth}|}
-\hline
-\textbf{Champs} & \textbf{\cite{ace2005event}} & \textbf{Analogie chez les demandes} \\ \hline
-\textbf{Type} &  Die & Catégorie="Dommages-intérêts pour procédure abusive" \\ \hline
-\textbf{Passage} (\textit{extend}) & "Il est mort hier d'une insuffisance rénale."  & (\textit{Figure \ref{fig:quanta:expr-dmd-rst}}) \\ \hline
-\textbf{Déclencheur} & "mort" & "procédure abusive"\\ \hline
-\textbf{Argument} & Victim-Arg="il" \linebreak Time-Arg="hier"  & Quantum-demandé="3000\euro{}"\linebreak  Quantum-obtenu="0 \euro{}"\ \\ \hline
-\textbf{Attribut} & Polarity=POSITIVE, Tense=PAST & Sens-résultat="Rejeté" \\ \hline
-\end{tabular}
-\caption{Exemple d'analogie entre les évènements et l'extraction de demande} \label{tab:quanta:analogieevt}
+	\scriptsize
+	\begin{tabular}{|p{0.12\textwidth}|p{0.21\textwidth}|p{0.27\textwidth}|p{0.27\textwidth}|}
+		\hline		%\textbf{Champs} 
+		 & \textbf{Relation \citep{ace2005relation}}  & \textbf{Événement \citep{ace2005event}} & \textbf{Analogie chez les demandes} \\ \hline
+		\textbf{Type} & Org-Aff.Student-Alum & Die & Catégorie="Dommages-intérêts pour procédure abusive" \\ \hline
+		\textbf{Passage} (\textit{extend}) & \textit{Card graduated from the University of South Carolina}  & "Il est mort hier d'une insuffisance rénale."  & (\textit{Figure \ref{fig:quanta:expr-dmd-rst}}) \\ \hline
+		\textbf{Déclencheur (\textit{trigger})} & - & "mort" & "procédure abusive"\\ \hline
+		\textbf{Participants ou Arguments  (\textit{arguments})} & Arg1="Card" \linebreak Arg2="the University of South
+		Carolina"& Victim-Arg="il" \linebreak Time-Arg="hier"  & Quantum-demandé="3000\euro{}"\linebreak  Quantum-obtenu="0 \euro{}"\ \\ \hline
+		\textbf{Classes  (\textit{attributes, classes})} & Asserted & Polarity=POSITIVE, Tense=PAST & Sens-résultat="Rejeté" \\ \hline
+	\end{tabular}
+	\caption{Exemples d'analogie entre relations, évènements et demandes} \label{tab:quanta:analogie-relation-evt}
 \end{table}
-\begin{itemize}
-\item Remplissage de champs des entités \textbf{Demande} (\textit{slot-filling)}: \textbf{Catégorie, Quantum-demandé, Quantum-obtenu, Sens-résultat}
-\item Extraction d'entités et relations ou résolution de référence: par ex. \textbf{(quantum demandé, quantum obtenu)}
-\end{itemize}
 
-\subsection{Approches d'extraction de structures}
-L'extraction d'information composée passe par une formulation modulaire du problème en tâches plus simples. Par exemple, on a d'abord l'extraction respective déclencheurs, les arguments et les attributs. Ensuite, la résolution de référence vient construire les structures en reliant les différents valeurs de champs extraites précédemment. A partir de là, on définit une approche d'extraction qui peut modéliser soit une chaîne de d'inférences élémentaires ou pipeline, soit une inférence jointe capable d'extraire toute la structure d'un seul coup. Les pipelines sont une approximation grossière victime de la propagation d'erreurs entre module [?]. Bien que les modules sont simples, ils ne corrigent malheureusement pas les erreurs des niveaux précédents. L'inférence jointe permet non seulement d'éviter ou de réduire tout au moins la propagation d'erreurs mais aussi d'exploiter la dépendance mutuelle qui existe entre les étages [?]. Cependant, ce n'est pas toujours une bonne idée de joindre tous les modules; il faut bien choisir les étapes à joindre.
+\subsection{Approches d'extraction d'éléments structurés}
+L'extraction d'éléments structurés a généralement une formulation modulaire du problème en tâches plus simples. D'une part, on a l'identification des déclencheurs et des arguments. D'autre part, une mise en correspondance relie les arguments et déclencheurs qui participent à la même relation ou au même évènement. Les classes peuvent être déterminées par classification du passage associé. Cette décomposition a permis à de nombreuses méthodes de voir le jour. 
 
+L'approche traditionnelle consiste à traiter le problème séquentiellement. Chaque étape correspond à un module et la sortie d'une étape est l'entrée de la suivante. C'est ainsi que \citet{ahn2006stages} définit un enchaînement de classificateurs (k-plus-proches-voisins \citep{cover1967knn} vs. classificateur d'entropie maximum \citep{nigam1999maxent}), pour extraire des champs des évènements tels que définis par \citet{ace2005event}. même si les différents modules sont plus facile à résoudre, ce type d'architecture souffre de l'accumulation et la propagation des erreurs d'une étape à la suivante, ainsi que de la non exploitation de l'interdépendance entre les tâches. Par conséquent, l'inférence jointe des champs est préconisée. Celle-ci peut-être faite par une modélisation probabiliste conditionnelle ou neuronale.
 
-\begin{table}[!h]
-\small
-\begin{tabular}{|p{0.25\textwidth}|p{0.7\textwidth}|}
-\hline
-\textbf{Type d'approches} & \textbf{Exemples} \\ \hline
-\textbf{Chaine de traitement} & \textbf{Chaîne de classifieurs  }\cite{ahn2006stages} \\ \hline
-\textbf{Modélisation probabiliste} de la structure de l'évènement & \textbf{Modèle joint d'inférence} des entités, arguments, déclencheurs
+Toujours sur le corpus d'ACE, \citet{yang2016jointEntityEvt} estiment la probabilité conditionnelle jointe du type d'entité $t_i$, les rôles des arguments $r_{i\cdot}$ et les types d'entités qui remplissent ces rôles $a.$: $p_\theta(t_i,r_{i\cdot},a. \vert i, N_i, x)$ avec $i$ un déclencheur candidat, $N_i$ l'ensemble des entités candidates qui sont des potentiels arguments pour $i$, et $x$ est le document. Par ailleurs, \citet{nguyen2016jointtrgarg} illustrent l'utilisation des réseaux de neurones profonds avec une couche pour la prédiction du déclencheur, une autre pour le rôle des arguments, et la dernière encode la dépendance entre les labels de déclencheurs et les rôles d'arguments. 
 
-$p_\theta(t_i, r_i, a \vert i, N_i, x)$ \cite{yang2016jointEntityEvt} %\linebreak 
-\\ \hline
-\textbf{Réseau de neurones} pour automatiser la génération des caractéristiques et la modélisation de la structure & (i) \textbf{Architecture multicouche de réseaux de neuronnes récurrents}: encodage de la phrase, encodage des contextes, prédiction du déclencheur, prédiction des rôles, mémoire matricielle d'interdépendance déclencheur-argument \cite{nguyen2016jointtrgarg},  
+L'annotation d'\citet{ace2005event} est un marquage des champs dans le texte, et par conséquent, la position ou l'occurrence des champs est indiquée (\og annotation au niveau du segment de mot \fg{}). Seulement, il est difficile dans le cadre réel d'annoter les données sous cette forme. Comme dans notre cas, les données sont généralement annotées dans un tableau, hors des textes d'où ils proviennent. Il est donc nécessaire de retrouver leur position sans supervision. \citet{palm2017e2e-dnn} propose dans cette logique une architecture de réseaux de neurones point-à-point qu'ils ont expérimentés sur des corpus de requêtes de recherche de restaurant et films \citep{liu2013mitmovierestaurant} ou de réservation de billets d'avion \citep{price1990atis}. Ils se sont intéressés au problème de remplissage de champs en apprenant la correspondance entre les textes et les valeurs de sorties. Leur modèle est basé sur les réseaux de pointeurs \citep{vinyals2015pointernetworks} qui sont des modèles séquence-à-séquence avec attention, dans lesquelles la sortie est une position de la séquence d'entrée. Le modèle proposé consiste en un encodeur de la phrase et des contextes, plusieurs décodeurs (un pour chaque champ). 
 
-(ii) \textbf{Réseau de pointeur} (\textit{pointer network}): un encodeur de la phrase et des contextes, plusieurs décodeurs (un pour chaque champ) \cite{palm2017e2e-dnn} \\ \hline
-\end{tabular}
-\caption{Type d'approches}
-\end{table}
+L'avantage de l'utilisation des réseaux de neurones est la capacité d'apprendre des caractéristiques automatiques contrairement aux modèles probabilistes qui exigent une ingénierie manuelle des caractéristiques. Par contre, il est beaucoup plus facile d'utiliser les modèles probabilistes sur des corpus de faible taille et des longs textes comme c'est le cas pour notre problème.
 
 
 \subsection{Extraction de la terminologie d'un domaine}
-L'extraction d'évènements s'appuie sur l'identification des termes-clés, appelés \og déclencheurs \fg{}. Ils sont caractéristiques des types d'évènements car ils semblent être des indicateurs incontournables non seulement de l'énoncé mais aussi de la position des arguments. Qu'ils soient identifiés préalablement ou conjointement avec les arguments, les déclencheurs sont jusqu'à présent appris de manière supervisée c'est-à-dire à partir d'exemples manuellement annotés de déclencheurs dans des exemples d'énoncés d'évènement. L'annotation manuelle de tels termes étant fastidieuse et risquant de manquer d'exhaustivité dans les cas de données réelles, il serait préférable de les apprendre lorsqu'on ne dispose pas d'exemples de déclencheurs. C'est notamment notre situation, où nous avons besoin des termes caractéristiques des catégories de demandes. Fort heureusement, la recherche d'information, l'apprentissage d'ontologie et d'autres tâche d'analyse de texte comme la classification de documents ont encourager le développement d'approches d'extraction de termes-clés. On distingue principalement les filtres d'une part et les méthodes statistiques d'autres part.
+L'identification des arguments peut bénéficier de la position relative avec des termes-clés ou \og déclencheurs \fg{}. Ils sont caractéristiques des types d'évènements car ils semblent être des indicateurs incontournables non seulement de l'énoncé mais aussi de la position des arguments. Qu'ils soient identifiés préalablement ou conjointement avec les arguments, les déclencheurs sont généralement appris de manière supervisée c'est-à-dire à partir d'exemples  de déclencheurs manuellement annotés dans des énoncés d'évènements. L'annotation manuelle de tels termes étant fastidieuse, il serait préférable de les apprendre lorsqu'on ne dispose pas d'exemples. C'est notamment notre situation, où nous ne disposons pas d'une liste ou d'exemples de termes caractéristiques des catégories de demandes. Fort heureusement, la recherche d'information, l'apprentissage d'ontologie et d'autres tâche d'analyse de texte comme la classification de documents ont encouragé le développement d'approches d'extraction de termes-clés. Ces dernières se distinguent principalement entre des filtres d'une part et des méthodes statistiques d'autres part.
 
 
 \subsubsection{Filtres}
@@ -370,7 +373,8 @@ Avant l'évaluation, nous avons vérifié que les valeurs annotées existaient b
 	\scriptsize
 	\begin{tabular}{|l|l|l|l|l|l|l|}
 		\hline
-		\textbf{Catégorie} & \textbf{\#$q_d$} & \textbf{\#$(q_d\neq 0)$} & \textbf{\# dans doc.} & \textbf{\# dans Litige} & \textbf{\# dans Motifs} & \textbf{\# dans Dispositif} \\ \hline
+		%\textbf{Catégorie}
+		 & \textbf{\#$q_d$} & \textbf{\#$(q_d\neq 0)$} & \textbf{\# dans doc.} & \textbf{\# dans Litige} & \textbf{\# dans Motifs} & \textbf{\# dans Dispositif} \\ \hline
 		acpa               & 23                   & 16                                           & 16 (100\%)                   & 16 (100\%)              & 9 (56.25\%)             & 5 (31.25\%)                 \\ \hline
 		concdel            & 58                   & 56                                           & 55 (98.21\%)                 & 55 (98.21\%)            & 7 (12.5\%)              & 2 (3.57\%)                  \\ \hline
 		danais             & 208                  & 182                                          & 182 (100\%)                  & 179(100\%)              & 39 (21.43\%)            & 23 (12.64\%)                \\ \hline
@@ -386,7 +390,8 @@ Avant l'évaluation, nous avons vérifié que les valeurs annotées existaient b
 	\scriptsize
 	\begin{tabular}{|l|l|l|l|l|l|l|}
 		\hline
-		\textbf{Catégorie} & \textbf{\# $q_r$} & \textbf{\# $q_r\neq 0$} & \textbf{\# dans doc.} & \textbf{\# dans Litige} & \textbf{\# dans Motifs} & \textbf{\# dans Dispositif} \\ \hline
+		%\textbf{Catégorie}
+		& \textbf{\# $q_r$} & \textbf{\# $q_r\neq 0$} & \textbf{\# dans doc.} & \textbf{\# dans Litige} & \textbf{\# dans Motifs} & \textbf{\# dans Dispositif} \\ \hline
 		acpa               & 23                & 6                       & 6 (100\%)             & 3 (50\%)                & 6 (100\%)               & 5 (83.33\%)                 \\ \hline
 		concdel            & 58                & 8                       & 8 (100\%)             & 2 (25\%)                & 8 (100\%)               & 6 (75\%)                    \\ \hline
 		danais             & 208               & 23                      & 23 (100\%)            & 15 (65.22\%)            & 22 (95.65\%)            & 20 (86.96\%)                \\ \hline
@@ -458,7 +463,8 @@ Nous avons évalué la classification binaire avec quatre classifieurs tradition
 		\noalign{\smallskip}
 		\hline
 		\noalign{\smallskip}
-		Categorie  & P     & R     & F1    & P     & R     & F1    & P     & R     & F1    & P     & R     & F1    \\        
+		%Categorie  
+		& P     & R     & F1    & P     & R     & F1    & P     & R     & F1    & P     & R     & F1    \\        
 		\noalign{\smallskip}
 		\hline
 		\noalign{\smallskip}
