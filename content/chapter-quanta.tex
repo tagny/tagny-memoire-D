@@ -176,49 +176,38 @@ L'avantage de l'utilisation des réseaux de neurones est la capacité d'apprendr
 
 
 \subsection{Extraction de la terminologie d'un domaine}
-L'identification des arguments peut bénéficier de la position relative avec des termes-clés ou \og déclencheurs \fg{}. Ils sont caractéristiques des types d'évènements car ils semblent être des indicateurs incontournables non seulement de l'énoncé mais aussi de la position des arguments. Qu'ils soient identifiés préalablement ou conjointement avec les arguments, les déclencheurs sont généralement appris de manière supervisée c'est-à-dire à partir d'exemples  de déclencheurs manuellement annotés dans des énoncés d'évènements. L'annotation manuelle de tels termes étant fastidieuse, il serait préférable de les apprendre lorsqu'on ne dispose pas d'exemples. C'est notamment notre situation, où nous ne disposons pas d'une liste ou d'exemples de termes caractéristiques des catégories de demandes. Fort heureusement, la recherche d'information, l'apprentissage d'ontologie et d'autres tâche d'analyse de texte comme la classification de documents ont encouragé le développement d'approches d'extraction de termes-clés. Ces dernières se distinguent principalement entre des filtres d'une part et des méthodes statistiques d'autres part.
+L'identification des arguments peut bénéficier de la position relative avec des termes-clés ou \og déclencheurs \fg{}. Ils sont caractéristiques des types d'évènements car ils semblent être des indicateurs incontournables non seulement de l'énoncé mais aussi de la position des arguments. Qu'ils soient identifiés préalablement aux arguments ou conjointement avec ces derniers, les déclencheurs sont généralement appris de manière supervisée c'est-à-dire à partir d'exemples  de déclencheurs manuellement annotés dans des énoncés d'évènements. L'annotation manuelle de tels termes étant fastidieuse, il serait préférable d'en déterminer lorsqu'on ne dispose pas d'exemples. C'est notamment notre situation, où nous ne disposons pas d'une liste de termes caractéristiques des catégories de demandes. Fort heureusement, la recherche d'information, l'apprentissage d'ontologie et d'autres tâches d'analyse de texte comme la classification de documents ont encouragé le développement d'approches d'extraction de termes-clés. Nous discutons ici de quelques méthodes statistiques qui peuvent permettre d'identifier la terminologie d'expression des demandes d'une catégorie donnée.
 
-
-\subsubsection{Filtres}
-% LISTES TERMES EXTRAITS POUR CHAQUE CATÉGORIE
 \subsubsection{Méthodes statistiques}
 % LISTES POUR CHAQUE CATÉGORIE
-\begin{table} 
-	\caption{Métriques globales de termes: les métriques supervisées sont notées $f(t_k,c_i)$ et les non-supervisées sont notées $g(t_k)$} \label{tab:quanta:globalweights}
-	\scriptsize
-	\begin{tabular}{p{0.48\textwidth}@{\hskip 0.2in}p{0.45\textwidth}}
-		\hline\noalign{\smallskip}
-		Description & Formule \\
-		\noalign{\smallskip}
-		\hline
-		\noalign{\smallskip}
-		Inverse document frequency \cite{sparck1972idf}: simply computes the importance score of $t_k$ all over a corpus $D$ & $idf(t_k) = \log_2 (\frac{N}{N_{t_k}})$  \\ \noalign{\smallskip}
-		Delta Document Frequency & $deltadf(w,c_i) = DF_{t_k,c_i} - DF_{t_k,\overline{c_i}}$\\ \noalign{\smallskip}
-		Test of Marascuilo & $mar(t_k, c_i) = $ \begin{equation*} 
-		\,
-		\dfrac{\left(
-			\splitdfrac{\splitdfrac{\splitdfrac{(N_{t_k,c_i} - N_{t_k}N_{t_k,c_i}/N)^2}{+ (N_{t_k,\overline{c_i}} - N_{t_k}N_{\overline{c_i}}/N)^2}}{+ (N_{\overline{t_k},c_i} - N_{c_i}N_{\overline{t_k}}/N)^2}}{+ (N_{\overline{t_k},\overline{}} - N_{\overline{t_k}}N_{\overline{c_i}}/N)^2}\right)}{N}
-		\end{equation*} \\ \noalign{\smallskip}
-		Chi square & $chi2(t_k,c_i) = \frac{N ((N_{t_k,c_i} N_{\overline{t_k},\overline{c_i}}) - (N_{t_k,\overline{c_i}} N_{\overline{t_k},c_i}))^2}{N_{t_k} N_{\overline{t_k}} N_{c_i} N_{\overline{c_i}}}$ \\ \noalign{\smallskip}
-		Correlation coefficient of "Ng, Goh, Low" \cite{ng1997ngl} :   & $ngl(t_k,c_i) = \frac{\sqrt{N} ((N_{t_k,c_i} N_{\overline{t_k},\overline{c_i}}) - (N_{t_k,\overline{c_i}} N_{\overline{t_k},c_i}))}{\sqrt{N_{t_k} N_{\overline{t_k}} N_{c_i} N_{\overline{c_i}}}}$\\ \noalign{\smallskip}
-		Coefficient of "Galavotti, Sebastiani, and Simi"  \cite{galavotti2000gss}& $gss(t_k,c_i) = (N_{t_k,c_i} N_{\overline{t_k},\overline{c_i}}) -  (N_{t_k,\overline{c_i}} N_{\overline{t_k},c_i})$ \\ \noalign{\smallskip}
-		Relevance frequency & $rf(t_k, c_i) = \log\left(2 + \frac{N_{t_k, c_i}}{max(1, N_{t_k, \overline{c_i}})}\right)$\\ \noalign{\smallskip}
-		Information gain & $ig(t_k, c_i) = $ \begin{equation*}
-		\splitdfrac{\splitdfrac{\splitdfrac{(N_{t_k,c_i} * \log (N_{t_k,c_i} / (N_{t_k}N_{c_i})))}
-				{+ (N_{\overline{t_k},c_i} * \log (N_{\overline{t_k},c_i} / (N_{\overline{t_k}}N_{c_i})))}}
-			{+ (N_{t_k,\overline{c_i}} * \log (N_{t_k,\overline{c_i}} / (N_{t_k}N_{\overline{c_i}})))}}
-		{+ (N_{\overline{t_k},\overline{c_i}} * \log (N_{\overline{t_k},\overline{c_i}} / (N_{\overline{t_k}}N_{\overline{c_i}})))}
-		\end{equation*} \\ \noalign{\smallskip}
-		Kulback-Leibler divergence & $kld(t_k, c_i)=(N_{t_k,c_i} / N_{t_k}) * \log (\frac{N_{t_k,c_i} N}{N_{t_k}N_{c_i}})$\\ \noalign{\smallskip}
-		Delta Smoothed IDF & $dsidf(t_k, c_i)=\log (\frac{(N_{\overline{c_i}}N_{t_k,c_i}) + 0.5}{(N_{c_i}N_{t_k,\overline{c_i}}) + 0.5} $\\ \noalign{\smallskip}
-		Delta BM25 IDF \cite{jones2000bm25idf} & $dbidf(t_k, c_i) = \log (\frac{(N_{\overline{c_i}} - N_{t_k,\overline{c_i}} + 0.5) * (N_{t_k,c_i} + 0.5)}{(N_{c_i} - N_{t_k,c_i} + 0.5) * N_{t_k,\overline{c_i}} + 0.5)} $\\ \noalign{\smallskip}
-		\hline
-	\end{tabular}
-\end{table}
+
+$t$ : un terme \\
+$d$: un document \\
+$\vert t \vert$ : longueur de $t$ (nombre de mots) \\
+$c$ : la catégorie (domaine ciblé) \\
+$\overline{c}$ : la classe complémentaire ou négative \\
+$D$: ensemble global des documents \\
+$D_{c}$: ensemble des documents de $c$\\
+$\vert D_{c} \vert$: nombre de documents de $c$\\
+$N_{t}$: nombre de documents contenant $t$\\
+$N_{\overline{t}}$: nombre de documents ne contenant pas $t$\\
+$N_{t,c}$ : nombre de documents de $c$ contenant $t$ \\
+$N_{\overline{t},c}$ : nombre de documents de $c$ ne contenant pas $t$ \\
+$\vert D \vert$ : nombre total de documents ($\vert D \vert = \vert D_{c} \vert + \vert D_{\overline{c}} \vert$)\\
+$DF_c$ : proportion de documents du corpus appartenant à $c$ (probabilité qu'un texte pris au hasard soit de la classe $c$ )\\
+$DF_t$: proportion de documents du corpus contenant $t$ (\textit{Document Frequency})\\
+$DF_{t \vert c}$ : proportion de documents contenant $t$ dans le corpus de $c$ ($DF_{t \vert c} = \frac{N_{t,c}}{N_{c}}$) \\
+$DF_{c \vert t}$ : proportion de documents appartenant à $c$ dans l'ensemble de ceux qui contiennent $t$  \\
+$TF_{t, d}$: nombre d'occurrence de $t$ dans $d$ (\textit{Term Frequency}) \\
+
 \paragraph{Mesures non-supervisées}
 NValue, CValue, IDF et co.
+
 \paragraph{Mesures supervisées}
 RF, MARASCUILO, TEST DE PROPORTIONS, CHI2, ...
+
+
+
 \subsubsection{Discussions}
 \textcolor{red}{PRISE EN COMPTE DE LA LONGUEUR VARIÉE ($\log(l) * f(t)$ ou $l^a * w^b$ / DE L'IMBRICATION / DU CONTEXTE DES TERMES;;;; AFFINER LA LISTE: ENCHAINEMENT FILTRES > MÉTRIQUES STATS > FONCTION CONTRASTIVE}
 \cite{LossioVentura2014biotex}, \cite{Bonin2010multiwordncvalue}
