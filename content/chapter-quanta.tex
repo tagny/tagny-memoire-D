@@ -4,7 +4,7 @@
 
 \section{Introduction}
 \label{sec:quanta:introduction}
-Au c\oe{}ur de l'analyse des décisions de justice se trouve le concept de demande. Il s'agit d'une réclamation ou requête effectuée par une ou plusieurs parties aux juges. Une partie peut demander des dommages-intérêts en réparation d'un préjudice subi, ou bien un divorce, ou bien des indemnités auxquelles elle pense avoir droit, ou encore une étude d'expert, etc. Les demandes sont fondamentales car l'argumentation au cours de l'affaire a deux buts : faire accepter ses demandes et faire rejeter celle de la partie adverse. L'extraction des demandes et des résultats correspondants, dans un corpus, permet ainsi d'avoir une estimation quantifiée des chances de réussite ou d'échec de certains types de demandes. Les informations qui nous intéressent sont la \textbf{catégorie de la demande}, le \textbf{quantum (montant) demandé}, le \textbf{sens du résultat} (par ex. la demande a-t-elle été acceptée ou rejetée?), et le \textbf{quantum obtenu} (décidé par les juges). Pour pouvoir extraire les demandes et les résultats, il est nécessaire de comprendre comment ils sont exprimés et co-référencés dans les décisions jurisprudentielles. Leur expression peut comporter plus ou moins de complexité avec souvent des références à des jugements antérieurs, des agrégations ou des restrictions (Figure \ref{fig:quanta:expr-dmd-rst}).
+Au c\oe{}ur de l'analyse des décisions de justice se trouve le concept de demande. Il s'agit d'une réclamation ou requête effectuée par une ou plusieurs parties aux juges. Une partie peut demander des dommages-intérêts en réparation d'un préjudice subi, ou bien un divorce, ou bien des indemnités auxquelles elle pense avoir droit, ou encore une étude d'expert, etc. Les demandes sont fondamentales car l'argumentation au cours de l'affaire a deux buts : faire accepter ses demandes et faire rejeter celle de la partie adverse. L'extraction des demandes et des résultats correspondants, dans un corpus, permet ainsi d'avoir une estimation quantifiée des chances de réussite ou d'échec de certains types de demandes. Les informations qui nous intéressent sont la catégorie de la demande, le quantum (montant) demandé, le sens du résultat (par ex. la demande a-t-elle été acceptée ou rejetée?), et le quantum obtenu (décidé par les juges). Pour pouvoir extraire les demandes et les résultats, il est nécessaire de comprendre comment ils sont exprimés et co-référencés dans les décisions jurisprudentielles. Leur expression peut comporter plus ou moins de complexité avec souvent des références à des jugements antérieurs, des agrégations ou des restrictions (Figure \ref{fig:quanta:expr-dmd-rst}).
 
 \begin{figure}[h]
 	\scriptsize
@@ -50,7 +50,7 @@ Au c\oe{}ur de l'analyse des décisions de justice se trouve le concept de deman
 
 \subsubsection{Catégorie de demande}
 
-Une catégorie $c$ de demande regroupe les prétentions qui sont de même nature par le fait qu'elles partagent deux aspects: l'\textbf{objet} demandé (par ex. dommages-intérêts, amende, déclaration de créance) et le \textbf{fondement} c'est-à-dire les règles ou normes ou principes juridiques qui fondent la demande (par ex. article 700 du code de procédure civile). Des expressions particulières sont souvent utilisées pour faire référence aux catégories (Tableau \ref{tab:quanta:exemple-categorie}).
+Une catégorie $c$ de demande regroupe les prétentions qui sont de même nature par le fait qu'elles partagent deux aspects: l'objet demandé (par ex. dommages-intérêts, amende, déclaration de créance) et le fondement c'est-à-dire les règles ou normes ou principes juridiques qui fondent la demande (par ex. article 700 du code de procédure civile). Des expressions particulières sont souvent utilisées pour faire référence aux catégories (Tableau \ref{tab:quanta:exemple-categorie}).
 
 \begin{table}[h!]
 \scriptsize
@@ -74,7 +74,7 @@ Le quantum demandé quantifie l'objet de la demande. Nous le notons $q_d$. Par e
 
 \subsubsection{Sens du résultat}
 
-Le sens du résultat est l'interprétation de la réponse des juges à une demande. Nous le notons $s_r$. En général, le sens peut être positif si la demande a été \textbf{acceptée} ou négatif si la demande a été \textbf{rejetée}. Il arrive aussi que le résultat soit reporté à un jugement futur (un \textbf{sursis à statuer} est alors prononcé). 
+Le sens du résultat est l'interprétation de la réponse des juges à une demande. Nous le notons $s_r$. En général, le sens peut être positif si la demande a été acceptée ou négatif si la demande a été rejetée. Il arrive aussi que le résultat soit reporté à un jugement futur (un sursis à statuer est alors prononcé). 
 
 \subsubsection{Quantum obtenu ou résultat}
 
@@ -176,9 +176,11 @@ L'avantage de l'utilisation des réseaux de neurones est la capacité d'apprendr
 
 
 \subsection{Extraction de la terminologie d'un domaine}
-L'identification des arguments peut bénéficier de la position relative avec des termes-clés ou \og déclencheurs \fg{}. Ils sont caractéristiques des types d'évènements car ils semblent être des indicateurs incontournables non seulement de l'énoncé mais aussi de la position des arguments. Qu'ils soient identifiés préalablement aux arguments ou conjointement avec ces derniers, les déclencheurs sont généralement appris de manière supervisée c'est-à-dire à partir d'exemples  de déclencheurs manuellement annotés dans des énoncés d'évènements. L'annotation manuelle de tels termes étant fastidieuse, il serait préférable d'en déterminer lorsqu'on ne dispose pas d'exemples. C'est notamment notre situation, où nous ne disposons pas d'une liste de termes caractéristiques des catégories de demandes. Fort heureusement, la recherche d'information, l'apprentissage d'ontologie et d'autres tâches d'analyse de texte comme la classification de documents ont encouragé le développement d'approches d'extraction de termes-clés. Nous discutons ici de quelques méthodes statistiques qui peuvent permettre d'identifier la terminologie d'expression des demandes d'une catégorie donnée.
+L'identification des arguments peut bénéficier de la position relative avec des termes-clés ou \og déclencheurs \fg{}. Ils sont caractéristiques des types d'évènements car ils semblent être des indicateurs incontournables non seulement de l'énoncé mais aussi de la position des arguments. Qu'ils soient identifiés préalablement aux arguments ou conjointement avec ces derniers, les déclencheurs sont généralement appris de manière supervisée c'est-à-dire à partir d'exemples  de déclencheurs manuellement annotés dans des énoncés d'évènements. L'annotation manuelle de tels termes étant fastidieuse, il serait préférable d'en déterminer lorsqu'on ne dispose pas d'exemples. C'est notamment notre situation, où nous ne disposons pas d'une liste de termes caractéristiques des catégories de demandes. Fort heureusement, la recherche d'information, l'apprentissage d'ontologie et d'autres tâches d'analyse de texte comme la classification de documents ont encouragé le développement d'approches d'extraction de termes-clés. Nous discutons ici de quelques méthodes statistiques qui peuvent permettre d'identifier la terminologie d'expression des demandes d'une catégorie donnée. Il s'agit de fonctions de sélection de caractéristiques d'un corpus qui pondère un descripteur \footnote{Un descripteur peut être soit un mot, un n-gramme, la racine d'un mot, ou tout autre caractéristique syntaxique ou sémantique}. On les appelle aussi pondérateurs globales parce qu'elles sont calculées à l'échelle d'un corpus, contrairement au pondérateur locaux qui mesurent l'importance d'un terme dans un texte.
 
-\subsubsection{Méthodes statistiques}
+ Lorsque la fonction n'utilise que le corpus représentatif du domaine d'intérêt, elle mesure ainsi le degré d'importance du terme dans le langage d'un domaine particulier ou une classe particulière de documents. Par exemple, la fonction \og fréquence de document \fg{} (\textit{DF - Document Frequency}) mesure l'importance d'un terme en lui affectant la proportion de documents qui le contiennent dans un corpus global considéré. De telles fonctions sont qualifiées de non-supervisées contrairement à celles qui se calculent entre différents corpus  et par conséquent utilisent les labels des données d'entraînement \citep{lan2009termweighting, wu2017balancingtermweight}. Ces dernières mesure l'importance du terme dans la discrimination (ou la différence) entre le domaine d'intérêt et les autres corpus. Un exemple simple s'obtient en faisant la différence de \og fréquence de document \fg{} d'un terme entre un corpus $c$ et sont complémentaire $\overline{c}$. Nous avons explorer l'utilisation de quelques méthodes pour la classification et qui sont formulées ici en utilisant les notations suivantes:
+
+%\subsubsection{Méthodes statistiques}
 % LISTES POUR CHAQUE CATÉGORIE
 
 $t$ : un terme \\
@@ -202,6 +204,7 @@ $TF_{t, d}$: nombre d'occurrence de $t$ dans $d$ (\textit{Term Frequency}) \\
 
 \paragraph{Mesures non-supervisées}
 NValue, CValue, IDF et co.
+ La fréquence inverse de document $idf$ \cite{sparck1972idf} et ses variantes $pidf$ et $bidf$ accordent plus d'importance aux termes rares.  
 
 \paragraph{Mesures supervisées}
 RF, MARASCUILO, TEST DE PROPORTIONS, CHI2, ...
