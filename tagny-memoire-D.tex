@@ -3,8 +3,8 @@
 \usepackage[utf8]{inputenc}
 \usepackage{natbib}
 \usepackage[french]{babel}
-\bibliographystyle{apalike}
-%\bibliographystyle{plainnat}
+%\bibliographystyle{apalike}
+\bibliographystyle{plainnat}
 \usepackage{amsmath}
 \usepackage{mathtools}
 \usepackage{amsfonts}
@@ -47,6 +47,8 @@
 %\titlespacing*{\chapter}{0pt}{-50pt}{40pt}
 
 \makeatletter
+
+\newcommand{\avg}{\mathop{\mathrm{avg}}\limits} % average
 \renewcommand*{\p@section}{\S\,}
 \renewcommand*{\p@subsection}{\S\,}
 \renewcommand*{\p@subsubsection}{\S\,}
