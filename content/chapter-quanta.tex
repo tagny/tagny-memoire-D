@@ -394,6 +394,7 @@ A l'aide des termes-clés appris, l'extraction des données de couples demandes-
 \end{enumerate}
 
 
+<<<<<<< HEAD
 
 \section{Résultats expérimentaux}
 
@@ -525,6 +526,55 @@ Les scores des termes-clés candidats étant normalisés, si on sélectionne les
 	\end{tabular}
 \caption{$F1_{c,(q_d, s_r, q_r), D_c}$ moyenne pour une 5-\textit{fold} validation croisée pour chaque métrique de sélection de termes pour un seuil égal à $0.5$} \label{tab:quanta:compareGW}
 \end{table}
+=======
+%\subsection{Méthode 2: classification des sommes d'argent}
+%
+%\begin{figure}[!htb]
+% \includegraphics[scale=0.6]{extractDmd-archClassifArgent.png}
+% \caption{Extraction des demandes par classification des sommes d'argent}\label{fig:quanta:classif}
+%\end{figure}
+%
+%Les deux champs directement accessibles à partir du texte, sont les quanta demandé ($q_d$) et accordé ($q_r$). Pour les demandes à quanta, il est possible de restreindre l'extraction à ces deux variables. Le sens du résultat ($s_r$) est déduit de la valeur extraite du quantum accordé : \[s_r = \left\lbrace \begin{array}{ll}
+%"accepte" & \text{si } q_r > 0 \\
+%"rejette" & \text{sinon.} \end{array} \right.\]
+%
+%L'idée est d'extraire les quanta demandés et obtenus puis de d'identifier les paires $(q_d, q_r)$ qui représentent des demandes. Le système recherche les mentions de sommes d'argent qui sont des quanta. La  détection des quanta est réalisable soit par classification individuelle des sommes d'argent, soit par inférence probabiliste du groupe de quanta. 
+%
+%
+%La performance d'une telle approche repose sur deux aspects principaux: la définition des  caractéristiques des objets à classifier, et la résolution des doublons. 
+%
+%\subsubsection{Définition des caractéristiques}
+%
+%La considération d'une somme d'argent comme quantum dépend de son contexte de mention et de l'histoire globale du document. Nous combinons plusieurs types de caractéristiques:
+%\begin{itemize}
+%	\item le plongement sémantique de la somme d'argent;
+%	\item l'agrégation pondérée du vecteur des mots qui sont dans la phrase de la somme d'argent;
+%    \item le plongement sémantique de la section
+%    \item le plongement sémantique du dispositif
+%    \item le plongement sémantique du document
+%\end{itemize}
+%
+%Les caractéristiques des paires consiste en l'agrégation des vecteurs des deux sommes par concaténation, max, ou soustraction.
+%
+%\subsubsection{Résolution des doublons}
+%Il s'agit ici des mentions de sommes d'argent à valeurs égales. Certaines sont correspondent au même quantum (par ex. quanta du MOTIFS répétés dans le DISPOSITIF). D'autres représentent des quanta différents.
+%
+% Le problème des doublons se pose déjà sur les données d'entraînement. En effet, nous devons retrouver à quelle mention de somme d'argent correspond chaque quantum du tableau des annotations manuelles. Si on annote tous les doublons comme quanta, se retrouve avec des demandes en plus. Même si on considère qu'il s'agit de la même demande, on n'en est pas sûr. On peut choisir le plus probable parmi les doublons présents.
+%
+%%Résolution des doublons: classification de paires apprise sur un dataset généré à partir du comportement observé des détecteur de quanta sur le corpus d'entrainement. (a1, a2) -> (similaire, différent). UNIQUEMENT POUR DES SOMME DE VALEURS EGALES
+%
+%\textcolor{red}{STATISTIQUES SUR LE TAUX DE DOUBLONS DANS LES DONNÉES ANNOTÉES}
+%
+%
+%\subsection{Méthode 3: prédiction jointe de structure}
+%?Apprentissage sur les documents à une seule demande pour limiter les bruits?
+%
+%Pré-traitement: normalisation des sommes d'argent dans les document (par ex. 3000 euros <argent valeur="3000 euros">ARGENT\_i</argent> $i$ étant la position d'apparition de la mention)
+%
+%\begin{equation}
+%P(D|T,A) = \sum\limits_{i=1}^{\vert D \vert} p_{\theta_1}(d_i = (a_j, a_l) | T, a_j, a_l, A) \cdot p_{\theta_2}(q_{d_i} = a_j | T, a_j, A) \cdot p_{\theta_3}(q_{r_i} = a_l | T, a_l, A)    
+%\end{equation}
+>>>>>>> abbd4ddbe58b4c7fd822105b109b68f445ebc104
 
 Par conséquent, la métrique et le seuil adéquats doivent être bien sélectionnés. En choisissant, pour ces méta-paramètres, les valeurs qui donnent les meilleurs performances d'extraction sur la base d'apprentissage , les résultats suivants sont observés (Tableau \ref{tab:quanta:resultDetailExtraction}).
  
@@ -653,7 +703,32 @@ Deuxièmement, la sélection des termes-clés n'est pas parfaite (Tableau \ref{t
 \caption{Premiers termes sélectionnés lors du premier essai de la validation croisée} \label{tab:quanta:exemples_termes}
 \end{table}
 
+<<<<<<< HEAD
 Troisièmement, les expérimentations ont été réalisées sur des décisions d'appel mais les énoncés, de demande et résultat renvoyant aux décisions de jugements antérieurs, ne sont pas encore traités dans l'approche. Ces références aux décisions antérieures représentent une part importante des demandes discutées dans les décisions d'appel. Il est donc nécessaire de les intégrer explicitement dans le processus d'extraction, pour compléter les données extraites.
+=======
+\subsubsection{Comparaison des métriques de pondération des termes}
+\begin{table}[]
+	\begin{tabular}{|l|l|l|l|l|l|l|}
+		\hline
+		& \textit{acpa}  & \textit{concdel} & \textit{danais} & \textit{dcppc} & \textit{doris} & \textit{styx}  \\ \hline
+		\textit{BIDF}       & 32.16          & 26.08            & 28.76           & 22.08          & 10.19          & \textbf{55.59} \\ \hline
+		\textit{CHI2}       & 61.49          & 27.76            & 44.33           & 27.97          & 5.83           & \textbf{55.59} \\ \hline
+		\textit{DBIDF}      & 46.99          & 25.67            & \textbf{53.72}  & 29.77          & 6.46           & 55.27          \\ \hline
+		\textit{DELTADF}    & 61.49          & 25.97            & 49.46           & 27.97          & 9.61           & 55.1           \\ \hline
+		\textit{DSIDF}      & 46.99          & 27.4             & 53.43           & 27.85          & 4.46           & 55.1           \\ \hline
+		\textit{GSS}        & 61.49          & 25.97            & 49.46           & 27.97          & 9.61           & 55.1           \\ \hline
+		\textit{IDF}        & 32.16          & 26.55            & 25.21           & 22.08          & 10.21          & 55.1           \\ \hline
+		\textit{IG}         & 25.68          & 28.6             & 28.4            & 18.47          & \textbf{18.68} & 54.34          \\ \hline
+		\textit{KLD}        & 5              & 5                & 29.45           & 16.66          & 1.43           & 31.99          \\ \hline
+		\textit{MARASCUILO} & \textbf{68.49} & 25.87            & 41.72           & 29.13          & 10.89          & 31.99          \\ \hline
+		\textit{NGL}        & 46.99          & 27.4             & 51.39           & \textbf{29.83} & 6.05           & 31.25          \\ \hline
+		\textit{PIDF}       & 34.85          & 29.41            & 25.45           & 22.65          & 10.12          & 30.5           \\ \hline
+		\textit{RF}         & 40.32          & \textbf{34.38}   & \textbf{53.72}  & 26.53          & 10.15          & 30.11          \\ \hline
+	\end{tabular}
+\end{table}
+\subsubsection{Analyse des erreurs}
+\subsubsection{Perspectives d'amélioration}
+>>>>>>> abbd4ddbe58b4c7fd822105b109b68f445ebc104
 
 \section{Conclusion}
 \label{sec:quanta:conclusion}
