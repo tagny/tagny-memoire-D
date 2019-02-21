@@ -1,52 +1,47 @@
 \chapter{Identification du Sens du Résultat par Classification}
 \label{chap:sensresultat}
 
-Hypothèse: Les documents à une seule demande de c sont tellement nombreux que si on peut savoir si un doc n'a qu'une seule demande on peut identifier par classification le sens du résultat sur cette demande.
 
-Démonstration: 
+%Hypothèse: Les documents à une seule demande de c sont tellement nombreux que si on peut savoir si un doc n'a qu'une seule demande on peut identifier par classification le sens du résultat sur cette demande.
+%
+%Démonstration: 
+%
+%- Nb de doc à 1 dmd: si on projette la distribution des demandes dans les docs annotées, sur le corpus plus large, il est fort probable que les les doc à une demande soit majoritaires
+%
+%- reconnaissance des docs à 1 dmd:  par classification arbre ou ensemble-SVM à moyenne de probabilités
+%
+%- identification du sens du résultat: classif arbre ou ensembliste ou Gini-PLS
+%
+%Confiance dans les résultats (impossible du fait du faible nombre de doc - peut-être sur danais)
+%
+%http://www.joetsite.com/wp-content/uploads/2018/07/Vol.-72-25-18.pdf
+%
+%Template \verb=2011 Comparing_Mining_Algorithms_for_Predicting_the_Sev.pdf=
 
-- Nb de doc à 1 dmd: si on projette la distribution des demandes dans les docs annotées, sur le corpus plus large, il est fort probable que les les doc à une demande soit majoritaires
-
-- reconnaissance des docs à 1 dmd:  par classification arbre ou ensemble-SVM à moyenne de probabilités
-
-- identification du sens du résultat: classif arbre ou ensembliste ou Gini-PLS
-
-Confiance dans les résultats (impossible du fait du faible nombre de doc - peut-être sur danais)
-
-http://www.joetsite.com/wp-content/uploads/2018/07/Vol.-72-25-18.pdf
-
-Template \verb=2011 Comparing_Mining_Algorithms_for_Predicting_the_Sev.pdf=
-
-\section{Objectif et Motivation}
+\section{Introduction}
 \label{sec:sensresultat:motivation}
-Comme le précédent, ce chapitre est relatif à l'extraction de données sur les demandes. Cependant, il est question ici d'extraire uniquement le sens du résultat d'une demande connaissant sa catégorie. Cette étude est intéressante parce que le problème devient plus simple. En se passant de la localisation précise des quanta ou plus globalement des passages d'expression des demandes et résultats, l'extraction du sens du résultat peut être formulée comme une tâche de classification de documents. Nous modélisons la tâche comme une classification binaire où un algorithme est entraîné à déterminer si la demande a été rejetée (sens = rejette) ou acceptée (sens = accepte). Nous avons proposé cette modélisation sur une restriction du problème définie par les postulats \ref{postulat:sens:unedemande} et \ref{postulat:sens:sensbinaire}.
+Comme le précédent, ce chapitre est relatif à l'extraction de données sur les demandes et résultat. Cependant, il est question ici d'extraire uniquement le sens du résultat d'une demande connaissant sa catégorie. Cette étude est intéressante parce que le problème devient plus simple. En se passant de la localisation précise de l'énoncé du résultat, l'extraction du sens du résultat peut être formulée comme une tâche de classification de documents. Nous modélisons la tâche comme un problème de classification binaire consistant à entrainer un algorithme à reconnaitre si la demande a été rejetée (sens = rejette) ou acceptée (sens = accepte). Cette modélisation est proposée sur une restriction du problème définie par les postulats \ref{postulat:sens:unedemande} et \ref{postulat:sens:sensbinaire} suivants.
 
 \begin{postulat}\label{postulat:sens:unedemande}
-Pour toute catégorie de demande $C$, la majorité des documents ne contiennent qu'une demande de catégorie $C$. \textcolor{red}{COMMENT SAVOIR QU'UN DOCUMENT N'A QU'UNE SEULE DEMANDE? CLASSIFICATION POSSIBLE?}
+Pour toute catégorie de demande $C$, les documents ne contenant qu'une demande de catégorie $C$ sont majoritaires. %\textcolor{red}{COMMENT SAVOIR QU'UN DOCUMENT N'A QU'UNE SEULE DEMANDE? CLASSIFICATION POSSIBLE?}
 %Pour toute catégorie de demande $C$, on ne considère que les décisions dans lesquelles n'apparaît qu'une seule demande de catégorie $C$. 
 \end{postulat} 
-Ce postulat est légitime car les statistiques sur les données labellisées de la Figure \ref{fig:quanta:hist-repartition-docs} montre bien que pour la majorité des catégories, peu de décisions contiennent plus d'une demande. On remarque néanmoins l'exception de la catégorie STYX (dommage-intérêt sur l'article 700 CPC), où dans la majorité des documents, on a plutôt 2 demandes. Cette exception peut se justifier par le fait que chaque partie fait généralement ce type de demande car elle porte sur le remboursement de frais de justice. Ce postulat présente cependant un inconvénient dû au fait que la majorité des demandes se trouvent dans des décisions à plus d'une demande. Il est donc possible de manquer un grand nombre de demandes. %On pourrait peut-être porter la classification à un modèle multi-label qui déterminera plusieurs sens à partir d'un seul document. Par exemple <SENS1, SENS2, SENS3> avec des valeurs prédéfinies sur les SENS 2 et 3 par exemple NO-DMD pour indiquer que la décision ne comprend pas de seconde ou de troisième demande.
+Ce postulat est légitime car les statistiques sur les données labellisées de la Figure \ref{fig:quanta:hist-repartition-docs} montre bien que dans chaque catégorie, les décisions contiennent en majorité une demande. On remarque néanmoins l'exception de la catégorie STYX (dommage-intérêt sur l'article 700 CPC), où dans la majorité des documents, on a plutôt 2 demandes. Cette exception peut se justifier par le fait que chaque partie fait généralement ce type de demande car elle porte sur le remboursement des frais de justice. Ce postulat présente cependant un inconvénient dû au fait que la majorité des demandes se trouvent dans des décisions à plus d'une demande. Il est donc possible de manquer un grand nombre de demandes. %On pourrait peut-être porter la classification à un modèle multi-label qui déterminera plusieurs sens à partir d'un seul document. Par exemple <SENS1, SENS2, SENS3> avec des valeurs prédéfinies sur les SENS 2 et 3 par exemple NO-DMD pour indiquer que la décision ne comprend pas de seconde ou de troisième demande.
 
 \begin{postulat}\label{postulat:sens:sensbinaire}
 Le sens du résultat est généralement binaire: accepte ou rejette.
 \end{postulat} 
-Ce postulat est justifié car le sens d'un résultat est pratiquement toujours une de ces deux valeurs (Figure \ref{stat-sensrst}). Les autres sens étant très rares, nous ne les considérons pas.
+Ce postulat est justifié car le sens d'un résultat est pratiquement toujours une de ces deux valeurs (Figure \ref{stat-sensrst}). Les autres sens ne sont pas considérés car ils sont très rares.
 
 \begin{figure}
 \includegraphics[width=\textwidth]{chartDistrSens.png}
 \caption{Répartition des sens de résultat dans les données annotées.}\label{stat-sensrst}
 \end{figure}
-\section{Formulation du Problème}
-\label{sec:sensresultat:probleme}
 
-Cette étude porte sur l'analyse de l'impact de différents aspects techniques généralement appliqués dans le cadre de la classification de texte:
-La représentation de texte (généralement vectorielle) faisant intervenir les notions de BagOfWord, TFIDF, poids global, poids local, matrice document-terme
-La transformation de dimension a pour but de projeter le vecteur représentant un document dans un nouvel espace où généralement la distinction des classes est plus facile. Ceci est généralement effectuée en déterminant des composantes discriminantes à partir de la base d'entraînement: sélection de caractéristique, réduction matricielle, représentation vectorielle “sémantique” des documents (LatentDA, LSA, word embedding, ...)
-
- Cette analyse permettra de savoir s'il existe une certaine configuration permettant de déterminer le sens du résultat à une demande sans nécessairement l'avoir identifiée précisément dans le document. 
+Cette étude porte sur l'analyse de l'impact de différents aspects techniques généralement impliqués dans la classification de texte qui consistent en générale à une combinaison de représentation des documents et d'algorithme de classification. Cette analyse permettra de savoir s'il existe une certaine configuration permettant de déterminer le sens du résultat à une demande sans nécessairement l'avoir identifiée précisément dans le document. 
 
 
-\section{Classification de Documents}
+\section{Classification de documents}
 \label{sec:sensresultat:biblio_classif}
 
 La classification de texte permet d'organiser des documents $x^{(k)}$ dans des groupes prédéfinis. Elle reçoit depuis longtemps beaucoup d'attentions. Deux choix techniques influencent principalement les performances: la représentation des textes et l'algorithme de classification. 
@@ -58,7 +53,7 @@ Bien que la classification de documents voit de plus en plus se développer des 
 \subsection{Etat de l'art}
 Actuellement, les algorithmes NBSVM et FastText sont les plus populaires pour la classification de documents et ont les performances pour l'analyse de sentiment sont très bonnes. 
 
-Le NBSVM \citep{wang2012nbsvm} est un classifieur binaire (classes $\lbrace -1; 1 \rbrace$) dont le principe consiste à transformer les poids $f^{(k)}$ caractéristiques $V$ des textes $x^{(k)}$, réduites à leur simple présence $\widehat{f}^{(k)}$ en réalisant leur produit élément à élément ($\overset{\sim}{f}^{(k)} = {r} \circ \widehat{f}^{(k)}$) avec le vecteur de poids $r$ du classifieurs bayésien multinomial (calculé avec le vecteur présence de caractéristique):
+Le NBSVM \citep{wang2012nbsvm} est un classifieur binaire (deux labels $\lbrace -1; 1 \rbrace$) dont le principe consiste à transformer les poids $f^{(k)}$ caractéristiques $V$ des textes $x^{(k)}$, réduites à leur simple présence $\widehat{f}^{(k)}$ en réalisant leur produit élément à élément ($\overset{\sim}{f}^{(k)} = {r} \circ \widehat{f}^{(k)}$) avec le vecteur de poids $r$ du classifieurs bayésien multinomial (calculé avec le vecteur présence de caractéristique):
 $r = \log \left( \frac{p/\vert\vert p \vert\vert_1}{q / \vert\vert q \vert\vert_1}\right)
 \text{ avec } p=\alpha + \sum\limits_{k:y^{(k)}=1}{f}^{(k)}$, $q=\alpha + \sum\limits_{k:y^{(k)}=-1}{f}^{(k)}$. L'ensemble des caractéristiques $V$ est constitué de n-grammes de mots. Le nouveau vecteur issu de ce produit représente le texte ($x^{(k)} = \overset{\sim}{f}^{(k)}$) en entrée d'un SVM classique. La classe de $x^{(k)}$ est prédite par : $y^{(k)} = sign(\mathbf{w}^Tx^{(k)} + b)$, $\mathbf{w}$ et $b$ étant appris lors de l'entraînement du SVM. Une interpolation  entre le bayésien multinomial et le SVM est nécessaire pour assurer la robustesse du NBSVM et des performances excellentes pour toute tâche de classification de documents; les poids $\mathbf{w}$ sont réajustés par le model $\mathbf{w'} = (1 - \beta) \overline{w} + \beta \mathbf{w}$, où $\overline{w} = \vert\vert \mathbf{w}\vert\vert_1 / \vert V \vert$ et $\beta \in \left[0; 1] \right.$. 
   
@@ -67,8 +62,6 @@ $r = \log \left( \frac{p/\vert\vert p \vert\vert_1}{q / \vert\vert q \vert\vert_
 Ces deux méthodes intègrent leur propre représentation de document, contrairement aux algorithmes opérant sur dans des espaces vectorielles aux axes et poids paramétrables à volonté comme le SVM. Il existe un très grand nombre de schémas de représentations des documents.
 
 NBSVM et Fastext ont démontré une bonne robustesse et et des performances excellentes dans le cas de divers tâches de classification: courtes expressions, longs documents, thème, classification subjective (genre), classification de sentiment (positif, neutre, négatif), ... Mais nous voulons déjà savoir comment les algorithmes populaires se comportent sur notre tâche d'identification de la polarité du résultat d'une demande pour une catégorie bien définie. La particularité ici est que la tâche porte sur une demande en particulier parmi les nombreuses que compte le document, des données en faible nombre annotés (23 à 189 documents), une annotation en général déséquilibrée entre les classes (risque d'ignorer une classe très faiblement représenté dans le jeu d'entrainement, par exemple 21 "accepte" contre 166 "rejette").
-
-\subsection{Classification des décisions de justice}
 
 \section{La Regression PLS et ses extensions}
 \label{sec:sensresultat:pls}
