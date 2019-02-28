@@ -1,4 +1,4 @@
-\chapter{Identification du Sens du Résultat par Classification}
+\chapter{Identification du Sens du Résultat par Classification des Documents}
 \label{chap:sensresultat}
 
 
@@ -20,7 +20,7 @@
 
 \section{Introduction}
 \label{sec:sensresultat:motivation}
-Comme le précédent, ce chapitre est relatif à l'extraction de données sur les demandes et résultat. Cependant, il est question ici d'extraire uniquement le sens du résultat d'une demande connaissant sa catégorie. Cette étude est intéressante parce que le problème devient plus simple. En se passant de la localisation précise de l'énoncé du résultat, l'extraction du sens du résultat peut être formulée comme une tâche de classification de documents. Nous modélisons la tâche comme un problème de classification binaire consistant à entrainer un algorithme à reconnaitre si la demande a été rejetée (sens = rejette) ou acceptée (sens = accepte). Cette modélisation est proposée sur une restriction du problème définie par les postulats \ref{postulat:sens:unedemande} et \ref{postulat:sens:sensbinaire} suivants.
+Comme le précédent, ce chapitre est relatif à l'extraction de données sur les demandes et résultats correspondants. Cependant, il est question ici d'extraire uniquement le sens du résultat d'une demande connaissant sa catégorie. Cette étude est intéressante parce que le problème devient plus simple. En se passant de la localisation précise de l'énoncé du résultat, l'extraction du sens du résultat peut être formulée comme une tâche de classification de documents. Nous modélisons la tâche comme un problème de classification binaire consistant à entrainer un algorithme à reconnaitre si la demande a été rejetée (sens = rejette) ou acceptée (sens = accepte). Cette modélisation est proposée sur une restriction du problème définie par les postulats \ref{postulat:sens:unedemande} et \ref{postulat:sens:sensbinaire} suivants.
 
 \begin{postulat}\label{postulat:sens:unedemande}
 Pour toute catégorie de demande $C$, les documents ne contenant qu'une demande de catégorie $C$ sont majoritaires. %\textcolor{red}{COMMENT SAVOIR QU'UN DOCUMENT N'A QU'UNE SEULE DEMANDE? CLASSIFICATION POSSIBLE?}
@@ -46,16 +46,77 @@ Cette étude porte sur l'analyse de l'impact de différents aspects techniques g
 
 La classification de texte permet d'organiser des documents $x^{(k)}$ dans des groupes prédéfinis. Elle reçoit depuis longtemps beaucoup d'attentions. Deux choix techniques influencent principalement les performances: la représentation des textes et l'algorithme de classification. 
 
-\subsection{Algorithmes traditionnels}
+\subsection{Algorithmes traditionnels de classification de données}
 Bien que la classification de documents voit de plus en plus se développer des algorithmes propres aux textes, un grand nombre de méthodes ont été développées précédemment autour. Ces méthodes sont généralement basée sur une représentation vectorielle des textes et délimitent une frontière entre les classes dans un espace multidimensionnel. 
 %NB et SVM : https://www.dropbox.com/home/Documents/to-read/term-weight?preview=Best+Terms+An+Efficient+Feature+Selection+Algorithm+for+Text+Categorization.pdf
 
-\subsection{Etat de l'art}
+\subsubsection{Machine à vecteurs de support (SVM)}
+
+\subsubsection{$k$-plus-proches-voisins (kNN)}
+
+\subsubsection{Arbre de décision}
+
+\subsubsection{Analyses discriminantes}
+
+\subsubsection{Modèles ensemblistes}
+
+
+\subsection{Algorithmes dédiés aux textes}
+
+
+\subsubsection{Le Bayésien naïf (NB)}
+\paragraph{Principe}:
+%http://stackoverflow.com/questions/10059594/a-simple-explanation-of-naive-bayes-classification#20556654
+%https://webdocs.cs.ualberta.ca/~greiner/R/PAPERS/ExplainNB.pdf
+Les classifieurs naïfs bayésiens \citep{duda1973patternclass} sont des modèles à densité qui estiment la probabilité qu'un texte appartienne à une classe à partir du théorème de Bayes \citep{raschka2014naivebayes}:
+\begin{equation}
+\text{probabilité a posteriori} = \frac{\text{probabilité conditionnelle} \cdot \text{probabilité a priori}}{\text{évidence}}
+\end{equation}
+
+La probabilité a posteriori peut être interprétée dans le cadre de la classification des décisions dans la classe DIPA en "Quelle est la probabilité qu'une décision $t_i$ contienne une demande de type $c_j$ étant donné que $t$ contient les termes $\lbrace w_1, ..., w_K \rbrace$ ?". La réponse à cette question se formalise comme suit:
+
+\[\p(c_j \vert t_i) = \frac{\p(t_i \vert c_j)\p(c_j)}{\p(t_i)}\]
+ou plus simplement  $\p(c_j \vert t_i) = \p(c_j)\p(t_i \vert c_j)$ car $\p(t_i)$ ne change pas en fonction de la catégorie et peut donc être ignorée \citep{rish2001nb_study}.
+L'appélation "\textit{naïf}" est dûe à l'hypothèse d'\textbf{indépendance mutuelle entre les caractéristiques} des données. Une hypothèse %irréaliste 
+forte dont la violation, par les données réelles, n'empêche pourtant pas les NB de bien fonctionner \citep{rish2001nb_study}. 
+
+\begin{hypothese}[indépendance mutuelle des caractéristiques] [ Un modèle naïf bayésien étant de type génératif], la position de chaque mot dans le texte est générée indépendament de tout autre mot étant connue la catégorie du texte. \label{hypo_imc}
+\end{hypothese}
+% je l'aurais fait avec les demandes directement à voir...on voit bien dans ce cas que l'hypothèse d'indep est trop forte.
+
+\noindent L'hypothèse \ref{hypo_imc} implique, pour des catégories de demande indépendantes,
+\[
+\mathbb{P}(d_{i1}, \dots, d_{iK}\vert c_j) = \prod_{k=1}^K \p(d_{ik} \vert c_j).
+\]
+Ainsi,
+\begin{equation}\notag
+\mathbb{P}(c_j\vert d_{i1}, \dots, d_{iK}) = \frac{\p(c_j)\p(d_{i1}, \dots, d_{iK} \vert c_j)}{\p(d_{i1}, \dots, d_{iK})} = \frac{\p(c_j)\prod_{k=1}^K \p(d_{ik} \vert c_j)}{\p(d_{i1}, \dots, d_{iK})}.
+\end{equation}
+La fonction score issue de ce classifieur bayésien est construite en maximisant la probabilité $\mathbb{P}(c_j\vert d_{i1}, \dots, d_{iK})$. Il n'est donc pas nécessaire de connaître ni d'estimer la probabilité jointe $\p(d_{i1}, \dots, d_{iK})$.
+
+\paragraph{Estimation des paramètres}: 
+% là tu introduits les w_i. Il faudrait donc compléter la section 2.1 stp. 
+
+%quand tu parles de paramètres tu penses à quoi exactement ? pour moi ce serait ceux de la fonction score...
+
+Grâce à l'hypothèse \ref{hypo_imc}, la probabilité conditionnelle ($\p(t_i \vert c_j$)) peut-être réécrite:
+\[\p(t_i \vert c_j) = \p(w_1 \vert c_j)\cdot \p(w_2 \vert c_j) \cdot ... \cdot \p(w_d \vert c_j) = \prod\limits_{k = 1}^d \p(w_k \vert c_j)\]
+pour une représentation vectorielle des textes dans un espace de dimension $d$.
+Les paramètres du modèle peuvent donc être estimés à partir d'un jeu d'exemples d'entrainement. Plus précisément, $\forall k \in \lbrace 1, 2, ..., d \rbrace: \p(w_k \vert c_j) = \frac{N_{wc_j}}{N_{c_j}}$ et $\p(c_j) = \frac{N_c}{N}$.
+
 Actuellement, les algorithmes NBSVM et FastText sont les plus populaires pour la classification de documents et ont les performances pour l'analyse de sentiment sont très bonnes. 
+
+\textcolor{red}{VARIANTE}
+
+
+\subsubsection{NBSVM}
 
 Le NBSVM \citep{wang2012nbsvm} est un classifieur binaire (deux labels $\lbrace -1; 1 \rbrace$) dont le principe consiste à transformer les poids $f^{(k)}$ caractéristiques $V$ des textes $x^{(k)}$, réduites à leur simple présence $\widehat{f}^{(k)}$ en réalisant leur produit élément à élément ($\overset{\sim}{f}^{(k)} = {r} \circ \widehat{f}^{(k)}$) avec le vecteur de poids $r$ du classifieurs bayésien multinomial (calculé avec le vecteur présence de caractéristique):
 $r = \log \left( \frac{p/\vert\vert p \vert\vert_1}{q / \vert\vert q \vert\vert_1}\right)
 \text{ avec } p=\alpha + \sum\limits_{k:y^{(k)}=1}{f}^{(k)}$, $q=\alpha + \sum\limits_{k:y^{(k)}=-1}{f}^{(k)}$. L'ensemble des caractéristiques $V$ est constitué de n-grammes de mots. Le nouveau vecteur issu de ce produit représente le texte ($x^{(k)} = \overset{\sim}{f}^{(k)}$) en entrée d'un SVM classique. La classe de $x^{(k)}$ est prédite par : $y^{(k)} = sign(\mathbf{w}^Tx^{(k)} + b)$, $\mathbf{w}$ et $b$ étant appris lors de l'entraînement du SVM. Une interpolation  entre le bayésien multinomial et le SVM est nécessaire pour assurer la robustesse du NBSVM et des performances excellentes pour toute tâche de classification de documents; les poids $\mathbf{w}$ sont réajustés par le model $\mathbf{w'} = (1 - \beta) \overline{w} + \beta \mathbf{w}$, où $\overline{w} = \vert\vert \mathbf{w}\vert\vert_1 / \vert V \vert$ et $\beta \in \left[0; 1] \right.$. 
+  
+  
+  \subsubsection{FastText}
   
  FastText \citep{grave2017fasttextcls}, quant à lui, est un modèle de réseau de neurones dont l'architecture est semblable à celle de la variante CBOW de la méthode de plongement sémantique Word2Vec dans laquelle le mot du milieu a été remplacé par le label de la classe du texte et au dessus de laquelle la fonction softmax $f(z) = \left[ \frac{e^{z_j}}{\sum\limits_{k=1}^K e^{z_k}} \right]_{\forall j \in \lbrace 1, ..., K \rbrace} $ est rajoutée pour réaliser la classification à partir de la représentation distribuée du texte. La phase d''entraînement consiste à minimiser la fonction objectif $-\frac{1}{N}y_n \cdot \sum\limits_{n=1}^N y_n \cdot \log{f(B\cdot A\cdot x_n)}$ qui estime la distribution de probabilité des classes.
 
@@ -92,7 +153,7 @@ Nous raisonnons toujours suivant une seule catégorie $c$. Notre solution est un
 Nous discutons ici les performances de divers algorithmes populaires et l'impact de la quantité et du déséquilibre des données, de la restriction à des passages en particulier, ainsi que leur capacité à faire abstraction des autres demandes du document. 
 
 \subsection{Protocole d'évaluation}
-Deux métriques d'évaluation sont utilisées: la précision et la F1-mesure. Du fait du déséquilibre entre les classes, la moyenne des performances sur les deux classe sera micro (agrégation de la contribution individuelle de chaque classe: $F1_{moyenne} = (F1({accepte}) + F1({rejette})) / 2$).
+Deux métriques d'évaluation sont utilisées: la précision et la F1-mesure. Pour tenir compte du déséquilibre entre les classes, la moyenne micro est préférée (agrégation de la contribution individuelle de chaque classe: $F1_{moyenne} = \frac{1}{2}(F1({accepte}) + F1({rejette}))$).
 
 Les données utilisées sont les mêmes que celles du chapitre précédent. Nous avons seulement fait une restriction sur les documents n'ayant qu'une seule demande annotée pour la catégorie considérée. Le déséquilibre entre les classes est illustrée par la figure \ref{fig:sensresultat:stat-1dmd}. En effet, la demande est plus souvent rejetée qu'acceptée pour les catégorie ACPA, CONCDEL, DANAIS et STYX. Le contraire est observé pour DCPPC et DORIS.
 \begin{figure}[htb]
