@@ -118,21 +118,21 @@ Même si l'algorithme Viterbi est aussi utilisé pour appliquer le modèle CRF �
 {\small
 \[f_1(l_{i-1},l_i,t_{1:n},i) = \left\lbrace \begin{array}{ll}
 b_1(T,i) & \text{si } l_{i-1} = \text{NORME} \wedge l_i = \text{NORME} \\
-0 & \text{otherwise}
+0 & \text{sinon}
 \end{array} \right.\]
 \[f_2(l_{i-1},l_i,t_{1:n},i) = \left\lbrace \begin{array}{ll}
 b_2(T,i) & \text{si }l_i = \text{NORME} \\
-0 & \text{otherwise}
+0 & \text{sinon}
 \end{array} \right.\]
 avec
 \[b_1(T,i) = \left\lbrace \begin{array}{ll}
 1 & \text{si } (t_{i-1} =\text{article) }\wedge (POS_{i-1}=\text{NOM}) \\&  \wedge  (NP1_{i-1}=\text{<unknown>)} \wedge (NS1_{i-1}=\text{@card@)} \\
-0 & \text{otherwise} 
+0 & \text{sinon} 
 \end{array} \right.\]
 \[b_2(T,i) = \left\lbrace \begin{array}{ll}
 1 & \text{si } (t_i =\text{700) }\wedge (POS_i=\text{NUM})  \wedge (NP1_i=\text{article)} 
 \wedge (NS1_i=\text{code)} \\
-0 & \text{otherwise}
+0 & \text{sinon}
 \end{array} \right.\]
 }
 $t_i$ étant une observation dans $T$, \verb|POS| étant le rôle grammatical de $t_i$ (\textit{NUM} = valeur numérique, \textit{NOM} = nom), et \verb|NP1| et \verb|NS1| sont les lemmes des mots avant et après $t_i$, respectivement. Les symboles \textit{<unknown>} et \textit{@card@} encodent les lemmes inconnus et ceux des nombres respectivement. Pouvant être activées au même moment, les fonctions $f_1$ et $f_2$ définissent des descripteurs se chevauchant. Avec plusieurs fonctions activées, la croyance dans le fait que $l_i = NORME$ est renforcée par la somme $\lambda_1 + \lambda_2$ des poids affectés respectivement à $f_1$ et $f_2$ \citep{Zhu2010CRFlecture}.  Un modèle CRF active une fonction $f_j$ lorsque ses conditions sont satisfaites (celles activant $b_j(T,\cdot)$) et $\lambda_j > 0$. Les diverses fonctions pondérées $f_j$ sont définies par des descripteurs caractérisant les segments, et les labels des données d'entraînement. La phase d'apprentissage consiste principalement à estimer le vecteur de paramètres $\lambda = (\lambda_1,...,\lambda_F)$ à partir de textes annotés manuellement $ \lbrace (T_1, L_1), ..., (T_M, L_M) \rbrace $, $ T_k $ étant un texte et $ L_k $ la séquence de labels correspondants. La valeur optimale de $\lambda$ est celle qui maximise la fonction objectif   

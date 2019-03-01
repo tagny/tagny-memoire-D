@@ -47,12 +47,31 @@ Cette étude porte sur l'analyse de l'impact de différents aspects techniques g
 La classification de texte permet d'organiser des documents $x^{(k)}$ dans des groupes prédéfinis. Elle reçoit depuis longtemps beaucoup d'attentions. Deux choix techniques influencent principalement les performances: la représentation des textes et l'algorithme de classification. 
 
 \subsection{Algorithmes traditionnels de classification de données}
-Bien que la classification de documents voit de plus en plus se développer des algorithmes propres aux textes, un grand nombre de méthodes ont été développées précédemment autour. Ces méthodes sont généralement basée sur une représentation vectorielle des textes et délimitent une frontière entre les classes dans un espace multidimensionnel. 
+Bien que la classification de documents voit se développer récemment des algorithmes propres aux textes, un grand nombre de méthodes ont été développées précédemment autour. Ces méthodes sont généralement basée sur une représentation vectorielle des textes et délimitent une frontière entre les classes dans un espace multidimensionnel. 
 %NB et SVM : https://www.dropbox.com/home/Documents/to-read/term-weight?preview=Best+Terms+An+Efficient+Feature+Selection+Algorithm+for+Text+Categorization.pdf
-
+% C4.5, k-means, svm, apriori algo, em algo, page rank, ada boost, knn, NB, CART: http://www.cs.umd.edu/~samir/498/10Algorithms-08.pdf
 \subsubsection{Machine à vecteurs de support (SVM)}
+Le SVM \citep{vapnik1995statlearning} est un algorithme de classification binaire, qui construit, lors de la phase d'entrainement un hyperplan séparant les points, représentants les exemples d'entrainement, dans un espace à grande dimension, suivant leur classe (Figure \ref{fig:sensresultat:svm}\footnote{\url{http://www.clrc.rhul.ac.uk/svm.html}}). L'hyperplan est la surface situé entre les droites formées par les points les plus proches des deux classes. La classification d'un nouvel objet consiste à projeter son vecteur de caractéristiques dans cet espace, et le label qui lui est prédit est celui associé à la classe du coté où il se trouve. La projection d'une entrée $x$ dans le nouvel espace, est réalisée par une fonction non-linéaire appelé noyau.
+
+\textcolor{red}{optimisation de la fonction objectif pour l'entrainement, + calcul des hyperparamètres}
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=2]{svm.png}
+	\caption{Illustration de l'hyperplan d'un SVM.}\label{fig:sensresultat:svm}
+\end{figure}
 
 \subsubsection{$k$-plus-proches-voisins (kNN)}
+L'algorithme $k$-plus-proches-voisins est un algorithme très simple qui consiste à affecter à un nouvel objet la classe majoritaire $y'$ parmi ceux des $k$ points d'exemples d'entrainement $\lbrace (x_i,y_i) \rbrace_{1:k}$, les plus proches du point $x'$ de cet objet selon la métrique $d$ choisie. Ainsi, trois éléments clés influencent l'efficacité de la classification:
+\begin{enumerate}
+	\item les données d'entrainement dont le nombre s'il est très grand peut rendre chère le processus de classification, car la distance du nouvel objet à chaque point annoté, est calculée;
+	\item le nombre de voisins (c'est-à-dire la valeur de $k$) qui ne doit être ni très petit (sensibilité aux bruits / \textit{outliers}), ni très grand (risque d'avoir dans le voisinage beaucoup de points d'une autre classe). La sensibilité au nombre de voisins peut être atténuée en pondérant les points par leur distance à l'objet à classer. La stratégie de choix de la classe du nouvel objet est ainsi appelé \og vote pondéré par la distance \fg{}: \[y' = \argmax\limits_c \sum\lim\limits_{(x_i,y_i)} \frac{1}{d(x', x_i)^2} \times I(c = y_i)\] où $I(c=y_i) = \left\lbrace \begin{array}{ll}
+	1 & \text{si }c \text{ est égal à } y_i \\
+	0 & \text{sinon}
+	\end{array} \right.$
+	\item la métrique de calcul de distance qui doit être adéquate pour le type de donnée et la tâche (par exemple, la distance cosinus est préférable à la distance euclidienne pour la classification de documents, la deuxième métrique se dégradant lorsque le nombre d'attributs augmente).
+\end{enumerate}
+
 
 \subsubsection{Arbre de décision}
 
