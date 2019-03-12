@@ -1,4 +1,4 @@
-\chapter{Identification du Sens du Résultat par Classification des Documents}
+\chapter{Identification du sens du résultat par classification des documents}
 \label{chap:sensresultat}
 
 
@@ -50,38 +50,6 @@ La classification de texte permet d'organiser des documents $x^{(k)}$ dans des g
 Bien que la classification de documents voit se développer récemment des algorithmes propres aux textes, un grand nombre de méthodes ont été développées précédemment autour. Ces méthodes sont généralement basée sur une représentation vectorielle des textes et délimitent une frontière entre les classes dans un espace multidimensionnel. 
 %NB et SVM : https://www.dropbox.com/home/Documents/to-read/term-weight?preview=Best+Terms+An+Efficient+Feature+Selection+Algorithm+for+Text+Categorization.pdf
 % C4.5, k-means, svm, apriori algo, em algo, page rank, ada boost, knn, NB, CART: http://www.cs.umd.edu/~samir/498/10Algorithms-08.pdf
-\subsubsection{Machine à vecteurs de support (SVM)}
-Le SVM \citep{vapnik1995statlearning} est un algorithme de classification binaire, qui construit, lors de la phase d'entrainement un hyperplan séparant les points, représentants les exemples d'entrainement, dans un espace à grande dimension, suivant leur classe (Figure \ref{fig:sensresultat:svm}\footnote{\url{http://www.clrc.rhul.ac.uk/svm.html}}). L'hyperplan est la surface situé entre les droites formées par les points les plus proches des deux classes. La classification d'un nouvel objet consiste à projeter son vecteur de caractéristiques dans cet espace, et le label qui lui est prédit est celui associé à la classe du coté où il se trouve. La projection d'une entrée $x$ dans le nouvel espace, est réalisée par une fonction non-linéaire appelé noyau.
-
-\textcolor{red}{optimisation de la fonction objectif pour l'entrainement, + calcul des hyperparamètres}
-
-\begin{figure}
-	\centering
-	\includegraphics[scale=2]{svm.png}
-	\caption{Illustration de l'hyperplan d'un SVM.}\label{fig:sensresultat:svm}
-\end{figure}
-
-\subsubsection{$k$-plus-proches-voisins (kNN)}
-L'algorithme $k$-plus-proches-voisins est un algorithme très simple qui consiste à affecter à un nouvel objet la classe majoritaire $y'$ parmi ceux des $k$ points d'exemples d'entrainement $\lbrace (x_i,y_i) \rbrace_{1:k}$, les plus proches du point $x'$ de cet objet selon la métrique $d$ choisie. Ainsi, trois éléments clés influencent l'efficacité de la classification:
-\begin{enumerate}
-	\item les données d'entrainement dont le nombre s'il est très grand peut rendre chère le processus de classification, car la distance du nouvel objet à chaque point annoté, est calculée;
-	\item le nombre de voisins (c'est-à-dire la valeur de $k$) qui ne doit être ni très petit (sensibilité aux bruits / \textit{outliers}), ni très grand (risque d'avoir dans le voisinage beaucoup de points d'une autre classe). La sensibilité au nombre de voisins peut être atténuée en pondérant les points par leur distance à l'objet à classer. La stratégie de choix de la classe du nouvel objet est ainsi appelé \og vote pondéré par la distance \fg{}: \[y' = \argmax\limits_c \sum\lim\limits_{(x_i,y_i)} \frac{1}{d(x', x_i)^2} \times I(c = y_i)\] où $I(c=y_i) = \left\lbrace \begin{array}{ll}
-	1 & \text{si }c \text{ est égal à } y_i \\
-	0 & \text{sinon}
-	\end{array} \right.$
-	\item la métrique de calcul de distance qui doit être adéquate pour le type de donnée et la tâche (par exemple, la distance cosinus est préférable à la distance euclidienne pour la classification de documents, la deuxième métrique se dégradant lorsque le nombre d'attributs augmente).
-\end{enumerate}
-
-
-\subsubsection{Arbre de décision}
-
-\subsubsection{Analyses discriminantes}
-
-\subsubsection{Modèles ensemblistes}
-
-
-\subsection{Algorithmes dédiés aux textes}
-
 
 \subsubsection{Le Bayésien naïf (NB)}
 \paragraph{Principe}:
@@ -123,10 +91,90 @@ Grâce à l'hypothèse \ref{hypo_imc}, la probabilité conditionnelle ($\p(t_i \
 pour une représentation vectorielle des textes dans un espace de dimension $d$.
 Les paramètres du modèle peuvent donc être estimés à partir d'un jeu d'exemples d'entrainement. Plus précisément, $\forall k \in \lbrace 1, 2, ..., d \rbrace: \p(w_k \vert c_j) = \frac{N_{wc_j}}{N_{c_j}}$ et $\p(c_j) = \frac{N_c}{N}$.
 
-Actuellement, les algorithmes NBSVM et FastText sont les plus populaires pour la classification de documents et ont les performances pour l'analyse de sentiment sont très bonnes. 
+Actuellement, les algorithmes NBSVM et FastText sont les plus populaires pour la classification de documents et ont les performances pour l'analyse de sentiment sont très bonnes. L'ensemble des labels / classes est noté $C$.
 
 \textcolor{red}{VARIANTE}
 
+\subsubsection{Machine à vecteurs de support (SVM)}
+Le SVM \citep{vapnik1995statlearning} est un algorithme de classification binaire, qui construit, lors de la phase d'entrainement un hyperplan séparant les points, représentants les exemples d'entrainement, dans un espace à grande dimension, suivant leur classe (Figure \ref{fig:sensresultat:svm}\footnote{\url{http://www.clrc.rhul.ac.uk/svm.html}}). L'hyperplan est la surface situé entre les droites formées par les points les plus proches des deux classes. La classification d'un nouvel objet consiste à projeter son vecteur de caractéristiques dans cet espace, et le label qui lui est prédit est celui associé à la classe du coté où il se trouve. La projection d'une entrée $x$ dans le nouvel espace, est réalisée par une fonction non-linéaire appelé noyau.
+
+\textcolor{red}{optimisation de la fonction objectif pour l'entrainement, + calcul des hyperparamètres}
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[scale=2]{svm.png}
+	\caption{Illustration de l'hyperplan d'un SVM.}\label{fig:sensresultat:svm}
+\end{figure}
+
+\subsubsection{$k$-plus-proches-voisins (kNN)}
+L'algorithme $k$-plus-proches-voisins est un algorithme très simple qui consiste à affecter à un nouvel objet la classe majoritaire $y'$ parmi ceux des $k$ points d'exemples d'entrainement $\lbrace (x_i,y_i) \rbrace_{1:k}$, les plus proches du point $x'$ de cet objet selon la métrique $d$ choisie. Ainsi, trois éléments clés influencent l'efficacité de la classification:
+\begin{enumerate}
+	\item les données d'entrainement dont le nombre s'il est très grand peut rendre chère le processus de classification, car la distance du nouvel objet à chaque point annoté, est calculée;
+	\item le nombre de voisins (c'est-à-dire la valeur de $k$) qui ne doit être ni très petit (sensibilité aux bruits / \textit{outliers}), ni très grand (risque d'avoir dans le voisinage beaucoup de points d'une autre classe). La sensibilité au nombre de voisins peut être atténuée en pondérant les points par leur distance à l'objet à classer. La stratégie de choix de la classe du nouvel objet est ainsi appelé \og vote pondéré par la distance \fg{}: \[y' = \argmax\limits_c \sum\lim\limits_{(x_i,y_i)} \frac{1}{d(x', x_i)^2} \times I(c = y_i)\] où $I(c=y_i) = \left\lbrace \begin{array}{ll}
+	1 & \text{si }c \text{ est égal à } y_i \\
+	0 & \text{sinon}
+	\end{array} \right.$
+	\item la métrique de calcul de distance qui doit être adéquate pour le type de donnée et la tâche (par exemple, la distance cosinus est préférable à la distance euclidienne pour la classification de documents, la deuxième métrique se dégradant lorsque le nombre d'attributs augmente).
+\end{enumerate}
+
+
+\subsubsection{Arbre de décision}
+Un arbre de décision est structure arborescente utilisée en fouille de données pour associer un label prédéfini à des objets (classification), ou prédire la valeur d'une variable continue (régression). Il comprend en des noeuds internes qui correspondent chacun à un test sur la valeur d'un attribut (test uni-varié), des arêtes correspondant à une sortie du test, et enfin des feuilles ou noeuds terminaux qui correspondent chacune à une prédiction. L'algorithme de classification d'un nouvel objet avec l'arbre de décision est très simple (Algorithme \ref{algo:sensresultat:classifywithtree}).
+
+\begin{algorithm}[H] \small
+	\KwData{Objet $x$, Arbre $A$}
+	\KwResult{label}
+	$n := racine(A)$ \; 
+	\While{$n$ n'est pas une feuille}{
+		Effectuer sur $x$ le test associé à $n$\;
+		$n :=$ noeud fils de $n$ correspondant au résultat du test \;
+	}
+	\Return le label associé à la feuille $n$\;
+	\caption{Classification d'un objet à l'aide d'un arbre de décision} \label{algo:sensresultat:classifywithtree}
+\end{algorithm}
+
+La construction de l'arbre, c'est-à-dire l'apprentissage, consiste à générer une hiérarchie de tests, aussi courte que possible, qui divise successivement l'ensemble $S$ d'exemples d'apprentissage en sous-ensembles disjoints de plus en plus pures\footnote{homogénéité des labels}. %, tels que des sous-groupes de cas appartenant à la même classe soient rapidement détectés. 
+L'arbre est construite de la racine aux feuilles en divisant les données d'entrainement $S_{t}$ à chaque étape ($t$) de sorte à minimiser le degré d'impureté des sous-ensemble d'exemples  $S_{t_i}$ dans les nœuds fils ($t_i$). Les divers algorithmes de construction diffèrent par le critère (ou la métrique) de séparation. Un critère de coupe est généralement défini à partir d'une métrique d'impureté comme par exemple:
+\begin{itemize}
+	\item l'entropie de la distribution des classes dans $S_t$: \[h_C(S_t) = - \sum\limits_{c \in C} \left[p(c \vert S_t) \log_2 p(c \vert S_t)\right];\]
+	\item l'indice de Gini mesurant la divergence entre les distributions de probabilité des valeurs de la variable prédite: \[g_C(S_t) = 1 - \sum\limits_{c \in C} \left[p(c \vert S_t)\right]^2;\]
+	\item l'erreur de classification définie par : \[e_C(S_t) = 1 - \max\limits_{c \in C} \left[p(c \vert S_t)\right]\]. 
+\end{itemize}
+Pour ces métriques, $p(c \vert S_t)$ représente la proportion d'exemples du nœud $t$ appartenant à $c$, et $S_t$ représente . Parmi les critères de séparation les plus populaires associés à ces critères, on retrouve: 
+
+\begin{itemize}
+	\item le gain d'information apporté par le test $t$ portant sur l'attribut $a$ (qui divise $S_t$ en des sous-ensembles $S_{t_i}$) utilisant l'entropie comme métrique d'impureté, et est définie par la différence entre l'entropie de $t$ et l'entropie moyenne des fils de $t$:  \[ig(S_t, a) = h_C(S_t) - i(S_t, t, a) =  h_C(S_t) - \sum\limits_{S_{t_i}} \frac{\vert S_{t_i} \vert}{\vert S_{t} \vert} \cdot h_C(S_{t_i});\]
+	\item le rapport des gains, qui corrige le gain d'information, biaisé en faveur des tests ayant un grand nombre d'alternatives (sorties du nœud), en prenant en compte l'information intrinsèque $h_t(S_t)$ de la séparation de $S_t$ suivant le test $t$ en sous-ensembles $S_{t_i}$: \[gr(S_t, t, a) = \frac{ig(S_t, t, a)}{h_t(S_t)} \text{ avec } h_t(S_t) = \sum\limits_i \frac{\vert S_{t_i}\vert}{\vert S_t \vert} \log_2 \left(\frac{\vert S_{t_i}\vert}{\vert S_t \vert}\right)\]
+	\item le critère binaire de "doublage" (\textit{twoing criteria}) qui ne s'emploie dans les arbres binaires : \[tc(t) = \frac{P(S_{t_R} \vert S_t)P(S_{t_L} \vert S_t)}{4} \left[\sum\limits_{c \in C} \vert p(c \vert t_L) - p(c \vert t_R)\vert\right]^2\] où  $P(S_{t_R} \vert S_t)$ et $P(S_{t_L} \vert S_t)$ sont les proportions de $S_t$ qui vont respectivement dans les fils $t_R$ et $t_L$ après séparation suivant le test $t$.
+\end{itemize}
+
+Les variables nominales peuvent être divisées soit en utilisant autant de partitions que de valeurs distinctes (partition multiple), soit uniquement en des partitions binaires suivant des tests booléens (partition binaire) nécessitant de rechercher la division optimale. Les variables numériques sont divisées quant à elles soit suivant par discrétisation de leur domaine les transformant en variables catégoriques ordinales, soit en recherchant la meilleure division binaire parmi  toutes les séparations possibles. 
+
+La construction de l'arbre étant une division récursive de noeud qui peut continuer tant qu'il est possible d'améliorer la pureté des noeuds, ce qui peut engendrer un arbre très grand résultant en un sur-apprentissage\footnote{Un modèle trop précis a un très faible taux d'erreur sur les données d'entrainement (erreur d'apprentissage) mais un fort taux d'erreur pour les données de test (erreur de test).}. Pour s'arrêter plus tôt ("pré-élagage"), plusieurs conditions sont possibles comme par exemple, l'atteinte par la taille des données ($\vert S_t \vert$) d'un seuil minimum, ou l'atteinte par l'arbre d'une profondeur maximale, ou l'amélioration du critère de division est très faible, etc. Le post-élagage est appliqué après construction de l'arbre toujours dans le but de minimiser le sur-apprentissage.
+
+%Les arbres de décisions sont des structures graphiques qui organisent sur un arbre les valeurs des caractéristiques dans des n\oe{}uds parents et les sorties au niveau des feuilles. Le principe de prédiction à l'aide des arbres consiste à construire le chemin allant de la racine à une feuille suivant les valeurs des caractéristiques présentées en entrée. Deux algorithmes de construction d'arbres de décision sont très populaires; il s'agit du CART (\textit{Classification and Regression Trees}), implémenté dans la librairie Scikit-Learn [?], et C4.5, implémenté dans la librairie Weka sous le nom de J48.
+%
+%\textcolor{red}{Expliquer le fonctionnement général d'un arbre de décision à partir d'un exemple illustré (\url{https://towardsdatascience.com/what-is-the-c4-5-algorithm-and-how-does-it-work-2b971a9e7db0})}
+%
+%Un CART est représenté par un arbre binaire dont chaque n\oe{}ud est défini par une condition sur la valeur d'une variable d'entrée, et comme les deux n\oe{}uds fils de correspondent respectivement aux deux valeurs VRAI ou FAUX de la condition. Chaque feuille de  l'arbre correspond à une prédiction pour la variable de sortie. Pour prédire la valeur de sortie pour un nouvel objet présenté en entrée, il suffit de traverser l'arbre de la racine à une feuille en suivant le chemin correspondant aux caractéristiques de cet objet.
+%
+%L'entrainement d'un arbre consiste à le construire, i.e. à trouver les conditions adéquates sur les variables descriptives, ainsi que leur enchainement adéquat. Il existent plusieurs algorithmes de construction d'arbre qui minimise l'erreur sur la base d'entrainement. Par exemple, le "découpage glouton" (\textit{Greedy Splitting}) consiste à construire successivement les noeuds de l'arbre, en sélectionnant la variable et la valeur de coupe optimale pour discriminer les classes au niveau du noeud courant. Pour la classification binaire, la métrique d'erreur à minimiser implique l'indice de Gini (indice de pureté du sous-arbre d'intérêt): \[G = \sum(p_k * (1-p_k)) = 2p_1p_2\] où $p_k$ est la proportion d'élément de la classe $k$ dans le sous-arbre d'intérêt.
+%Cet indice est pondéré par le nombre d'instances d'entrainement dans le noeud parent: \[G = \frac{n_1}{n}(2p_{11}p_{21}) + \frac{n_2}{n}(2p_{12}p_{22}) \], $n_j$ étant le nombre d'instance dans le groupe $j$, et $p_{ij}$ est la proportion d'instances de la classe $i$ dans le groupe $j$.
+%Une condition d'arrêt de construction de l'arbre généralement utilisée est l'infériorité du nombre d'instances du noeud par rapport à un seuil minimum défini en deçà duquel aucun découpage n'est permis. Le noeud respectant la  condition d'arrêt est une feuille et la classe qui lui est assignée est la classe majoritaire à ce noeud (\textcolor{red}{àvérifier?}).
+%
+%L'arbre ayant été construit successivement et localement, pour optimiser son efficacité (éviter le sur-apprentissage), il faut élaguer les branches d'impact négatif sur la qualité des résultats. La méthode utilisée consiste généralement à évaluer successivement l'effet de suppression des feuilles de l'arbres, et à éliminer celles cet effet est positif sur l'erreur obtenu sur une base de validation (\textcolor{red}{le tuto parle d'ens de test \textit{hold-out}}). 
+%
+%\textcolor{red}{Quelles techniniques utilise sklearn??}
+%
+%
+%Quant au C4.5, il s'agit d'un algorithme de classification produisant un arbre de décision basée sur la théorie de l'information. En effet, la meilleure variable pour le découpage à un noeud est celle qui porte le gain d'information normalisé le plus important.
+ 
+\subsubsection{Analyses discriminantes}
+
+\subsubsection{Modèles ensemblistes}
+
+
+\subsection{Algorithmes dédiés aux textes}
 
 \subsubsection{NBSVM}
 
