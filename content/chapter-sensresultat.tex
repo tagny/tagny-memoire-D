@@ -180,9 +180,21 @@ C4.5 & rapport des gains & supportées & supportées & élagage basé sur l'erre
 %
 %Quant au C4.5, il s'agit d'un algorithme de classification produisant un arbre de décision basée sur la théorie de l'information. En effet, la meilleure variable pour le découpage à un noeud est celle qui porte le gain d'information normalisé le plus important.
  
-\subsubsection{Analyses discriminantes}
+\subsubsection{Analyses discriminantes linéaires et quadratiques}
 
-\subsubsection{Modèles ensemblistes}
+L'analyse discriminante comprend l'ensemble des méthodes déterminant les combinaisons linéaires de variables qui permettent de séparer le mieux possible $K$ catégories ou variables qualitatives. Les analyses linéaires et quadratiques sont des méthodes probabilistes basées sur la probabilité conditionnelle d'appartenance d'un objet $X$ à une classe $y_k$: \[P(Y=y_k \vert X) = \frac{P(Y=y_k) P(X \vert Y=y_k)}{P(X)} = \frac{P(Y=y_k) P(X \vert Y=y_k)}{\sum\limits_{j = 1}^K P(Y=y_j) P(X \vert Y=y_j)}\].
+La classe de $X$ est donc $y_{k*} = \argmax_k P(Y=y_k \vert X) = P(Y=y_k) P(X \vert Y=y_k)$ car le dénominateur est le même pour toutes les classes. Dans cette expression, $P(Y=y_k)$ est la proportion d'exemples de classes $y_k$ dans l'ensemble des données d'apprentissage. Il ne reste donc qu'à déterminer $P(X \vert Y=y_k)$, pour trouver $y$. Deux hypothèses simplifient les calculs:
+\begin{enumerate}
+	\item l'hypothèse de normalité statuant que la probabilité conditionnelle $P(X \vert Y)$ suit une loi normale multidimensionnelle: \[P(X \vert Y = y_k) = \frac{1}{\sqrt{2\pi det(\sum_k)}}e^{-\frac{1}{2}(X - \mu_k)\sum_k^{-1}(X - \mu_k)'} \] $\mu_k$ étant le centre de gravité conditionnelle, et $\sum_k$ la matrice de variance covariance conditionnelle;
+	\item l'hypothèse d'homoscédasticité statuant que les matrices de variance co-variance conditionnelles sont identiques i.e.: \[\forall j,k \in \lbrace 1,...,K \rbrace, \sum_j = \sum_k = \sum.\]
+\end{enumerate}
+
+L'analyse discriminante linéaire (LDA) est définie par une simplification de $P(X \vert y_k)$ sous ces deux hypothèses. En effet, grâce à la proportionnalité de la probabilité conditionnelle à :$\ln\left[P(X \vert y_k)\right] \propto -\frac{1}{2}( X - \mu_k )\sum^{-1}(X - \mu_k )'$, on déduit une fonction discriminante (ou de classement) linéaire proportionnelle à $P(y_k \vert X)$: \[d(y_k, X) = \ln\left[P(Y = y_k)\right] + \mu_k \sum^{-1}X' - \frac{1}{2}\mu_k\sum^{-1}\mu_k'.\] Ainsi $y_{k*} = \argmax_{k \in \lbrace 1,...,K \rbrace} d(y_k, X)$.
+
+L'analyse discriminante quadratique (QDA) considère l'hétéroscédasticité (i.e. $\exists k \neq j, \sum_k \neq \sum_j$), et donc ne s'appuie que sur la 1e hypothèse (multinormalité). Dans ce cas, on obtient une règle quadratique de classification $k* = \argmax_{k \in \lbrace 1,...,K \rbrace} Q_k(X)$ où:
+\[Q_k(X) = (x - \mu_k)'\sum_k^{-1}(x - \mu_k) - 2 \ln(\pi_k) + \ln(det(\sum_k))\] est la fonction quadratique de classement de la classe $k$.
+
+%\subsubsection{Modèles ensemblistes}
 
 
 \subsection{Algorithmes dédiés aux textes}
@@ -201,6 +213,9 @@ $r = \log \left( \frac{p/\vert\vert p \vert\vert_1}{q / \vert\vert q \vert\vert_
 Ces deux méthodes intègrent leur propre représentation de document, contrairement aux algorithmes opérant sur dans des espaces vectorielles aux axes et poids paramétrables à volonté comme le SVM. Il existe un très grand nombre de schémas de représentations des documents.
 
 NBSVM et Fastext ont démontré une bonne robustesse et et des performances excellentes dans le cas de divers tâches de classification: courtes expressions, longs documents, thème, classification subjective (genre), classification de sentiment (positif, neutre, négatif), ... Mais nous voulons déjà savoir comment les algorithmes populaires se comportent sur notre tâche d'identification de la polarité du résultat d'une demande pour une catégorie bien définie. La particularité ici est que la tâche porte sur une demande en particulier parmi les nombreuses que compte le document, des données en faible nombre annotés (23 à 189 documents), une annotation en général déséquilibrée entre les classes (risque d'ignorer une classe très faiblement représenté dans le jeu d'entrainement, par exemple 21 "accepte" contre 166 "rejette").
+
+\subsection{Discussion: Techniques d'amélioration de la précision}
+Livre Data mining 
 
 \section{La Regression PLS et ses extensions}
 \label{sec:sensresultat:pls}
