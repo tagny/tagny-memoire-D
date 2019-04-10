@@ -47,7 +47,7 @@ Cette étude porte sur l'analyse de l'impact de différents aspects techniques g
 La classification de texte permet d'organiser des documents $x^{(k)}$ dans des groupes prédéfinis. Elle reçoit depuis longtemps beaucoup d'attentions. Deux choix techniques influencent principalement les performances: la représentation des textes et l'algorithme de classification. 
 
 \subsection{Algorithmes traditionnels de classification de données}
-Bien que la classification de documents voit se développer récemment des algorithmes propres aux textes, un grand nombre de méthodes ont été développées précédemment autour. Ces méthodes sont généralement basée sur une représentation vectorielle des textes et délimitent une frontière entre les classes dans un espace multidimensionnel. 
+Bien que la classification de documents voit se développer récemment des algorithmes propres aux textes, un grand nombre de méthodes ont été développées précédemment autour. Ces méthodes sont généralement basée sur une représentation vectorielle des textes et délimitent une frontière entre les classes dans un espace multidimensionnel. L'ensemble des labels / classes est noté $C$.
 %NB et SVM : https://www.dropbox.com/home/Documents/to-read/term-weight?preview=Best+Terms+An+Efficient+Feature+Selection+Algorithm+for+Text+Categorization.pdf
 % C4.5, k-means, svm, apriori algo, em algo, page rank, ada boost, knn, NB, CART: http://www.cs.umd.edu/~samir/498/10Algorithms-08.pdf
 
@@ -55,17 +55,17 @@ Bien que la classification de documents voit se développer récemment des algor
 \paragraph{Principe}:
 %http://stackoverflow.com/questions/10059594/a-simple-explanation-of-naive-bayes-classification#20556654
 %https://webdocs.cs.ualberta.ca/~greiner/R/PAPERS/ExplainNB.pdf
-Les classifieurs naïfs bayésiens \citep{duda1973patternclass} sont des modèles à densité qui estiment la probabilité qu'un texte appartienne à une classe à partir du théorème de Bayes \citep{raschka2014naivebayes}:
+Le classifieur naïf bayésien \citep{duda1973patternclass} est  un modèle à densité qui estiment la probabilité qu'un texte appartienne à une classe à partir du théorème de Bayes \citep{raschka2014naivebayes}:
 \begin{equation}
 \text{probabilité a posteriori} = \frac{\text{probabilité conditionnelle} \cdot \text{probabilité a priori}}{\text{évidence}}
 \end{equation}
 
-La probabilité a posteriori peut être interprétée dans le cadre de la classification des décisions dans la classe DIPA en "Quelle est la probabilité qu'une décision $t_i$ contienne une demande de type $c_j$ étant donné que $t$ contient les termes $\lbrace w_1, ..., w_K \rbrace$ ?". La réponse à cette question se formalise comme suit:
+La probabilité a posteriori peut être interprétée dans le cadre de la classification des décisions dans la classe DIPA en "Quelle est la probabilité qu'une décision $d_i$ contienne une demande de type $c_j$ étant donné que $d_i$ contient les termes $\lbrace t_1, ..., t_K \rbrace$ ?". La réponse à cette question se formalise comme suit:
 
-\[\p(c_j \vert t_i) = \frac{\p(t_i \vert c_j)\p(c_j)}{\p(t_i)}\]
-ou plus simplement  $\p(c_j \vert t_i) = \p(c_j)\p(t_i \vert c_j)$ car $\p(t_i)$ ne change pas en fonction de la catégorie et peut donc être ignorée \citep{rish2001nb_study}.
+\[\p(c_j \vert d_i) = \frac{\p(d_i \vert c_j)\p(c_j)}{\p(d_i)}\]
+ou plus simplement  $\p(c_j \vert d_i) = \p(c_j)\p(d_i \vert c_j)$ car $\p(d_i)$ ne change pas en fonction de la catégorie et peut donc être ignorée \citep{rish2001nb_study}.
 L'appélation "\textit{naïf}" est dûe à l'hypothèse d'\textbf{indépendance mutuelle entre les caractéristiques} des données. Une hypothèse %irréaliste 
-forte dont la violation, par les données réelles, n'empêche pourtant pas les NB de bien fonctionner \citep{rish2001nb_study}. 
+forte dont la violation, par les données réelles, n'empêche pourtant pas le NB de bien fonctionner \citep{rish2001nb_study}. 
 
 \begin{hypothese}[indépendance mutuelle des caractéristiques] [ Un modèle naïf bayésien étant de type génératif], la position de chaque mot dans le texte est générée indépendament de tout autre mot étant connue la catégorie du texte. \label{hypo_imc}
 \end{hypothese}
@@ -73,11 +73,11 @@ forte dont la violation, par les données réelles, n'empêche pourtant pas les 
 
 \noindent L'hypothèse \ref{hypo_imc} implique, pour des catégories de demande indépendantes,
 \[
-\mathbb{P}(d_{i1}, \dots, d_{iK}\vert c_j) = \prod_{k=1}^K \p(d_{ik} \vert c_j).
+\mathbb{P}(t_{1}, \dots, t_{K}\vert c_j) = \prod_{k=1}^K \p(t_{k} \vert c_j).
 \]
 Ainsi,
 \begin{equation}\notag
-\mathbb{P}(c_j\vert d_{i1}, \dots, d_{iK}) = \frac{\p(c_j)\p(d_{i1}, \dots, d_{iK} \vert c_j)}{\p(d_{i1}, \dots, d_{iK})} = \frac{\p(c_j)\prod_{k=1}^K \p(d_{ik} \vert c_j)}{\p(d_{i1}, \dots, d_{iK})}.
+\mathbb{P}(c_j\vert t_{1}, \dots, t_{K}) = \frac{\p(c_j)\p(d_{i1}, \dots, d_{iK} \vert c_j)}{\p(t_{1}, \dots, t_{K}} = \frac{\p(c_j)\prod_{k=1}^K \p(t_{k} \vert c_j)}{\p(t_{1}, \dots, t_{K})}.
 \end{equation}
 La fonction score issue de ce classifieur bayésien est construite en maximisant la probabilité $\mathbb{P}(c_j\vert d_{i1}, \dots, d_{iK})$. Il n'est donc pas nécessaire de connaître ni d'estimer la probabilité jointe $\p(d_{i1}, \dots, d_{iK})$.
 
@@ -86,14 +86,12 @@ La fonction score issue de ce classifieur bayésien est construite en maximisant
 
 %quand tu parles de paramètres tu penses à quoi exactement ? pour moi ce serait ceux de la fonction score...
 
-Grâce à l'hypothèse \ref{hypo_imc}, la probabilité conditionnelle ($\p(t_i \vert c_j$)) peut-être réécrite:
+Grâce à l'hypothèse \ref{hypo_imc}, la probabilité conditionnelle $\p(t_i \vert c_j$) peut-être réécrite:
 \[\p(t_i \vert c_j) = \p(w_1 \vert c_j)\cdot \p(w_2 \vert c_j) \cdot ... \cdot \p(w_d \vert c_j) = \prod\limits_{k = 1}^d \p(w_k \vert c_j)\]
 pour une représentation vectorielle des textes dans un espace de dimension $d$.
-Les paramètres du modèle peuvent donc être estimés à partir d'un jeu d'exemples d'entrainement. Plus précisément, $\forall k \in \lbrace 1, 2, ..., d \rbrace: \p(w_k \vert c_j) = \frac{N_{wc_j}}{N_{c_j}}$ et $\p(c_j) = \frac{N_c}{N}$.
+Les paramètres du modèle peuvent donc être estimés à partir d'un ensemble d'exemples annotés manuellement. Plus précisément, $\p(t_k \vert c_j) = \frac{N_{t_k,c_j}}{N_{c_j}}, \forall k \in \lbrace 1, 2, ..., K \rbrace$ et $\p(c_j) = \frac{N_c}{N}, \forall c_j \in C$ .
 
-Actuellement, les algorithmes NBSVM et FastText sont les plus populaires pour la classification de documents et ont les performances pour l'analyse de sentiment sont très bonnes. L'ensemble des labels / classes est noté $C$.
-
-\textcolor{red}{VARIANTE}
+%\textcolor{red}{VARIANTE}
 
 \subsubsection{Machine à vecteurs de support (SVM)}
 Le SVM \citep{vapnik1995statlearning} est un algorithme de classification binaire, qui construit, lors de la phase d'entrainement un hyperplan séparant les points, représentants les exemples d'entrainement, dans un espace à grande dimension, suivant leur classe (Figure \ref{fig:sensresultat:svm}\footnote{\url{http://www.clrc.rhul.ac.uk/svm.html}}). L'hyperplan est la surface situé entre les droites formées par les points les plus proches des deux classes. La classification d'un nouvel objet consiste à projeter son vecteur de caractéristiques dans cet espace, et le label qui lui est prédit est celui associé à la classe du coté où il se trouve. La projection d'une entrée $x$ dans le nouvel espace, est réalisée par une fonction non-linéaire appelé noyau.
@@ -110,11 +108,20 @@ Le SVM \citep{vapnik1995statlearning} est un algorithme de classification binair
 L'algorithme $k$-plus-proches-voisins est un algorithme très simple qui consiste à affecter à un nouvel objet la classe majoritaire $y'$ parmi ceux des $k$ points d'exemples d'entrainement $\lbrace (x_i,y_i) \rbrace_{1:k}$, les plus proches du point $x'$ de cet objet selon la métrique $d$ choisie. Ainsi, trois éléments clés influencent l'efficacité de la classification:
 \begin{enumerate}
 	\item les données d'entrainement dont le nombre s'il est très grand peut rendre chère le processus de classification, car la distance du nouvel objet à chaque point annoté, est calculée;
-	\item le nombre de voisins (c'est-à-dire la valeur de $k$) qui ne doit être ni très petit (sensibilité aux bruits / \textit{outliers}), ni très grand (risque d'avoir dans le voisinage beaucoup de points d'une autre classe). La sensibilité au nombre de voisins peut être atténuée en pondérant les points par leur distance à l'objet à classer. La stratégie de choix de la classe du nouvel objet est ainsi appelé \og vote pondéré par la distance \fg{}: \[y' = \argmax\limits_c \sum\lim\limits_{(x_i,y_i)} \frac{1}{d(x', x_i)^2} \times I(c = y_i)\] où $I(c=y_i) = \left\lbrace \begin{array}{ll}
-	1 & \text{si }c \text{ est égal à } y_i \\
-	0 & \text{sinon}
-	\end{array} \right.$
-	\item la métrique de calcul de distance qui doit être adéquate pour le type de donnée et la tâche (par exemple, la distance cosinus est préférable à la distance euclidienne pour la classification de documents, la deuxième métrique se dégradant lorsque le nombre d'attributs augmente).
+	\item le nombre de voisins (c'est-à-dire la valeur de $k$) qui ne doit être ni très petit (sensibilité aux bruits / \textit{outliers}), ni très grand (risque d'avoir dans le voisinage beaucoup de points d'une autre classe). La sensibilité au nombre de voisins peut être atténuée en pondérant les points par leur distance à l'objet à classer. Il a été proposé plusieurs variante de cette stratégie de \og vote pondéré par la distance \fg{}:
+	\begin{itemize}
+		\item $y' = \argmax\limits_c \sum\limits_{(x_i,y_i)} \frac{1}{Dis(x', x_i)^2} \times I(c = y_i)$  \citep{dudani1976originalwknn} \[\text{ où } I(c=y_i) = \left\lbrace \begin{array}{ll}
+		1 & \text{si }c \text{ est égal à } y_i \\
+		0 & \text{sinon}
+		\end{array} \right.\]
+		\item $y' = \argmax\limits_c \sum\limits_{(x_i,y_i)} w_i \times I(c = y_i)$ \citep{gou2011wknn} \[\text{ avec } w_i = \left\lbrace \begin{array}{ll}
+		\frac{Dis(x, d_k) - Dis(x, d_i)}{Dis(x, d_k) - Dis(x, d_1} & \text{si } Dis(x, d_k) \neq Dis(x, d_1) \\
+		1 & \text{sinon}
+		\end{array} \right.\]
+		\item $y' = \argmin\limits_c d(vec(\hat{E}(x)),t_c)$ \citep{bicego2016wknnrevisited} avec $\hat{E} = ?$ et $t_c = ?$
+	\end{itemize}
+	 
+	\item la métrique de calcul de distance qui doit être adéquate pour le type de donnée et la tâche, comme par exemple, la distance cosinus qui est préférable à la distance euclidienne pour la classification de documents, la deuxième métrique se dégradant lorsque le nombre d'attributs augmente.
 \end{enumerate}
 
 
@@ -132,6 +139,24 @@ Un arbre de décision est structure arborescente utilisée en fouille de donnée
 	\Return le label associé à la feuille $n$\;
 	\caption{Classification d'un objet à l'aide d'un arbre de décision} \label{algo:sensresultat:classifywithtree}
 \end{algorithm}
+
+Les algorithmes de construction d'arbres diffèrent ainsi par leur critère de séparation, leur stratégie d'élagage, et leur capacité à gérer les types d'attributs, les valeurs manquantes et extrêmes. \citet{singh2014id3cartc45} comparent ainsi les deux algorithmes CART et C4.5 que nous avons utilisés (Tableau ).
+
+\begin{table}
+	\begin{tabular}{|p{3cm}|l|l|}
+			\hline
+	&	\textbf{CART} & \textbf{C4.5} \\ 
+		\hline
+		 Critère de séparation & critère de "doublage" & rapport des gains \\ 
+		Variables numériques & supportées & supportées \\ 
+		Valeurs manquantes & supportées & supportées \\  
+		Stratégie d'élagage & élagage à coût complexe & élagage basé sur l'erreur \\  
+		Détection de valeurs extrêmes & supportées & susceptible \\  
+		Implémentations & Sckit-learn & J48 (Weka) \\ \hline
+		%CART   & critère de "doublage" & supportées & supportées & élagage à coût complexe & supportées  & Sckit-learn \\ \hline
+	%	C4.5 & rapport des gains & supportées & supportées & élagage basé sur l'erreur & susceptible & J48 (Weka) \\ \hline
+	\end{tabular}
+\end{table}
 
 La construction de l'arbre, c'est-à-dire l'apprentissage, consiste à générer une hiérarchie de tests, aussi courte que possible, qui divise successivement l'ensemble $S$ d'exemples d'apprentissage en sous-ensembles disjoints de plus en plus pures\footnote{homogénéité des labels}. %, tels que des sous-groupes de cas appartenant à la même classe soient rapidement détectés. 
 L'arbre est construite de la racine aux feuilles en divisant les données d'entrainement $S_{t}$ à chaque étape ($t$) de sorte à minimiser le degré d'impureté des sous-ensemble d'exemples  $S_{t_i}$ dans les nœuds fils ($t_i$). Les divers algorithmes de construction diffèrent par le critère (ou la métrique) de séparation. Un critère de coupe est généralement défini à partir d'une métrique d'impureté comme par exemple:
@@ -152,16 +177,9 @@ Les variables nominales peuvent être divisées soit en utilisant autant de part
 
 La construction de l'arbre étant une division récursive de noeud qui peut continuer tant qu'il est possible d'améliorer la pureté des noeuds, ce qui peut engendrer un arbre très grand résultant en un sur-apprentissage\footnote{Un modèle trop précis a un très faible taux d'erreur sur les données d'entrainement (erreur d'apprentissage) mais un fort taux d'erreur pour les données de test (erreur de test).}. Pour s'arrêter plus tôt ("pré-élagage"), plusieurs conditions sont possibles comme par exemple, l'atteinte par la taille des données ($\vert S_t \vert$) d'un seuil minimum, ou l'atteinte par l'arbre d'une profondeur maximale, ou l'amélioration du critère de division est très faible, etc. Le post-élagage est appliqué après construction de l'arbre toujours dans le but de minimiser le sur-apprentissage.
 
-Les algorithmes de construction d'arbres diffèrent ainsi par leur critère de séparation, leur stratégie d'élagage, et leur capacité à gérer les types d'attributs, les valeurs manquantes et extrêmes. \citet{singh2014id3cartc45} comparent ainsi les deux algorithmes CART et C4.5 que nous avons utilisés (Tableau ).
 
-\begin{table}
-	\begin{tabular}{|l|p{1.5cm}|p{1.5cm}|p{1.5cm}|p{1.5cm}|p{1.5cm}|p{1.5cm}|}
-		\hline
-		& Critère de séparation & Variables numériques & Valeurs manquantes & Stratégie d'élagage & Détection de valeurs extrêmes & Implémentations \\ \hline
-CART   & critère de "doublage" & supportées & supportées & élagage à coût complexe & supportées  & Sckit-learn \\ \hline
-C4.5 & rapport des gains & supportées & supportées & élagage basé sur l'erreur & susceptible & J48 (Weka) \\ \hline
-	\end{tabular}
-\end{table}
+
+
 
 %Les arbres de décisions sont des structures graphiques qui organisent sur un arbre les valeurs des caractéristiques dans des n\oe{}uds parents et les sorties au niveau des feuilles. Le principe de prédiction à l'aide des arbres consiste à construire le chemin allant de la racine à une feuille suivant les valeurs des caractéristiques présentées en entrée. Deux algorithmes de construction d'arbres de décision sont très populaires; il s'agit du CART (\textit{Classification and Regression Trees}), implémenté dans la librairie Scikit-Learn [?], et C4.5, implémenté dans la librairie Weka sous le nom de J48.
 %
@@ -198,6 +216,8 @@ L'analyse discriminante quadratique (QDA) considère l'hétéroscédasticité (i
 
 
 \subsection{Algorithmes dédiés aux textes}
+Les algorithmes dédiés aux textes intègrent leur propre représentation de document, contrairement aux algorithmes opérant sur dans des espaces vectorielles aux axes et poids paramétrables à volonté comme le SVM.  Actuellement, les algorithmes NBSVM \citep{wang2012nbsvm} et FastText \citep{grave2017fasttextcls} sont les plus populaires pour la classification de documents avec une très bonne précision pour l'analyse de sentiments. 
+
 
 \subsubsection{NBSVM}
 
@@ -205,37 +225,247 @@ Le NBSVM \citep{wang2012nbsvm} est un classifieur binaire (deux labels $\lbrace 
 $r = \log \left( \frac{p/\vert\vert p \vert\vert_1}{q / \vert\vert q \vert\vert_1}\right)
 \text{ avec } p=\alpha + \sum\limits_{k:y^{(k)}=1}{f}^{(k)}$, $q=\alpha + \sum\limits_{k:y^{(k)}=-1}{f}^{(k)}$. L'ensemble des caractéristiques $V$ est constitué de n-grammes de mots. Le nouveau vecteur issu de ce produit représente le texte ($x^{(k)} = \overset{\sim}{f}^{(k)}$) en entrée d'un SVM classique. La classe de $x^{(k)}$ est prédite par : $y^{(k)} = sign(\mathbf{w}^Tx^{(k)} + b)$, $\mathbf{w}$ et $b$ étant appris lors de l'entraînement du SVM. Une interpolation  entre le bayésien multinomial et le SVM est nécessaire pour assurer la robustesse du NBSVM et des performances excellentes pour toute tâche de classification de documents; les poids $\mathbf{w}$ sont réajustés par le model $\mathbf{w'} = (1 - \beta) \overline{w} + \beta \mathbf{w}$, où $\overline{w} = \vert\vert \mathbf{w}\vert\vert_1 / \vert V \vert$ et $\beta \in \left[0; 1] \right.$. 
   
-  
-  \subsubsection{FastText}
+
+\subsubsection{FastText}
   
  FastText \citep{grave2017fasttextcls}, quant à lui, est un modèle de réseau de neurones dont l'architecture est semblable à celle de la variante CBOW de la méthode de plongement sémantique Word2Vec dans laquelle le mot du milieu a été remplacé par le label de la classe du texte et au dessus de laquelle la fonction softmax $f(z) = \left[ \frac{e^{z_j}}{\sum\limits_{k=1}^K e^{z_k}} \right]_{\forall j \in \lbrace 1, ..., K \rbrace} $ est rajoutée pour réaliser la classification à partir de la représentation distribuée du texte. La phase d''entraînement consiste à minimiser la fonction objectif $-\frac{1}{N}y_n \cdot \sum\limits_{n=1}^N y_n \cdot \log{f(B\cdot A\cdot x_n)}$ qui estime la distribution de probabilité des classes.
 
-Ces deux méthodes intègrent leur propre représentation de document, contrairement aux algorithmes opérant sur dans des espaces vectorielles aux axes et poids paramétrables à volonté comme le SVM. Il existe un très grand nombre de schémas de représentations des documents.
+%NBSVM et Fastext ont démontré une bonne robustesse et des performances excellentes dans le cas de divers tâches de classification: courtes expressions, longs documents, thème, classification subjective (genre), classification de sentiment (positif, neutre, négatif), ... Mais nous voulons déjà savoir comment les algorithmes populaires se comportent sur notre tâche d'identification de la polarité du résultat d'une demande pour une catégorie bien définie. La particularité ici est que la tâche porte sur une demande en particulier parmi les nombreuses que compte le document, des données en faible nombre annotés (23 à 189 documents), une annotation en général déséquilibrée entre les classes (risque d'ignorer une classe très faiblement représenté dans le jeu d'entrainement, par exemple 21 "accepte" contre 166 "rejette").
 
-NBSVM et Fastext ont démontré une bonne robustesse et et des performances excellentes dans le cas de divers tâches de classification: courtes expressions, longs documents, thème, classification subjective (genre), classification de sentiment (positif, neutre, négatif), ... Mais nous voulons déjà savoir comment les algorithmes populaires se comportent sur notre tâche d'identification de la polarité du résultat d'une demande pour une catégorie bien définie. La particularité ici est que la tâche porte sur une demande en particulier parmi les nombreuses que compte le document, des données en faible nombre annotés (23 à 189 documents), une annotation en général déséquilibrée entre les classes (risque d'ignorer une classe très faiblement représenté dans le jeu d'entrainement, par exemple 21 "accepte" contre 166 "rejette").
-
-\subsection{Discussion: Techniques d'amélioration de la précision}
-Livre Data mining 
+\subsection{Techniques d'amélioration de la précision}
+La faible quantité \citep{ruparel2013smalldataclass} et le déséquilibre des données sont susceptibles d'être des obstacles à l'entrainement des modèles de classification décrits précédemment. De nombreuses techniques permettent néanmoins d'optimiser l'apprentissage en fonction des données. La plus commune consiste à choisir les meilleures valeurs des hyper-paramètres en tester différentes combinaisons sur une base dite de développement. La combinaisons de classifieurs est aussi une méthode très étudiée \citep{kittler1996combiningclassifiers,kuncheva2004combiningclassifiers, tulyakov2008combiningclassifiers} notamment par l'exemple des forêts aléatoires \citep{breiman2001randomforest} ou de
+Livre Data mining : Combinaison de classifieurs \citep{kittler1996combiningclassifiers,kuncheva2004combiningclassifiers, tulyakov2008combiningclassifiers} , ...
 
 \section{La Regression PLS et ses extensions}
 \label{sec:sensresultat:pls}
 \textcolor{red}{Justification: Pourquoi le PLS?:}
 %https://link.springer.com/content/pdf/10.1007\%2FBF02174528.pdf, 
 %https://www.stat4decision.com/fr/regression-pls/
-La regression PLS est une méthode de regression avec laquelle l'on tente d'expliquer une ou plusieurs variables Y (dite dépendantes) par des variables $X=x_1,x_2,...,x_p$ (dites explicatives). Elle consiste principalement à transformer les variables explicatives en un nombre réduit de composantes principales orthogonales $t_1, t_2, ..., t_h$. Les composantes $t_h$ sont construites étapes par étapes en applicant l'algorithme du PLS de façon récurrente sur les données mal prédites (résidus). Plus précisément, à chaque itération $h$, la composante $t_h$ est calculée par la formule $t_h = w_{h1} x_1 + \cdots + w_{hj} x_j + \cdots + w_{hp} x_p$. 
 
-Malgré quelques faiblesses comme celles liées au choix du nombre de composantes, à la complexité des sorties et la linéarité du modèle, la regression PLS présente quelques atouts qui ont notamment de l'intérêt dans notre cas de figure. Par exemple, le PLS gère assez bien la forte disproportion entre le nombre de variables explicatives et le nombre d'observations, lorsque ce dernier est faible comme on peut l'observer dans nos données (faible quantité de données d'apprentissage). Nous avons aussi la prise en compte de la multicolinéarité qui peut exister entre les variables explicatives, notamment quand celles-ci sont associées aux mots/termes souvent cooccurrents de nos documents.
+\section{L'opérateur Gini covariance}
 
-Il est intéressant de noter la floraison d'extensions proposées pour répondre aux différentes limites du PLS. Notamment, nous pouvons citer la "\textit{sparse}" PLS introduite pour palier à la "\textit{sparsité}" et la colinéarité des variables explicatives [?], la PLS non-linéaire proposée pour les cas de données non-linéairement séparables [?], ou encore la PLS discriminante combinant la régression PLS et l'analyse discriminante [?]. Nos nous sommes intéressés à deux extensions particulières: la régression Gini-PLS \citep{mussard2018ginipls} dont l'intérêt est de réduire la sensibilité aux valeurs aberrantes des variables, et la regression Logit-PLS \citep{tenenhaus2005logitpls}  combinant la regression logistique et la PLS.
-\subsection{Gini-PLS}
-Cette méthode élimine la sensibilité du PLS aux valeurs extrêmes en remplaçant la covariance $cov(x_j, y)$ par la covariance de Gini $cog(y; x_j) := cov(y; R(x_j))$ pour l'estimation des résidus $u_{(h)j}$ et des poids $w_{hj}$ \citep{mussard2018ginipls}.
+Soit $\bar{x}_k$ la moyenne arithmétique de la variable $x_k$. L'opérateur de Gini covariance proposé par \citet{Schechtman03}, encore appelé opérateur co-Gini est donné par:
+\begin{equation}\label{cog0}
+\cog(x_\ell,x_k) := \cov(x_\ell,F(x_k)) = \frac{1}{N}\sum_{i=1}^N(x_{i\ell} -\bar{x_\ell})(\hat{F}(x_{ik})-\bar{F}_{x_k}),
+\end{equation}
+où $\hat{F}(x_{k})$ est la fonction de répartition de $x_k$, $\bar{F}_{x_k}$ sa moyenne, avec $\ell \neq k = 1,\ldots,K$. Lorsque $k=\ell$ le co-Gini mesure la variabilité entre une variable et elle-même (l'équivalent de la variance mesurée sur la norme $\ell_2)$. Le co-Gini est une mesure basée sur la distance de Manhattan (distance de métrique $\ell_1$), en effet :
+\begin{equation}\notag
+\frac{1}{N^2}\sum_{i=1}^N\sum_{j=1}^N |x_{ik} - x_{jk}| = 4\cog(x_k,x_k).
+\end{equation}
+D'autre part, lorsque $k\neq \ell$, le co-Gini produit une mesure de la variabilité jointe entre deux variables. Puisque le co-Gini n'est pas symétrique :
+\[
+\cog(x_k,x_\ell) := \cov(x_k ,F(x_\ell)) = \frac{1}{N}\sum_{i=1}^N(x_{ik} -\bar{x_k})(\hat{F}(x_{i\ell})-\bar{F}_{x_\ell}).
+\]
+Définissons les rangs croissants d'une variable alétoire afin de fournir un estimateur de $F$,
+\[
+R_\uparrow(x_{i\ell}) := N\hat{F}(x_{i\ell)} = 
+\left\{ \begin{array}{ll}
+\#\{ x \leq x_{i\ell} \} & \text{si aucune observation similaire} \\
+\frac{\sum_{i=1}^p\#\{ x \leq x_{i\ell}  \}}{p} & \text{s'il existe $p$ valeurs similaires $x_{i\ell}$.}
+\end{array}
+\right.
+\]
+Alors, un estimateur du co-Gini est donné par,
+\begin{eqnarray}\label{cog}
+\widehat{\cog}(x_\ell,x_k) := \frac{1}{N}\sum_{i=1}^N(x_{i\ell} -\bar{x_\ell})(R_\uparrow(x_{ik})-\bar{R_\uparrow}_{x_k}), \ \forall k,\ell=1,\ldots,K,
+\end{eqnarray}
+avec $\bar{R_\uparrow}_{x_k}$ la moyenne arithmétique du vecteur rang de la variable $x_k$. 
 
 
-\subsection{Logit-PLS}
-Dans cette approche, $\forall j > 1$, les $w_{hj} $ sont les coefficients de la régression logistique de $y$ sur les composantes $t_1, ..., t_{h-1}, u_{(h-1)j}$ \cite{tenenhaus2005logitpls}.
+\section{Gini-PLS}
 
-\subsection{Gini-Logit-PLS}
-Cette approche combine la covariance Gini pour $u_{(h)j}$ et le coefficient Logit pour les $w_{hj}$.
+Le premier algorithme Gini-PLS a été proposé par \citet{mussard2018ginipls}. Nous le décrivons dans les lignes qui suivent. Il s'agit d'une méthode de compression avec débruitage qui consiste à réduire les dimensions de l'espace généré par $X$ afin de trouver des composantes principales débruitées, dans le même esprit qu'une ACP débruitée, néanmoins l'approche est supervisée dans la mesure où une variable cible $y$ est prise en compte dans le changement d'espace. Le sous-espace formé par les composantes principales $\{t_1,t_2,\cdots\}$ est construit de telle sorte que le lien entre les variables explicatives $X = [x_1,x_2,\cdots]$ et la cible $y$ est maximisé.  \textcolor{red}{$\vert X \vert = p$, nombre de variables explictives}.
+
+\medskip
+
+$\bulle$ \underline{\textbf{Étape 1:}} La régression Gini permet de concevoir un nouveau type de lien entre la variable expliquée et les variables explicatives tout en évitant l'influence des valeurs aberrantes. Ceci est permis grâce notamment à l'opérateur co-Gini dans lequel le rôle de la variable explicative est remplacé par celui de son vecteur rang dans un espace muni d'une métrique $\ell_1$.  Ainsi, il est possible de créer un nouveau vecteur de poids $w_1$ qui renforce le lien (co-Gini) entre la variable expliquée $y$ et les régresseurs $X$ dans le cadre d'une régression (linéaire ou non linéaire).
+\newline La solution du programme,
+\[
+\max \cog(y,X w_1) \ , \ \text{s.c.} \ \left\|w_1\right\|=1 \ , \ \text{est}
+\]
+\begin{equation}\notag
+w_{1j} = \frac{\cog(y,x_j)}{\sqrt{\sum_{j=1}^p \emph{cog}^2(y,x_j)}} \ , \ \forall j = 1\ldots,p \ .
+\end{equation}
+La pondération est équivalente à :
+\begin{equation}\notag
+w_{1j} = \frac{\cov(y,R(x_j))}{\sqrt{\sum_{j=1}^p \cov^2(y,R(x_j))}} \ , \ \forall j = 1\ldots,p \ .
+\end{equation}
+Comme dans la régression PLS, on régresse $y$ sur la composante $t_1$ qui est construite de la manière suivante :
+\[
+t_1 = \sum_{j=1}^p w_{1j}x_j \ \Longrightarrow \ y = \hat{c}_1 t_1 + \hat{\varepsilon}_1 \ .
+\]
+
+\medskip
+
+$\bulle$ \underline{\textbf{Étape 2:}}  On régresse le vecteur rang de chaque régreseur $R(x_j)$ sur la composante $t_1$ par moindres carrés ordinaires afin de récupérer les résidus $\hat{U}_{(1)j}$ : 
+\[
+R(x_j) = \hat{\beta}t_1 + \hat{U}_{(1)j} \ , \ \forall j = 1,\cdots, p \ .
+\]
+On construit le nouveau vecteur de pondération en utilisant les rangs des résidus des régressions partielles :
+\[
+\max \text{cog}(\hat{\varepsilon}_1,\hat{U}_{(1)} w_2) \ , \ \text{s.c.} \ \left\|w_2\right\|=1 \ \Longrightarrow \ w_{2j} = \frac{\cog(\hat{\varepsilon}_1,\hat{U}_{(1)j})}{\sqrt{\sum_{j=1}^p \cog^2(\hat{\varepsilon}_1,\hat{U}_{(1)j})}} .
+\]
+On utilise à présent les composantes $t_1$ et $t_2$ pour établir un lien entre $y$ et les régresseurs $x_j$ :
+\[
+t_2 = \sum^p_{j=1} w_{2j} \hat{U}_{(1)j} \ \Longrightarrow \ y = \hat{c}_1 t_1 + \hat{c}_2 t_2 + \hat{\varepsilon}_2 \ .
+\]
+La validation croisée permet de savoir si $t_2$ est significative.\\
+
+$\bulle$ \underline{\textbf{Étape 3:}} Les régressions partielles sont réitérées en rajoutant l'influence de $t_2$ :
+\[
+R(x_j) = \beta t_1 + \gamma t_2 + \hat{U}_{(2)j} \ , \ \forall j = 1,\cdots, p.
+\]
+D'où, après maximisation :
+\[
+w_{3j} = \frac{\cog(\hat{\varepsilon}_2,\hat{U}_{(2)j})}{\sqrt{\sum_{j=1}^p \cog^2(\hat{\varepsilon}_2,\hat{U}_{(2)j})}} \ ,
+\]
+\[
+t_3 = \sum_{j=1}^p w_{3j}\cdot \hat{U}_{(2)j} \ \Longrightarrow \ y = \alpha_2 + c_1 t_1 + c_2 t_2 + c_3 t_3 + \varepsilon_3 \ .
+\]
+La procédure s'arrête lorsque la validation croisée indique que la composante $t_l$ n'est pas significative. L'algorithme Gini-PLS1 est valable si toutes les composantes $t_h$ et $t_l$ sont orthogonales, $\forall h\neq l$. 
+
+\medskip
+
+La validation croisée permet de trouver le nombre optimal $h>1$ de composantes à retenir. Pour tester une composante $t_h$, on calcule la prédiction du modèle avec $h$ composantes comprenant l'observation $i$, $\hat{y}_{h_i}$, puis sans l'observation $i$, $\hat{y}_{h_{(-i)}}$. L'opération est répétée pour tout $i$ variant de $1$ à $n$ : on enlève à chaque fois l'observation $i$ et on ré-estime le modèle.\footnote{Les observations peuvent être éliminées bloc par bloc au lieu de l'être une à une, \emph{Cf.} Tenenhaus (1998), p. 77.} Pour mesurer la robustesse du modèle, on mesure l'écart entre la variable prédite et la variable observée :
+\[
+PRESS_h =  \sum_i\left(y_i - \hat{y}_{h_{(-i)}}\right)^2 \ .
+\]
+La somme des carrés résiduels obtenue avec le modèle à $(h-1)$ composantes est : 
+\[
+RSS_{h-1} = \sum \left(y_i - \hat{y}_{(h-1)_i}\right)^2 \ .
+\]
+Le critère $RSS_h$ (Residual Sum of Squares) du modèle à $h$ composante et $PRESS_h$ (PRedicted Error Sum of Squares) sont comparés. Leur ratio permet afin de savoir si le modèle avec la composante $t_h$ améliore la prédictibilité du modèle. La statistique suivante est alors calculée :
+\[
+Q^2_h =1 - \frac{PRESS_h}{RSS_{h-1}} \ .
+\]
+La composante $t_h$ est retenue si : $\sqrt{PRESS_h} \leq 0,95 \sqrt{RSS_h}$. Autrement dit, lorsque $Q^2_h \geq 0,0975 = (1 - 0,95^2)$, la nouvelle composante $t_h$ est significative, elle améliore la prévision de la variable $y$. Pour la significativité de de la première composante $t_1$,  on utilise :
+\[
+RSS_0 = \sum^{n}_{i = 1} \left(y_i - \bar{y}\right)^2  \ .
+\]
+
+
+\section{Propositions : régressions Gini-PLS généralisée} 
+
+\citet{Schechtman03} ont récemment généralisé l'opérateur co-Gini afin d'imposer plus ou moins de poids en queue de distribution. Notons $r_{k}=(R_\downarrow(x_{1k}),\ldots, R_\downarrow(x_{Nk}))$ le vecteur rang décroissant de la variable $x_k$, autrement dit, le vecteur qui assigne le rang le plus petit (1) à l'observation dont la valeur est la plus importante (et positive) $x_{ik}$ :
+\[
+R_\downarrow(x_{ik}) :=
+\left\{ \begin{array}{ll}
+N+1- \#\{x \leq x_{ik} \} & \text{pas d'observation similaire} \\
+N+1-\frac{\sum_{i=1}^p \#\{ x \leq x_{ik}  \}}{p} & \text{si $p$ observations similaires $x_{ik}$.}
+\end{array}
+\right.
+\]
+L'opérateur co-Gini est généralisé grâce au paramètre $\nu$ :
+\begin{equation}\label{cogg}
+\widehat{\cog}_\nu(x_\ell,x_k) := -\nu \widehat{\cov}(x_\ell,r_{k}^{\nu-1}) ;  \ \nu > 1.
+\end{equation}
+Afin de bien comprendre le rôle de l'opérateur co-Gini, revenons sur la mesure du coefficient de corrélation linéaire généralisé au sens de Gini :
+\[
+GC_\nu(x_\ell,x_k) := \frac{-\nu \widehat{\cov}(x_\ell,r_{k}^{\nu-1})}{-\nu \widehat{\cov}(x_\ell,r_{\ell}^{\nu-1})} \ ; \ GC_\nu(x_k,x_\ell) := \frac{-\nu \widehat{\cov}(x_k,r_{\ell}^{\nu-1})}{-\nu \widehat{\cov}(x_k,r_{k}^{\nu-1})}.
+\]
+
+\begin{property}\label{prop1} -- \textbf{\emph{\citet{Schechtman03}:}}
+	
+	\noindent \emph{(i)} $GC_\nu(x_\ell,x_k) \leq 1$.
+	
+	\noindent\emph{(ii)} Si les variables $x_\ell$ et $x_k$ sont indépendantes, pour tout $k\neq \ell$, alors $GC_\nu(x_\ell,x_k) = GC_\nu(x_k,x_\ell) =0$.
+	
+	\noindent\emph{(iii)} Une transformation monotone des données $\varphi$ n'affecte pas le coefficient de corrélation, $GC_\nu(x_\ell,\varphi(x_k)) = GC_\nu(x_\ell,x_k)$.
+	
+	\noindent\emph{(iv)} Pour une transformation linéaire $\varphi$, $GC_\nu(\varphi(x_\ell),x_k) = GC_\nu(x_\ell,x_k)$ $[$comme le coefficient de corrélation de Pearson$]$.
+	
+	\noindent\emph{(v)} Si $x_k$ et $x_\ell$ sont deux variables échangeables à une transformation linéaire près, alors $GC_\nu(x_\ell,x_k) = GC_\nu(x_k,x_\ell)$.
+\end{property}
+
+Le rôle de l'opérateur co-Gini peut être expliqué de la manière suivante. Lorsque $\nu \rightarrow 1$, la variabilité des variables est atténuée de telle sorte que $\cog_\nu(x_k,x_\ell)$ tend vers zéro (même si les variables $x_k$ et $x_\ell$ sont fortement corrélées).Au contraire, si $\nu \rightarrow \infty $ alors $\cog_\nu(x_k,x_\ell)$ permet de se focaliser sur les queues de distribution $x_\ell$. Comme le montrent \citet{olkin1992gini}, l'emploi de l'opérateur co-Gini atténue la présence de valeurs extrêmes, du fait que le vecteur rang agit comme un instrument dans la régression de $y$ sur $X$ (régression par variables instrumentales).    
+
+Ainsi, en proposant une régression Gini-PLS basée sur le paramètre $\nu$, nous pouvons calibrer la puissance du débruitage  grâce à l'opérateur co-Gini qui va localiser le bruit dans la distribution. Cette régression Gini-PLS généralisée devient une régression Gini-PLS régularisée où le paramètre $\nu$ joue le rôle de paramètre de régularisation. 
+
+
+\subsection{L'algorithme Gini-PLS généralisé} 
+
+Dans ce qui suit nous généralisons la régression Gini-PLS de \citet{mussard2018ginipls} avec renforcement du pouvoir de débruitage par l'intermédiaire du paramètre $nu$.
+
+
+\begin{center}
+	\includegraphics[scale=0.5]{graph.png}
+\end{center}
+
+
+La première étape consiste à trouver des poids de débruitage associés à chaque variable $x_k$ afin d'en déduire la première composante $t_1$ (ou première variable latente). Cette opération est bouclée jusqu'à la composante $t_{h^*}$, où $h^*$ est le nombre optimal de variable latentes. Ainsi, le modèle est estimé :
+\begin{equation}\label{forecast}
+y=\sum_{h=1}^{h^*} c_ht_h +\eps_h.
+\end{equation}   
+La statistique $VIP_{hj}$ est mesurée afin de sélectionner la variable $x_j$ qui a l'impact significatif le plus important sur $\hat{y}$. Les variables les plus significatives sont celles dont $VIP_{hj}>1$ avec :
+\[
+VIP_{hj} := \sqrt{\frac{p\sum_{\ell=1}^{h}Rd(y;t_\ell)w_{\ell j}^2}{Rd(y;t_1,\ldots,t_h)}} 
+\] 
+et 
+\[
+Rd(y; t_1,\ldots,t_h) := \frac{1}{p}\sum_{\ell=1}^{h}\cor^2(y,t_\ell) =: \sum_{\ell=1}^{h}Rd(y;t_\ell).
+\]
+où $cor^2(y,t_\ell)$ est le coefficient de corrélation de Pearson entre $y$ et la composante $t_\ell$. Cette information est rétro-propagée dans le modèle (une seule fois) afin d'obtenir les variables latentes $t_{h^*}$ et leurs coefficients estimés $\hat{c}_{h^*}$ sur les données d'entrainement. La variable cible $y$ est ensuite prédite grâce à (\ref{forecast}). Cette prévision est comparée aux modèles standards SVM, LOGIT, Bayes et LDA lorsque les données tests sont projetées dans le sous-espace $\{t_1,\ldots,t_{h^*}\}$.\\
+
+
+\begin{algorithm}[H]
+	\KwResult{ Prédiction du juge $y=0;1$ }
+	\Repeat{ $\nu=14$ $[\nu=\nu+2]$ }{
+		\Repeat{ $h=10$ $[h=h+1]$ }{
+			$\max \cog_\nu(y,w_hX)$ s.t. $\| w_h\|=1$ $\Longrightarrow$ poids $w_h$ de $X$ \;
+			MCO équation: $y=\sum_h c_ht_h +\eps_h$ \;
+			MCO équation: $R(x_j)=\sum_h \beta_ht_h + \epsilon_k$ $\forall k=1,\ldots,K$ \;
+			$X:=(\hat{\epsilon}_1,\ldots,\hat{\epsilon}_K)$ $y:=\hat{\eps}_h$ \; }
+		Mesurer $VIP_{kh}$, $Q^2_h$ \;
+		Sélectionner le nombre optimal de composantes $h^*$ \; }
+	Déduire le paramètre optimal $\nu^*$ qui minimise l'erreur \; 
+	\Return Prédiction $\hat{y}$ avec Gini-PLS ($h^*$, $\nu^*$) \;
+	\Return Prédiction $\hat{y}$ avec SVM, LOGIT, Bayes, LDA sur les composantes $(t_1,\ldots,t_{h^*})$\;
+	\caption{Gini-PLS Généralisé}\label{G-GPLS}
+\end{algorithm}
+\bigskip
+
+\subsection{L'algorithme LOGIT-Gini-PLS généralisé} 
+
+Comme nous le constatons dans l'algorithme Gini-PLS généralisé que nous avons proposé dans le section précédente, les poids $w_j$ proviennent de l'opérateur co-Gini appliqué à une variable booléenne $y=0;1$. Afin de trouver les poids $w_j$ qui maximisent le lien entre les variables $x_j$ et la variable cible $y$, nous proposons d'utiliser la régression LOGIT, autrement dit, une sigmoïde qui est bien adapté à des variables boléennes. Ainsi, dans chaque étape de la régression Gini-PLS nous remplaçons la maximisation du co-Gini par la mesure de la probabilité conditionnelle suivante :
+\begin{equation}\tag{LOGIT}
+\mathbb{P}(y_i = 1 / X = X_i) = \frac{\exp\left\{X_i \beta \right\}}{1+\exp\left\{ X_i \beta \right\}}
+\end{equation}
+où $X_i$ est la $i$-ème ligne de la matrice $X$ (observation des caractéristiques/dimensions de la décision juridique $i$). L'estimation du vecteur $\beta$ se fait maximum de vraisemblance. On en déduit alors les pondérations $w_j$ :
+\[
+w_j = \frac{\beta_j}{\| \beta\|}
+\]
+L'algorithme LOGIT-Gini-PLS généralise est donc le suivant :
+
+\begin{algorithm}[H]
+	\KwResult{ Prédiction du juge $y=0;1$ }
+	\Repeat{ $\nu=14$ $[\nu=\nu+2]$ }{
+		\Repeat{ $h=10$ $[h=h+1]$ }{
+			LOGIT équation : $\Longrightarrow$ poids $w_j$ de $X$ \;
+			MCO équation : $y=\sum_h c_ht_h +\eps_h$ \;
+			$X:=(\hat{\epsilon}_1,\ldots,\hat{\epsilon}_K)$ $y:=\hat{\eps}_h$ \; }
+		Mesurer $VIP_{kh}$, $Q^2_h$ \;
+		Sélectionner le nombre optimal de composantes $h^*$ \; }
+	Déduire le paramètre optimal $\nu^*$ qui minimise l'erreur \; 
+	\Return Prédiction $\hat{y}$ avec Gini-PLS ($h^*$, $\nu^*$) \;
+	\Return Prédiction $\hat{y}$ avec SVM, LOGIT, Bayes, LDA sur les composantes $(t_1,\ldots,t_{h^*})$\;
+	\caption{LOGIT-Gini-PLS Généralisé}\label{G-GPLS}
+\end{algorithm}
+
+
+%La regression PLS est une méthode de regression avec laquelle l'on tente d'expliquer une ou plusieurs variables Y (dite dépendantes) par des variables $X=x_1,x_2,...,x_p$ (dites explicatives). Elle consiste principalement à transformer les variables explicatives en un nombre réduit de composantes principales orthogonales $t_1, t_2, ..., t_h$. Les composantes $t_h$ sont construites étapes par étapes en applicant l'algorithme du PLS de façon récurrente sur les données mal prédites (résidus). Plus précisément, à chaque itération $h$, la composante $t_h$ est calculée par la formule $t_h = w_{h1} x_1 + \cdots + w_{hj} x_j + \cdots + w_{hp} x_p$. 
+%
+%Malgré quelques faiblesses comme celles liées au choix du nombre de composantes, à la complexité des sorties et la linéarité du modèle, la regression PLS présente quelques atouts qui ont notamment de l'intérêt dans notre cas de figure. Par exemple, le PLS gère assez bien la forte disproportion entre le nombre de variables explicatives et le nombre d'observations, lorsque ce dernier est faible comme on peut l'observer dans nos données (faible quantité de données d'apprentissage). Nous avons aussi la prise en compte de la multicolinéarité qui peut exister entre les variables explicatives, notamment quand celles-ci sont associées aux mots/termes souvent cooccurrents de nos documents.
+%
+%Il est intéressant de noter la floraison d'extensions proposées pour répondre aux différentes limites du PLS. Notamment, nous pouvons citer la "\textit{sparse}" PLS introduite pour palier à la "\textit{sparsité}" et la colinéarité des variables explicatives [?], la PLS non-linéaire proposée pour les cas de données non-linéairement séparables [?], ou encore la PLS discriminante combinant la régression PLS et l'analyse discriminante [?]. Nos nous sommes intéressés à deux extensions particulières: la régression Gini-PLS \citep{mussard2018ginipls} dont l'intérêt est de réduire la sensibilité aux valeurs aberrantes des variables, et la regression Logit-PLS \citep{tenenhaus2005logitpls}  combinant la regression logistique et la PLS.
+%\subsection{Gini-PLS}
+%Cette méthode élimine la sensibilité du PLS aux valeurs extrêmes en remplaçant la covariance $cov(x_j, y)$ par la covariance de Gini $cog(y; x_j) := cov(y; R(x_j))$ pour l'estimation des résidus $u_{(h)j}$ et des poids $w_{hj}$ \citep{mussard2018ginipls}.
+%
+%
+%\subsection{Logit-PLS}
+%Dans cette approche, $\forall j > 1$, les $w_{hj} $ sont les coefficients de la régression logistique de $y$ sur les composantes $t_1, ..., t_{h-1}, u_{(h-1)j}$ \cite{tenenhaus2005logitpls}.
+%
+%\subsection{Gini-Logit-PLS}
+%Cette approche combine la covariance Gini pour $u_{(h)j}$ et le coefficient Logit pour les $w_{hj}$.
 
 
 \section{Méthode}

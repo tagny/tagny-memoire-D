@@ -1,10 +1,10 @@
 \documentclass[12pt,letterpaper,oneside,openright]{book}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
-\usepackage{natbib}
+\usepackage[square]{natbib}
 \usepackage[french]{babel}
-%\bibliographystyle{apalike}
-\bibliographystyle{plainnat}
+\bibliographystyle{authordate2}
+%\bibliographystyle{plainnat}
 \usepackage{amsmath}
 \usepackage{mathtools}
 \usepackage{amsfonts}
@@ -22,7 +22,7 @@
 \usepackage{nomencl}
 \usepackage[titles]{tocloft}
 \usepackage{titlesec}
-\usepackage{multirow}
+\usepackage{array,multirow}
 \usepackage{longtable}
 %\usepackage{subfigure}
 \usepackage[labelfont=small,textfont=small,singlelinecheck=off,justification=centering]{caption}
@@ -37,6 +37,14 @@
 \usepackage[titletoc]{appendix}
 \usepackage{nameref}
 \onehalfspacing
+
+\usepackage{mathrsfs}
+\usepackage{float} 
+\usepackage{bbding}
+\usepackage{pstricks} %  [usenames,dvipsnames]
+\usepackage{epsfig}
+\usepackage{pst-grad} % For gradients
+\usepackage{pst-plot} % For axes
 
 \author{Gildas TAGNY NGOMPE}
 \title{Analyse sémantique d'un corpus exhaustif de décisions jurisprudentielles}
@@ -90,6 +98,35 @@
 }
 \newtheorem{hypothese}{Hypothèse}[section]
 \newcommand{\p}{\mathbb{P}}
+\newcommand{\bulle}{\textcolor[rgb]{0.00,0.00,1.00}{\bullet}}
+\newenvironment{proof}[1][Proof] {\noindent \textcolor[rgb]{0.00,0.00,1.00}{\textbf{#1:}} \\ } {\ \textcolor[rgb]{0.00,0.00,1.00}{\textbf{\rule{0.5em}{0.5em}}} \bigskip}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\cov}{\text{cov}}
+\newcommand{\cor}{\text{cor}}
+\newcommand{\cog}{\text{cog}}
+\newcommand{\y}{\mathbf{y}}
+\newcommand{\Step}{\underline{\textbf{Step}}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\z}{\mathbf{z}}
+\newtheorem{resultat}{Résultat}
+\newtheorem{condition}{Condition}
+\newtheorem{proposition}{Proposition}
+\newtheorem{property}{Property}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{corollary}{Corollary}
+\newtheorem{criterion}{Criterion}
+\newtheorem{stat}{Statement}
+\newtheorem{axiom}{Axiom}
+\newtheorem{definition}{Definition}
+\newtheorem{example}{Example}
+\newtheorem{lemma}{Lemma}
+\newtheorem{remark}{Remarque}
+\newtheorem{theorem}{Theorem}
+%\input{tcilatex}
+\numberwithin{equation}{section}
 
 \setcounter{tocdepth}{3}
 \setcounter{secnumdepth}{3}
