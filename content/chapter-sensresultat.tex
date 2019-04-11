@@ -225,9 +225,9 @@ La méthode ou l'analyse du moindre carré partiel PLS \citep{bibid} tente d'exp
 
  Ses extensions et elles présentent l'intérêt d'être robuste à la gestion du problème de haute-dimension, c'est-à-dire la forte disproportion entre le nombre de variables explicatives et le nombre d'observations, particulièrement, lorsque ce dernier est faible comme on peut l'observer dans nos données (faible quantité de données d'apprentissage) \citep{bibid}. \dots \textcolor{red}{Autres avantages tirés de Tanenbaum}. %Nous avons aussi la prise en compte de la multicolinéarité qui peut exister entre les variables explicatives, notamment quand celles-ci sont associées aux mots/termes souvent cooccurrents de nos documents.
 
-C'est ses nombreux avantages que le PLS a été appliqué avec succès pour divers problèmes de régression \citep{lacroux2011avantagesPLS}
- ou de  classification de données vectorielles en général \citep{durif2017sparsePLSandLogit}, et de textes en particulier \citep{zeng2007textclassPLS}.
-Il est intéressant de noter la floraison d'extensions proposées pour répondre aux différentes limites du PLS. Notamment, nous pouvons citer la "\textit{sparse}" PLS introduite pour palier à la "\textit{sparsité}" et la colinéarité des variables explicatives [?], la PLS non-linéaire proposée pour les cas de données non-linéairement séparables [?], ou encore la PLS discriminante combinant la régression PLS et l'analyse discriminante [?]. Nos nous sommes intéressés à deux extensions particulières: la régression Gini-PLS \citep{mussard2018ginipls} dont l'intérêt est de réduire la sensibilité aux valeurs aberrantes des variables, et la regression Logit-PLS \citep{tenenhaus2005logitpls}  combinant la regression logistique et la PLS.
+C'est ses nombreux avantages que la PLS est appliquée avec succès pour divers problèmes de régression \citep{lacroux2011avantagesPLS}
+ ou de  classification de données vectorielles en général \citep{liu2007pls4classif,durif2017sparsePLSandLogit, bazzoli2018classificationwithLS-PLS}, et de textes en particulier \citep{zeng2007textclassPLS}.
+Il est intéressant de noter la floraison d'extensions proposées pour répondre aux différentes limites du PLS. Notamment, nous pouvons citer la "\textit{sparse}" PLS introduite pour palier à la "\textit{sparsité}" et la colinéarité des variables explicatives [?], la PLS non-linéaire proposée pour les cas de données non-linéairement séparables [?], ou encore la PLS discriminante combinant la régression PLS et l'analyse discriminante [?]. Nos nous sommes intéressés à deux extensions particulières: la régression Gini-PLS \citep{mussard2018ginipls} dont l'intérêt est de réduire la sensibilité aux valeurs aberrantes des variables, et la regression Logit-PLS \citep{tenenhaus2005logitpls}  combinant la regression logistique et la PLS. Le principe de la combinaison de ces deux approches (Gini-Logit-PLS) est décrite en détail dans la suite de cette section.
 
 
 \section{L'opérateur Gini covariance}
@@ -332,7 +332,7 @@ RSS_0 = \sum^{n}_{i = 1} \left(y_i - \bar{y}\right)^2  \ .
 \]
 
 
-\section{Propositions : régressions Gini-PLS généralisée} 
+\section{Régressions Gini-PLS généralisée} 
 
 \citet{Schechtman03} ont récemment généralisé l'opérateur co-Gini afin d'imposer plus ou moins de poids en queue de distribution. Notons $r_{k}=(R_\downarrow(x_{1k}),\ldots, R_\downarrow(x_{Nk}))$ le vecteur rang décroissant de la variable $x_k$, autrement dit, le vecteur qui assigne le rang le plus petit (1) à l'observation dont la valeur est la plus importante (et positive) $x_{ik}$ :
 \[
@@ -461,12 +461,12 @@ L'algorithme LOGIT-Gini-PLS généralise est donc le suivant :
 
 \section{Expérimentations et résultats}
 \label{sec:sensresultat:experimentations}
-Nous discutons ici les performances de divers algorithmes populaires et l'impact de la quantité et du déséquilibre des données, de la restriction à des passages en particulier, ainsi que leur capacité à faire abstraction des autres demandes du document. 
+Nous discutons ici les performances de divers algorithmes populaires et l'impact de la quantité et du déséquilibre des données, de l'heuristique la restriction explicite des documents aux passages relatifs à la catégorie de demandes, ainsi que leur capacité à faire abstraction des autres demandes du document. \textcolor{red}{Ces expériences visent aussi à comparer l'efficacité du Gini-Logit-PLS par rapport à d'autres analyses discriminantes}. 
 
 \subsection{Protocole d'évaluation}
-Deux métriques d'évaluation sont utilisées: la précision et la F1-mesure. Pour tenir compte du déséquilibre entre les classes, la moyenne macro est préférée (agrégation de la contribution individuelle de chaque classe: $F1_{moyenne} = \frac{1}{2}(F1({accepte}) + F1({rejette}))$).
+Deux métriques d'évaluation sont utilisées: la précision et la F1-mesure. Pour tenir compte du déséquilibre entre les classes, la moyenne macro est préférée. Il s'agit de l'agrégation de la contribution individuelle de chaque classe: $F1_{moyenne} = \frac{1}{2}(F1({accepte}) + F1({rejette}))$.
 
-Les données utilisées sont les mêmes que celles du chapitre précédent. Nous avons seulement fait une restriction sur les documents n'ayant qu'une seule demande annotée pour la catégorie considérée. Le déséquilibre entre les classes est illustrée par la figure \ref{fig:sensresultat:stat-1dmd}. En effet, la demande est plus souvent rejetée qu'acceptée pour les catégorie ACPA, CONCDEL, DANAIS et STYX. Le contraire est observé pour DCPPC et DORIS.
+Les données utilisées sont les mêmes que celles du chapitre précédent. Nous avons seulement fait une restriction sur les documents n'ayant qu'une seule demande annotée pour la catégorie considérée. Le déséquilibre entre les classes est illustrée par la figure \ref{fig:sensresultat:stat-1dmd}. En effet, la demande est plus souvent rejetée qu'acceptée pour les catégorie ACPA, CONCDEL, DANAIS et STYX. Le contraire est observé pour DCPPC, et le rapport est légèrement équilibré pour DORIS.
 \begin{figure}[htb]
 \includegraphics[width=\textwidth]{chartDataset1dmd.png}
 \caption{Répartition des documents à une demande de la catégorie considérée.}\label{fig:sensresultat:stat-1dmd}
@@ -481,6 +481,9 @@ En représentant l'ensemble du document à l'aide de diverses représentations v
 	
 	\textcolor{red}{ajouter les F1 ou erreur de rejette et de accepte}
 	
+	\textcolor{red}{mettre aussi en avant les analyses discriminantes comme réducteur de dimension et comme classifieurs}
+	
+
 	\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|}
 		\hline
 		\textbf{Vecteur} & \textbf{algorithme} & \textbf{F1} & \textbf{min} & \textbf{Cat. min} & \textbf{max} & \textbf{Cat. max} & \textbf{F1 - 1erF1} & \textbf{max - min} & \textbf{rang} \\ \hline
@@ -559,6 +562,12 @@ Etant donné que les décisions portent sur plusieurs catégories de demande, no
 %\subsubsection{Quantités de données annotées}
 %\subsubsection{Restriction à une région particulière du document}
 %\subsubsection{Représentation des documents}
+
+\subsection{Impact du choix du nombre de composantes}
+
+	\textcolor{red}{analyse de l'évolution de la F1 avec le nombre de composante choisie}
+
+\subsection{Variables importantes}
 
 \section{Conclusion}
 \label{sec:sensresultat:conclusion}

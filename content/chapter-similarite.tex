@@ -54,7 +54,7 @@ L'application de ces différents algorithmes aux documents n'est généralement 
 
 
 \subsection{Métrique de similarité ou de dis-similarité}
-Une métrique de (dis)similarité est une fonction réelle d'une paire de éléments $x$ et $x'$ d'un ensemble $\mathcal{X}$. La dis-similarité mesure le degré de différence/ressemblance entre $x$ et $x'$  généralement estimée par une fonction distance $Dis$  qui satisfait aux propriétés suivantes $\forall x,x',x'' \in \mathcal{X}$ \citep{wang2015distancemetriclearningsurvey}:
+Une métrique de (dis)similarité est une fonction réelle d'une paire de éléments $x$ et $x'$ d'un ensemble $\mathcal{X}$. Une métrique de dis-similarité mesure le degré de différence entre $x$ et $x'$  généralement estimée par une fonction distance $Dis$  qui satisfait aux propriétés suivantes $\forall x,x',x'' \in \mathcal{X}$ \citep{wang2015distancemetriclearningsurvey}:
 \begin{enumerate}
 \item $Dis(x,x') \geq 0$ ("non-négativité")
 \item $Dis(x,x') = 0  \Leftrightarrow x = y$ (identité discernable)
@@ -68,8 +68,8 @@ La similarité est donc calculée par $Sim(x,x') = 1 - Dis(x,x')$, la distance r
 
 Les métriques les plus populaires pour la similarité textuelle sont pré-définies ou fixes c'est-à-dire spécifiées sans aucune connaissances à priori des données. On distingue par exemple:
 \begin{itemize}
-	\item les distances de Minkowski de forme générale $Dis(x,x') = \vert\vert x - x' \vert\vert_{Lp} = \sqrt[p]{\sum \vert x_i - y_i \vert ^p}$, dont font partie la distance euclidenne ($p=2$) et la distance de Manhattan ($p=1$); 
-	\item la distance cosinus: $\sqrt{1 - \frac{x^Tx'}{\vert\vert x \vert\vert\vert\vert x'\vert\vert}}$
+	\item les distances de Minkowski de forme générale $Dis(x,x') = \norm{x - x'}_{Lp} = \sqrt[p]{\sum \vert x_i - y_i \vert ^p}$, dont font partie la distance euclidenne ($p=2$) et la distance de Manhattan ($p=1$); 
+	\item la distance cosinus: $Dis(x,x') = \sqrt{1 - \frac{x^Tx'}{\norm{x}\norm{x'}}}$
 	\item le coefficient de Jaccard: $Sim(x,x') = \frac{\vert tok(x) \cap tok(x') \vert}{\vert tok(x) \vert + \vert tok(x') - \vert tok(x) \cap tok(x') \vert} $ $tok(x)$ désignant l'ensemble des termes de $x$ dans le cas où $x$ est un document;
 	\item Le coefficient de Dice: $Sim(x,x') = \frac{2\cdot \vert tok(x) \cap tok(x') \vert}{\vert tok(x) \vert + \vert tok(x')} $
 \end{itemize}
@@ -80,7 +80,7 @@ Par contre, les métriques \textbf{apprises} sont définies à partir de connais
 
 \subsection{Déterminer le nombre approprié de clusters} Au delà de l’algorithme à utiliser, le nombre $k$ approprié de groupes (clusters) doit être déterminé mais pas prédéfini. La principale raison étant que ce nombre est censé inconnu et que le regroupement est censé inconnu et être révélé automatiquement.
 La technique traditionnelle part d’un faible nombre de clusters et l’incrémente progressivement. Sur un espace à deux dimensions,  l‘évolution d’une fonction évaluation en fonction du nombre est observée.  La technique est dite du “coude” ou “genou” (elbow/knee) et est basé sur l’idée selon laquelle on devrait choisir un nombre de clusters tel que l’ajout d’un autre ne donne pas une meilleure modélisation des données. Le coude correspond donc au point (nb de clusters) où l’on considère insignifiante la décroissance de la valeur de la métrique d’évaluation. Cette métrique est généralement la variance intra-cluster qui est la somme des erreurs au carré  :
-\[J(k) = \sum\limits_{j=1}^k\sum\limits_{x_i \in C_j}\vert\vert x_i-\overline{x_j}\vert\vert^2\]
+\[J(k) = \sum\limits_{j=1}^k\sum\limits_{x_i \in C_j}\norm{x_i-\overline{x_j}}^2\]
 
 $C_j$: ensemble des objets du cluster $j$
 
@@ -134,11 +134,11 @@ d & : & C \times C & \to & \mathbb{R} & \\
 
 $C$ est le corpus. $P_{x,y}$ est l'ensemble des modifications de $x$ nécessaire pour obtenir $y$ i.e. les paires $(w_x, w_y)$ telles que $w_x \in W_x$ a été remplacé par $w_y \in W_y$. $d$ désigne la métrique. Un simple estimateur de $d$ peut être de considérer le taux de mots modifiés dans $x$: 
 \begin{equation}
-\widetilde{d}(x,y) = \frac{\vert\vert P_{x,y} \vert\vert}{\vert\vert W_x \vert\vert}
+\widetilde{d}(x,y) = \frac{\norm{P_{x,y} }}{\norm{W_x}}
 \end{equation}
  Un tel modèle ne considère ni l'ordre des mots, ni celui des phrases, ni la différence d'importance entre les mots, la complexité de la modification (une substitution est plus complexe qu'une suppression ou une insertion), ni le degré sémantique des perturbations. ce dernier peut être estimé en lissant le taux de perturbation à l'aide de la distance sémantique entre les mots substitués (le vecteur représentant le mot vide étant le vecteur nul par ex.):
 \begin{equation}
-\widetilde{d}(x,y) = \frac{\sum\limits_{(w_x, w_y) \in P_{x,y}} d_w(w_x,w_y)}{\vert\vert W_x \vert\vert} \label{equation:similarite:somme-dist-mots}
+\widetilde{d}(x,y) = \frac{\sum\limits_{(w_x, w_y) \in P_{x,y}} d_w(w_x,w_y)}{\norm{W_x}} \label{equation:similarite:somme-dist-mots}
 \end{equation}
 $d_w$ désignant la distance sémantique entre les mots. Ainsi, les substitutions sont pondérées par la distance cosinus entre les vecteurs des mots échangés.
 

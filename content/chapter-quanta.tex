@@ -262,7 +262,7 @@ A l'exception de la $\text{C-value}$, ces métriques ne tiennent pas expliciteme
 
 \subsection{Détection des catégories par classification des documents}
 
-Étant donné l'ensemble $D_{\overline{c}}$ des documents ne comprenant aucune demande de la catégorie d'intérêt $c$, nous proposons de modéliser la tâche de détection des catégories en une tâche de classification de documents. Pour chaque catégorie $c$, un modèle de classification binaire est entraîné pour déterminer si un document $d$ contient une demande de la catégorie $c$. Nous avons particulièrement expérimenté quatre algorithmes traditionnellement utilisés comme approches de base. Il s'agit du Bayésien Naïf , de l'arbre de décision, des $k$-plus-proches-voisins \citep{cover1967knn}, de la machine à vecteurs de support (SVM). Les labels utilisés correspondent aux catégories d'intérêt. Par exemple, un document sera labellisé $danais$ s'il contient des demandes de dommages-intérêts pour abus de procédure, et $nodanais$ sinon. Chaque document $d$ est représenté sous une forme vectorielle du type TF-IDF (\textit{term frequency - inverse document frequency}) proposé par \cite{salton1988term-weighting} dont chaque dimension $k$ est identifiée par un terme $t_k$. Le poids $w(t_k, d)$ affecté à ce dernier est le produit normalisé d'un poids global $g(t_k)$ au corpus du mot et d'un poids local $l(t_k,d)$ de $t_k$ dans le document $d$: $w(t_k, d) = l(t,d) \times g(t) \times nf(d)$, où $nf$ est un facteur de normalisation tel que la norme cosinus $cos(d) = \sqrt{\sum\limits_k (w(t_k,d))^2}$ qui est généralement utilisée. 
+Étant donné l'ensemble $D_{\overline{c}}$ des documents ne comprenant aucune demande de la catégorie d'intérêt $c$, nous proposons de modéliser la tâche de détection des catégories en une tâche de classification de documents. Pour chaque catégorie $c$, un modèle de classification binaire est entraîné pour déterminer si un document $d$ contient une demande de la catégorie $c$. Nous avons particulièrement expérimenté quatre algorithmes traditionnellement utilisés comme approches de base. Il s'agit du Bayésien Naïf , de l'arbre de décision C4.5, des $k$-plus-proches-voisins \citep{cover1967knn}, de la machine à vecteurs de support (SVM). Ces algorithmes sont décrits en détail dans le chapitre \ref{chap:sensresultat} qui est axé sur la classification des documents. Les labels utilisés correspondent aux catégories d'intérêt. Par exemple, un document sera labellisé $danais$ s'il contient des demandes de dommages-intérêts pour abus de procédure, et $nodanais$ sinon. Chaque document $d$ est représenté sous une forme vectorielle du type TF-IDF (\textit{term frequency - inverse document frequency}) proposé par \cite{salton1988term-weighting} dont chaque dimension $k$ est identifiée par un terme $t_k$. Le poids $w(t_k, d)$ affecté à ce dernier est le produit normalisé d'un poids global $g(t_k)$ au corpus du mot et d'un poids local $l(t_k,d)$ de $t_k$ dans le document $d$: $w(t_k, d) = l(t,d) \times g(t) \times nf(d)$, où $nf$ est un facteur de normalisation tel que la norme cosinus $cos(d) = \sqrt{\sum\limits_k (w(t_k,d))^2}$ qui est généralement utilisée. 
 
 \begin{table}[!htb]
 	\scriptsize\centering
@@ -339,6 +339,7 @@ Le pré-traitement est nécessaire pour :
 	\begin{table}[!htb]
 		\centering
 		\scriptsize
+		\textcolor{red}{ajouter une colonne résultat\_a}
 		\begin{tabular}{|p{0.28\textwidth}|p{0.3\textwidth}|p{0.12\textwidth}|p{0.11\textwidth}|}
 			\hline
 			\textbf{Demande} & \multicolumn{3}{c|}{\textbf{Résultat} (organisé par polarité ou sens)} \\ \hline
@@ -455,7 +456,7 @@ Une donnée observée (par exemple \og 3 000 \euro \fg) est bien extraite automa
 
 
 \subsection{Détection des catégories par classification}
-Les implémentations de la bibliothèque Weka \citep{frank2016weka} ont permis d'utilisé plusieurs modèles de classification: le modèle Bayésien naïf (NB), l'arbre de décision (J48), les k-plus-proches-voisins (KNN), et le SVM.
+Les implémentations de la bibliothèque Weka \citep{frank2016weka} ont permis d'utilisé plusieurs modèles de classification: le modèle Bayésien naïf (NB), l'arbre de décision C4.5 (implémenté sous l'appelation J48), les k-plus-proches-voisins (KNN), et le SVM. 
  A chaque entraînement, s'exécute une sélection de modèle par validation croisée sur les données d'entraînement. Elle a pour but de sélectionner la métrique locale et la métrique globale appropriée. Les résultats obtenus par 5-\textit{folds} validation croisée sont présentés sur le tableau \ref{tab:quanta:resultat-detect-cat}.  
  
 \begin{table}[!h]
