@@ -47,51 +47,33 @@ Cette étude porte sur l'analyse de l'impact de différents aspects techniques g
 La classification de texte permet d'organiser des documents $x^{(k)}$ dans des groupes prédéfinis. Elle reçoit depuis longtemps beaucoup d'attentions. Deux choix techniques influencent principalement les performances: la représentation des textes et l'algorithme de classification. 
 
 \subsection{Algorithmes traditionnels de classification de données}
-Bien que la classification de documents voit se développer récemment des algorithmes propres aux textes, un grand nombre de méthodes ont été développées précédemment autour. Ces méthodes sont généralement basée sur une représentation vectorielle des textes et délimitent une frontière entre les classes dans un espace multidimensionnel. L'ensemble des labels / classes est noté $C$.
+Bien que la classification de documents voit se développer récemment des algorithmes propres aux textes, un grand nombre de méthodes ont été développées précédemment autour. Ces méthodes sont généralement basée sur une représentation vectorielle des textes et délimitent une frontière entre les classes dans un espace multidimensionnel. Les notations du Tableau \ref{quanta:tab:notations_metriques} sont utilisés dans cette section.
 %NB et SVM : https://www.dropbox.com/home/Documents/to-read/term-weight?preview=Best+Terms+An+Efficient+Feature+Selection+Algorithm+for+Text+Categorization.pdf
 % C4.5, k-means, svm, apriori algo, em algo, page rank, ada boost, knn, NB, CART: http://www.cs.umd.edu/~samir/498/10Algorithms-08.pdf
 
 \subsubsection{Le Bayésien naïf (NB)}
-\paragraph{Principe}:
 %http://stackoverflow.com/questions/10059594/a-simple-explanation-of-naive-bayes-classification#20556654
 %https://webdocs.cs.ualberta.ca/~greiner/R/PAPERS/ExplainNB.pdf
-Le classifieur naïf bayésien \citep{duda1973patternclass} est  un modèle à densité qui estiment la probabilité qu'un texte appartienne à une classe à partir du théorème de Bayes \citep{raschka2014naivebayes}:
+Le classifieur naïf bayésien \citep{duda1973patternclass} est  un modèle à densité qui estiment la probabilité qu'un texte appartienne à une classe à l'aide du théorème de Bayes \citep{raschka2014naivebayes}:
 \begin{equation}
 \text{probabilité a posteriori} = \frac{\text{probabilité conditionnelle} \cdot \text{probabilité a priori}}{\text{évidence}}
 \end{equation}
 
-La probabilité a posteriori peut être interprétée dans le cadre de la classification des décisions dans la classe DIPA en "Quelle est la probabilité qu'une décision $d_i$ contienne une demande de type $c_j$ étant donné que $d_i$ contient les termes $\lbrace t_1, ..., t_K \rbrace$ ?". La réponse à cette question se formalise comme suit:
+La probabilité a posteriori peut être interprétée pour la classification de document par la question "Quelle est la probabilité que le document $d$ soit de la classe $c \in C$ ?". La réponse à cette question se formalise comme suit:
 
-\[\p(c_j \vert d_i) = \frac{\p(d_i \vert c_j)\p(c_j)}{\p(d_i)}\]
-ou plus simplement  $\p(c_j \vert d_i) = \p(c_j)\p(d_i \vert c_j)$ car $\p(d_i)$ ne change pas en fonction de la catégorie et peut donc être ignorée \citep{rish2001nb_study}.
-L'appélation "\textit{naïf}" est dûe à l'hypothèse d'\textbf{indépendance mutuelle entre les caractéristiques} des données. Une hypothèse %irréaliste 
-forte dont la violation, par les données réelles, n'empêche pourtant pas le NB de bien fonctionner \citep{rish2001nb_study}. 
+\[\p(c \vert d) = \frac{\p(d \vert c)\p(c)}{\p(d)}, \forall c \in C \]
+ou plus simplement  $\p(c \vert d) = \p(c)\p(d \vert c)$ car $\p(d)$ ne change pas en fonction de la classe et peut donc être ignorée \citep{rish2001nb_study}. $d$ est catégorisé dans la classe $c$ pour laquelle $\p(c \vert d)$ est maximale. Une phase d'entrainement, appliqué à des exemples déjà labellisés, permet d'estimer les paramètres $\p(c)$ te $\p(d \vert c)$ qui servent à calculer $\p(c \vert d)$.
 
-\begin{hypothese}[indépendance mutuelle des caractéristiques] [ Un modèle naïf bayésien étant de type génératif], la position de chaque mot dans le texte est générée indépendament de tout autre mot étant connue la catégorie du texte. \label{hypo_imc}
+$\p(c)$ est estimé par la proportion de documents classés dans $c$ parmi les exemples d'apprentissage: $\p(c_j) = \frac{N_c}{N}, \forall c \in C$.
+
+
+ $\p(c \vert d)$ est estimé grâce l'hypothèse \ref{hypo:sens_rst:iid} d'{indépendance conditionnelle des descripteurs (termes)}. Une hypothèse naïve dont la violation, par les données réelles, n'empêche pas le NB de bien fonctionner \citep{rish2001nb_study}. 
+
+\begin{hypothese}[indépendance conditionnelle des   descripteurs] [ Un modèle naïf bayésien étant de type génératif], la position de chaque mot dans le texte est générée indépendamment de tout autre mot étant connue la catégorie du texte. \label{hypo:sens_rst:iid}
 \end{hypothese}
-% je l'aurais fait avec les demandes directement à voir...on voit bien dans ce cas que l'hypothèse d'indep est trop forte.
 
-\noindent L'hypothèse \ref{hypo_imc} implique, pour des catégories de demande indépendantes,
-\[
-\mathbb{P}(t_{1}, \dots, t_{K}\vert c_j) = \prod_{k=1}^K \p(t_{k} \vert c_j).
-\]
-Ainsi,
-\begin{equation}\notag
-\mathbb{P}(c_j\vert t_{1}, \dots, t_{K}) = \frac{\p(c_j)\p(d_{i1}, \dots, d_{iK} \vert c_j)}{\p(t_{1}, \dots, t_{K}} = \frac{\p(c_j)\prod_{k=1}^K \p(t_{k} \vert c_j)}{\p(t_{1}, \dots, t_{K})}.
-\end{equation}
-La fonction score issue de ce classifieur bayésien est construite en maximisant la probabilité $\mathbb{P}(c_j\vert d_{i1}, \dots, d_{iK})$. Il n'est donc pas nécessaire de connaître ni d'estimer la probabilité jointe $\p(d_{i1}, \dots, d_{iK})$.
-
-\paragraph{Estimation des paramètres}: 
-% là tu introduits les w_i. Il faudrait donc compléter la section 2.1 stp. 
-
-%quand tu parles de paramètres tu penses à quoi exactement ? pour moi ce serait ceux de la fonction score...
-
-Grâce à l'hypothèse \ref{hypo_imc}, la probabilité conditionnelle $\p(t_i \vert c_j$) peut-être réécrite:
-\[\p(t_i \vert c_j) = \p(w_1 \vert c_j)\cdot \p(w_2 \vert c_j) \cdot ... \cdot \p(w_d \vert c_j) = \prod\limits_{k = 1}^d \p(w_k \vert c_j)\]
-pour une représentation vectorielle des textes dans un espace de dimension $d$.
-Les paramètres du modèle peuvent donc être estimés à partir d'un ensemble d'exemples annotés manuellement. Plus précisément, $\p(t_k \vert c_j) = \frac{N_{t_k,c_j}}{N_{c_j}}, \forall k \in \lbrace 1, 2, ..., K \rbrace$ et $\p(c_j) = \frac{N_c}{N}, \forall c_j \in C$ .
-
-%\textcolor{red}{VARIANTE}
+Si l'ensemble des termes de $d$ est $\lbrace t_{1}, \dots, t_{K} \rbrace$, alors grâce à l'hypothèse \ref{hypo:sens_rst:iid},
+$\p(d \vert c) = \p(t_{1}, \dots, t_{K}\vert c) = \prod_{k=1}^K \p(t_{k} \vert c)$, et pour un terme $t_k$, la probabilité conditionnelle $\p(t_k \vert c)$ est la proportion d'exemples de $c$ qui contiennent $t_k$:  $\p(t_k \vert c_j) = \frac{N_{t_k,c}}{\vert D_c \vert }, \forall k \in \lbrace 1, \dots, K \rbrace$.
 
 \subsubsection{Machine à vecteurs de support (SVM)}
 Le SVM \citep{vapnik1995statlearning} est un algorithme de classification binaire, qui construit, lors de la phase d'entrainement un hyperplan séparant les points, représentants les exemples d'entrainement, dans un espace à grande dimension, suivant leur classe (Figure \ref{fig:sensresultat:svm}\footnote{\url{http://www.clrc.rhul.ac.uk/svm.html}}). L'hyperplan est la surface situé entre les droites formées par les points les plus proches des deux classes. La classification d'un nouvel objet consiste à projeter son vecteur de caractéristiques dans cet espace, et le label qui lui est prédit est celui associé à la classe du coté où il se trouve. La projection d'une entrée $x$ dans le nouvel espace, est réalisée par une fonction non-linéaire appelé noyau.
