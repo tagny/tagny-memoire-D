@@ -46,8 +46,13 @@ Cette étude porte sur l'analyse de l'impact de différents aspects techniques g
 
 La classification de texte permet d'organiser des documents $x^{(k)}$ dans des groupes prédéfinis. Elle reçoit depuis longtemps beaucoup d'attentions. Deux choix techniques influencent principalement les performances: la représentation des textes et l'algorithme de classification. 
 
+<<<<<<< HEAD
 \subsection{Algorithmes traditionnels de classification de données}
 Bien que la classification de documents voit se développer récemment des algorithmes propres aux textes, un grand nombre de méthodes ont été développées précédemment autour. Ces méthodes sont généralement basée sur une représentation vectorielle des textes et délimitent une frontière entre les classes dans un espace multidimensionnel. Les notations du Tableau \ref{quanta:tab:notations_metriques} sont utilisés dans cette section.
+=======
+\subsection{Algorithmes traditionnels de classification de données sous forme vectorielle}
+Bien que la classification de documents voit se développer récemment des algorithmes propres aux textes, un grand nombre de méthodes ont été développées précédemment autour. Ces méthodes sont généralement basée sur une représentation vectorielle des textes et délimitent une frontière entre les classes dans un espace multidimensionnel. L'ensemble des labels / classes est noté $C$.
+>>>>>>> ba56340fe1d0c4eed2bb977adb88eb1536558c9c
 %NB et SVM : https://www.dropbox.com/home/Documents/to-read/term-weight?preview=Best+Terms+An+Efficient+Feature+Selection+Algorithm+for+Text+Categorization.pdf
 % C4.5, k-means, svm, apriori algo, em algo, page rank, ada boost, knn, NB, CART: http://www.cs.umd.edu/~samir/498/10Algorithms-08.pdf
 
@@ -194,7 +199,7 @@ $r = \log \left( \frac{p/\vert\vert p \vert\vert_1}{q / \vert\vert q \vert\vert_
 %NBSVM et Fastext ont démontré une bonne robustesse et des performances excellentes dans le cas de divers tâches de classification: courtes expressions, longs documents, thème, classification subjective (genre), classification de sentiment (positif, neutre, négatif), ... Mais nous voulons déjà savoir comment les algorithmes populaires se comportent sur notre tâche d'identification de la polarité du résultat d'une demande pour une catégorie bien définie. La particularité ici est que la tâche porte sur une demande en particulier parmi les nombreuses que compte le document, des données en faible nombre annotés (23 à 189 documents), une annotation en général déséquilibrée entre les classes (risque d'ignorer une classe très faiblement représenté dans le jeu d'entrainement, par exemple 21 "accepte" contre 166 "rejette").
 
 \subsection{Techniques d'amélioration de la précision}
-La faible quantité \citep{ruparel2013smalldataclass} et le déséquilibre des données sont susceptibles d'être des obstacles à l'entrainement des modèles de classification décrits précédemment. De nombreuses techniques permettent néanmoins d'optimiser l'apprentissage en fonction des données. La plus commune consiste à choisir les meilleures valeurs des hyper-paramètres en tester différentes combinaisons sur une base dite de développement. La combinaisons de classifieurs est aussi une méthode très étudiée \citep{kittler1996combiningclassifiers,kuncheva2004combiningclassifiers, tulyakov2008combiningclassifiers} notamment par l'exemple des forêts aléatoires \citep{breiman2001randomforest} ou de
+La faible quantité \citep{ruparel2013smalldataclass} et le déséquilibre des données sont susceptibles d'être des obstacles à l'entrainement des modèles de classification décrits précédemment. De nombreuses techniques permettent néanmoins d'optimiser l'apprentissage en fonction des données. La plus commune consiste à choisir les meilleures valeurs des hyper-paramètres en tester différentes combinaisons sur une base dite de développement. La combinaison de classifieurs est aussi une méthode très étudiée \citep{kittler1996combiningclassifiers,kuncheva2004combiningclassifiers, tulyakov2008combiningclassifiers} notamment par l'exemple des forêts aléatoires \citep{breiman2001randomforest} ou de
 Livre Data mining : Combinaison de classifieurs \citep{kittler1996combiningclassifiers,kuncheva2004combiningclassifiers, tulyakov2008combiningclassifiers} , ...
 
 \section{Application de l'analyse PLS  à la classification des textes}
@@ -212,7 +217,7 @@ C'est ses nombreux avantages que la PLS est appliquée avec succès pour divers 
 Il est intéressant de noter la floraison d'extensions proposées pour répondre aux différentes limites du PLS. Notamment, nous pouvons citer la "\textit{sparse}" PLS introduite pour palier à la "\textit{sparsité}" et la colinéarité des variables explicatives [?], la PLS non-linéaire proposée pour les cas de données non-linéairement séparables [?], ou encore la PLS discriminante combinant la régression PLS et l'analyse discriminante [?]. Nos nous sommes intéressés à deux extensions particulières: la régression Gini-PLS \citep{mussard2018ginipls} dont l'intérêt est de réduire la sensibilité aux valeurs aberrantes des variables, et la regression Logit-PLS \citep{tenenhaus2005logitpls}  combinant la regression logistique et la PLS. Le principe de la combinaison de ces deux approches (Gini-Logit-PLS) est décrite en détail dans la suite de cette section.
 
 
-\section{L'opérateur Gini covariance}
+\subsection{L'opérateur Gini covariance}
 
 Soit $\bar{x}_k$ la moyenne arithmétique de la variable $x_k$. L'opérateur de Gini covariance proposé par \citet{Schechtman03}, encore appelé opérateur co-Gini est donné par:
 \begin{equation}\label{cog0}
@@ -242,7 +247,7 @@ Alors, un estimateur du co-Gini est donné par,
 avec $\bar{R_\uparrow}_{x_k}$ la moyenne arithmétique du vecteur rang de la variable $x_k$. 
 
 
-\section{Gini-PLS}
+\subsection{Gini-PLS}
 
 Le premier algorithme Gini-PLS a été proposé par \citet{mussard2018ginipls}. Nous le décrivons dans les lignes qui suivent. Il s'agit d'une méthode de compression avec débruitage qui consiste à réduire les dimensions de l'espace généré par $X$ afin de trouver des composantes principales débruitées, dans le même esprit qu'une ACP débruitée, néanmoins l'approche est supervisée dans la mesure où une variable cible $y$ est prise en compte dans le changement d'espace. Le sous-espace formé par les composantes principales $\{t_1,t_2,\cdots\}$ est construit de telle sorte que le lien entre les variables explicatives $X = [x_1,x_2,\cdots]$ et la cible $y$ est maximisé.  \textcolor{red}{$\vert X \vert = p$, nombre de variables explictives}.
 
@@ -314,7 +319,7 @@ RSS_0 = \sum^{n}_{i = 1} \left(y_i - \bar{y}\right)^2  \ .
 \]
 
 
-\section{Régressions Gini-PLS généralisée} 
+\subsection{Régressions Gini-PLS généralisée} 
 
 \citet{Schechtman03} ont récemment généralisé l'opérateur co-Gini afin d'imposer plus ou moins de poids en queue de distribution. Notons $r_{k}=(R_\downarrow(x_{1k}),\ldots, R_\downarrow(x_{Nk}))$ le vecteur rang décroissant de la variable $x_k$, autrement dit, le vecteur qui assigne le rang le plus petit (1) à l'observation dont la valeur est la plus importante (et positive) $x_{ik}$ :
 \[
@@ -352,7 +357,7 @@ Le rôle de l'opérateur co-Gini peut être expliqué de la manière suivante. L
 Ainsi, en proposant une régression Gini-PLS basée sur le paramètre $\nu$, nous pouvons calibrer la puissance du débruitage  grâce à l'opérateur co-Gini qui va localiser le bruit dans la distribution. Cette régression Gini-PLS généralisée devient une régression Gini-PLS régularisée où le paramètre $\nu$ joue le rôle de paramètre de régularisation. 
 
 
-\subsection{L'algorithme Gini-PLS généralisé} 
+\subsubsection{L'algorithme Gini-PLS généralisé} 
 
 Dans ce qui suit nous généralisons la régression Gini-PLS de \citet{mussard2018ginipls} avec renforcement du pouvoir de débruitage par l'intermédiaire du paramètre $nu$.
 
@@ -395,7 +400,7 @@ où $cor^2(y,t_\ell)$ est le coefficient de corrélation de Pearson entre $y$ et
 \end{algorithm}
 \bigskip
 
-\subsection{L'algorithme LOGIT-Gini-PLS généralisé} 
+\subsubsection{L'algorithme LOGIT-Gini-PLS généralisé} 
 
 Comme nous le constatons dans l'algorithme Gini-PLS généralisé que nous avons proposé dans le section précédente, les poids $w_j$ proviennent de l'opérateur co-Gini appliqué à une variable booléenne $y \in \lbrace 0;1 \rbrace$. Afin de trouver les poids $w_j$ qui maximisent le lien entre les variables $x_j$ et la variable cible $y$, nous proposons d'utiliser la régression LOGIT, autrement dit, une sigmoïde qui est bien adapté à des variables boléennes. Ainsi, dans chaque étape de la régression Gini-PLS nous remplaçons la maximisation du co-Gini par la mesure de la probabilité conditionnelle suivante :
 \begin{equation}\tag{LOGIT}
