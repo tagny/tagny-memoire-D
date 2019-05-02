@@ -44,10 +44,10 @@ Cette étude porte sur l'analyse de l'impact de différents aspects techniques g
 \section{Classification de documents}
 \label{sec:sensresultat:biblio_classif}
 
-La classification de texte permet d'organiser des documents $x^{(k)}$ dans des groupes prédéfinis. Elle reçoit depuis longtemps beaucoup d'attentions. Deux choix techniques influencent principalement les performances: la représentation des textes et l'algorithme de classification. 
+La classification de texte permet d'organiser des documents dans des groupes prédéfinis. Elle reçoit depuis longtemps beaucoup d'attentions. Deux choix techniques influencent principalement les performances: la représentation des textes et l'algorithme de classification. Dans la suite, la variable à prédire est notée $y$, et la base d'apprentissage comprend les échantillons $(x_i, y_i)_{i=1..n}$.
 
 \subsection{Algorithmes traditionnels de classification de données}
-Bien que la classification de documents voit se développer récemment des algorithmes propres aux textes, un grand nombre de méthodes ont été développées précédemment autour. Ces méthodes sont généralement basée sur une représentation vectorielle des textes et délimitent une frontière entre les classes dans un espace multidimensionnel. Les notations du Tableau \ref{quanta:tab:notations_metriques} sont utilisés dans cette section. 
+Bien que la classification de documents voit se développer récemment des algorithmes propres aux textes, un grand nombre de méthodes ont été développées précédemment autour. Ces méthodes sont généralement basée sur une représentation  des textes dans un espace vectoriel $\mathcal{X}$ d'entrée et délimitent une frontière entre les classes dans un espace multidimensionnel. Les notations du Tableau \ref{quanta:tab:notations_metriques} sont utilisés dans cette section. 
 %NB et SVM : https://www.dropbox.com/home/Documents/to-read/term-weight?preview=Best+Terms+An+Efficient+Feature+Selection+Algorithm+for+Text+Categorization.pdf
 % C4.5, k-means, svm, apriori algo, em algo, page rank, ada boost, knn, NB, CART: http://www.cs.umd.edu/~samir/498/10Algorithms-08.pdf
 
@@ -59,10 +59,12 @@ Le classifieur naïf bayésien \citep{duda1973patternclass} est  un modèle à d
 \text{probabilité a posteriori} = \frac{\text{probabilité conditionnelle} \cdot \text{probabilité a priori}}{\text{évidence}}
 \end{equation}
 
-La probabilité a posteriori peut être interprétée pour la classification de document par la question "Quelle est la probabilité que le document $d$ soit de la classe $c \in C$ ?". La réponse à cette question se formalise comme suit:
+La probabilité a posteriori peut être interprétée pour la classification de document par la question "Quelle est la probabilité que le document $d$ soit de la classe $y=c \in C$ ?". La réponse à cette question se formalise comme suit:
 
-\[\p(c \vert d) = \frac{\p(d \vert c)\p(c)}{\p(d)}, \forall c \in C \]
-ou plus simplement  $\p(c \vert d) = \p(c)\p(d \vert c)$ car $\p(d)$ ne change pas en fonction de la classe et peut donc être ignorée \citep{rish2001nb_study}. $d$ est catégorisé dans la classe $c$ pour laquelle $\p(c \vert d)$ est maximale. Une phase d'entrainement, appliqué à des exemples déjà labellisés, permet d'estimer les paramètres $\p(c)$ te $\p(d \vert c)$ qui servent à calculer $\p(c \vert d)$.
+\[\p(y=c \vert d) = \frac{\p(d \vert c)\p(c)}{\p(d)}, \forall c \in C \]
+ou plus simplement  $\p(y = c \vert d) = \p(c)\p(d \vert c)$ car $\p(d)$ ne change pas en fonction de la classe et peut donc être ignorée \citep{rish2001nb_study}. $d$ est catégorisé dans la classe $c$ pour laquelle $\p(c \vert d)$ est maximale: \[y = \argmax_{c \in C} \p(c \vert d).\]
+
+ La phase d'entrainement, appliqué à des exemples déjà labellisés, permet d'estimer les paramètres $\p(c)$ te $\p(d \vert c)$ qui servent à calculer $\p(c \vert d)$.
 
 $\p(c)$ est estimé par la proportion de documents classés dans $c$ parmi les exemples d'apprentissage: $\p(c_j) = \frac{N_c}{N}, \forall c \in C$.
 
@@ -73,20 +75,34 @@ $\p(c)$ est estimé par la proportion de documents classés dans $c$ parmi les e
 \end{hypothese}
 
 Si l'ensemble des termes de $d$ est $\lbrace t_{1}, \dots, t_{K} \rbrace$, alors grâce à l'hypothèse \ref{hypo:sens_rst:iid},
-$\p(d \vert c) = \p(t_{1}, \dots, t_{K}\vert c) = \prod_{k=1}^K \p(t_{k} \vert c)$, et pour un terme $t_k$, la probabilité conditionnelle $\p(t_k \vert c)$ est la proportion d'exemples de $c$ qui contiennent $t_k$:  $\p(t_k \vert c_j) = \frac{N_{t_k,c}}{\vert D_c \vert }, \forall k \in \lbrace 1, \dots, K \rbrace$.
+$\p(d \vert c) = \p(t_{1}, \dots, t_{K}\vert c) = \prod_{k=1}^K \p(t_{k} \vert c)$, et pour un terme $t_k$, la probabilité conditionnelle $\p(t_k \vert c)$ est la proportion d'exemples de $c$ qui contiennent $t_k$:  $\p(t_k \vert c) = \frac{N_{t_k,c}}{\vert D_c \vert }, \forall k \in \lbrace 1, \dots, K \rbrace$.
 
 \subsubsection{Machine à vecteurs de support (SVM)}
-Le SVM \citep{vapnik1995statlearning} est un algorithme de classification binaire, qui construit, lors de la phase d'entrainement un hyperplan séparant de manière optimale les points, représentants les exemples d'entrainement, suivant leur classe (Figure \ref{fig:sensresultat:svm}\footnote{\url{http://www.clrc.rhul.ac.uk/svm.html}}). L'hyperplan optimal est situé à égale distance des hyperplans parallèles formés par les points les plus proches des deux classes. La séparation des classes est réalisée dans un nouvel espace de haute dimension où une discrimination linéaire (plus précisément planaire) est optimale entre les classes. Ce nouvel espace résulte d'une transformation de l'espace original  (caractéristiques ou attributs des données)réalisée par une fonction \og noyau \fg{}, que nous appellerons $f$. Celle-ci, appliquée à tout vecteur $x$ en entrée, \textcolor{red}{et vecteurs de support}, peut être une simple combinaison linéaire (noyau linéaire) ou polynomial (noyau polynomial) des attributs de $x$, ou une fonction plus complexe comme le noyau Gaussien $f(x) = \exp{-\gamma \norm{x-x}}$ encore appelé.
-
-La classification d'un nouvel objet consiste à projeter son vecteur de caractéristiques dans cet espace, et le label qui lui est prédit est celui associé à la classe du coté où il se trouve. 
-
-\textcolor{red}{optimisation de la fonction objectif pour l'entrainement, + calcul des hyperparamètres}
+La classification binaire par une machine à vecteurs de support (SVM) \citep{vapnik1995statlearning} affecte à tout objet entré $x$ la classe $y$ qui correspond au coté de l'hyperplan, séparant les exemples d'entrainement des classes candidates, où $x$ se trouve. La phase d'apprentissage consiste à déterminer l'hyperplan optimal $w^T x + b = 0$ i.e. dont la marge\footnote{la plus petite distance entre les échantillons d'apprentissage et l'hyperplan séparateur} est maximale (Figure \ref{fig:sensresultat:svm}\footnote{\url{http://web.mit.edu/6.034/wwwbob/svm-notes-long-08.pdf}}).
 
 \begin{figure}[!htb]
 	\centering
-	\includegraphics[scale=2]{svm.png}
-	\caption{Illustration de l'hyperplan d'un SVM.}\label{fig:sensresultat:svm}
+	\includegraphics[width=0.5\textwidth]{svm.png}
+	\caption{Hyperplan optimale et marge maximale d'un SVM.}\label{fig:sensresultat:svm}
 \end{figure}
+
+ Le vecteur  $w$ des  poids des caractéristiques et le biais $b$ sont déterminés par le problème d'optimisation du \og SVM à marges molles \fg{} de \citet{Cortes1995svm} :
+ 
+
+\begin{equation*}
+\begin{aligned}
+& \min\limits_{w,b}
+& &\frac{1}{2}\norm{w}^2 + C \sum\limits^l_{i=1} \xi_i \\
+& \text{s.c.}
+& & y_i(w^T+b)\geq 1-\xi_i, \xi_i \geq 0.
+\end{aligned}
+\end{equation*}
+
+où $C$ est la constante de régularisation pour éviter un sur-apprentissage ou le sous-apprentissage, les $\xi_i$ sont des variables ressort (\textit{slack variables}) qui permettent à des points de se retrouver dans la marge. 
+
+% variables ressort: https://cours.etsmtl.ca/gti770/private/notes/PDF/LOG770-SVM_1pp.pdf
+
+La classification par SVM ne s'applique que lorsque les exemples d'apprentissage des classes sont linéairement séparables. Cependant, ils ne le sont pas toujours dans l'espace  $\mathcal{X}$. Ainsi, une fonction \og noyau \fg{} (\textit{kernel}) $k$ doit être choisie pour transformer chaque donnée entrée $x$ de l'espace original  $\mathcal{X}$ vers un nouvel espace  $\mathcal{F}$ dite de caractéristiques dans lequel les classes sont linéairement séparables. Par conséquent, la fonction de classification s'écrit \[f(x) = \sum\limits_{i=1}^n \alpha_i K(x,x_i) + b\] où les $\alpha_i$ sont les coefficients de la combinaison linéaire des exemples d'apprentissage égale à $w$ ($w = \sum\limits_{i=1}^n\alpha_i x_i$) \citep{Ben-Hur2010svm}. Parmi les multiples formes qu'il peut prendre, le noyau peut être, par exemple, soit linéaire($K(x,x_i) = x^Tx_i + c$), soit polynomial ($K(x,x_i) = (\gamma x^Tx_i + c)^d$), soit Gaussien ou RBF\footnote{\textit{radial base function}} ($K(x,x_i) = \exp{-\gamma \norm{x-x_i}}$, soit une sigmoïde $K(x,x_i) = \tanh(\gamma x^Tx_i + c)$) \citep{Amami2015PracticalModelSelectionSVM}.
 
 \subsubsection{$k$-plus-proches-voisins (kNN)}
 L'algorithme $k$-plus-proches-voisins est un algorithme très simple qui consiste à affecter à un nouvel objet la classe majoritaire $y'$ parmi ceux des $k$ points d'exemples d'entrainement $\lbrace (x_i,y_i) \rbrace_{1:k}$, les plus proches du point $x'$ de cet objet selon la métrique $d$ choisie. Ainsi, trois éléments clés influencent l'efficacité de la classification:
