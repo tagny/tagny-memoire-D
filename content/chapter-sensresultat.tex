@@ -46,13 +46,8 @@ Cette étude porte sur l'analyse de l'impact de différents aspects techniques g
 
 La classification de texte permet d'organiser des documents $x^{(k)}$ dans des groupes prédéfinis. Elle reçoit depuis longtemps beaucoup d'attentions. Deux choix techniques influencent principalement les performances: la représentation des textes et l'algorithme de classification. 
 
-<<<<<<< HEAD
 \subsection{Algorithmes traditionnels de classification de données}
-Bien que la classification de documents voit se développer récemment des algorithmes propres aux textes, un grand nombre de méthodes ont été développées précédemment autour. Ces méthodes sont généralement basée sur une représentation vectorielle des textes et délimitent une frontière entre les classes dans un espace multidimensionnel. Les notations du Tableau \ref{quanta:tab:notations_metriques} sont utilisés dans cette section.
-=======
-\subsection{Algorithmes traditionnels de classification de données sous forme vectorielle}
-Bien que la classification de documents voit se développer récemment des algorithmes propres aux textes, un grand nombre de méthodes ont été développées précédemment autour. Ces méthodes sont généralement basée sur une représentation vectorielle des textes et délimitent une frontière entre les classes dans un espace multidimensionnel. L'ensemble des labels / classes est noté $C$.
->>>>>>> ba56340fe1d0c4eed2bb977adb88eb1536558c9c
+Bien que la classification de documents voit se développer récemment des algorithmes propres aux textes, un grand nombre de méthodes ont été développées précédemment autour. Ces méthodes sont généralement basée sur une représentation vectorielle des textes et délimitent une frontière entre les classes dans un espace multidimensionnel. Les notations du Tableau \ref{quanta:tab:notations_metriques} sont utilisés dans cette section. 
 %NB et SVM : https://www.dropbox.com/home/Documents/to-read/term-weight?preview=Best+Terms+An+Efficient+Feature+Selection+Algorithm+for+Text+Categorization.pdf
 % C4.5, k-means, svm, apriori algo, em algo, page rank, ada boost, knn, NB, CART: http://www.cs.umd.edu/~samir/498/10Algorithms-08.pdf
 
@@ -81,7 +76,9 @@ Si l'ensemble des termes de $d$ est $\lbrace t_{1}, \dots, t_{K} \rbrace$, alors
 $\p(d \vert c) = \p(t_{1}, \dots, t_{K}\vert c) = \prod_{k=1}^K \p(t_{k} \vert c)$, et pour un terme $t_k$, la probabilité conditionnelle $\p(t_k \vert c)$ est la proportion d'exemples de $c$ qui contiennent $t_k$:  $\p(t_k \vert c_j) = \frac{N_{t_k,c}}{\vert D_c \vert }, \forall k \in \lbrace 1, \dots, K \rbrace$.
 
 \subsubsection{Machine à vecteurs de support (SVM)}
-Le SVM \citep{vapnik1995statlearning} est un algorithme de classification binaire, qui construit, lors de la phase d'entrainement un hyperplan séparant les points, représentants les exemples d'entrainement, dans un espace à grande dimension, suivant leur classe (Figure \ref{fig:sensresultat:svm}\footnote{\url{http://www.clrc.rhul.ac.uk/svm.html}}). L'hyperplan est la surface situé entre les droites formées par les points les plus proches des deux classes. La classification d'un nouvel objet consiste à projeter son vecteur de caractéristiques dans cet espace, et le label qui lui est prédit est celui associé à la classe du coté où il se trouve. La projection d'une entrée $x$ dans le nouvel espace, est réalisée par une fonction non-linéaire appelé noyau.
+Le SVM \citep{vapnik1995statlearning} est un algorithme de classification binaire, qui construit, lors de la phase d'entrainement un hyperplan séparant de manière optimale les points, représentants les exemples d'entrainement, suivant leur classe (Figure \ref{fig:sensresultat:svm}\footnote{\url{http://www.clrc.rhul.ac.uk/svm.html}}). L'hyperplan optimal est situé à égale distance des hyperplans parallèles formés par les points les plus proches des deux classes. La séparation des classes est réalisée dans un nouvel espace de haute dimension où une discrimination linéaire (plus précisément planaire) est optimale entre les classes. Ce nouvel espace résulte d'une transformation de l'espace original  (caractéristiques ou attributs des données)réalisée par une fonction \og noyau \fg{}, que nous appellerons $f$. Celle-ci, appliquée à tout vecteur $x$ en entrée, \textcolor{red}{et vecteurs de support}, peut être une simple combinaison linéaire (noyau linéaire) ou polynomial (noyau polynomial) des attributs de $x$, ou une fonction plus complexe comme le noyau Gaussien $f(x) = \exp{-\gamma \norm{x-x}}$ encore appelé.
+
+La classification d'un nouvel objet consiste à projeter son vecteur de caractéristiques dans cet espace, et le label qui lui est prédit est celui associé à la classe du coté où il se trouve. 
 
 \textcolor{red}{optimisation de la fonction objectif pour l'entrainement, + calcul des hyperparamètres}
 
