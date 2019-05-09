@@ -28,7 +28,7 @@ Il est aussi possible d'utiliser les arbres de décision pour améliorer les ré
 
 %\textcolor{red}{Random Forest - processus de construction: \url{https://onlinelibrary.wiley.com/doi/pdf/10.1002/cem.2790}}
 
-L'application de ces différents algorithmes aux documents n'est généralement basé que sur les statistiques d'occurrence des termes, et par conséquent les thématiques abordées dans les documents ne sont pas bien prise en compte. \citet{xie2013MGCTM} démontrent empiriquement que l'intégration de la  modélisation thématique (\textit{topic modeling}) au clustering de documents améliore significativement les résultats. Cette intégration des modèles thématiques dans le clustering de documents peut être réalisée de multiples façons, mais deux méthodes semblent être les plus efficaces:
+L'application de ces différents algorithmes aux documents n'est généralement basé que sur les statistiques d'occurrence des termes, et par conséquent les thématiques abordées dans les documents ne sont pas bien prise en compte, surtout que l'élimination des \og mots vides \fg{} (\textit{stop words}) peut laisser les deux documents sans sinon très peu de mots en commun \cite{kusner2015wordmoverdist}. \citet{xie2013MGCTM} démontrent empiriquement que l'intégration de la  modélisation thématique (\textit{topic modeling}) au clustering de documents améliore significativement les résultats. Cette intégration des modèles thématiques dans le clustering de documents peut être réalisée de multiples façons, mais deux méthodes semblent être les plus efficaces:
 \begin{enumerate}
 	\item l'intégration naïve \citep{lu2011kmeansLDApLSA} qui consiste à inférer $K$ thèmes à l'aide d'un algorithme comme le PLSA (aAnalyse sémantique probabiliste latente) \citep{hofmann1999PLSA} ou le LDA (allocation de Dirichlet latente)\citep{blei2003lda}, puis de considérer pour chaque document le thème $j \in [1..K]$ qui a la probabilité $\theta_j$ la plus élevé dans ce document suivant la distribution $\theta$ de probabilité des thèmes dans ce document; le thème choisi $j$ représente le cluster du document;
 	\item le modèle thématique multi-grain de clustering (\textit{multi-grain clustering topic model}) ou MGCTM proposé par \citet{xie2013MGCTM}, dont l'objectif est d'inférer de manière jointe les clusters et le modèle thématique.
@@ -37,11 +37,11 @@ L'application de ces différents algorithmes aux documents n'est généralement 
 \textcolor{red}{FONCTIONNEMENT DU LDA et du MGCTM}.
 
 \subsubsection{Regroupement avec chevauchements}
-<<<<<<< HEAD
+
 Lorsque des chevauchements sont observables entre clusters (un document peut faire partie de plusieurs groupes à la fois), chaque objet peut être affecté partiellement à chaque cluster grâce à la notion de degré d'appartenance (\textit{membership degree}) entre un point $x_i \in X$ et le cluster $j \in [1..K]$ estimé par une fonction $u_{ij}$  \citep{baraldi1999surveyfuzzyclstering}. Il est par conséquent préférable d'employer des algorithmes de partitionnement "mou" comme l'algorithme flou des c-moyennes (FCM) \citep{bezdek1984fcm, hathaway1989fuzzycmeans}, ou le fuzzy c-Medoids (FDMdd) \citep{krishnapuram2001fuzzycmedoids}, ou la version améliorée IFKM (\textit{improved fuzzy K-medoids})\citep{sabzi2011fuzzykmedoids}. \textcolor{red}{FONCTIONNEMENT DE CES DEUX ALGO}. Le principe des algorithmes de clustering flou consiste en deux étapes principales \citep{sabzi2011fuzzykmedoids}: 
-=======
+
 Lorsque des chevauchements sont observables entre clusters (un document peut faire partie de plusieurs groupes à la fois), chaque objet peut être affecté partiellement à chaque cluster grâce à la notion de degré d'appartenance (\textit{membership degree}) entre en jeu \citep{baraldi1999surveyfuzzyclstering}. Il est par conséquent préférable d'employer des algorithmes de partitionnement "mou" comme l'algorithme flou des c-moyennes (\textit{fuzzy c-means}) \citep{bezdek1984fcm, hathaway1989fuzzycmeans}, ou le fuzzy c-medoid \citep{krishnapuram2001fuzzycmedoids}. \textcolor{red}{FONCTIONNEMENT DE CES DEUX ALGO}. Le principe des algorithmes de clustering flou consiste en deux étapes principales \citep{sabzi2011fuzzykmedoids}: 
->>>>>>> bbdb543d96051ba1486e3184b083503b6dc8c800
+
 \begin{enumerate}
  \item l'estimation des degrés d'appartenance de chaque instance $x_i \in X$ à chaque cluster $j \in [1..K]$ de centroïde $z_j$ réalisée par la minimisation de la fonction objective $P(X,Z) = \sum\limits_{i=1}^{n}\sum\limits_{j=1}^{k} \left[u_{ij}r(x_i,z_j)\right]$ \citep{krishnapuram2001fuzzycmedoids}  améliorée par \citet{sabzi2011fuzzykmedoids} en:
  \[P(X,Z) = \sum\limits_{i=1}^{n}\sum\limits_{j=1}^{K} \left[u_{ij}r(x_i,z_j)\right] + \lambda \sum\limits_{i=1}^{n}\sum\limits_{j=1}^{K} \left[ u_{ij}\log_2(u_{ij}) \right] \]
@@ -82,7 +82,17 @@ Il existe de nombreuses métriques de similarité généralement expérimentées
 	\item la distance cosinus: $Dis(x,x') = \sqrt{1 - \frac{x^Tx'}{\norm{x}\norm{x'}}}$
 	\item le coefficient similarité de Jaccard: $Sim(x,x') = \frac{x^Tx'}{\norm{x}^2\norm{x}^2 - x^Tx'}$ désignant l'ensemble des termes de $x$ dans le cas où $x$ est un document;
 	\item Le coefficient similarité de Dice: $Sim(x,x') = \frac{2\cdot \vert tok(x) \cap tok(x') \vert}{\vert tok(x) \vert + \vert tok(x')} $
-	\item Le coefficient de correlation de Pearson: $Sim(x,x') = \frac{x^Tx'}{\norm{x}^2\norm{x}^2 - x^Tx'}$
+	\item Le coefficient de correlation de Pearson: pour $TF_x = \sum\limits^m_{i=1} w_x,i, \forall x \in \mathcal{X}$,
+	
+	$Sim(x,x') = \frac{m \sum\limits^m_{i=1 w_x,i w_x',i - TF_xTF_x'}}{\sqrt{[m \sum\limits^m_{i=1} w^2_x,i - TF^2_x][m \sum\limits^m_{i=1} w^2_x,i - TF^2_x]}} $;
+	\item distance de la divergence moyenne de Kullback-Leibler $Dis(x,x') = $?
+	\item Okapi BM25
+	\item TF-IDF ?
+	\item BoW ?
+	\item Componential Counting Grid ?
+	\item mSDA ?
+	\item LDA ?
+	\item LSI ?
 	\item \og La distance du déplaceur de mot \fg{} (\textit{word mover's distance - WMD}) \citep{kusner2015wordmoverdist}
 \end{itemize}
 
@@ -214,6 +224,7 @@ Après avoir généré l'ensemble $B = \lbrace (d_i, d_i', s(d_i, d_i'))\rbrace$
 \section{Expérimentations et interprétation des résultats}
 \label{sec:similarite:experimentations}
 
+\subsection{Configuration}
 
 \subsection{Annotations de données d'évaluation}
 Pour l'évaluation supervisée, nous disposons d'une base annotée sur la catégorie de demande "dommage-intérêts / action en responsabilité civile professionnelle contre les avocats" qui concerne les contentieux impliquant des avocats.
@@ -228,6 +239,9 @@ L'expert annotateur a identifié quatre cas différents (a, b, c, d) décrits en
 Le dataset comprend 81 documents répartis dans 4 groupes avec 6 documents appartenant chacun à 2 groupes.
 
 Pour l'évaluation non supervisée, les 6 catégories de demande utilisée pour l'extraction de demandes sont utilisés en plus.
+
+\subsubsection{Prétraitement}
+Suppression des \textit{stop words} car il sont généralement indépendant de toute catégorie
 
 \subsection{Apprentissage de la métrique}
 Matrices de (dis)similarité pour chaque distance
