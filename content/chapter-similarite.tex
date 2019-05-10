@@ -108,15 +108,31 @@ Par contre, les métriques {apprises} sont définies à partir de connaissances 
  \end{itemize}
 
 
-\subsection{Déterminer le nombre approprié de clusters} Au delà de l’algorithme à utiliser, le nombre $K$ approprié de groupes (clusters) doit être déterminé mais pas prédéfini. La principale raison étant que ce nombre est censé inconnu et que le regroupement est censé inconnu et être révélé automatiquement.
-La technique traditionnelle part d’un faible nombre de clusters et l’incrémente progressivement. Sur un espace à deux dimensions,  l‘évolution d’une fonction évaluation en fonction du nombre est observée.  La technique est dite du “coude” ou “genou” (elbow/knee) et est basé sur l’idée selon laquelle on devrait choisir un nombre de clusters tel que l’ajout d’un autre ne donne pas une meilleure modélisation des données. Le coude correspond donc au point (nb de clusters) où l’on considère insignifiante la décroissance de la valeur de la métrique d’évaluation. Cette métrique est généralement la variance intra-cluster qui est la somme des erreurs au carré  :
-\[J(k) = \sum\limits_{j=1}^k\sum\limits_{x_i \in C_j}\norm{x_i-\overline{x_j}}^2\]
+\subsection{Déterminer le nombre approprié de clusters (validation)}
+
+\textcolor{red}{faire un tableau des indices comme dans l'article, et comparer les combinaison indices-algo-distance}
+
+ Au delà de l’algorithme à utiliser, le nombre $K$ approprié de clusters doit être déterminé mais pas prédéfini, puisqu'il est difficile de savoir à l'avance le nombre de groupes, le clustering permettant de proposer automatiquement un regroupement. . Une méthode très connue est celle du \og coude \fg{}  (ou \og genou \fg{}) \citep{halkidi2001clustvalidation}, qui est basé sur le principe de base des algorithmes de partitionnement (e.g. K-moyennes) i.e. minimiser le critère d'inertie\footnote{la variance intra-cluster qui est la somme au carré des erreurs (distance d'un membre au centre).}.
+\[J(K) = \sum\limits_{j=1}^K\sum\limits_{x_i \in C_j}\norm{x_i-\overline{x_j}}^2\]
 
 $C_j$: ensemble des objets du cluster $j$
 
 $\overline{x_j}$: échantillons moyens du cluster $j$
 
-Comme on peut le remarquer, il s’agit d’une métrique non-supervisée (pas besoin de données labellisées) qu’il faut minimiser. C’est une fonction monotone décroissante ou croissante. Le choix de ce coude est visuel et peut sembler ambigu. Salvador et Chan (2004) propose d’utiliser l’intersection des deux lignes approximant la courbe. Mais plus récemment, Zhang et al. (2016) trouvent que cette approche n’est pas appropriée pour les cas où le graphe d’évaluation n’est ni lisse, ni monotone. Ils proposent d’exploiter la courbure du graphe i.e. la valeur dont un objet géométrique s'écarte d'être plat ou droit dans le cas d'une ligne.
+La méthode du coude consiste à essayer différentes valeurs consécutive de $K$ (de $K_min$ à $K_max$) puis de choisir celle qui correspond au coude de la courbe du critère d'inertie $J(K)$. Le choix de ce coude est visuel et peut être ambigu (plusieurs valeurs de $K$ sur le coude par exemple). 
+
+La méthode de la silhouette moyenne \citep{rousseeuw1987silhouetteclusternumber} est une alternative qui consiste à choisir comme valeur optimale de $K$, celle qui maximise le critère de la largeur moyenne de la silhouette: $S(k) = \frac{1}{K}\sum\limits_{i=1}^N s(d_i)$. La largeur $s(d_i)$ de la silhouette est un indice qui compare la ressemblance d'un document $d_i$ aux autres membres de son cluster $C_t$ par rapport à ceux d'autres clusters $C_l, l \neq t$:
+\[s(d_i) = \frac{b(d_i) - a(d_i)}{\max\lbrace a(d_i),b(d_i)\rbrace}\]
+
+où $a(d_i) = \frac{1}{\vert C_t \vert} \sum\limits_{j=1}^{\vert C_t \vert} Dis(d_i, d_j)$, et $b(d_i) = \min\limits_{l \neq t} \frac{1}{\vert C_l \vert} \sum\limits_{j=1}^{\vert C_l \vert} Dis(d_i, d_j)$.
+
+$K$ a une valeur optimale lorsque la largeur moyenne $S(k)$ atteint sa valeur maximale.
+
+Salvador et Chan (2004) propose d’utiliser l’intersection des deux lignes approximant la courbe. Mais plus récemment, Zhang et al. (2016) trouvent que cette approche n’est pas appropriée pour les cas où le graphe d’évaluation n’est ni lisse, ni monotone. Ils proposent d’exploiter la courbure du graphe i.e. la valeur dont un objet géométrique s'écarte d'être plat ou droit dans le cas d'une ligne.
+
+Etant donné le grand nombre de méthodes existantes \citep{liu2010interclustvalidation, Amorim2015recoveringnumclust}, la majorité des votes peut être appliquée pour choisir le bon $K$ \footnote{\url{https://www.datanovia.com/en/lessons/determining-the-optimal-number-of-clusters-3-must-know-methods/}}.
+
+\subsection{Initialisation des centroïdes}
 
 \subsection{Définir une représentation appropriée pour les textes}
 \url{https://arxiv.org/pdf/1509.01626.pdf}
