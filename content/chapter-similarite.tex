@@ -68,7 +68,7 @@ Une métrique de (dis)similarité est une fonction réelle d'une paire de élém
 \begin{enumerate}
 \item $Dis(x,x') \geq 0$ ("non-négativité")
 \item $Dis(x,x') = 0  \Leftrightarrow x = y$ (identité discernable)
-\item $Dis(x,x') = Dis(y, x)$ (symétrie)
+\item $Dis(x,x') = Dis(x', x)$ (symétrie)
 \item $Dis(x,x'') \leq Dis(x,x') + Dis(x',x'')$ (inégalité triangulaire) \label{enum:sim:ineq-tri}
 \end{enumerate}
 
@@ -86,14 +86,28 @@ Il existe de nombreuses métriques de similarité généralement expérimentées
 	
 	$Sim(x,x') = \frac{m \sum\limits^m_{i=1 w_x,i w_x',i - TF_xTF_x'}}{\sqrt{[m \sum\limits^m_{i=1} w^2_x,i - TF^2_x][m \sum\limits^m_{i=1} w^2_x,i - TF^2_x]}} $;
 	\item distance de la divergence moyenne de Kullback-Leibler $Dis(x,x') = $?
-	\item Okapi BM25
+	\item Okapi BM25 est une métrique de similarité généralement utilisée en recherche d'information; les résultats de ce chapitre ont été obtenu avec une version adaptée pour les long documents, la BM25L de \citet{Lv2011BM25L} qui démontrent que la version originale n'est pas robuste lorsque les documents sont longs: \[Sim(x,x') = \sum\limits_{i=1}^n\left(\frac{n_i(k_1 + 1)}{n_i + k_1(1 - b + b\frac{\vert D \vert}{\overline{\vert D \vert}})} \cdot \log \frac{N - n_i + 0.5}{n_i + 0.5}\right)\] \textcolor{red}{corriger avec la formule de BM25L et vérifier la symétrie du BM25}
 	\item TF-IDF ?
 	\item BoW ?
 	\item Componential Counting Grid ?
 	\item mSDA ?
 	\item LDA ?
 	\item LSI ?
-	\item \og La distance du déplaceur de mot \fg{} (\textit{word mover's distance - WMD}) \citep{kusner2015wordmoverdist}
+	\item \og La distance du déplaceur de mot \fg{} (\textit{word mover's distance - WMD}) \citep{kusner2015wordmoverdist} est une méthode dont l'objectif est similaire au notre, i.e. inclure la similarité sémantique entre les paires de mots de deux documents dans l'estimation de la distance entre ces derniers. En effet, elle est la solution optimale du problème de transport suivant \footnote{Valeur minimale du cout cumulatif pondéré nécessaire pour déplacer  tous les mots de $d$ à $d'$ i.e. transformer $d$ en $d'$.}:
+	
+	\begin{equation*}
+	\begin{aligned}
+Dis(d, d') = 	& \min\limits_{T>0}
+	& & \sum\limits_{i,j=1}^n T_{ij} c(i,j) \\
+	& \text{s.c.}
+	& & \sum\limits_{j=1}^n T_{ij} = d_i, \forall i \in {1, \dots, n} \\
+	& 
+	& & \sum\limits_{i=1}^n T_{ij} = d'_j, \forall j \in {1, \dots, n}	
+	\end{aligned}
+	\end{equation*} 
+	
+	$n$ est le nombre de mots considérés; $T$ est une matrice dont $T_{ij}$ est interprété comme étant la quantité du mot $i$ de $d$ qui est va ("voyage") au mot $j$ dans $d'$; $c(i,j)$ est la distance euclidienne entre les vecteurs des mots $i$ et $j$; $d_i$ et $d'_j$ sont les composantes aux mots $i$ et $j$ resp. des vecteurs normalisés sac-de-mots de $d$ et $d'$ reesp. i.e. $d_i = \frac{compte(i, d)}{\sum\limits_{k=1}^n compte(k, d)}$, où $compte(i, d)$ est le nombre d'occurrences du mot $i$ dans $d$.
+	
 \end{itemize}
 
 
@@ -119,7 +133,7 @@ $C_j$: ensemble des objets du cluster $j$
 
 $\overline{x_j}$: échantillons moyens du cluster $j$
 
-La méthode du coude consiste à essayer différentes valeurs consécutive de $K$ (de $K_min$ à $K_max$) puis de choisir celle qui correspond au coude de la courbe du critère d'inertie $J(K)$. Le choix de ce coude est visuel et peut être ambigu (plusieurs valeurs de $K$ sur le coude par exemple). 
+La méthode du coude consiste à essayer différentes valeurs consécutive de $K$ (de $K_{min}$ à $K_{max}$) puis de choisir celle qui correspond au coude de la courbe du critère d'inertie $J(K)$. Le choix de ce coude est visuel et peut être ambigu (plusieurs valeurs de $K$ sur le coude par exemple). 
 
 La méthode de la silhouette moyenne \citep{rousseeuw1987silhouetteclusternumber} est une alternative qui consiste à choisir comme valeur optimale de $K$, celle qui maximise le critère de la largeur moyenne de la silhouette: $S(k) = \frac{1}{K}\sum\limits_{i=1}^N s(d_i)$. La largeur $s(d_i)$ de la silhouette est un indice qui compare la ressemblance d'un document $d_i$ aux autres membres de son cluster $C_t$ par rapport à ceux d'autres clusters $C_l, l \neq t$:
 \[s(d_i) = \frac{b(d_i) - a(d_i)}{\max\lbrace a(d_i),b(d_i)\rbrace}\]
@@ -147,7 +161,7 @@ L'évaluation des résultats peut être supervisée ou non selon que l'on dispos
 
 \subsubsection{Métriques supervisées}
 \label{sec:similarite:biblio:supeval}
-Même s'il existe un très grand nombre de mesures d'évaluation de la qualité du clustering \citep{im2003clusteringsurvey}, très peu sont couramment utilisées. Il s'agit pour l'évaluation supervisée de l'information mutuelle normalisée (NMI) \citep{}, l'indice ajusté de Rand (\textit{ajusted Rand index} - ARI) \citep{}, et la précision du clustering (ACC) \citep{}. Ces métriques doivent être utilisées ensemble \cite{yang2017kmeansfriendlyspaces} pour compenser les limites de chacune d'elles. Pour l'évaluation non-supervisée, la pureté, l'erreur et la silhouette sont les métriques généralement utilisées.
+Même s'il existe un très grand nombre de mesures d'évaluation de la qualité du clustering \citep{im2003clusteringsurvey}, très peu sont couramment utilisées. Il s'agit pour l'évaluation supervisée de l'information mutuelle normalisée (NMI) \citep{}, l'indice ajusté de Rand (\textit{ajusted Rand index} - ARI) \citep{}, et la précision du clustering (ACC) \citep{}. Ces métriques doivent être utilisées ensemble  pour compenser les limites de chacune d'elles \citep{yang2017kmeansfriendlyspaces}. Pour l'évaluation non-supervisée, la pureté, l'erreur et la silhouette sont les métriques généralement utilisées.
 
 \subsubsection{Métriques non-supervisées}
 \label{sec:similarite:biblio:unsupeval}
