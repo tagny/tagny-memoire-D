@@ -74,18 +74,20 @@ Une métrique de (dis)similarité est une fonction réelle d'une paire de élém
 \end{enumerate}
 
 
-La similarité est donc calculée par $Sim(x,x') = 1 - Dis(x,x')$, la distance représentant la dis-similarité.
+La similarité est donc calculée en général par $Sim(x,x') = 1 - Dis(x,x')$, la distance représentant la dis-similarité.
 %On parle de \textbf{pseudo-métrique} lorsque la condition \ref{enum:sim:ineq-tri} n'est pas satisfaite.
 
 Il existe de nombreuses métriques de similarité généralement expérimentées pour le clustering de textes \citep{huang2008similarityTextClustering}:
 \begin{itemize}
 	\item les distances de Minkowski de forme générale $Dis(x,x') = \norm{x - x'}_{Lp} = \sqrt[p]{\sum \vert x_i - y_i \vert ^p}$, dont font partie la distance euclidenne ($p=2$) et la distance de Manhattan ($p=1$); 
-	\item la distance cosinus: $Dis(x,x') = \sqrt{1 - \frac{x^Tx'}{\norm{x}\norm{x'}}}$
-	\item le coefficient similarité de Jaccard: $Sim(x,x') = \frac{x^Tx'}{\norm{x}^2\norm{x}^2 - x^Tx'}$ désignant l'ensemble des termes de $x$ dans le cas où $x$ est un document;
+	\item la similarité cosinus: $Dis(x,x') = \sqrt{\frac{x^Tx'}{\norm{x}\norm{x'}}}$
+	\item le coefficient similarité de Jaccard: $Sim(x,x') = \frac{x^Tx'}{\norm{x}^2\norm{x'}^2 - x^Tx'}$ désignant l'ensemble des termes de $x$ dans le cas où $x$ est un document;
 	\item Le coefficient similarité de Dice: $Sim(x,x') = \frac{2\cdot \vert tok(x) \cap tok(x') \vert}{\vert tok(x) \vert + \vert tok(x')} $
-	\item Le coefficient de correlation de Pearson: pour $TF_x = \sum\limits^m_{i=1} w_x,i, \forall x \in \mathcal{X}$,
+	\item Le coefficient de correlation de Pearson: pour $TF_x = \sum\limits^m_{i=1} w_{x,i}, \forall x \in \mathcal{X}$,
 	
-	$Sim(x,x') = \frac{m \sum\limits^m_{i=1 w_x,i w_x',i - TF_xTF_x'}}{\sqrt{[m \sum\limits^m_{i=1} w^2_x,i - TF^2_x][m \sum\limits^m_{i=1} w^2_x,i - TF^2_x]}} $;
+	$Sim(x,x') = \frac{m \sum\limits^m_{i=1} w_{x,i} w_{x',i} - TF_xTF_{x'}}{\sqrt{[m \sum\limits^m_{i=1} w^2_{x,i} - TF^2_x][m \sum\limits^m_{i=1} w^2_{x',i} - TF^2_{x'}}}$;
+	
+$Dis = 1 - Sim si Sim \geq 0; = \vert Sim \vert si Sim < 0$
 	\item Distance de la divergence moyenne de Kullback-Leibler $Dis(x,x') = $?
 	\item Okapi BM25 est une métrique de similarité généralement utilisée en recherche d'information; les résultats de ce chapitre ont été obtenu avec une version adaptée pour les long documents, la BM25L de \citet{Lv2011BM25L} qui démontrent que la version originale n'est pas robuste lorsque les documents sont longs: \[Sim(x,x') = \sum\limits_{i=1}^n\left(\frac{n_i(k_1 + 1)}{n_i + k_1(1 - b + b\frac{\vert D \vert}{\overline{\vert D \vert}})} \cdot \log \frac{N - n_i + 0.5}{n_i + 0.5}\right)\] \textcolor{red}{corriger avec la formule de BM25L et vérifier la symétrie du BM25}
 %	\item TF-IDF ?
