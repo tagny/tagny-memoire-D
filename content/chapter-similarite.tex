@@ -86,14 +86,14 @@ Il existe de nombreuses métriques de similarité généralement expérimentées
 	\item Le coefficient de correlation de Pearson: pour $TF_x = \sum\limits^m_{i=1} w_x,i, \forall x \in \mathcal{X}$,
 	
 	$Sim(x,x') = \frac{m \sum\limits^m_{i=1 w_x,i w_x',i - TF_xTF_x'}}{\sqrt{[m \sum\limits^m_{i=1} w^2_x,i - TF^2_x][m \sum\limits^m_{i=1} w^2_x,i - TF^2_x]}} $;
-	\item distance de la divergence moyenne de Kullback-Leibler $Dis(x,x') = $?
+	\item Distance de la divergence moyenne de Kullback-Leibler $Dis(x,x') = $?
 	\item Okapi BM25 est une métrique de similarité généralement utilisée en recherche d'information; les résultats de ce chapitre ont été obtenu avec une version adaptée pour les long documents, la BM25L de \citet{Lv2011BM25L} qui démontrent que la version originale n'est pas robuste lorsque les documents sont longs: \[Sim(x,x') = \sum\limits_{i=1}^n\left(\frac{n_i(k_1 + 1)}{n_i + k_1(1 - b + b\frac{\vert D \vert}{\overline{\vert D \vert}})} \cdot \log \frac{N - n_i + 0.5}{n_i + 0.5}\right)\] \textcolor{red}{corriger avec la formule de BM25L et vérifier la symétrie du BM25}
-	\item TF-IDF ?
-	\item BoW ?
-	\item Componential Counting Grid ?
-	\item mSDA ?
-	\item LDA ?
-	\item LSI ?
+%	\item TF-IDF ?
+%	\item BoW ?
+%	\item Componential Counting Grid ?
+%	\item mSDA ?
+%	\item LDA ?
+%	\item LSI ?
 	\item \og La distance du déplaceur de mot \fg{} (\textit{word mover's distance - WMD}) \citep{kusner2015wordmoverdist} est une méthode dont l'objectif est similaire au notre, i.e. inclure la similarité sémantique entre les paires de mots de deux documents dans l'estimation de la distance entre ces derniers. En effet, elle est la solution optimale du problème de transport suivant \footnote{Valeur minimale du cout cumulatif pondéré nécessaire pour déplacer  tous les mots de $d$ à $d'$ i.e. transformer $d$ en $d'$.}:
 	
 	\begin{equation*}
@@ -119,7 +119,7 @@ Par contre, les métriques {apprises} sont définies à partir de connaissances 
  	\item Les plus-proches-voisins-dans-la-large-marge (LMNN) \citep{weinberger2005LMNN} plus adapté à l'annotation par classification;
  	\item L'analyse des composants du voisinage (NCA) \citep{goldberger2005NCA};
  	\item L'apprentissage de métrique pour la régression noyau (\textit{MLKR}) \citep{weinberger2007MLKR};
- 	\item L'analyse discriminante locale de Fisher (LFDA) \citep{sugiyama2007LFDA, }
+ 	\item L'analyse discriminante locale de Fisher (LFDA) \citep{sugiyama2007LFDA, } méthode supervisée (données labellisées) de réduction de dimension
  \end{itemize}
 
 
@@ -241,16 +241,14 @@ Nous ne pouvons que l'estimer. Pour cela, nous générons un jeu artificiel de d
  \KwResult{un mot $w'$} 
  $w' = $ un mot différent de $w$ choisi aléatoirement dans $W$\;
  \Return $w'$
- \caption{modifie} \label{algo:similarite:modifiemot}
+ \caption{Modifie un mot donné $w$} \label{algo:similarite:modifiemot}
 \end{algorithm}
 
 Pour garantir la symétrie de la métrique, nous imposons $\widetilde{Dis}(x', x) = \widetilde{Dis}(x, x'), \forall x \in C$. Pour garantir la réflexivité, nous imposons $\widetilde{Dis}(x, x) = 0, \forall x \in C$.
 
 \subsubsection{Apprentissage de la métrique}
 
-Sur l'ensemble $B = \lbrace (d_i, d'_i, \widetilde{Dis}(d_i, d'_i))\rbrace_{1 \leq i \leq \norm{B}}$ de données synthétiques d'entraînement, on entraîne un modèle régressif $m$ pour prédire la similarité entre 2 documents en fonction de leur représentation vectorielle. Ce modèle régressif peut être utilisé comme métrique de similarité dans un algorithme de clustering comme l'algorithme des K-moyennes au même titre que les métriques citées à la Section \ref{sec:similarite:metriques-de-sim}. Cependant, les modèles de régression ne supportent généralement qu'un seul vecteur en entrée, et pas deux vecteurs comme en dispose la base $B$. Nous somme donc amené à définir l'agrégation adéquate des vecteurs $d_i$ et $d'_i$. L'agrégation qui fonctionne le mieux est la soustraction avec laquelle les documents similaires auront une agrégation avec un grand nombre de composantes tendant vers 0. La fonction d'estimation automatique de la distance sémantique entre $x$ et $y$ s'écrit:
-
-$Dis(x, y) = m(x-y)$. 
+Sur l'ensemble $B = \lbrace (d_i, d'_i, \widetilde{Dis}(d_i, d'_i))\rbrace_{1 \leq i \leq \norm{B}}$ de données synthétiques d'entraînement, on entraîne un modèle régressif $m$ pour prédire la similarité entre 2 documents en fonction de leur représentation vectorielle. Ce modèle régressif peut être utilisé comme métrique de similarité dans un algorithme de clustering comme l'algorithme des K-moyennes au même titre que les métriques citées à la Section \ref{sec:similarite:metriques-de-sim}. Cependant, les modèles de régression ne supportent généralement qu'un seul vecteur en entrée, et pas deux vecteurs comme en dispose la base $B$. Nous somme donc amené à définir l'agrégation adéquate des vecteurs $d_i$ et $d'_i$. L'agrégation qui fonctionne le mieux est la soustraction avec laquelle les documents similaires auront une agrégation avec un grand nombre de composantes tendant vers 0. La fonction d'estimation automatique de la distance sémantique entre $x$ et $y$ s'écrit: $Dis(x, y) = m(x-y)$. 
 
 %\textcolor{red}{Issues:}
 %\begin{itemize}
