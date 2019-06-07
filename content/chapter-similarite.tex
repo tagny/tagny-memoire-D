@@ -63,7 +63,8 @@ nombre prédéfini de clusters, initialisation aléatoire des centroïdes menant
 %Algorithme kmeans + kmédoids pour les documents: https://pdfs.semanticscholar.org/a46f/efdb64a01d1e6390c8212d881b9c4414ffbf.pdf
 
 
-\subsection{Métrique de similarité ou de dis-similarité}
+\subsection{Métriques de similarité ou de dis-similarité}
+\label{sec:similarite:metriques-de-sim}
 Une métrique de (dis)similarité est une fonction réelle d'une paire de éléments $x$ et $x'$ d'un ensemble $\mathcal{X}$. Une métrique de dis-similarité mesure le degré de différence entre $x$ et $x'$  généralement estimée par une fonction distance $Dis$  qui satisfait aux propriétés suivantes $\forall x,x',x'' \in \mathcal{X}$ \citep{wang2015distancemetriclearningsurvey}:
 \begin{enumerate}
 \item $Dis(x,x') \geq 0$ ("non-négativité")
@@ -73,26 +74,28 @@ Une métrique de (dis)similarité est une fonction réelle d'une paire de élém
 \end{enumerate}
 
 
-La similarité est donc calculée par $Sim(x,x') = 1 - Dis(x,x')$, la distance représentant la dis-similarité.
+La similarité est donc calculée en général par $Sim(x,x') = 1 - Dis(x,x')$, la distance représentant la dis-similarité.
 %On parle de \textbf{pseudo-métrique} lorsque la condition \ref{enum:sim:ineq-tri} n'est pas satisfaite.
 
 Il existe de nombreuses métriques de similarité généralement expérimentées pour le clustering de textes \citep{huang2008similarityTextClustering}:
 \begin{itemize}
 	\item les distances de Minkowski de forme générale $Dis(x,x') = \norm{x - x'}_{Lp} = \sqrt[p]{\sum \vert x_i - y_i \vert ^p}$, dont font partie la distance euclidenne ($p=2$) et la distance de Manhattan ($p=1$); 
-	\item la distance cosinus: $Dis(x,x') = \sqrt{1 - \frac{x^Tx'}{\norm{x}\norm{x'}}}$
-	\item le coefficient similarité de Jaccard: $Sim(x,x') = \frac{x^Tx'}{\norm{x}^2\norm{x}^2 - x^Tx'}$ désignant l'ensemble des termes de $x$ dans le cas où $x$ est un document;
+	\item la similarité cosinus: $Dis(x,x') = \sqrt{\frac{x^Tx'}{\norm{x}\norm{x'}}}$
+	\item le coefficient similarité de Jaccard: $Sim(x,x') = \frac{x^Tx'}{\norm{x}^2\norm{x'}^2 - x^Tx'}$ désignant l'ensemble des termes de $x$ dans le cas où $x$ est un document;
 	\item Le coefficient similarité de Dice: $Sim(x,x') = \frac{2\cdot \vert tok(x) \cap tok(x') \vert}{\vert tok(x) \vert + \vert tok(x')} $
-	\item Le coefficient de correlation de Pearson: pour $TF_x = \sum\limits^m_{i=1} w_x,i, \forall x \in \mathcal{X}$,
+	\item Le coefficient de correlation de Pearson: pour $TF_x = \sum\limits^m_{i=1} w_{x,i}, \forall x \in \mathcal{X}$,
 	
-	$Sim(x,x') = \frac{m \sum\limits^m_{i=1 w_x,i w_x',i - TF_xTF_x'}}{\sqrt{[m \sum\limits^m_{i=1} w^2_x,i - TF^2_x][m \sum\limits^m_{i=1} w^2_x,i - TF^2_x]}} $;
-	\item distance de la divergence moyenne de Kullback-Leibler $Dis(x,x') = $?
+	$Sim(x,x') = \frac{m \sum\limits^m_{i=1} w_{x,i} w_{x',i} - TF_xTF_{x'}}{\sqrt{[m \sum\limits^m_{i=1} w^2_{x,i} - TF^2_x][m \sum\limits^m_{i=1} w^2_{x',i} - TF^2_{x'}}}$;
+	
+$Dis = 1 - Sim si Sim \geq 0; = \vert Sim \vert si Sim < 0$
+	\item Distance de la divergence moyenne de Kullback-Leibler $Dis(x,x') = $?
 	\item Okapi BM25 est une métrique de similarité généralement utilisée en recherche d'information; les résultats de ce chapitre ont été obtenu avec une version adaptée pour les long documents, la BM25L de \citet{Lv2011BM25L} qui démontrent que la version originale n'est pas robuste lorsque les documents sont longs: \[Sim(x,x') = \sum\limits_{i=1}^n\left(\frac{n_i(k_1 + 1)}{n_i + k_1(1 - b + b\frac{\vert D \vert}{\overline{\vert D \vert}})} \cdot \log \frac{N - n_i + 0.5}{n_i + 0.5}\right)\] \textcolor{red}{corriger avec la formule de BM25L et vérifier la symétrie du BM25}
-	\item TF-IDF ?
-	\item BoW ?
-	\item Componential Counting Grid ?
-	\item mSDA ?
-	\item LDA ?
-	\item LSI ?
+%	\item TF-IDF ?
+%	\item BoW ?
+%	\item Componential Counting Grid ?
+%	\item mSDA ?
+%	\item LDA ?
+%	\item LSI ?
 	\item \og La distance du déplaceur de mot \fg{} (\textit{word mover's distance - WMD}) \citep{kusner2015wordmoverdist} est une méthode dont l'objectif est similaire au notre, i.e. inclure la similarité sémantique entre les paires de mots de deux documents dans l'estimation de la distance entre ces derniers. En effet, elle est la solution optimale du problème de transport suivant \footnote{Valeur minimale du cout cumulatif pondéré nécessaire pour déplacer  tous les mots de $d$ à $d'$ i.e. transformer $d$ en $d'$.}:
 	
 	\begin{equation*}
@@ -118,7 +121,7 @@ Par contre, les métriques {apprises} sont définies à partir de connaissances 
  	\item Les plus-proches-voisins-dans-la-large-marge (LMNN) \citep{weinberger2005LMNN} plus adapté à l'annotation par classification;
  	\item L'analyse des composants du voisinage (NCA) \citep{goldberger2005NCA};
  	\item L'apprentissage de métrique pour la régression noyau (\textit{MLKR}) \citep{weinberger2007MLKR};
- 	\item L'analyse discriminante locale de Fisher (LFDA) \citep{sugiyama2007LFDA, }
+ 	\item L'analyse discriminante locale de Fisher (LFDA) \citep{sugiyama2007LFDA, } méthode supervisée (données labellisées) de réduction de dimension
  \end{itemize}
 
 
@@ -181,54 +184,57 @@ Un des désavantage de l'algorithme des K-médoïdes est son long temps de calcu
 %\section{Méthode 2: cartes auto-organisatrice de Kohonen et concaténation de plongement sémantique de phrases (sentence embedding)}
 
 \subsection{Apprentissage d'une métrique fondée la modification du document}
-Les algorithmes de clustering et de classification s'appuient généralement sur une représentation vectorielle à partir de laquelle une valeur de similarité est calculée de manière non supervisée et avec une formule mathématique statique. Dans le cas des textes, Il n'est pas toujours évident de définir la représentation vectorielle associée à une sémantique précise et objective. De plus il existe un large éventail de schémas de représentations vectorielles. Elles vont des représentations très ad-hoc du type TF-IDF, au représentations apprises comme le doc2vec et en passant par les agrégations pondérées de modèles distribués de mots (word2vec par ex.). 
+Les algorithmes de clustering et de classification s'appuient généralement sur une représentation vectorielle à partir de laquelle une valeur de similarité est calculée de manière non supervisée et avec une formule mathématique statique. Dans le cas des textes, Il n'est pas toujours évident de choisir la représentation adaptée à une sémantique précise et objective voulue. De plus, il existe un large éventail de schémas de représentations vectorielles. Elles vont des représentations statistiques comme TF-IDF, aux représentations apprises comme le Doc2Vec ou Sent2Vec, et en passant par les agrégations pondérées de modèles distribués de mots (Word2Vec par ex.). 
 
-L'idée dans notre approche est de proposée une formulation de la similarité entre deux documents qui est basée sur le degré de perturbation observé entre documents. Cette fonction de similarité est apprise à partir d'une base synthétique d'entraînement de similarité entre paire de texte. 
+L'idée dans notre approche est de proposée une formulation de la similarité entre deux documents qui est basée les modifications nécessaires pour transformer un document en un autre. Cette fonction  est apprise à partir d'une base synthétique d'entraînement de similarité entre paires de textes. 
 \begin{postulat}
-La distance entre deux documents est une fonction du degré de perturbation permettant de transformer un document en l'autre. \label{post:similarite:distance}
+La distance entre deux documents est une fonction des perturbations (modifications) permettant de transformer un document en l'autre. \label{post:similarite:distance}
 \end{postulat}
-La similarité est définie en fonction de la notion de perturbation du contenu d'un texte (Postulat \ref{post:similarite:distance}): après une légère perturbation, un texte reste assez similaire à l'original; et après une forte perturbation, le texte sera très différent de l'identique. la similarité (resp. la distance) décroît (resp. croit inversement) donc avec l'intensité de la perturbation. Nous définissons une densité de probabilité de perturbation $P \in [0; 1]$ associée à la probabilité de modifier un mot (suppression / remplacement par un mot très différent). 
+La similarité est définie en fonction de la notion de perturbation du contenu d'un texte (Postulat \ref{post:similarite:distance}): après une légère perturbation, le sens d'un texte reste assez similaire à celui de l'original; et après un grand nombre de modification, le sens du  texte sera très différent de l'original. La similarité sémantique entre des textes décroît donc avec l'intensité des modifications permettant de passer d'un document à un autre. 
 
-Considérons que pour tout texte $x$, $W_x$ désigne l'ensemble des mots dans $x$.
-Nous définissons un patron de métriques:
+La distance sémantique étant une valeur continue, en entrainant un modèle de régression sur un ensemble de paires de documents pour lesquelles on connait la distance, il est possible de la prédire pour de nouvelles paires. Nous proposons de générer une base synthétique de paires de documents dont l'un est un texte original mais l'autre est le résultat de substitutions et suppression de mots dans le premier. Etant donné, que nous contrôlons ces modifications il est plus facile d'affecter une distance qui y corresponde.
+
+\subsubsection{Génération d'une base synthétique d'apprentissage}
+Nous définissons une densité de probabilité de perturbation $P \in [0; 1]$ associée à la probabilité de modifier un mot (suppression / remplacement par un mot très différent). Considérons que pour tout texte $x$, $W_x$ désigne l'ensemble des mots dans $x$.
+Nous définissons un patron ou une famille de métriques:
 \begin{equation}
 \begin{array}{cccccc}
-d & : & C \times C & \to & \mathbb{R} & \\
- & & x, y & \mapsto & d(x, y) & = f(P_{x,y}) \\
+Dis & : & C \times C & \to & \mathbb{R} & \\
+ & & x, y & \mapsto & Dis(x, y) & = f(P_{x,y}) \\
 \end{array}
 \end{equation}
 
 $C$ est le corpus. $P_{x,y}$ est l'ensemble des modifications de $x$ nécessaire pour obtenir $y$ i.e. les paires $(w_x, w_y)$ telles que $w_x \in W_x$ a été remplacé par $w_y \in W_y$. $d$ désigne la métrique. Un simple estimateur de $d$ peut être de considérer le taux de mots modifiés dans $x$: 
 \begin{equation}
-\widetilde{d}(x,y) = \frac{\norm{P_{x,y} }}{\norm{W_x}}
+\widetilde{Dis}(x,y) = \frac{\norm{P_{x,y} }}{\norm{W_x}}
 \end{equation}
- Un tel modèle ne considère ni l'ordre des mots, ni celui des phrases, ni la différence d'importance entre les mots, la complexité de la modification (une substitution est plus complexe qu'une suppression ou une insertion), ni le degré sémantique des perturbations. ce dernier peut être estimé en lissant le taux de perturbation à l'aide de la distance sémantique entre les mots substitués (le vecteur représentant le mot vide étant le vecteur nul par ex.):
+ Un tel modèle ne considère ni l'ordre des mots, ni celui des phrases, la complexité de la modification (une substitution est plus complexe qu'une suppression ou une insertion), ni la différence sémantique entre les mots substituants et les remplacés. Ce dernier aspect peut être estimé en lissant le taux de perturbation à l'aide de la distance sémantique entre les mots substitués (le vecteur représentant le mot vide étant le vecteur nul par ex.):
 \begin{equation}
-\widetilde{d}(x,y) = \frac{\sum\limits_{(w_x, w_y) \in P_{x,y}} d_w(w_x,w_y)}{\norm{W_x}} \label{equation:similarite:somme-dist-mots}
+\widetilde{Dis}(x,y) = \frac{\sum\limits_{(w_x, w_y) \in P_{x,y}} Dis_{cos}(w_x,w_y)}{\norm{W_x}} \label{equation:similarite:somme-dist-mots}
 \end{equation}
 $d_w$ désignant la distance sémantique entre les mots. Ainsi, les substitutions sont pondérées par la distance cosinus entre les vecteurs des mots échangés.
 
-Il est difficile de calculer de telle distance sur un grand corpus étant donné la longueur de notre document. 
+Il est difficile de calculer de telles distances sur un grand corpus étant donné la longueur de notre document. 
 Nous ne pouvons que l'estimer. Pour cela, nous générons un jeu artificiel de données pour l'entraînement d'un modèle régressif d'estimation de la métrique entre deux textes $x$ et $y$. En effet, nous partons d'un ensemble $C$ de documents et pour chacun de ces documents, noté $x$, nous générons aléatoirement une valeur seuil de probabilité de perturbation en deça duquel un mot de $x$ est modifié. Par la suite, le texte  $y$, résultant de la modification de $x$, est généré en modifiant les mots de $x$ :
 
 \begin{algorithm}[!htb] % Version française avec : https://pierre.chachatelier.fr/latex/index.php
  \KwData{texte $x$, valeur seuil de probabilité $p$}
- \KwResult{$y$, $\widetilde{d}(x,y)$}
- $y = [] $\; 
- $P_{x,y} = \emptyset$\;
+ \KwResult{$x'$, $\widetilde{Dis}(x,x')$}
+ ${x'} = [] $\; 
+ $P_{x,x'} = \emptyset$\;
  \For{$w_x$ in $x$}{
  	$v = random(0,1)$\;
     \eIf{v < p}{
-       $w_y += modifie(w_x)$; // Algorithme \ref{algo:similarite:modifiemot} \;
-       $y += w_y$ \;
-       $P_{x,y} = P_{x,y} \cup \lbrace (w_x, w_y) \rbrace$\;
+       $w_x' += modifie(w_x)$; // Algorithme \ref{algo:similarite:modifiemot} \;
+       ${x'} += w_{x'}$ \;
+       $P_{x,x'} = P_{x,x'} \cup \lbrace (w_x, w_{x'}) \rbrace$\;
      }{
-     $y += w$\;
+     $x' += w_x$\;
      }
-     $\widetilde{d}(x,y) = \frac{\sum\limits_{(w_x, w_y) \in P_{x,y}} d_w(w_x,w_y)}{card(W_x)}$\;
+     $\widetilde{Dis}(x,x') = \frac{\sum\limits_{(w_x, w_{x'}) \in P_{x,x'}} Dis_{cos}(w_x,w_{x'})}{card(W_x)}$\;
  }
- \Return $y, \widetilde{d}(x,y)$\;
- \caption{Génère une perturbation de $x$} \label{algo:similarite:perturbation}
+ \Return $x', \widetilde{Dis}(x,x')$\;
+ \caption{Génère une perturbation $x'$ de $x$} \label{algo:similarite:perturbation}
 \end{algorithm}
 
 
@@ -237,19 +243,23 @@ Nous ne pouvons que l'estimer. Pour cela, nous générons un jeu artificiel de d
  \KwResult{un mot $w'$} 
  $w' = $ un mot différent de $w$ choisi aléatoirement dans $W$\;
  \Return $w'$
- \caption{modifie} \label{algo:similarite:modifiemot}
+ \caption{Modifie un mot donné $w$} \label{algo:similarite:modifiemot}
 \end{algorithm}
 
-Après avoir généré l'ensemble $B = \lbrace (d_i, d_i', s(d_i, d_i'))\rbrace$ de données artificielle d'entraînement , on entraîne un modèle régressif pour prédire la similarité entre 2 documents en fonction de leur représentation vectorielle. Ce modèle régressif peut être utilisé comme métrique de similarité dans un algorithme de clustering comme l'algorithme des K-moyennes.
+Pour garantir la symétrie de la métrique, nous imposons $\widetilde{Dis}(x', x) = \widetilde{Dis}(x, x'), \forall x \in C$. Pour garantir la réflexivité, nous imposons $\widetilde{Dis}(x, x) = 0, \forall x \in C$.
 
-\textcolor{red}{Issues:}
-\begin{itemize}
-\item les docs sont généralement de tailles différentes, ne faudrait il pas intégrer une perturbation ajout de mots? \textcolor{blue}{combiner les modifications par suppression et par substitution}
-\item il faudrait intégrer la composante taille du document: \textcolor{blue}{agréger sur le nombre minimal de phrases des paires de documents}
-\item comment assurer les propriétés d'une fonction similarité? par exemple si aucune perturbation n'est opérée, alors la similarité est maximale et si tous les mots sont modifiés alors la similarité est minimale: \textcolor{blue}{agrégation par soustraction des vecteurs du couple de docs. plus deux doc seront similaire, plus le vecteur de leur paire tendra vers le nul}
-\item Ne faudrait il pas prendre en compte un poids pour les mots, car peut-être la modification de certains mots ne devrait pas avoir le même impact sur la similarité ou le taux de perturbation que celle d'autres mots:  \textcolor{blue}{lissage par la somme des distance des vecteurs de mots substitués Eq. \ref{equation:similarite:somme-dist-mots}}
-\item ne faudrait il pas intégré une métrique proche de la tâche: la ressemblance n'est pas forcément globale à tous le corps du document mais plus à certaines régions; donc un document auquel on rajoute quelques phrases ne devrait pas voir  son sens trop changer:  \textcolor{blue}{peut-être agréger les distances minimales entre les paires de phrases}
-\end{itemize}
+\subsubsection{Apprentissage de la métrique}
+
+Sur l'ensemble $B = \lbrace (d_i, d'_i, \widetilde{Dis}(d_i, d'_i))\rbrace_{1 \leq i \leq \norm{B}}$ de données synthétiques d'entraînement, on entraîne un modèle régressif $m$ pour prédire la similarité entre 2 documents en fonction de leur représentation vectorielle. Ce modèle régressif peut être utilisé comme métrique de similarité dans un algorithme de clustering comme l'algorithme des K-moyennes au même titre que les métriques citées à la Section \ref{sec:similarite:metriques-de-sim}. Cependant, les modèles de régression ne supportent généralement qu'un seul vecteur en entrée, et pas deux vecteurs comme en dispose la base $B$. Nous somme donc amené à définir l'agrégation adéquate des vecteurs $d_i$ et $d'_i$. L'agrégation qui fonctionne le mieux est la soustraction avec laquelle les documents similaires auront une agrégation avec un grand nombre de composantes tendant vers 0. La fonction d'estimation automatique de la distance sémantique entre $x$ et $y$ s'écrit: $Dis(x, y) = m(x-y)$. 
+
+%\textcolor{red}{Issues:}
+%\begin{itemize}
+%\item les docs sont généralement de tailles différentes, ne faudrait il pas intégrer une perturbation ajout de mots? \textcolor{blue}{la suppression peut être considérée comme le remplacement d'un mot par le mot vide, qui doit être ajouté aux word2vec}
+%\item il faudrait intégrer la composante taille du document: \textcolor{blue}{agréger sur le nombre minimal de phrases des paires de documents}
+%\item comment assurer les propriétés d'une fonction similarité? par exemple si aucune perturbation n'est opérée, alors la similarité est maximale et si tous les mots sont modifiés alors la similarité est minimale: \textcolor{blue}{agrégation par soustraction des vecteurs du couple de docs. plus deux doc seront similaire, plus le vecteur de leur paire tendra vers le nul}
+%\item Ne faudrait il pas prendre en compte un poids pour les mots, car peut-être la modification de certains mots ne devrait pas avoir le même impact sur la similarité ou le taux de perturbation que celle d'autres mots:  \textcolor{blue}{lissage par la somme des distance des vecteurs de mots substitués Eq. \ref{equation:similarite:somme-dist-mots}}
+%\item ne faudrait il pas intégré une métrique proche de la tâche: la ressemblance n'est pas forcément globale à tous le corps du document mais plus à certaines régions; donc un document auquel on rajoute quelques phrases ne devrait pas voir  son sens trop changer:  \textcolor{blue}{peut-être agréger les distances minimales entre les paires de phrases}
+%\end{itemize}
 
 \section{Expérimentations et interprétation des résultats}
 \label{sec:similarite:experimentations}
