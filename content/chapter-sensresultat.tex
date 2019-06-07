@@ -206,10 +206,10 @@ Par ailleurs, La représentation vectorielle des textes résulte généralement 
 %https://link.springer.com/content/pdf/10.1007\%2FBF02174528.pdf, 
 %https://www.stat4decision.com/fr/regression-pls/
 
-La méthode ou l'analyse du moindre carré partiel PLS  \citep{wold1966pls} explique la dépendance entre une ou plusieurs variables Y (dite dépendantes) et des variables $X=x_1,x_2,...,x_p$ (dites explicatives ou indépendantes). Elle consiste principalement à transformer les variables explicatives en un nombre réduit de composantes principales orthogonales $t_1, t_2, ..., t_h$. Il s'agit donc d'une méthode de réduction de dimension au même titre que l'analyse de composantes principale, l'analyse discriminante linéaire (LDA), et l'analyse discriminante quadratique (QDA). Les composantes $t_h$ sont construites par étapes en applicant l'algorithme du PLS de façon récurrente sur les données mal prédites (résidus). Plus précisément, à chaque itération $h$, la composante $t_h$ est calculée par la formule $t_h = w_{h1} x_1 + \cdots + w_{hj} x_j + \cdots + w_{hp} x_p$ dont les coefficients $w_{hj}$ sont à estimer. L'analyse PLS présente plusieurs avantages \citep{lacroux2011avantagesPLS} dont la robustesse au problème de haute-dimension\footnote{Lorsque le nombre de variables explicatives est très grand devant le nombre d'observations.} comme on peut l'observer dans nos données (faible quantité de données annotées), et aussi prend en compte la multicolinéarité qui peut exister entre les variables explicatives, notamment quand celles-ci sont associées aux mots/termes souvent cooccurrents de nos documents. Cette méthode est étendue et appliquée avec succès pour divers problèmes de régression \citep{lacroux2011avantagesPLS}
+La méthode ou l'analyse des moindres carrés partiels PLS  \citep{wold1966pls} explique la dépendance entre une ou plusieurs variables $y$ (dite dépendantes) et des variables $X=x_1,x_2,...,x_p$ (dites explicatives ou indépendantes). Elle consiste principalement à transformer les variables explicatives en un nombre réduit de composantes principales orthogonales $t_1, t_2, ..., t_h$. Il s'agit donc d'une méthode de réduction de dimension au même titre que l'analyse de composantes principale, l'analyse discriminante linéaire (LDA), et l'analyse discriminante quadratique (QDA). Les composantes $t_h$ sont construites par étapes en appliquant l'algorithme du PLS de façon récurrente sur les données mal prédites (résidus). Plus précisément, à chaque itération $h$, la composante $t_h$ est calculée par la formule $t_h = w_{h1} x_1 + \cdots + w_{hj} x_j + \cdots + w_{hp} x_p$ dont les coefficients $w_{hj}$ sont à estimer. L'analyse PLS présente plusieurs avantages \citep{lacroux2011avantagesPLS} dont la robustesse au problème de haute-dimension\footnote{Lorsque le nombre de variables explicatives est très grand devant le nombre d'observations.} comme on peut l'observer dans nos données (faible quantité de données annotées), et aussi prend en compte la multicolinéarité qui peut exister entre les variables explicatives, notamment quand celles-ci sont des mots/termes co-occurrents dans les documents. Cette méthode est étendue et appliquée avec succès pour divers problèmes de régression \citep{lacroux2011avantagesPLS}
  ou de  classification de données vectorielles en général \citep{liu2007pls4classif,durif2017sparsePLSandLogit, bazzoli2018classificationwithLS-PLS}, et de textes en particulier \citep{zeng2007textclassPLS}.
 %Il est intéressant de noter la floraison d'extensions proposées pour répondre aux différentes limites du PLS. Notamment, nous pouvons citer la "\textit{sparse}" PLS introduite pour palier à la "\textit{sparsité}" et la colinéarité des variables explicatives [?], la PLS non-linéaire proposée pour les cas de données non-linéairement séparables [?], ou encore la PLS discriminante combinant la régression PLS et l'analyse discriminante [?]. 
-Nous nous sommes intéressés particulièrement à deux extensions: la régression Gini-PLS \citep{mussard2018ginipls} dont l'intérêt est de réduire la sensibilité aux valeurs aberrantes des variables, et la méthode Logit-PLS \citep{tenenhaus2005logitpls}  combinant la régression logistique et la PLS. Une combinaison de ces deux approches (Logit-Gini-PLS) est décrite dans la suite de cette section (Section \ref{sec:sensresultat:logit-gini-pls}).
+Nous nous sommes intéressés particulièrement à deux extensions: la régression Gini-PLS \citep{mussard2018ginipls} dont l'intérêt est de réduire la sensibilité aux valeurs aberrantes des variables, et la méthode Logit-PLS \citep{tenenhaus2005logitpls} combinant la régression logistique et la PLS. Une combinaison de ces deux approches (Logit-Gini-PLS) est décrite dans la suite de cette section (Section \ref{sec:sensresultat:logit-gini-pls}).
 
 
 \subsection{L'opérateur Gini covariance}
@@ -244,7 +244,9 @@ avec $\bar{R_\uparrow}_{x_k}$ la moyenne arithmétique du vecteur rang de la var
 
 \subsection{Gini-PLS}
 
-Le premier algorithme Gini-PLS a été proposé par \citet{mussard2018ginipls}. Nous le décrivons dans les lignes qui suivent. Il s'agit d'une méthode de compression avec débruitage qui consiste à réduire les dimensions de l'espace généré par $X$ afin de trouver des composantes principales débruitées, dans le même esprit qu'une ACP débruitée, néanmoins l'approche est supervisée dans la mesure où une variable cible $y$ est prise en compte dans le changement d'espace. Le sous-espace formé par les composantes principales $\{t_1,t_2,\cdots\}$ est construit de telle sorte que le lien entre les variables explicatives $X = [x_1,x_2,\cdots]$ et la cible $y$ est maximisé.  \textcolor{red}{$\vert X \vert = p$, nombre de variables explictives}.
+Le premier algorithme Gini-PLS a été proposé par \citet{mussard2018ginipls}. Nous le décrivons dans les lignes qui suivent. Il s'agit d'une méthode de compression avec débruitage qui consiste à réduire les dimensions de l'espace généré par $X$ afin de trouver des composantes principales débruitées, dans le même esprit qu'une ACP débruitée, néanmoins l'approche est supervisée dans la mesure où une variable cible $y$ est prise en compte dans le changement d'espace. Le sous-espace formé par les composantes principales $\{t_1,t_2,\cdots\}$ est construit de telle sorte que le lien entre les variables explicatives $X = [x_1,x_2,\cdots]$ et la cible $y$ est maximisé.  
+%\textcolor{red}{$\vert X \vert = p$, nombre de variables explictives}.
+% p est le nombre max de composantes
 
 \medskip
 
@@ -258,45 +260,45 @@ w_{1j} = \frac{\cog(y,x_j)}{\sqrt{\sum_{j=1}^p \emph{cog}^2(y,x_j)}} \ , \ \fora
 \end{equation}
 La pondération est équivalente à :
 \begin{equation}\notag
-w_{1j} = \frac{\cov(y,R(x_j))}{\sqrt{\sum_{j=1}^p \cov^2(y,R(x_j))}} \ , \ \forall j = 1\ldots,p \ .
+w_{1k} = \frac{\cov(y,R(x_k))}{\sqrt{\sum_{k=1}^K \cov^2(y,R(x_k))}} \ , \ \forall k = 1\ldots,K \ .
 \end{equation}
 Comme dans la régression PLS, on régresse $y$ sur la composante $t_1$ qui est construite de la manière suivante :
 \[
-t_1 = \sum_{j=1}^p w_{1j}x_j \ \Longrightarrow \ y = \hat{c}_1 t_1 + \hat{\varepsilon}_1 \ .
+t_1 = \sum_{k=1}^K w_{1k}x_k \ \Longrightarrow \ y = \hat{c}_1 t_1 + \hat{\varepsilon}_1 \ .
 \]
 
 \medskip
 
-$\bulle$ \underline{\textbf{Étape 2:}}  On régresse le vecteur rang de chaque régreseur $R(x_j)$ sur la composante $t_1$ par moindres carrés ordinaires afin de récupérer les résidus $\hat{U}_{(1)j}$ : 
+$\bulle$ \underline{\textbf{Étape 2:}}  On régresse le vecteur rang de chaque régreseur $R(x_k)$ sur la composante $t_1$ par moindres carrés ordinaires afin de récupérer les résidus $\hat{U}_{(1)k}$ : 
 \[
-R(x_j) = \hat{\beta}t_1 + \hat{U}_{(1)j} \ , \ \forall j = 1,\cdots, p \ .
+R(x_k) = \hat{\beta}t_1 + \hat{U}_{(1)k} \ , \ \forall k = 1,\cdots, K \ .
 \]
 On construit le nouveau vecteur de pondération en utilisant les rangs des résidus des régressions partielles :
 \[
-\max \text{cog}(\hat{\varepsilon}_1,\hat{U}_{(1)} w_2) \ , \ \text{s.c.} \ \left\|w_2\right\|=1 \ \Longrightarrow \ w_{2j} = \frac{\cog(\hat{\varepsilon}_1,\hat{U}_{(1)j})}{\sqrt{\sum_{j=1}^p \cog^2(\hat{\varepsilon}_1,\hat{U}_{(1)j})}} .
+\max \text{cog}(\hat{\varepsilon}_1,\hat{U}_{(1)} w_2) \ , \ \text{s.c.} \ \left\|w_2\right\|=1 \ \Longrightarrow \ w_{2k} = \frac{\cog(\hat{\varepsilon}_1,\hat{U}_{(1)k})}{\sqrt{\sum_{k=1}^K \cog^2(\hat{\varepsilon}_1,\hat{U}_{(1)k})}} .
 \]
-On utilise à présent les composantes $t_1$ et $t_2$ pour établir un lien entre $y$ et les régresseurs $x_j$ :
+On utilise à présent les composantes $t_1$ et $t_2$ pour établir un lien entre $y$ et les régresseurs $x_k$ :
 \[
-t_2 = \sum^p_{j=1} w_{2j} \hat{U}_{(1)j} \ \Longrightarrow \ y = \hat{c}_1 t_1 + \hat{c}_2 t_2 + \hat{\varepsilon}_2 \ .
+t_2 = \sum^K_{k=1} w_{2k} \hat{U}_{(1)k} \ \Longrightarrow \ y = \hat{c}_1 t_1 + \hat{c}_2 t_2 + \hat{\varepsilon}_2 \ .
 \]
 La validation croisée permet de savoir si $t_2$ est significative.\\
 
-$\bulle$ \underline{\textbf{Étape 3:}} Les régressions partielles sont réitérées en rajoutant l'influence de $t_2$ :
+$\bulle$ \underline{\textbf{Étape $h$:}} Les régressions partielles sont réitérées en rajoutant l'influence de $t_{h-1}$ :
 \[
-R(x_j) = \beta t_1 + \gamma t_2 + \hat{U}_{(2)j} \ , \ \forall j = 1,\cdots, p.
+R(x_k) = \beta t_1 + \cdots + \gamma t_{h-1} + \hat{U}_{(h-1)k} \ , \ \forall k = 1,\cdots, K.
 \]
 D'où, après maximisation :
 \[
-w_{3j} = \frac{\cog(\hat{\varepsilon}_2,\hat{U}_{(2)j})}{\sqrt{\sum_{j=1}^p \cog^2(\hat{\varepsilon}_2,\hat{U}_{(2)j})}} \ ,
+w_{hk} = \frac{\cog(\hat{\varepsilon}_{h-1},\hat{U}_{(h-1)k})}{\sqrt{\sum_{k=1}^K \cog^2(\hat{\varepsilon}_{h-1},\hat{U}_{(h-1)k})}} \ ,
 \]
 \[
-t_3 = \sum_{j=1}^p w_{3j}\cdot \hat{U}_{(2)j} \ \Longrightarrow \ y = \alpha_2 + c_1 t_1 + c_2 t_2 + c_3 t_3 + \varepsilon_3 \ .
+t_h = \sum_{k=1}^K w_{hk}\cdot \hat{U}_{(h-1)k} \ \Longrightarrow \ y = \alpha_2 + c_1 t_1 + \cdots + c_h t_h + \varepsilon_h \ .
 \]
-La procédure s'arrête lorsque la validation croisée indique que la composante $t_l$ n'est pas significative. L'algorithme Gini-PLS1 est valable si toutes les composantes $t_h$ et $t_l$ sont orthogonales, $\forall h\neq l$. 
+La procédure s'arrête lorsque la validation croisée indique que la composante $t_h$ n'est pas significative. L'algorithme Gini-PLS1 est valable si toutes les composantes $t_h$ et $t_l$ sont orthogonales, $\forall h\neq l$. 
 
 \medskip
 
-La validation croisée permet de trouver le nombre optimal $h>1$ de composantes à retenir. Pour tester une composante $t_h$, on calcule la prédiction du modèle avec $h$ composantes comprenant l'observation $i$, $\hat{y}_{h_i}$, puis sans l'observation $i$, $\hat{y}_{h_{(-i)}}$. L'opération est répétée pour tout $i$ variant de $1$ à $n$ : on enlève à chaque fois l'observation $i$ et on ré-estime le modèle.\footnote{Les observations peuvent être éliminées bloc par bloc au lieu de l'être une à une, \emph{Cf.} Tenenhaus (1998), p. 77.} Pour mesurer la robustesse du modèle, on mesure l'écart entre la variable prédite et la variable observée :
+La validation croisée permet de trouver le nombre optimal $h>1$ de composantes à retenir. Pour tester une composante $t_h$, on calcule la prédiction du modèle avec $h$ composantes comprenant l'observation $i$, $\hat{y}_{h_i}$, puis sans l'observation $i$, $\hat{y}_{h_{(-i)}}$. L'opération est répétée pour tout $i$ variant de $1$ à $n$ : on enlève à chaque fois l'observation $i$ et on ré-estime le modèle.\footnote{Les observations peuvent être éliminées par blocs \emph{Cf.} Tenenhaus (1998), p. 77.} Pour mesurer la robustesse du modèle, on mesure l'écart entre la variable prédite et la variable observée :
 \[
 PRESS_h =  \sum_i\left(y_i - \hat{y}_{h_{(-i)}}\right)^2 \ .
 \]
@@ -304,11 +306,11 @@ La somme des carrés résiduels obtenue avec le modèle à $(h-1)$ composantes e
 \[
 RSS_{h-1} = \sum \left(y_i - \hat{y}_{(h-1)_i}\right)^2 \ .
 \]
-Le critère $RSS_h$ (Residual Sum of Squares) du modèle à $h$ composante et $PRESS_h$ (PRedicted Error Sum of Squares) sont comparés. Leur ratio permet afin de savoir si le modèle avec la composante $t_h$ améliore la prédictibilité du modèle. La statistique suivante est alors calculée :
+Le critère $RSS_h$ (Residual Sum of Squares) du modèle à $h$ composantes et $PRESS_h$ (PRedicted Error Sum of Squares) sont comparés. Leur rapport permet de savoir si le modèle avec la composante $t_h$ améliore la prédictibilité du modèle :
 \[
 Q^2_h =1 - \frac{PRESS_h}{RSS_{h-1}} \ .
 \]
-La composante $t_h$ est retenue si : $\sqrt{PRESS_h} \leq 0,95 \sqrt{RSS_h}$. Autrement dit, lorsque $Q^2_h \geq 0,0975 = (1 - 0,95^2)$, la nouvelle composante $t_h$ est significative, elle améliore la prévision de la variable $y$. Pour la significativité de de la première composante $t_1$,  on utilise :
+La composante $t_h$ est retenue si : $\sqrt{PRESS_h} \leq 0,95 \sqrt{RSS_h}$. Autrement dit, lorsque $Q^2_h \geq 0,0975 = (1 - 0,95^2)$, la nouvelle composante $t_h$ est significative, elle améliore la prévision de la variable $y$. Pour la significativité de la  composante $t_1$, on utilise :
 \[
 RSS_0 = \sum^{n}_{i = 1} \left(y_i - \bar{y}\right)^2  \ .
 \]
@@ -327,11 +329,11 @@ N+1-\frac{\sum_{i=1}^p \#\{ x \leq x_{ik}  \}}{p} & \text{si $p$ observations si
 \]
 L'opérateur co-Gini est généralisé grâce au paramètre $\nu$ :
 \begin{equation}\label{cogg}
-\widehat{\cog}_\nu(x_\ell,x_k) := -\nu \widehat{\cov}(x_\ell,r_{k}^{\nu-1}) ;  \ \nu > 1.
+\cog_\nu(x_\ell,x_k) := -\nu \cov(x_\ell,r_{k}^{\nu-1}) ;  \ \nu > 1.
 \end{equation}
 Afin de bien comprendre le rôle de l'opérateur co-Gini, revenons sur la mesure du coefficient de corrélation linéaire généralisé au sens de Gini :
 \[
-GC_\nu(x_\ell,x_k) := \frac{-\nu \widehat{\cov}(x_\ell,r_{k}^{\nu-1})}{-\nu \widehat{\cov}(x_\ell,r_{\ell}^{\nu-1})} \ ; \ GC_\nu(x_k,x_\ell) := \frac{-\nu \widehat{\cov}(x_k,r_{\ell}^{\nu-1})}{-\nu \widehat{\cov}(x_k,r_{k}^{\nu-1})}.
+GC_\nu(x_\ell,x_k) := \frac{-\nu \cov(x_\ell,r_{k}^{\nu-1})}{-\nu \cov(x_\ell,r_{\ell}^{\nu-1})} \ ; \ GC_\nu(x_k,x_\ell) := \frac{-\nu \cov(x_k,r_{\ell}^{\nu-1})}{-\nu \cov(x_k,r_{k}^{\nu-1})}.
 \]
 
 \begin{property}\label{prop1} -- \textbf{\emph{\citet{Schechtman03}:}}
@@ -347,7 +349,7 @@ GC_\nu(x_\ell,x_k) := \frac{-\nu \widehat{\cov}(x_\ell,r_{k}^{\nu-1})}{-\nu \wid
 	\noindent\emph{(v)} Si $x_k$ et $x_\ell$ sont deux variables échangeables à une transformation linéaire près, alors $GC_\nu(x_\ell,x_k) = GC_\nu(x_k,x_\ell)$.
 \end{property}
 
-Le rôle de l'opérateur co-Gini peut être expliqué de la manière suivante. Lorsque $\nu \rightarrow 1$, la variabilité des variables est atténuée de telle sorte que $\cog_\nu(x_k,x_\ell)$ tend vers zéro (même si les variables $x_k$ et $x_\ell$ sont fortement corrélées).Au contraire, si $\nu \rightarrow \infty $ alors $\cog_\nu(x_k,x_\ell)$ permet de se focaliser sur les queues de distribution $x_\ell$. Comme le montrent \citet{olkin1992gini}, l'emploi de l'opérateur co-Gini atténue la présence de valeurs extrêmes, du fait que le vecteur rang agit comme un instrument dans la régression de $y$ sur $X$ (régression par variables instrumentales).    
+Le rôle de l'opérateur co-Gini peut être expliqué de la manière suivante. Lorsque $\nu \rightarrow 1$, la variabilité des variables est atténuée de telle sorte que $\cog_\nu(x_k,x_\ell)$ tend vers zéro (même si les variables $x_k$ et $x_\ell$ sont fortement corrélées). Au contraire, si $\nu \rightarrow \infty $ alors $\cog_\nu(x_k,x_\ell)$ permet de se focaliser sur les queues de distribution $x_\ell$. Comme le montrent \citet{olkin1992gini}, l'emploi de l'opérateur co-Gini atténue la présence d'outliers, du fait que le vecteur rang agit comme un instrument dans la régression de $y$ sur $X$ (régression par variables instrumentales).    
 
 Ainsi, en proposant une régression Gini-PLS basée sur le paramètre $\nu$, nous pouvons calibrer la puissance du débruitage  grâce à l'opérateur co-Gini qui va localiser le bruit dans la distribution. Cette régression Gini-PLS généralisée devient une régression Gini-PLS régularisée où le paramètre $\nu$ joue le rôle de paramètre de régularisation. 
 
@@ -358,7 +360,7 @@ Dans ce qui suit nous généralisons la régression Gini-PLS de \citet{mussard20
 
 
 \begin{center}
-	\includegraphics[scale=0.5]{graph.png}
+	\includegraphics[scale=0.6]{graph.png}
 \end{center}
 
 
@@ -366,7 +368,7 @@ La première étape consiste à trouver des poids de débruitage associés à ch
 \begin{equation}\label{forecast}
 y=\sum_{h=1}^{h^*} c_ht_h +\eps_h.
 \end{equation}   
-La statistique $VIP_{hj}$ est mesurée afin de sélectionner la variable $x_j$ qui a l'impact significatif le plus important sur $\hat{y}$. Les variables les plus significatives sont celles dont $VIP_{hj}>1$ avec :
+La statistique $VIP_{hj}$ est mesurée afin de sélectionner la variable $x_j$ qui a l'impact significatif le plus important sur $y$ estimé. Les variables les plus significatives sont celles dont $VIP_{hj}>1$ avec :
 \[
 VIP_{hj} := \sqrt{\frac{p\sum_{\ell=1}^{h}Rd(y;t_\ell)w_{\ell j}^2}{Rd(y;t_1,\ldots,t_h)}} 
 \] 
@@ -397,7 +399,7 @@ où $cor^2(y,t_\ell)$ est le coefficient de corrélation de Pearson entre $y$ et
 
 \subsubsection{L'algorithme LOGIT-Gini-PLS généralisé} 
 \label{sec:sensresultat:logit-gini-pls}
-Comme nous le constatons dans l'algorithme Gini-PLS généralisé que nous avons proposé dans le section précédente, les poids $w_j$ proviennent de l'opérateur co-Gini appliqué à une variable booléenne $y \in \lbrace 0;1 \rbrace$. Afin de trouver les poids $w_j$ qui maximisent le lien entre les variables $x_j$ et la variable cible $y$, nous proposons d'utiliser la régression LOGIT, autrement dit, une sigmoïde qui est bien adapté à des variables boléennes. Ainsi, dans chaque étape de la régression Gini-PLS nous remplaçons la maximisation du co-Gini par la mesure de la probabilité conditionnelle suivante :
+Comme nous le constatons dans l'algorithme Gini-PLS généralisé que nous avons proposé dans le section précédente, les poids $w_j$ proviennent de l'opérateur co-Gini appliqué à une variable booléenne $y \in \lbrace 0;1 \rbrace$. Afin de trouver les poids $w_j$ qui maximisent le lien entre les variables $x_j$ et la variable cible $y$, nous proposons d'utiliser la régression LOGIT, autrement dit, une sigmoïde qui est mieux adaptée aux variables booléennes. Ainsi, dans chaque étape de la régression Gini-PLS nous remplaçons la maximisation du co-Gini par la mesure de la probabilité conditionnelle suivante :
 \begin{equation}\tag{LOGIT}
 \mathbb{P}(y_i = 1 / X = X_i) = \frac{\exp\left\{X_i \beta \right\}}{1+\exp\left\{ X_i \beta \right\}}
 \end{equation}
@@ -445,7 +447,7 @@ L'algorithme LOGIT-Gini-PLS généralise est donc le suivant :
 
 \section{Expérimentations et résultats}
 \label{sec:sensresultat:experimentations}
-Nous discutons ici les performances de divers algorithmes populaires et l'impact de la quantité et du déséquilibre des données, de l'heuristique la restriction explicite des documents aux passages relatifs à la catégorie de demandes, ainsi que leur capacité à faire abstraction des autres demandes du document. {Ces expériences visent aussi à comparer l'efficacité du Gini-Logit-PLS par rapport à d'autres analyses discriminantes}.  Comme \citet{im2017textclasstermweighting}, différentes combinaisons d'algorithmes de classification et méthodes de pondération  sont comparées; ce qui représente un total de 8 algorithmes x 11 métriques globales x 5 métriques locales = 440 configurations (+ 2 i.e. FastText et NBSVM). La méthode Gini-Logit-PLS réalisant une projection dans un espace de petite dimension, elle a été comparée aussi à d'autres méthode de réduction de dimension.
+Nous discutons ici les performances de divers algorithmes populaires et l'impact de la quantité et du déséquilibre des données, de l'heuristique, et de la restriction explicite des documents aux passages relatifs à la catégorie de demandes, ainsi que leur capacité à faire abstraction des autres demandes du document. {Ces expériences visent aussi à comparer l'efficacité du Gini-Logit-PLS par rapport à d'autres analyses discriminantes}.  Comme \citet{im2017textclasstermweighting}, différentes combinaisons d'algorithmes de classification et méthodes de pondération  sont comparées; ce qui représente un total de 8 algorithmes * 11 métriques globales * 5 métriques locales = 440 configurations (+ 2 i.e. FastText et NBSVM). La méthode Gini-Logit-PLS réalisant une projection dans un espace de petite dimension, elle a été comparée aussi à d'autres méthode de réduction de dimension.
 
 \subsection{Protocole d'évaluation}
 Deux métriques d'évaluation sont utilisées: la précision et la F1-mesure. Pour tenir compte du déséquilibre entre les classes, la moyenne macro est préférée. Il s'agit de l'agrégation de la contribution individuelle de chaque classe: $F1_{macro} = \frac{2 \times P_{macro} \times R_{macro}}{P_{macro} + R_{macro}}$, où les macro-moyennes de la précision ($P_{macro}$) et du rappel ($R_{macro}$) sont calculées en fonction des nombres moyens de vrais positifs ($\overline{TP}$), faux positifs ($\overline{FP}$), et faux négatifs ($\overline{FN}$) comme suit \citep{van2013macromicroeval}:
@@ -458,7 +460,7 @@ Les données utilisées sont une restriction, des données du chapitre précéde
 \caption{Répartition des documents à une demande de la catégorie considérée.}\label{fig:sensresultat:stat-1dmd}
 \end{figure}
 
-L'efficacité des algorithmes dépend souvent des valeurs de méta-paramètres dont il faut déterminer des valeurs optimales. Scikit-learn implémente deux stratégie de recherche des ces valeurs: RandomSearch et GridSearch. Malgré la rapidité de la méthode RandomSearch, elle est non déterministe et les valeurs qu'elle trouve donnent une prédiction moins précise que les valeurs par défaut. Idem pour la méthode GridSearch, qui est très lente en plus, et donc non pratique face au grand nombre de configurations à évaluer. Par conséquent, les valeurs utilisées pour les expérimentations sont les valeurs par défaut définies par Scikit-learn (Tableau \ref{tab:sensrst:metapara}).
+L'efficacité des algorithmes dépend souvent des valeurs de méta-paramètres dont il faut déterminer des valeurs optimales. Scikit-learn implémente deux stratégies de recherche des ces valeurs: RandomSearch et GridSearch. Malgré la rapidité de la méthode RandomSearch, elle est non déterministe et les valeurs qu'elle trouve donnent une prédiction moins précise que les valeurs par défaut. Idem pour la méthode GridSearch, qui est très lente, et donc peu pratique face au grand nombre de configurations à évaluer. Par conséquent, les valeurs utilisées pour les expérimentations sont les valeurs par défaut définies par Scikit-learn (Tableau \ref{tab:sensrst:metapara}).
 
 \begin{table}[htb]
 	\scriptsize
@@ -473,16 +475,18 @@ L'efficacité des algorithmes dépend souvent des valeurs de méta-paramètres d
 		Arbre & critère de séparation='gini' \\ \hline
 		NBSVM & $--ngram=123, linearSVM, $ \\ \hline
 		FastText & -minCount=5, -wordNgrams=1, -lr=0.05,    \\ \hline
-		Gini-PLS & $h=n\_components=10=10$ \\ \hline
-		Logit-PLS & $h=n\_components=10=10$  \\ \hline
-		Gini-Logit-PLS & $h=n\_components=10=10; \nu = 14$ \\ \hline
+		Gini-PLS & $h=n\_components=10$ \\ \hline
+		Logit-PLS & $h=n\_components=10$  \\ \hline
+		Gini-Logit-PLS & $h=n\_components=10; \nu = 14$ \\ \hline
 	\end{tabular}
 	\caption{Valeurs utilisées pour les méta-paramètres des algorithmes de classification.}\label{tab:sensrst:metapara}
 \end{table}
 
+% mu = 14 me semble un peu trop élevé de même  omponents=10=10
+%
 \subsection{Classification de l'ensemble du document}
 
-En représentant l'ensemble du document à l'aide de diverses représentations vectorielles, les algorithmes sont comparés avec les représentations qui leurs sont optimales. On remarque d'après les résultats du Tableau \ref{tab:sensrst:global}, les arbres sont en moyenne meilleurs sur l'ensemble des catégories même si en moyenne la F1-mesure moyenne est limité à 0.668. Les résultats des extensions du PLS ne sont pas très éloignée de ceux des arbres avec des différences de F1 à moins de 0.1 (si on choisi le bon schéma de "vectorisation").
+En représentant l'ensemble du document à l'aide de diverses représentations vectorielles, les algorithmes sont comparés avec les représentations qui leurs sont optimales. On remarque d'après les résultats du Tableau \ref{tab:sensrst:global} que les arbres sont en moyenne meilleurs sur l'ensemble des catégories même si en moyenne la F1-mesure moyenne est limité à 0.668. Les résultats des extensions du PLS ne sont pas très éloignées de ceux des arbres avec des différences de F1 à moins de 0.1 (si on choisit le bon schéma de "vectorisation").
 
 \begin{table}[!htb]	
 	\tiny
@@ -506,7 +510,7 @@ En représentant l'ensemble du document à l'aide de diverses représentations v
 \caption{Comparaison des algorithmes sur une représentation globale des documents pour la détection du sens du résultat.}\label{tab:sensrst:global}
 \end{table}
 
- Les scores F1 moyens des algorithmes  NBSVM et FastText n'excédent en général pas 0.5 malgré qu'ils soient spécialement conçus pour les textes.  Soit ils sont très sensibles au déséquilibre des données entre les catégories (plus de rejets que d'acceptations), soit il est plus difficile de détecter l'acceptation des demandes. En effet, ces algorithmes classent tous les données de test avec le label (sens) majoritaire i.e. le rejet, et par conséquence, ils ne détectent quasiment pas d'acceptation de demande. Le cas des catégories DORIS et DCPPC pour le NBSVM ($F1_{macro} = 0.834$) tend à démontrer la forte sensibilité aux cas négatifs de ces algorithmes puisque même avec presque autant de labels "accepte" que "rejette", la F1-mesure de "rejette" est toujours supérieure à celle de "accepte" (Tableau \ref{tab:sensrst:fasttextnbsvm}). 
+ Les scores F1 moyens des algorithmes  NBSVM et FastText n'excédent en général pas 0.5 malgré qu'ils soient spécialement conçus pour les textes. On peut estimer qu'ils sont très sensibles au déséquilibre des données entre les catégories (plus de rejets que d'acceptations), soit il est plus difficile de détecter l'acceptation des demandes. En effet, ces algorithmes classent toutes les données test avec le label (sens) majoritaire i.e. le rejet, et par conséquent, ils ne détectent quasiment pas d'acceptation de demande. Le cas des catégories DORIS et DCPPC pour le NBSVM ($F1_{macro} = 0.834$) tend à démontrer la forte sensibilité aux cas négatifs de ces algorithmes puisque même avec presque autant de labels "accepte" que "rejette", la F1-mesure de "rejette" est toujours supérieure à celle de "accepte" (Tableau \ref{tab:sensrst:fasttextnbsvm}). 
  
  \begin{table}[htb]
  	\scriptsize
@@ -533,7 +537,7 @@ En représentant l'ensemble du document à l'aide de diverses représentations v
  \end{table}
 
 \subsection{Réduction du document aux régions comprenant le vocabulaire de la catégorie}
-Etant donné que les décisions portent sur plusieurs catégories de demande, nous avons expérimenté la restriction du document aux passages comprenant du vocabulaire de la catégorie d'intérêt: demande, résultat, résultat antérieur (resultat\_a), paragraphes dans les motifs (motifs). Les combinaisons passages-représentation vectorielle-algorithme sont comparées dans le Tableau \ref{tab:sensrst:zone}. Les résultats s'améliorent énormément  avec les réductions, sauf pour la catégorie DORIS. La meilleure restriction combine les passages comprenant le vocabulaire de la catégorie dans la section Litige (demande et résultat antérieur),  dans la section Motifs (contexte), et dans la section Dispositif (résultat).
+Etant donné que les décisions portent sur plusieurs catégories de demande, nous avons expérimenté la restriction du document aux passages comprenant du vocabulaire de la catégorie d'intérêt: demande, résultat, résultat antérieur (resultat\_a), paragraphes dans les motifs (motifs). Les combinaisons passages-représentation vectorielle-algorithme sont comparées dans le Tableau \ref{tab:sensrst:zone}. Les résultats s'améliorent énormément avec les réductions, sauf pour la catégorie DORIS. La meilleure restriction combine les passages comprenant le vocabulaire de la catégorie dans la section Litige (demande et résultat antérieur),  dans la section Motifs (contexte), et dans la section Dispositif (résultat).
 \begin{table}[!htb]
 	\tiny
 	\centering
@@ -565,7 +569,7 @@ Etant donné que les décisions portent sur plusieurs catégories de demande, no
 
 \section{Conclusion}
 \label{sec:sensresultat:conclusion}
-L'étude de ce chapitre tente de simplifier l'extraction du sens du résultat rendu par les juges sur une demande du catégorie donnée. Elle a consisté à formuler le problème comme une tâche de classification de documents. On évite ainsi de passer par la détection ad-hoc\footnote{i.e. spécialement conçu pour nos données.} des passages et données à l'aide de termes-clés qui est un inconvénient de la méthode à règles du chapitre précédent car elle n'est peut-être pas généralisable à tout type de décisions (i.e. il pourrait être nécessaire d'établir de nouvelles listes de mots-clés pour d'autres domaines). 10 algorithmes de classification on été expérimentés sur 55 méthodes représentations vectorielles de texte. Nous avons remarqué que les résultats de classification sont principalement influencés par 3 caractéristiques de nos données. En premier le très faible nombre d'exemples d'entrainement rend défavorise certains algorithmes (\textit{outliers}), comme par exemple FastText qui nécessite plusieurs milliers d'exemples pour mettre à jour le pas du gradient (\textit{learning rate}). En second, le fort déséquilibre entre les classes ("accepte" vs. "rejette") rend difficile la reconnaissance de la classe minoritaire qui est généralement la classe "accepte". Le fort gap entre les erreurs sur "rejette" et celles sur "accepte", ainsi que les bons résultats obtenus sur DCPPC en sont la preuve. Et en dernier, la présence d'autres catégories de demande dans le document dégrade l'efficacité de classification parce que les algorithmes ne parviennent pas seul à retrouver les éléments en rapport direct avec la catégorie choisie. Ceci est démontré par l'impact positif de la restriction du contenu à classer à certains passages particuliers, même si la restriction adéquate est fonction de la catégorie.
+L'étude de ce chapitre tente de simplifier l'extraction du sens du résultat rendu par les juges sur une demande du catégorie donnée. Elle a consisté à formuler le problème comme une tâche de classification de documents. On évite ainsi de passer par la détection ad-hoc\footnote{i.e. spécialement conçu pour nos données.} des passages et données à l'aide de termes-clés qui est un inconvénient de la méthode à règles du chapitre précédent car elle n'est peut-être pas généralisable à tous types de décisions (i.e. il pourrait être nécessaire d'établir de nouvelles listes de mots-clés pour d'autres domaines). Au total dix algorithmes de classification on été expérimentés sur 55 méthodes de représentations vectorielles de texte. Nous avons remarqué que les résultats de classification sont principalement influencés par 3 caractéristiques de nos données. Tout d'abord, le très faible nombre d'exemples d'entraînement défavorise certains algorithmes (\textit{outliers}), comme par exemple FastText qui nécessite plusieurs milliers d'exemples pour mettre à jour le pas du gradient (\textit{learning rate}). Ensuite, le fort déséquilibre entre les classes ("accepte" vs. "rejette") rend difficile la reconnaissance de la classe minoritaire qui est généralement la classe "accepte". Le fort gap entre les erreurs sur "rejette" et celles sur "accepte", ainsi que les bons résultats obtenus sur DCPPC en sont la preuve. Enfin, la présence d'autres catégories de demande dans le document dégrade l'efficacité de la classification parce que les algorithmes ne parviennent pas seuls à retrouver les éléments en rapport direct avec la catégorie choisie. Ceci est démontré par l'impact positif de la restriction du contenu à classer à certains passages particuliers, même si la restriction adéquate est fonction de la catégorie.
  
-Au final, les arbres de décision sont adaptés pour la tâche, mais l'usage du Gini-PLS et du Gini-Logit-PLS permet d'obtenir des performances pas très éloignées de celles des arbres. %??? comparaison avec d'autres analyses discriminantes ???.
-Il serait intéressant de combiner ces variantes de l'analyse PLS, à d'autres comme le Sparse-PLS qui pourrait peut-être aider à résoudre le problème de vecteur/matrices creuse dont sont victime les représentations vectorielles de texte. Il existe aussi un grand nombre d'architecture neuronale pour la classification de document. Aussi, il existe un très grand nombre de métrique de pondération de terme pour la représentation des textes, mais aucune ne semble s'adapter à toutes les catégories. Par conséquent, une étude sur l'usage des représentation par plongement sémantique comme Word2vec ou sent2vec ou doc2vec serait intéressante.
+Au final, les arbres de décision sont adaptés pour la tâche, mais l'usage du Gini-PLS et du Gini-Logit-PLS permet d'obtenir des performances assez proches de celles des arbres. %??? comparaison avec d'autres analyses discriminantes ???.
+Il serait intéressant de combiner ces variantes de l'analyse PLS, à d'autres comme le Sparse-PLS qui pourrait peut-être aider à résoudre le problème de vecteurs/matrices creuses dont sont victimes les représentations vectorielles de texte. Il existe aussi un grand nombre d'architectures neuronales pour la classification de document et de très grands nombres de métriques de pondération de termes pour la représentation des textes, mais aucune ne semble s'adapter à toutes les catégories. Par conséquent, une étude sur l'usage des représentations par plongement sémantique comme Word2vec, sent2vec ou doc2vec serait intéressante.
