@@ -74,13 +74,13 @@ Une métrique de (dis)similarité est une fonction réelle d'une paire de élém
 \end{enumerate}
 
 
-La similarité est donc calculée en général par $Sim(x,x') = 1 - Dis(x,x')$, la distance représentant la dis-similarité.
+La métrique peut être normalisée ($\forall a,b \in \mathcal{X};  0 \leq Dis(a,b) \leq 1$). Dans ce cas, la relation entre la similarité $Sim$ et la dis-similarité $Dis$ est définie par $Sim(a,b) = 1 - Dis(a,b)$.
 %On parle de \textbf{pseudo-métrique} lorsque la condition \ref{enum:sim:ineq-tri} n'est pas satisfaite.
 
 Il existe de nombreuses métriques de similarité généralement expérimentées pour le clustering de textes \citep{huang2008similarityTextClustering}:
 \begin{itemize}
 	\item les distances de Minkowski de forme générale $Dis(x,x') = \norm{x - x'}_{Lp} = \sqrt[p]{\sum \vert x_i - y_i \vert ^p}$, dont font partie la distance euclidenne ($p=2$) et la distance de Manhattan ($p=1$); 
-	\item la similarité cosinus: $Dis(x,x') = \sqrt{\frac{x^Tx'}{\norm{x}\norm{x'}}}$
+	\item la similarité cosinus: $Sim_{cos}(x,x') = \sqrt{\frac{x^Tx'}{\norm{x}\norm{x'}}}$, avec $-1 \leq Sim_{cos}(x,x') \leq +1 $
 	\item le coefficient similarité de Jaccard: $Sim(x,x') = \frac{x^Tx'}{\norm{x}^2\norm{x'}^2 - x^Tx'}$ désignant l'ensemble des termes de $x$ dans le cas où $x$ est un document;
 	\item Le coefficient similarité de Dice: $Sim(x,x') = \frac{2\cdot \vert tok(x) \cap tok(x') \vert}{\vert tok(x) \vert + \vert tok(x')} $
 	\item Le coefficient de correlation de Pearson: pour $TF_x = \sum\limits^m_{i=1} w_{x,i}, \forall x \in \mathcal{X}$,
@@ -149,15 +149,15 @@ Salvador et Chan (2004) propose d’utiliser l’intersection des deux lignes ap
 
 Etant donné le grand nombre de méthodes existantes \citep{liu2010interclustvalidation, Amorim2015recoveringnumclust}, la majorité des votes peut être appliquée pour choisir le bon $K$ \footnote{\url{https://www.datanovia.com/en/lessons/determining-the-optimal-number-of-clusters-3-must-know-methods/}}.
 
-\subsection{Initialisation des centroïdes}
+%\subsection{Initialisation des centroïdes}
 
-\subsection{Définir une représentation appropriée pour les textes}
-\url{https://arxiv.org/pdf/1509.01626.pdf}
+%\subsection{Définir une représentation appropriée pour les textes}
+%\url{https://arxiv.org/pdf/1509.01626.pdf}
 
-\url{http://ad-publications.informatik.uni-freiburg.de/theses/Bachelor_Jon_Ezeiza_2017_presentation.pdf}
+%\url{http://ad-publications.informatik.uni-freiburg.de/theses/Bachelor_Jon_Ezeiza_2017_presentation.pdf}
 
 
-\subsection{Labeliser les clusters}
+%\subsection{Labeliser les clusters}
 
 \subsection{Evaluation du clustering généré}
 L'évaluation des résultats peut être supervisée ou non selon que l'on dispose ou pas respectivement d'exemples de données annotés avec les groupes attendus.
@@ -171,19 +171,19 @@ Même s'il existe un très grand nombre de mesures d'évaluation de la qualité 
 
 
 
-\section{Méthodes proposées}
+%\section{Méthodes proposées}
 
-\subsection{K-médoïdes et \og Word Mover's Distance \fg}
+%\subsection{K-médoïdes et \og Word Mover's Distance \fg}
 
-Les approches de clustering sont généralement appliquées à une représentation vectorielle des objets. Particulièrement la méthodes des K-moyennes qui met à jour le centroïde en faisant la moyenne des menbres de son cluster. Cependant, \citet{kusner2015wordmoverdist} ont proposé récemment \textit{la distance du déplaceur de mot} (\textit{word mover's distance - WMD}), une métrique non-supervisée qui permet à la méthode des \textit{K plus proches voisins} (KNN) d'obtenir des performances sans précédents. De plus, l'algorithme de clustering K-médoïdes \citep{kaufman1987kmedoids}, similaire aux K-moyennes, choisi comme centroïde le membre du cluster qui minimise la distance aux restes des membres; ce qui n'impose pas de représentation vectorielle. Ainsi, nous pouvons utiliser la métrique WMD dans  l'algorithme des K-médoïdes. Tout en nous appuyant sur un algorithme établi de clustering, nous évitons aussi la recherche de la meilleure représentation vectorielle qui influence souvent les performances du clustering. 
+%Les approches de clustering sont généralement appliquées à une représentation vectorielle des objets. Particulièrement la méthodes des K-moyennes qui met à jour le centroïde en faisant la moyenne des menbres de son cluster. Cependant, \citet{kusner2015wordmoverdist} ont proposé récemment \textit{la distance du déplaceur de mot} (\textit{word mover's distance - WMD}), une métrique non-supervisée qui permet à la méthode des \textit{K plus proches voisins} (KNN) d'obtenir des performances sans précédents. De plus, l'algorithme de clustering K-médoïdes \citep{kaufman1987kmedoids}, similaire aux K-moyennes, choisi comme centroïde le membre du cluster qui minimise la distance aux restes des membres; ce qui n'impose pas de représentation vectorielle. Ainsi, nous pouvons utiliser la métrique WMD dans  l'algorithme des K-médoïdes. Tout en nous appuyant sur un algorithme établi de clustering, nous évitons aussi la recherche de la meilleure représentation vectorielle qui influence souvent les performances du clustering. 
 
-Algorithme: \url{http://isiarticles.com/bundles/Article/pre/pdf/79087.pdf}
+%Algorithme: \url{http://isiarticles.com/bundles/Article/pre/pdf/79087.pdf}
 
 
-Un des désavantage de l'algorithme des K-médoïdes est son long temps de calcul dû à ???. Nous avons, par conséquent, remplacé la distance euclidienne par la WMD dans la version plus rapide de \cite{Park2009fastkmedoids} avec nombre de clusters prédéfinis, et celle de \cite{sabzi2011fuzzykmedoids} qui intègre une optimisation du nombre de clusters.
+%Un des désavantage de l'algorithme des K-médoïdes est son long temps de calcul dû à ???. Nous avons, par conséquent, remplacé la distance euclidienne par la WMD dans la version plus rapide de \cite{Park2009fastkmedoids} avec nombre de clusters prédéfinis, et celle de \cite{sabzi2011fuzzykmedoids} qui intègre une optimisation du nombre de clusters.
 %\section{Méthode 2: cartes auto-organisatrice de Kohonen et concaténation de plongement sémantique de phrases (sentence embedding)}
 
-\subsection{Apprentissage d'une métrique fondée la modification du document}
+\section{Apprentissage d'une métrique fondée la modification du document}
 Les algorithmes de clustering et de classification s'appuient généralement sur une représentation vectorielle à partir de laquelle une valeur de similarité est calculée de manière non supervisée et avec une formule mathématique statique. Dans le cas des textes, Il n'est pas toujours évident de choisir la représentation adaptée à une sémantique précise et objective voulue. De plus, il existe un large éventail de schémas de représentations vectorielles. Elles vont des représentations statistiques comme TF-IDF, aux représentations apprises comme le Doc2Vec ou Sent2Vec, et en passant par les agrégations pondérées de modèles distribués de mots (Word2Vec par ex.). 
 
 L'idée dans notre approche est de proposée une formulation de la similarité entre deux documents qui est basée les modifications nécessaires pour transformer un document en un autre. Cette fonction  est apprise à partir d'une base synthétique d'entraînement de similarité entre paires de textes. 
@@ -194,7 +194,7 @@ La similarité est définie en fonction de la notion de perturbation du contenu 
 
 La distance sémantique étant une valeur continue, en entrainant un modèle de régression sur un ensemble de paires de documents pour lesquelles on connait la distance, il est possible de la prédire pour de nouvelles paires. Nous proposons de générer une base synthétique de paires de documents dont l'un est un texte original mais l'autre est le résultat de substitutions et suppression de mots dans le premier. Etant donné, que nous contrôlons ces modifications il est plus facile d'affecter une distance qui y corresponde.
 
-\subsubsection{Génération d'une base synthétique d'apprentissage}
+\subsection{Génération d'une base d'apprentissage}
 Nous définissons une densité de probabilité de perturbation $P \in [0; 1]$ associée à la probabilité de modifier un mot (suppression / remplacement par un mot très différent). Considérons que pour tout texte $x$, $W_x$ désigne l'ensemble des mots dans $x$.
 Nous définissons un patron ou une famille de métriques:
 \begin{equation}
@@ -248,7 +248,7 @@ Nous ne pouvons que l'estimer. Pour cela, nous générons un jeu artificiel de d
 
 Pour garantir la symétrie de la métrique, nous imposons $\widetilde{Dis}(x', x) = \widetilde{Dis}(x, x'), \forall x \in C$. Pour garantir la réflexivité, nous imposons $\widetilde{Dis}(x, x) = 0, \forall x \in C$.
 
-\subsubsection{Apprentissage de la métrique}
+\subsection{Apprentissage de la métrique}
 
 Sur l'ensemble $B = \lbrace (d_i, d'_i, \widetilde{Dis}(d_i, d'_i))\rbrace_{1 \leq i \leq \norm{B}}$ de données synthétiques d'entraînement, on entraîne un modèle régressif $m$ pour prédire la similarité entre 2 documents en fonction de leur représentation vectorielle. Ce modèle régressif peut être utilisé comme métrique de similarité dans un algorithme de clustering comme l'algorithme des K-moyennes au même titre que les métriques citées à la Section \ref{sec:similarite:metriques-de-sim}. Cependant, les modèles de régression ne supportent généralement qu'un seul vecteur en entrée, et pas deux vecteurs comme en dispose la base $B$. Nous somme donc amené à définir l'agrégation adéquate des vecteurs $d_i$ et $d'_i$. L'agrégation qui fonctionne le mieux est la soustraction avec laquelle les documents similaires auront une agrégation avec un grand nombre de composantes tendant vers 0. La fonction d'estimation automatique de la distance sémantique entre $x$ et $y$ s'écrit: $Dis(x, y) = m(x-y)$. 
 
@@ -261,9 +261,9 @@ Sur l'ensemble $B = \lbrace (d_i, d'_i, \widetilde{Dis}(d_i, d'_i))\rbrace_{1 \l
 %\item ne faudrait il pas intégré une métrique proche de la tâche: la ressemblance n'est pas forcément globale à tous le corps du document mais plus à certaines régions; donc un document auquel on rajoute quelques phrases ne devrait pas voir  son sens trop changer:  \textcolor{blue}{peut-être agréger les distances minimales entre les paires de phrases}
 %\end{itemize}
 
-\section{Expérimentations et interprétation des résultats}
+\section{Interprétation des résultats expérimentaux}
 \label{sec:similarite:experimentations}
-
+Cette section discute la validité, l'adéquation, et l'efficacité de la métrique apprise en comparaison avec d'autres métriques d'estimation de la similarité sémantique entre documents. La validité de la métrique est établie si cette dernière respecte les propriétés d'une distance. L'adéquation de la métrique est une estimation de la capacité de la métrique à estimer une distance très faible entre documents du même cluster, en même temps qu'une similarité quasi nulle entre documents de clusters différents, indépendamment de l'algorithme de clustering appliqué. Enfin, l'efficacité de la métrique est liée à la qualité de clustering résultant de l'application d'un algorithme de clustering combiné avec la métrique apprise.
 \subsection{Configuration}
 
 \subsection{Annotations de données d'évaluation}
@@ -281,7 +281,9 @@ Le dataset comprend 81 documents répartis dans 4 groupes avec 6 documents appar
 Pour l'évaluation non supervisée, les 6 catégories de demande utilisée pour l'extraction de demandes sont utilisés en plus.
 
 \subsubsection{Prétraitement}
-Suppression des \textit{stop words} car il sont généralement indépendant de toute catégorie
+Suppression des \textit{stop words} car ils sont généralement indépendants de toute catégorie. lemmatisation?
+
+La distance entre les mots est la distance cosinus.
 
 \subsection{Apprentissage de la métrique}
 Matrices de (dis)similarité pour chaque distance
