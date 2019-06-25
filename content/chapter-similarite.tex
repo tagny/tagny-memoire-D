@@ -87,9 +87,27 @@ Il existe de nombreuses métriques de similarité généralement expérimentées
 	
 	$Sim(x,x') = \frac{m \sum\limits^m_{i=1} w_{x,i} w_{x',i} - TF_xTF_{x'}}{\sqrt{[m \sum\limits^m_{i=1} w^2_{x,i} - TF^2_x][m \sum\limits^m_{i=1} w^2_{x',i} - TF^2_{x'}}}$;
 	
-$Dis = 1 - Sim si Sim \geq 0; = \vert Sim \vert si Sim < 0$
+%$Dis = 1 - Sim si Sim \geq 0; = \vert Sim \vert \text{ si }Sim < 0$
+\[
+Dis =
+\left\{ \begin{array}{ll}
+1 - Sim & \text{si } Sim \geq 0 \\
+Sim & \text{si } Sim < 0
+\end{array}
+\right.
+\]
 	\item Distance de la divergence moyenne de Kullback-Leibler $Dis(x,x') = $?
-	\item Okapi BM25 est une métrique de similarité généralement utilisée en recherche d'information; les résultats de ce chapitre ont été obtenu avec une version adaptée pour les long documents, la BM25L de \citet{Lv2011BM25L} qui démontrent que la version originale n'est pas robuste lorsque les documents sont longs: \[Sim(x,x') = \sum\limits_{i=1}^n\left(\frac{n_i(k_1 + 1)}{n_i + k_1(1 - b + b\frac{\vert D \vert}{\overline{\vert D \vert}})} \cdot \log \frac{N - n_i + 0.5}{n_i + 0.5}\right)\] \textcolor{red}{corriger avec la formule de BM25L et vérifier la symétrie du BM25}
+	\item Okapi BM25 est une métrique de similarité généralement utilisée en recherche d'information pour calculer un score de pertinence d'un document D par rapport à une requête Q: 
+	\[Sim(Q,D) = \sum\lim\limits_{w \in Q \cap D} \left( \frac{(k_3+1) \cdot c(w, Q)}{k_3 + c(w, Q)} \cdot f(w,D) \cdot \log \frac{N+1}{df(w) + 0.5)}\right),\]
+	\[\text{avec } f(w,D) = \frac{(k_1+1)\cdot c(w,D)}{k_1(1-b+b\frac{\vert D \vert}{avgdl})} = \frac{(k_1+1)\cdot c'(w,D)}{k_1 + c'(w,D)},\] où $c'(w,D) = \frac{c(w,D)}{1-b+b\frac{\vert D \vert}{avgdl} }$. $c'(w,D)$ pouvant approcher 0 pour des documents très longs, \citet{Lv2011BM25L} propose BM25L, une formulation plus robuste à la longueur des documents obtenue en remplaçant $f(w,D)$ par :
+	\[
+	f'(w,D) =
+	\left\{ \begin{array}{ll}
+	\frac{(k_1+1)\cdot (c'(q,D)+\delta)}{k_1+ (c'(w,D) + \delta)} & \text{si } c'(w,D) > 0 \\
+	0 & \text{si } sinon
+	\end{array}
+	\right.
+	\]
 %	\item TF-IDF ?
 %	\item BoW ?
 %	\item Componential Counting Grid ?
