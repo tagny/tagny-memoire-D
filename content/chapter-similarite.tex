@@ -6,7 +6,8 @@
 
 \section{Introduction}
 \label{sec:similarite:introduction}
-Les circonstances factuelles sont les types de faits ou contextes possibles dans lesquels une catégorie de demande peut être formulée. Les analyses descriptives ou prédictives ne prennent sens que lorsqu'elles sont appliquées à un ensemble de décisions aux circonstances similaires. Par exemple, il serait imprudent de considérer toutes les décisions pour prédire les chances d'acceptation d'une demande de dommages-intérêts fondée sur l'\og article 700 du code de procédure civile \fg{} en cas de trouble de voisinage. Les taux d'acceptation ou de rejet peuvent être différents entre des affaires de licenciement et celles portant sur les troubles anormaux du voisinage, et même plus spécifiquement entre les troubles de voisinage entre particulier et entreprises (par exemple: chantier de construction), ou simplement entre particuliers (par exemple: troubles sonores). Il serait préférable de travailler uniquement avec des décisions similaires à la situation d'intérêt. L'identification des circonstances factuelles devient donc indispensable. Malheureusement, les faits et leur catégorisation sont extrêmement diversifiés et indénombrables.Annoter manuellement des échantillons de décisions est impossible pour chaque circonstance potentielle afin de résoudre ce problème par classification supervisée. Il est donc plus intéressant d'adopter une approche non-supervisée capable modéliser les circonstances factuelles à partir d'un corpus de documents d'une même catégorie de demande. Plus précisément, l’objectif est donc de regrouper ensemble les décisions qui traitent de problèmes similaires. La tâche peut être formulée comme une tâche de regroupement non-supervisé (\textit{clustering}).  Les objectifs de ce chapitre sont d'expérimenter des algorithmes  de \textit{clustrering} et des métriques de similarité, et de démontrer que l'apprentissage d'une distance de similarité entre documents d'une même catégorie de demande permet d'obtenir un meilleur clustering.
+Les circonstances factuelles définissent les contextes possibles dans lesquels une catégorie de demande peut être formulée. Les analyses descriptives ou prédictives ne prennent sens que lorsqu'elles sont appliquées à un ensemble de décisions aux circonstances similaires. Par exemple, il serait imprudent de considérer toutes les décisions pour analyser les chances d'acceptation d'une demande de dommages-intérêts fondée sur l'\og article 700 du code de procédure civile \fg{} en cas de trouble de voisinage. Les taux d'acceptation ou de rejet peuvent être différents entre des affaires de licenciement et celles portant sur les troubles anormaux du voisinage, et même plus spécifiquement entre les troubles de voisinage entre particulier et entreprises. % (par exemple: chantier de construction), ou simplement entre particuliers (par exemple: troubles sonores). 
+ Il serait préférable de travailler uniquement avec des décisions similaires à la situation d'intérêt. L'identification des circonstances factuelles devient donc une étape préalable indispensable à l'analyse du résultat. Malheureusement, les circonstances sont très diverses et quasi infinies pour être identifier par classification supervisée à l'aide d'annotation manuelle d'exemples comme dans les chapitres précédent. Il est donc plus indiquer d'adopter une approche non-supervisée capable modéliser les circonstances factuelles à partir d'un corpus de documents d'une même catégorie de demande. Plus précisément, la méthode doit construire des sous-ensembles de décisions selon qu'elles traitent de contextes similaires.  Les objectifs de ce chapitre sont d'expérimenter des algorithmes  de \textit{clustrering} et des métriques de similarité. Il démontre aussi qu'une distance entraînée  sur des documents d'une catégorie de demande permet de mieux mesurer la (dis-)similarité sémantique définie par les circonstances factuelles.
 
 %\section{Formulation du Problème}
 %\label{sec:similarite:probleme}
@@ -28,13 +29,11 @@ Il est aussi possible d'utiliser les arbres de décision pour améliorer les ré
 
 %\textcolor{red}{Random Forest - processus de construction: \url{https://onlinelibrary.wiley.com/doi/pdf/10.1002/cem.2790}}
 
-L'application de ces différents algorithmes aux documents n'est généralement basé que sur les statistiques d'occurrence des termes, et par conséquent les thématiques abordées dans les documents ne sont pas bien prise en compte, surtout que l'élimination des \og mots vides \fg{} (\textit{stop words}) peut laisser les deux documents sans sinon très peu de mots en commun \cite{kusner2015wordmoverdist}. \citet{xie2013MGCTM} démontrent empiriquement que l'intégration de la  modélisation thématique (\textit{topic modeling}) au clustering de documents améliore significativement les résultats. Cette intégration des modèles thématiques dans le clustering de documents peut être réalisée de multiples façons, mais deux méthodes semblent être les plus efficaces:
-\begin{enumerate}
-	\item l'intégration naïve \citep{lu2011kmeansLDApLSA} qui consiste à inférer $K$ thèmes à l'aide d'un algorithme comme le PLSA (aAnalyse sémantique probabiliste latente) \citep{hofmann1999PLSA} ou le LDA (allocation de Dirichlet latente)\citep{blei2003lda}, puis de considérer pour chaque document le thème $j \in [1..K]$ qui a la probabilité $\theta_j$ la plus élevé dans ce document suivant la distribution $\theta$ de probabilité des thèmes dans ce document; le thème choisi $j$ représente le cluster du document;
-	\item le modèle thématique multi-grain de clustering (\textit{multi-grain clustering topic model}) ou MGCTM proposé par \citet{xie2013MGCTM}, dont l'objectif est d'inférer de manière jointe les clusters et le modèle thématique.
-\end{enumerate}
-
-\textcolor{red}{FONCTIONNEMENT DU LDA et du MGCTM}.
+%L'application de ces différents algorithmes aux documents n'est généralement basé que sur les statistiques d'occurrence des termes, et par conséquent les thématiques abordées dans les documents ne sont pas bien prise en compte, surtout que l'élimination des \og mots vides \fg{} (\textit{stop words}) peut laisser les deux documents sans sinon très peu de mots en commun \cite{kusner2015wordmoverdist}. \citet{xie2013MGCTM} démontrent empiriquement que l'intégration de la  modélisation thématique (\textit{topic modeling}) au clustering de documents améliore significativement les résultats. Cette intégration des modèles thématiques dans le clustering de documents peut être réalisée de multiples façons, mais deux méthodes semblent être les plus efficaces:
+%\begin{enumerate}
+%	\item l'intégration naïve \citep{lu2011kmeansLDApLSA} qui consiste à inférer $K$ thèmes à l'aide d'un algorithme comme le PLSA (aAnalyse sémantique probabiliste latente) \citep{hofmann1999PLSA} ou le LDA (allocation de Dirichlet latente)\citep{blei2003lda}, puis de considérer pour chaque document le thème $j \in [1..K]$ qui a la probabilité $\theta_j$ la plus élevé dans ce document suivant la distribution $\theta$ de probabilité des thèmes dans ce document; le thème choisi $j$ représente le cluster du document;
+%	\item le modèle thématique multi-grain de clustering (\textit{multi-grain clustering topic model}) ou MGCTM proposé par \citet{xie2013MGCTM}, dont l'objectif est d'inférer de manière jointe les clusters et le modèle thématique.
+%\end{enumerate}
 
 \subsubsection{Regroupement avec chevauchements}
 
@@ -53,19 +52,19 @@ Lorsque des chevauchements sont observables entre clusters (un document peut fai
 \end{enumerate}
  Ainsi l'objectif de l'entrainement des algorithmes de clustering flou est double: déterminer les valeurs optimales du vecteur  $U$ des degrés d'appartenance et de l'ensemble $Z$ des centroïdes. 
  
- Les regroupements avec chevauchement sont intéressants dans notre cas parce qu'il n'est pas exclu qu'une décision traite de plusieurs circonstances factuelles.
-\textcolor{red}{A COMPLETER!!!!!!!!!!}
+ Les regroupements avec chevauchement sont intéressants parce qu'il n'est pas exclu qu'une décision traite de plus d'une circonstance factuelle.
+%\textcolor{red}{A COMPLETER!!!!!!!!!!}
 %Pour des regroupements hiérarchiques, des algorithmes comme celui du clustering par agglomération (\textit{agglomeration clustering}) sont mieux indiqués. Le principe du clustering par agglomération est de ...
 %si les chevauchements sont négligeables ou n'existent pas, ou bien si la structure hiérarchique permettrait de mieux expliquer et distinguer les différences inter-groupes et les ressemblances intra-groupes. Nous souhaitons organiser des décisions de justices en fonction des circonstances factuelles auxquelles ces documents sont liés.  On pourrait par exemple faire une restriction des données aux cas où chaque document n’appartient qu’à une classe et proposer un système de clustering disjoint.
 
-\subsubsection{Limites des algorithmes de clustering}
-nombre prédéfini de clusters, initialisation aléatoire des centroïdes menant à des clusters différents entre plusieurs exécution \citep{sabzi2011fuzzykmedoids}. Nous noterons aussi la dépendance à la métrique de similarité.
+%\subsubsection{Limites des algorithmes de clustering}
+%nombre prédéfini de clusters, initialisation aléatoire des centroïdes menant à des clusters différents entre plusieurs exécution \citep{sabzi2011fuzzykmedoids}. Nous noterons aussi la dépendance à la métrique de similarité.
 %Algorithme kmeans + kmédoids pour les documents: https://pdfs.semanticscholar.org/a46f/efdb64a01d1e6390c8212d881b9c4414ffbf.pdf
 
 
 \subsection{Métriques de similarité ou de dis-similarité}
 \label{sec:similarite:metriques-de-sim}
-Une métrique de (dis)similarité est une fonction réelle d'une paire de éléments $x$ et $x'$ d'un ensemble $\mathcal{X}$. Une métrique de dis-similarité mesure le degré de différence entre $x$ et $x'$  généralement estimée par une fonction distance $Dis$  qui satisfait aux propriétés suivantes $\forall x,x',x'' \in \mathcal{X}$ \citep{wang2015distancemetriclearningsurvey}:
+Les algorithmes de clustering dépendent de la distance utilisée qui doit être bien choisie pour que les regroupements révèlent au mieux la sémantique visée. Une distance ou métrique de dis-similarité est une fonction réelle d'une paire de éléments $x$ et $x'$ d'un ensemble $\mathcal{X}$. Une métrique de dis-similarité mesure le degré de différence entre $x$ et $x'$  généralement estimée par une fonction distance $Dis$  qui satisfait aux propriétés suivantes $\forall x,x',x'' \in \mathcal{X}$ \citep{wang2015distancemetriclearningsurvey}:
 \begin{enumerate}
 \item $Dis(x,x') \geq 0$ ("non-négativité")
 \item $Dis(x,x') = 0  \Leftrightarrow x = y$ (identité discernable)
@@ -74,29 +73,29 @@ Une métrique de (dis)similarité est une fonction réelle d'une paire de élém
 \end{enumerate}
 
 
-La métrique peut être normalisée ($\forall a,b \in \mathcal{X};  0 \leq Dis(a,b) \leq 1$). Dans ce cas, la relation entre la similarité $Sim$ et la dis-similarité $Dis$ est définie par $Sim(a,b) = 1 - Dis(a,b)$.
+La métrique peut être normalisée ($\forall a,b \in \mathcal{X};  0 \leq Dis(a,b) \leq 1$), à l'instar des métriques cosinus et de Jaccard. Dans ce cas, la relation entre la similarité $Sim$ et la dis-similarité $Dis$ est définie par $Sim(a,b) = 1 - Dis(a,b)$.
 %On parle de \textbf{pseudo-métrique} lorsque la condition \ref{enum:sim:ineq-tri} n'est pas satisfaite.
 
-Il existe de nombreuses métriques de similarité généralement expérimentées pour le clustering de textes \citep{huang2008similarityTextClustering}:
+Il existe de nombreuses métriques de similarité généralement expérimentées pour le clustering de textes \citep{huang2008similarityTextClustering, vijaymeena2016surveySim, afzali2018SimKmeans}:
 \begin{itemize}
-	\item les distances de Minkowski de forme générale $Dis(x,x') = \norm{x - x'}_{Lp} = \sqrt[p]{\sum \vert x_i - y_i \vert ^p}$, dont font partie la distance euclidenne ($p=2$) et la distance de Manhattan ($p=1$); 
-	\item la similarité cosinus: $Sim_{cos}(x,x') = \sqrt{\frac{x^Tx'}{\norm{x}\norm{x'}}}$, avec $-1 \leq Sim_{cos}(x,x') \leq +1 $
-	\item le coefficient similarité de Jaccard: $Sim(x,x') = \frac{x^Tx'}{\norm{x}^2\norm{x'}^2 - x^Tx'}$ désignant l'ensemble des termes de $x$ dans le cas où $x$ est un document;
-	\item Le coefficient similarité de Dice: $Sim(x,x') = \frac{2\cdot \vert tok(x) \cap tok(x') \vert}{\vert tok(x) \vert + \vert tok(x')} $
-	\item Le coefficient de correlation de Pearson: pour $TF_x = \sum\limits^m_{i=1} w_{x,i}, \forall x \in \mathcal{X}$,
+	\item les distances de Minkowski de forme générale $Dis(x,x') = \norm{x - x'}_{Lp} = \sqrt[p]{\sum \vert x_i - x'_i \vert ^p}$, dont font partie la distance euclidienne ($p=2$) et la distance de Manhattan ($p=1$); 
+	\item la distance de Braycurtis calcule la distance entre deux documents $x$ et $x'$ par la formule: \[Dis_{Braycurtis}(x,x') = \frac{\sum \vert x_i - x'_i \vert}{\sum \vert x_i + x'_i \vert}\]
+	\item la similarité cosinus est basée sur la mesure de l'angle entre les vecteurs représentant les documents $x$ et $x'$, et est calculée par: \[Sim_{cos}(x,x') = \sqrt{\frac{x^Tx'}{\norm{x}\norm{x'}}}\]
+	\item le coefficient similarité de Jaccard: $Sim_{Jaccard}(x,x') = \frac{x^Tx'}{\norm{x}^2\norm{x'}^2 - x^Tx'}$, où $\norm{x}$ désigne la taille de l'ensemble des termes de $x$ dans le cas où $x$ est un document;
+	\item le coefficient similarité de Dice: $Sim_{Dice}(x,x') = \frac{2\cdot \vert tok(x) \cap tok(x') \vert}{\vert tok(x) \vert + \vert tok(x')} $
+	\item la similarité basée sur le coefficient de corrélation de Pearson: avec $w(t_i,x)$ le poids du terme $t_i$ dans le texte $x$\footnote{Comme à la section \ref{sec:quanta:classification}} et $TF_x = \sum\limits^m_{i=1} w(t_i,x)$, la similarité est calculée par:
 	
-	$Sim(x,x') = \frac{m \sum\limits^m_{i=1} w_{x,i} w_{x',i} - TF_xTF_{x'}}{\sqrt{[m \sum\limits^m_{i=1} w^2_{x,i} - TF^2_x][m \sum\limits^m_{i=1} w^2_{x',i} - TF^2_{x'}}}$;
-	
-%$Dis = 1 - Sim si Sim \geq 0; = \vert Sim \vert \text{ si }Sim < 0$
-\[
-Dis =
+	\[Sim_{Pearson}(x,x') = \frac{m \sum\limits^m_{i=1} w(t_i,x) w(t_i,x') - TF_xTF_{x'}}{\sqrt{[m \sum\limits^m_{i=1} w^2(t_i,x) - TF^2_x][m \sum\limits^m_{i=1} w^2(t_i,x') - TF^2_{x'}}}\]
+et la distance par:$
+Dis_{Pearson} =
 \left\{ \begin{array}{ll}
 1 - Sim & \text{si } Sim \geq 0 \\
-Sim & \text{si } Sim < 0
+\vert Sim \vert & \text{si } Sim < 0
 \end{array}
-\right.
-\]
-	\item Distance de la divergence moyenne de Kullback-Leibler $Dis(x,x') = $?
+\right.$
+	\item Distance de la divergence moyenne de Kullback-Leibler considère un document comme une distribution de probabilité de termes, et mesure donc la similarité entre deux distributions: 
+	\[Dis_{avgKL}(x,x') = \sum\lim\limits_{i=1}^m\big(\pi_1 \cdot D(w(t_i,x) \vert\vert w_t) + \pi_2 \cdot D(w(t_i,x') \vert\vert w_t) \big)\]
+	avec $\pi_1 = \frac{w(t_i,x)}{w(t_i,x) + w(t_i,x')}$, $\pi_2 = \frac{w(t_i,x')}{w(t_i,x) + w(t_i,x')}$, $D(a \vert\vert b) = a\cdot  \log_2(\frac{a}{b})$, et $w_t = \pi_1 \cdot w(t_i,x) + \pi_2 \cdot w(t_i,x')$
 	\item Okapi BM25 est une métrique de similarité généralement utilisée en recherche d'information pour calculer un score de pertinence d'un document D par rapport à une requête Q: 
 	\[Sim(Q,D) = \sum\lim\limits_{w \in Q \cap D} \left( \frac{(k_3+1) \cdot c(w, Q)}{k_3 + c(w, Q)} \cdot f(w,D) \cdot \log \frac{N+1}{df(w) + 0.5)}\right),\]
 	\[\text{avec } f(w,D) = \frac{(k_1+1)\cdot c(w,D)}{k_1(1-b+b\frac{\vert D \vert}{avgdl})} = \frac{(k_1+1)\cdot c'(w,D)}{k_1 + c'(w,D)},\] où $c'(w,D) = \frac{c(w,D)}{1-b+b\frac{\vert D \vert}{avgdl} }$. $c'(w,D)$ pouvant approcher 0 pour des documents très longs, \citet{Lv2011BM25L} propose BM25L, une formulation plus robuste à la longueur des documents obtenue en remplaçant $f(w,D)$ par :
@@ -132,22 +131,22 @@ Dis(d, d') = 	& \min\limits_{T>0}
 \end{itemize}
 
 
-Par contre, les métriques {apprises} sont définies à partir de connaissances des données labellisées. Ces métriques sont apprises pour répondre à la difficulté d'identifier la métrique statique appropriée pour un problème. L'apprentissage exploite un corpus préalablement annoté. L'apprentissage peut être supervisé si l'annotation du corpus consiste soit en classifiant des documents\footnote{Organisation des documents d'entraînement en des groupes aux labels prédéfinis.} \citep{weinberger2005LMNN}, soit en affectant des mesures de similarité à des paires de documents \citep{bibid}.  Un apprentissage semi-supervisé typique utilise des données annotées par jugements relatifs sur des pairs ou triplets de documents. Les contraintes de couples consistent en deux ensembles, l'un comprenant des couples de documents qui doivent être similaires, et l'autre contenant des couples de documents dis-similaires. Les contraintes de triplets consistent à définir pour un triplet de documents $(x_1,x_2,x_3)$ une comparaison de degré de similarité entre les paires (par exemple, $x_1$ est plus similaire à $x_2$ qu'à $x_3$). La métrique apprise est néanmoins une véritable métrique à valeur réelle positive écrite sous la forme d'une distance de Mahalanobis $f(x,y) = \sqrt{(x-y)^T M^{-1}(x-y)}$ (où $M$ est la matrice à apprendre). 
+%Par contre, les métriques {apprises} sont définies à partir de connaissances des données labellisées. Ces métriques sont apprises pour répondre à la difficulté d'identifier la métrique statique appropriée pour un problème. L'apprentissage exploite un corpus préalablement annoté. L'apprentissage peut être supervisé si l'annotation du corpus consiste soit en classifiant des documents\footnote{Organisation des documents d'entraînement en des groupes aux labels prédéfinis.} \citep{weinberger2005LMNN}, soit en affectant des mesures de similarité à des paires de documents \citep{bibid}.  Un apprentissage semi-supervisé typique utilise des données annotées par jugements relatifs sur des pairs ou triplets de documents. Les contraintes de couples consistent en deux ensembles, l'un comprenant des couples de documents qui doivent être similaires, et l'autre contenant des couples de documents dis-similaires. Les contraintes de triplets consistent à définir pour un triplet de documents $(x_1,x_2,x_3)$ une comparaison de degré de similarité entre les paires (par exemple, $x_1$ est plus similaire à $x_2$ qu'à $x_3$). La métrique apprise est néanmoins une véritable métrique à valeur réelle positive écrite sous la forme d'une distance de Mahalanobis $f(x,y) = \sqrt{(x-y)^T M^{-1}(x-y)}$ (où $M$ est la matrice à apprendre). 
  
- L'apprentissage expérimenté dans ce chapitre est supervisé, même s'il utilise des données synthétiques. Nous supposons étant donné que les documents du corpus à \textit{clusteriser} sont tous de la même catégorie de demande, la différence entre les clusters et leur homogénéité se remarquera au niveau des faits. Par cette hypothèse, il reste un risque que d'autres types de regroupements se forment comme par exemple suivant d'autres catégories de demande co-occurrentes. Parmi les divers algorithmes réalisant un apprentissage supervisé, notons par exemple:
- \begin{itemize}
- 	\item Les plus-proches-voisins-dans-la-large-marge (LMNN) \citep{weinberger2005LMNN} plus adapté à l'annotation par classification;
- 	\item L'analyse des composants du voisinage (NCA) \citep{goldberger2005NCA};
- 	\item L'apprentissage de métrique pour la régression noyau (\textit{MLKR}) \citep{weinberger2007MLKR};
- 	\item L'analyse discriminante locale de Fisher (LFDA) \citep{sugiyama2007LFDA, } méthode supervisée (données labellisées) de réduction de dimension
- \end{itemize}
+% L'apprentissage expérimenté dans ce chapitre est supervisé, même s'il utilise des données synthétiques. Nous supposons étant donné que les documents du corpus à \textit{clusteriser} sont tous de la même catégorie de demande, la différence entre les clusters et leur homogénéité se remarquera au niveau des faits. Par cette hypothèse, il reste un risque que d'autres types de regroupements se forment comme par exemple suivant d'autres catégories de demande co-occurrentes. Parmi les divers algorithmes réalisant un apprentissage supervisé, notons par exemple:
+% \begin{itemize}
+% 	\item Les plus-proches-voisins-dans-la-large-marge (LMNN) \citep{weinberger2005LMNN} plus adapté à l'annotation par classification;
+% 	\item L'analyse des composants du voisinage (NCA) \citep{goldberger2005NCA};
+% 	\item L'apprentissage de métrique pour la régression noyau (\textit{MLKR}) \citep{weinberger2007MLKR};
+% 	\item L'analyse discriminante locale de Fisher (LFDA) \citep{sugiyama2007LFDA, } méthode supervisée (données labellisées) de réduction de dimension
+% \end{itemize}
 
 
 \subsection{Déterminer le nombre approprié de clusters (validation)}
 
-\textcolor{red}{faire un tableau des indices comme dans l'article, et comparer les combinaison indices-algo-distance}
+%\textcolor{red}{faire un tableau des indices comme dans l'article, et comparer les combinaison indices-algo-distance}
 
- Au delà de l’algorithme à utiliser, le nombre $K$ approprié de clusters doit être déterminé mais pas prédéfini, puisqu'il est difficile de savoir à l'avance le nombre de groupes, le clustering permettant de proposer automatiquement un regroupement. . Une méthode très connue est celle du \og coude \fg{}  (ou \og genou \fg{}) \citep{halkidi2001clustvalidation}, qui est basé sur le principe de base des algorithmes de partitionnement (e.g. K-moyennes) i.e. minimiser le critère d'inertie\footnote{la variance intra-cluster qui est la somme au carré des erreurs (distance d'un membre au centre).}.
+ Au delà de l’algorithme à utiliser, le nombre $K$ approprié de clusters doit être déterminé mais pas prédéfini, puisqu'il est difficile de savoir à l'avance le nombre de groupes, le clustering permettant de proposer automatiquement un regroupement. Une méthode très connue est celle du \og coude \fg{}  (ou \og genou \fg{}) \citep{halkidi2001clustvalidation}, qui est basé sur le principe de base des algorithmes de partitionnement (e.g. K-moyennes) i.e. minimiser le critère d'inertie\footnote{la variance intra-cluster qui est la somme au carré des erreurs (distance d'un membre au centre).}:
 \[J(K) = \sum\limits_{j=1}^K\sum\limits_{x_i \in C_j}\norm{x_i-\overline{x_j}}^2\]
 
 $C_j$: ensemble des objets du cluster $j$
@@ -161,11 +160,9 @@ La méthode de la silhouette moyenne \citep{rousseeuw1987silhouetteclusternumber
 
 où $a(d_i) = \frac{1}{\vert C_t \vert} \sum\limits_{j=1}^{\vert C_t \vert} Dis(d_i, d_j)$, et $b(d_i) = \min\limits_{l \neq t} \frac{1}{\vert C_l \vert} \sum\limits_{j=1}^{\vert C_l \vert} Dis(d_i, d_j)$.
 
-$K$ a une valeur optimale lorsque la largeur moyenne $S(k)$ atteint sa valeur maximale.
+$K$ a une valeur optimale lorsque la largeur moyenne $S(k)$ atteint sa valeur maximale. Salvador et Chan (2004) propose d’utiliser l’intersection des deux lignes approximant la courbe. Mais plus récemment, Zhang et al. (2016) trouvent que cette approche n’est pas appropriée pour les cas où le graphe d’évaluation n’est ni lisse, ni monotone. Ils proposent d’exploiter la courbure du graphe i.e. la valeur dont un objet géométrique s'écarte d'être plat ou droit dans le cas d'une ligne.
 
-Salvador et Chan (2004) propose d’utiliser l’intersection des deux lignes approximant la courbe. Mais plus récemment, Zhang et al. (2016) trouvent que cette approche n’est pas appropriée pour les cas où le graphe d’évaluation n’est ni lisse, ni monotone. Ils proposent d’exploiter la courbure du graphe i.e. la valeur dont un objet géométrique s'écarte d'être plat ou droit dans le cas d'une ligne.
-
-Etant donné le grand nombre de méthodes existantes \citep{liu2010interclustvalidation, Amorim2015recoveringnumclust}, la majorité des votes peut être appliquée pour choisir le bon $K$ \footnote{\url{https://www.datanovia.com/en/lessons/determining-the-optimal-number-of-clusters-3-must-know-methods/}}.
+%Etant donné le grand nombre de méthodes existantes \citep{liu2010interclustvalidation, Amorim2015recoveringnumclust}, la majorité des votes peut être appliquée pour choisir le bon $K$ \footnote{\url{https://www.datanovia.com/en/lessons/determining-the-optimal-number-of-clusters-3-must-know-methods/}}.
 
 %\subsection{Initialisation des centroïdes}
 
@@ -281,7 +278,7 @@ Sur l'ensemble $B = \lbrace (d_i, d'_i, \widetilde{Dis}(d_i, d'_i))\rbrace_{1 \l
 
 \section{Interprétation des résultats expérimentaux}
 \label{sec:similarite:experimentations}
-Cette section discute la validité, l'adéquation, et l'efficacité de la métrique apprise en comparaison avec d'autres métriques d'estimation de la similarité sémantique entre documents. La validité de la métrique est établie si cette dernière respecte les propriétés d'une distance. L'adéquation de la métrique est une estimation de la capacité de la métrique à estimer une distance très faible entre documents du même cluster, en même temps qu'une similarité quasi nulle entre documents de clusters différents, indépendamment de l'algorithme de clustering appliqué. Enfin, l'efficacité de la métrique est liée à la qualité de clustering résultant de l'application d'un algorithme de clustering combiné avec la métrique apprise.
+Cette section discute la validité, l'adéquation, et l'efficacité de la métrique apprise en comparaison avec d'autres métriques d'estimation de la similarité sémantique entre documents. La validité de la métrique est établie si cette dernière respecte les propriétés d'une distance. L'adéquation de la métrique mesure la capacité de la métrique à estimer une distance très faible entre documents du même cluster, en même temps qu'une similarité quasi nulle entre documents de clusters différents, indépendamment de l'algorithme de clustering appliqué. Enfin, l'efficacité de la métrique est liée à la qualité de clustering résultant de l'application d'un algorithme de clustering combiné avec la métrique apprise.
 \subsection{Configuration}
 
 \subsection{Annotations de données d'évaluation}
