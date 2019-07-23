@@ -177,14 +177,40 @@ $K$ a une valeur optimale lorsque la largeur moyenne $S(k)$ atteint sa valeur ma
 \subsection{Evaluation du clustering généré}
 L'évaluation des résultats peut être supervisée ou non selon que l'on dispose ou pas respectivement d'exemples de données annotés avec les groupes attendus.
 
-\subsubsection{Métriques supervisées}
+\subsubsection{Métriques supervisées ou mesures externes}
 \label{sec:similarite:biblio:supeval}
-Même s'il existe un très grand nombre de mesures d'évaluation de la qualité du clustering \citep{im2003clusteringsurvey}, très peu sont couramment utilisées. Il s'agit pour l'évaluation supervisée de l'information mutuelle normalisée (NMI) \citep{}, l'indice ajusté de Rand (\textit{ajusted Rand index} - ARI) \citep{}, et la précision du clustering (ACC) \citep{}. Ces métriques doivent être utilisées ensemble  pour compenser les limites de chacune d'elles \citep{yang2017kmeansfriendlyspaces}. Pour l'évaluation non-supervisée, la pureté, l'erreur et la silhouette sont les métriques généralement utilisées.
+Il s'agit de métriques comparant deux regroupements $X = \lbrace X_1, X_2, ..., X_r \rbrace$ et $Y = \lbrace Y_1, Y_2, ..., Y_s \rbrace$ pour mesurer leur ressemblance. Elles sont définies généralement à partir du tableau de contingence résumant les chevauchements que partagent $X$ et $Y$:
+\begin{table}[]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|c|}
+		\hline
+		& $Y_1$    & $Y_2$    & $\cdots$ & $Y_s$    & $\sum$   \\ \hline
+		$X_1$    & $n_{11}$ & $n_{11}$ & $\cdots$ & $n_{11}$ & $a_1$    \\ \hline
+		$X_2$    & $n_{21}$ & $n_{21}$ & $\cdots$ & $n_{21}$ & $a_2$    \\ \hline
+		$\cdots$ & $\cdots$ & $\cdots$ & $\ddots$ & $\cdots$ & $\cdots$ \\ \hline
+		$X_r$    & $n_{r1}$ & $n_{r1}$ & $\cdots$ & $n_{r1}$ & $a_r$    \\ \hline
+		$\sum$   & $b_1$    & $b_2$    & $\cdots$ & $b_s$    &          \\ \hline
+	\end{tabular}
+	\caption{Tableau de contingence des chevauchement entre les regroupements $X = \lbrace X_1, X_2, ..., X_r \rbrace$ et $Y = \lbrace Y_1, Y_2, ..., Y_s \rbrace$}
+\end{table}
+
+Même s'il existe un très grand nombre de mesures d'évaluation de la qualité du regroupement \citep{im2003clusteringsurvey}, trois métriques sont couramment employées pour l'évaluation supervisée:
+\begin{itemize}
+	\item l'information mutuelle normalisée (NMI) \citep{strehl2000nmi} normalise l'information mutuelle entre les labels attendus $Y$ et ceux des clusters $C$ par la somme de leur entropie respective: \[NMI(Y,C) = \frac{2 \cdot I(Y;C)}{H(Y) + H(C)}\]
+	Avec $I(Y;C) = H(Y) - H(Y \vert C)$ et $H(Y) = \sum\lim\limits_{Y_i \in Y}\big(- \p(Y_i)\cdot\log_2\p(Y_i)\big)$
+	\item l'indice ajusté par chance de Rand (\textit{ajusted Rand index} - ARI) \citep{hubert1985adjustedrandidx} corrige l'indice de Rand (RI) \citep{rand1971randidx} pour obtenir une valeur très proche de 0.0 pour les clusterings aléatoires et exactement 1.0 lorsque les clusters sont identiques aux classes attendues: %\[ARI(Y,C) = \frac{RI(Y,C) - E_{perm}\left[RI(Y,C)\right]}{1.0 - E_{perm}\left[RI(Y,C)\right]} \]
+	\[ARI(Y,C) = \frac{\sum\limits_{i,j}\binom{n_{ij}}{2} - \frac{\sum\limits_{i}\binom{a_{i}}{2}\sum\limits_{j}\binom{b_{j}}{2}}{\binom{N}{2}}}{\frac{1}{2}\big[\sum\limits_{i}\binom{a_{i}}{2}+\sum\limits_{j}\binom{b_{j}}{2}\big] - \frac{\sum\limits_{i}\binom{a_{i}}{2}\sum\limits_{j}\binom{b_{j}}{2}}{\binom{N}{2}}}\]
+	avec $\binom{n}{2} = \frac{n(n-1)}{2}$.
+	\item la précision du clustering (ACC) \citep{}.  
+\end{itemize}
+Ces métriques doivent être utilisées ensemble  pour compenser les limites de chacune d'elles \citep{yang2017kmeansfriendlyspaces}.
+
+
 
 \subsubsection{Métriques non-supervisées}
 \label{sec:similarite:biblio:unsupeval}
 
-
+ Pour l'évaluation non-supervisée, la pureté, l'erreur et la silhouette sont les métriques généralement utilisées.
 
 %\section{Méthodes proposées}
 
@@ -278,8 +304,8 @@ Sur l'ensemble $B = \lbrace (d_i, d'_i, \widetilde{Dis}(d_i, d'_i))\rbrace_{1 \l
 
 \section{Interprétation des résultats expérimentaux}
 \label{sec:similarite:experimentations}
-Cette section discute la validité, l'adéquation, et l'efficacité de la métrique apprise en comparaison avec d'autres métriques d'estimation de la similarité sémantique entre documents. La validité de la métrique est établie si cette dernière respecte les propriétés d'une distance. L'adéquation de la métrique mesure la capacité de la métrique à estimer une distance très faible entre documents du même cluster, en même temps qu'une similarité quasi nulle entre documents de clusters différents, indépendamment de l'algorithme de clustering appliqué. Enfin, l'efficacité de la métrique est liée à la qualité de clustering résultant de l'application d'un algorithme de clustering combiné avec la métrique apprise.
-\subsection{Configuration}
+Cette section discute la validité, l'adéquation, et l'efficacité de la métrique apprise en comparaison avec d'autres métriques d'estimation de la similarité sémantique entre documents. La validité de la métrique est établie si cette dernière respecte les propriétés d'une distance. L'adéquation de la métrique avec le problème à résoudre mesure la capacité de la métrique à estimer une distance très faible entre documents du même cluster, en même temps qu'une similarité quasi nulle entre documents de clusters différents, indépendamment de l'algorithme de clustering appliqué. Enfin, l'efficacité de la métrique est liée à la qualité de clustering résultant de l'application d'un algorithme de clustering combiné avec la métrique apprise.
+
 
 \subsection{Annotations de données d'évaluation}
 Pour l'évaluation supervisée, nous disposons d'une base annotée sur la catégorie de demande "dommage-intérêts / action en responsabilité civile professionnelle contre les avocats" qui concerne les contentieux impliquant des avocats.
@@ -291,16 +317,29 @@ L'expert annotateur a identifié quatre cas différents (a, b, c, d) décrits en
 \item pour le cas d) il s'agit d'un avocat attaqué par son adversaire et non pas par son propre client.
 \end{itemize}
 
-Le dataset comprend 81 documents répartis dans 4 groupes avec 6 documents appartenant chacun à 2 groupes.
+Cet ensemble de données comprend 81 documents répartis dans 4 groupes avec 6 documents appartenant chacun à 2 groupes (cas de chevauchements).
 
-Pour l'évaluation non supervisée, les 6 catégories de demande utilisée pour l'extraction de demandes sont utilisés en plus.
+Pour l'évaluation non supervisée, les catégories de demande utilisée dans les chapitres \ref{chap:quanta} et \ref{chap:sensresultat} sont utilisés en plus.
 
-\subsubsection{Prétraitement}
-Suppression des \textit{stop words} car ils sont généralement indépendants de toute catégorie. lemmatisation?
+\subsection{Configuration}
+Pour analyser la validité et l'adéquation de la métrique apprise, nous effectuons une validation croisée en divisant les données annotées générées en 5 sous-ensembles (\textit{folds}). A chaque itération, la métrique est entraînée sur 4 jeux, puis testée sur une. Quant à l'efficacité de la métrique apprise, nous l'entraînons sur toutes les données annotées générées.
 
-La distance entre les mots est la distance cosinus.
+Les documents sont pré-traités avant leur représentation sous forme vectorielle. Ce prétraitement consiste en une lemmatisation, puis une élimination des caractères de ponctuation et des mots inutiles (\textit{stop words})  car ils sont généralement indépendants de toute catégorie.
 
-\subsection{Apprentissage de la métrique}
+La métrique utilisée entre les vecteur mots est la distance cosinus.
+
+\subsection{Validité de la distance apprise}
+Nous vérifions ici que la métrique respecte les propriétés des distances, et aussi si elle reste normale comme attendues:
+\begin{enumerate}
+	\item $Dis(x,x') \geq 0$ ("non-négativité")
+	\item $Dis(x,x') = 0  \Leftrightarrow x = y$ (identité discernable)
+	\item $Dis(x,x') = Dis(x', x)$ (symétrie)
+	Elle est évidente car la métrique apprise applique un modèle de régression sur la valeur absolue de la différence membre à membre des deux vecteurs: \[Dis(x,x') = regression(\left\langle \vert x_1 - x'_1\vert, \vert x_2 - x'_2\vert, \cdots, \vert x_m - x'_m\vert\right\rangle )=Dis(x',x)\]
+	\item $Dis(x,x'') \leq Dis(x,x') + Dis(x',x'')$ (inégalité triangulaire) 
+	\item Normalité
+\end{enumerate}
+
+\subsection{Adéquation de la métrique apprise avec le problème}
 Matrices de (dis)similarité pour chaque distance
 
 \subsection{Comparaison d'approches}
