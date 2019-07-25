@@ -62,8 +62,8 @@ Lorsque des chevauchements sont observables entre clusters (un document peut fai
 %Algorithme kmeans + kmédoids pour les documents: https://pdfs.semanticscholar.org/a46f/efdb64a01d1e6390c8212d881b9c4414ffbf.pdf
 
 
-\subsection{Métriques de similarité ou de dis-similarité}
-\label{sec:similarite:metriques-de-sim}
+\subsection{Métriques de dis-similarité (distances)}
+\label{sec:similarite:distances}
 Les algorithmes de clustering dépendent de la distance utilisée qui doit être bien choisie pour que les regroupements révèlent au mieux la sémantique visée. Une distance ou métrique de dis-similarité est une fonction réelle d'une paire de éléments $x$ et $x'$ d'un ensemble $\mathcal{X}$. Une métrique de dis-similarité mesure le degré de différence entre $x$ et $x'$  généralement estimée par une fonction distance $Dis$  qui satisfait aux propriétés suivantes $\forall x,x',x'' \in \mathcal{X}$ \citep{wang2015distancemetriclearningsurvey}:
 \begin{enumerate}
 \item $Dis(x,x') \geq 0$ ("non-négativité")
@@ -73,14 +73,16 @@ Les algorithmes de clustering dépendent de la distance utilisée qui doit être
 \end{enumerate}
 
 
-La métrique peut être normalisée ($\forall a,b \in \mathcal{X};  0 \leq Dis(a,b) \leq 1$), à l'instar des métriques cosinus et de Jaccard. Dans ce cas, la relation entre la similarité $Sim$ et la dis-similarité $Dis$ est définie par $Sim(a,b) = 1 - Dis(a,b)$.
+La métrique peut être normalisée ($\forall a,b \in \mathcal{X};  0 \leq Dis(a,b) \leq 1$), à l'instar de la distance basée sur la similarité cosinus normalisée et celle de Jaccard. Dans ce cas, la relation entre la similarité $Sim$ et la dis-similarité $Dis$ est définie par $Sim(a,b) = 1 - Dis(a,b)$.
 %On parle de \textbf{pseudo-métrique} lorsque la condition \ref{enum:sim:ineq-tri} n'est pas satisfaite.
 
 Il existe de nombreuses métriques de similarité généralement expérimentées pour le clustering de textes \citep{huang2008similarityTextClustering, vijaymeena2016surveySim, afzali2018SimKmeans}:
 \begin{itemize}
 	\item les distances de Minkowski de forme générale $Dis(x,x') = \norm{x - x'}_{Lp} = \sqrt[p]{\sum \vert x_i - x'_i \vert ^p}$, dont font partie la distance euclidienne ($p=2$) et la distance de Manhattan ($p=1$); 
-	\item la distance de Braycurtis calcule la distance entre deux documents $x$ et $x'$ par la formule: \[Dis_{Braycurtis}(x,x') = \frac{\sum \vert x_i - x'_i \vert}{\sum \vert x_i + x'_i \vert}\]
-	\item la similarité cosinus est basée sur la mesure de l'angle entre les vecteurs représentant les documents $x$ et $x'$, et est calculée par: \[Sim_{cos}(x,x') = \sqrt{\frac{x^Tx'}{\norm{x}\norm{x'}}}\]
+	\item la distance de Braycurtis calcule la distance entre deux documents $x$ et $x'$ par la formule: $Dis_{Braycurtis}(x,x') = \frac{\sum \vert x_i - x'_i \vert}{\sum \vert x_i + x'_i \vert}$
+	\item la similarité cosinus est basée sur la mesure de l'angle entre les vecteurs représentant les documents $x$ et $x'$, et est calculée par: $Sim_{cos}(x,x') = \frac{x^Tx'}{\norm{x}\norm{x'}}$.
+	
+	La similarité cosinus  étant comprise en -1 et +1, sa forme normalisée s'écrit  $Sim_{cos}(x,x') = \frac{\frac{x^Tx'}{\norm{x}\norm{x'}} + 1}{2}$, d'où la distance $Dis_{cos}(x,x') = 1 - Sim_{cos}(x,x')$.
 	\item le coefficient similarité de Jaccard: $Sim_{Jaccard}(x,x') = \frac{x^Tx'}{\norm{x}^2\norm{x'}^2 - x^Tx'}$, où $\norm{x}$ désigne la taille de l'ensemble des termes de $x$ dans le cas où $x$ est un document;
 	\item le coefficient similarité de Dice: $Sim_{Dice}(x,x') = \frac{2\cdot \vert tok(x) \cap tok(x') \vert}{\vert tok(x) \vert + \vert tok(x')} $
 	\item la similarité basée sur le coefficient de corrélation de Pearson: avec $w(t_i,x)$ le poids du terme $t_i$ dans le texte $x$\footnote{Comme à la section \ref{sec:quanta:classification}} et $TF_x = \sum\limits^m_{i=1} w(t_i,x)$, la similarité est calculée par:
@@ -196,12 +198,13 @@ Il s'agit de métriques comparant deux regroupements $X = \lbrace X_1, X_2, ...,
 
 Même s'il existe un très grand nombre de mesures d'évaluation de la qualité du regroupement \citep{im2003clusteringsurvey}, trois métriques sont couramment employées pour l'évaluation supervisée:
 \begin{itemize}
-	\item l'information mutuelle normalisée (NMI) \citep{strehl2000nmi} normalise l'information mutuelle entre les labels attendus $Y$ et ceux des clusters $C$ par la somme de leur entropie respective: \[NMI(Y,C) = \frac{2 \cdot I(Y;C)}{H(Y) + H(C)}\]
+	\item l'information mutuelle normalisée (NMI) \citep{strehl2000nmi, vinh2010clusteringComparison} normalise l'information mutuelle entre les labels attendus $Y$ et ceux des clusters $C$ par une agrégation de leur entropie respective. Par exemple, l'incertitude symétrique \citep{kvalseth1987entropy_NMI}) utilise la moyenne comme agrégateur:  $NMI(Y,C) = \frac{2 \cdot I(Y;C)}{H(Y) + H(C)} $
 	Avec $I(Y;C) = H(Y) - H(Y \vert C)$ et $H(Y) = \sum\lim\limits_{Y_i \in Y}\big(- \p(Y_i)\cdot\log_2\p(Y_i)\big)$
 	\item l'indice ajusté par chance de Rand (\textit{ajusted Rand index} - ARI) \citep{hubert1985adjustedrandidx} corrige l'indice de Rand (RI) \citep{rand1971randidx} pour obtenir une valeur très proche de 0.0 pour les clusterings aléatoires et exactement 1.0 lorsque les clusters sont identiques aux classes attendues: %\[ARI(Y,C) = \frac{RI(Y,C) - E_{perm}\left[RI(Y,C)\right]}{1.0 - E_{perm}\left[RI(Y,C)\right]} \]
 	\[ARI(Y,C) = \frac{\sum\limits_{i,j}\binom{n_{ij}}{2} - \frac{\sum\limits_{i}\binom{a_{i}}{2}\sum\limits_{j}\binom{b_{j}}{2}}{\binom{N}{2}}}{\frac{1}{2}\big[\sum\limits_{i}\binom{a_{i}}{2}+\sum\limits_{j}\binom{b_{j}}{2}\big] - \frac{\sum\limits_{i}\binom{a_{i}}{2}\sum\limits_{j}\binom{b_{j}}{2}}{\binom{N}{2}}}\]
 	avec $\binom{n}{2} = \frac{n(n-1)}{2}$.
-	\item la précision du clustering (ACC) \citep{}.  
+	% \item la précision du clustering (ACC) \citep{}.   \textcolor{red}{pas utilisé car nécessite de trouver le meilleur mapping entre les classes et les clusters}
+	\item les métriques ARI et NMI se contentent de mesurer la différence des proportions entre les clusters de deux regroupements sans tenir compte des affections. Une adaptation des mesures de précision, rappel et F1-mesure à la tâche de regroupement non-supervisé donnent une mesure basé sur l'appartenance des paires documents au même groupe dans les deux regroupements.
 \end{itemize}
 Ces métriques doivent être utilisées ensemble  pour compenser les limites de chacune d'elles \citep{yang2017kmeansfriendlyspaces}.
 
@@ -245,13 +248,13 @@ Dis & : & C \times C & \to & \mathbb{R} & \\
 \end{array}
 \end{equation}
 
-$C$ est le corpus. $P_{x,y}$ est l'ensemble des modifications de $x$ nécessaire pour obtenir $y$ i.e. les paires $(w_x, w_y)$ telles que $w_x \in W_x$ a été remplacé par $w_y \in W_y$. $d$ désigne la métrique. Un simple estimateur de $d$ peut être de considérer le taux de mots modifiés dans $x$: 
+$C$ est le corpus. $P_{x,y}$ est l'ensemble des modifications de $x$ nécessaire pour obtenir $y$ i.e. les paires $(w_x, w_y)$ telles que $w_x \in W_x$ a été remplacé par $w_y \in W_y$. $Dis$ désigne la métrique. Un simple estimateur de $Dis$ peut être de considérer le taux de mots modifiés dans $x$: 
 \begin{equation}
-\widetilde{Dis}(x,y) = \frac{\norm{P_{x,y} }}{\norm{W_x}}
+\widetilde{Dis}(x,y) = \frac{\vert P_{x,y} \vert }{\vert W_x\vert }
 \end{equation}
- Un tel modèle ne considère ni l'ordre des mots, ni celui des phrases, la complexité de la modification (une substitution est plus complexe qu'une suppression ou une insertion), ni la différence sémantique entre les mots substituants et les remplacés. Ce dernier aspect peut être estimé en lissant le taux de perturbation à l'aide de la distance sémantique entre les mots substitués (le vecteur représentant le mot vide étant le vecteur nul par ex.):
+ Un tel modèle ne considère ni l'ordre des mots, ni le contenu des documents, ni celui des phrases, la complexité de la modification (une substitution est plus complexe qu'une suppression ou une insertion), ni la différence sémantique entre les mots substituants et les remplacés. Ce dernier aspect peut être estimé en lissant le taux de perturbation à l'aide de la distance sémantique entre les mots substitués (le vecteur représentant le mot vide étant le vecteur nul par ex.):
 \begin{equation}
-\widetilde{Dis}(x,y) = \frac{\sum\limits_{(w_x, w_y) \in P_{x,y}} Dis_{cos}(w_x,w_y)}{\norm{W_x}} \label{equation:similarite:somme-dist-mots}
+\widetilde{Dis}(x,y) = \frac{\sum\limits_{(w_x, w_y) \in P_{x,y}} Dis_{cos}(w_x,w_y)}{\vert W_x\vert} \label{equation:similarite:somme-dist-mots}
 \end{equation}
 $d_w$ désignant la distance sémantique entre les mots. Ainsi, les substitutions sont pondérées par la distance cosinus entre les vecteurs des mots échangés.
 
@@ -275,7 +278,7 @@ Nous ne pouvons que l'estimer. Pour cela, nous générons un jeu artificiel de d
      $\widetilde{Dis}(x,x') = \frac{\sum\limits_{(w_x, w_{x'}) \in P_{x,x'}} Dis_{cos}(w_x,w_{x'})}{card(W_x)}$\;
  }
  \Return $x', \widetilde{Dis}(x,x')$\;
- \caption{Génère une perturbation $x'$ de $x$} \label{algo:similarite:perturbation}
+ \caption{Génère une perturbation $x'$ de $x$: \textit{genereModification($x, p$)}} \label{algo:similarite:perturbation}
 \end{algorithm}
 
 
@@ -284,14 +287,14 @@ Nous ne pouvons que l'estimer. Pour cela, nous générons un jeu artificiel de d
  \KwResult{un mot $w'$} 
  $w' = $ un mot différent de $w$ choisi aléatoirement dans $W$\;
  \Return $w'$
- \caption{Modifie un mot donné $w$} \label{algo:similarite:modifiemot}
+ \caption{Modifie un mot donné $w$: modifie($w$)} \label{algo:similarite:modifiemot}
 \end{algorithm}
 
 Pour garantir la symétrie de la métrique, nous imposons $\widetilde{Dis}(x', x) = \widetilde{Dis}(x, x'), \forall x \in C$. Pour garantir la réflexivité, nous imposons $\widetilde{Dis}(x, x) = 0, \forall x \in C$.
 
 \subsection{Apprentissage de la métrique}
 
-Sur l'ensemble $B = \lbrace (d_i, d'_i, \widetilde{Dis}(d_i, d'_i))\rbrace_{1 \leq i \leq \norm{B}}$ de données synthétiques d'entraînement, on entraîne un modèle régressif $m$ pour prédire la similarité entre 2 documents en fonction de leur représentation vectorielle. Ce modèle régressif peut être utilisé comme métrique de similarité dans un algorithme de clustering comme l'algorithme des K-moyennes au même titre que les métriques citées à la Section \ref{sec:similarite:metriques-de-sim}. Cependant, les modèles de régression ne supportent généralement qu'un seul vecteur en entrée, et pas deux vecteurs comme en dispose la base $B$. Nous somme donc amené à définir l'agrégation adéquate des vecteurs $d_i$ et $d'_i$. L'agrégation qui fonctionne le mieux est la soustraction avec laquelle les documents similaires auront une agrégation avec un grand nombre de composantes tendant vers 0. La fonction d'estimation automatique de la distance sémantique entre $x$ et $y$ s'écrit: $Dis(x, y) = m(x-y)$. 
+Sur l'ensemble $B = \lbrace (d_i, d'_i, \widetilde{Dis}(d_i, d'_i))\rbrace_{1 \leq i \leq \norm{B}}$ de données synthétiques d'entraînement, on entraîne un modèle régressif $m$ pour prédire la similarité entre 2 documents en fonction de leur représentation vectorielle. Ce modèle régressif peut être utilisé comme métrique de similarité dans un algorithme de clustering comme l'algorithme des K-moyennes au même titre que les métriques citées à la Section \ref{sec:similarite:distances}. Cependant, les modèles de régression ne supportent généralement qu'un seul vecteur en entrée, et pas deux vecteurs comme en dispose la base $B$. Nous somme donc amené à définir l'agrégation adéquate des vecteurs $d_i$ et $d'_i$. L'agrégation qui fonctionne le mieux est la soustraction avec laquelle les documents similaires auront une agrégation avec un grand nombre de composantes tendant vers 0. La fonction d'estimation automatique de la distance sémantique entre $x$ et $y$ s'écrit: $Dis(x, y) = m(x-y)$. 
 
 %\textcolor{red}{Issues:}
 %\begin{itemize}
@@ -324,7 +327,7 @@ Pour l'évaluation non supervisée, les catégories de demande utilisée dans le
 \subsection{Configuration}
 Pour analyser la validité et l'adéquation de la métrique apprise, nous effectuons une validation croisée en divisant les données annotées générées en 5 sous-ensembles (\textit{folds}). A chaque itération, la métrique est entraînée sur 4 jeux, puis testée sur une. Quant à l'efficacité de la métrique apprise, nous l'entraînons sur toutes les données annotées générées.
 
-Les documents sont pré-traités avant leur représentation sous forme vectorielle. Ce prétraitement consiste en une lemmatisation, puis une élimination des caractères de ponctuation et des mots inutiles (\textit{stop words})  car ils sont généralement indépendants de toute catégorie.
+Les documents sont pré-traités avant leur représentation sous forme vectorielle. Ce prétraitement consiste à sectionner les documents (chapitre \ref{chap:structuration}), à n'utiliser que la concaténation des section Litige et Motifs (\textcolor{red}{pourquoi?}), à mettre en minuscule et lemmatiser ce contenu, puis à éliminer des caractères de ponctuation et des mots inutiles (\textit{stop words})  car ils sont généralement indépendants de toute catégorie.
 
 La métrique utilisée entre les vecteur mots est la distance cosinus.
 
