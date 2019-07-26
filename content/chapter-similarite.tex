@@ -85,7 +85,7 @@ Il existe de nombreuses métriques de similarité généralement expérimentées
 	
 	$Sim_{soft-cos}(X,Y)= \frac{X^t\cdot S\cdot Y}{\sqrt{X^t\cdot S\cdot X}\cdot \sqrt{Y^t\cdot S\cdot Y}} = \frac{\sum\limits_{i,j}^{\vert W \vert}s_{ij}x_iy_j}{\sqrt{\sum\limits_{i,j}^{\vert W \vert}s_{ij}x_ix_j}\sqrt{\sum\limits_{i,j}^{\vert W \vert}s_{ij}y_iy_j}}$,
 	
-	où $S$, la matrice de similarité entre les termes, peut être calculée à partir de n'importe quelle métrique comme la distance d'édition de Levenshtein (similarité lexicale) \citep{sidorov2014softcosine},  la similarité cosinus entre  plongements sémantiques \citep{charlet2017simbow_acl, charlet2017simbow_tal}, ou la similarité WordNet.
+	où $S$, la matrice de similarité entre les termes, peut être calculée à partir de n'importe quelle métrique comme la distance d'édition de Levenshtein (similarité lexicale) \citep{sidorov2014softcosine},  la similarité cosinus entre  plongements lexicaux \citep{charlet2017simbow_acl, charlet2017simbow_tal}, ou la similarité WordNet.
 	
 	La similarité cosinus  étant comprise entre -1 et +1, sa forme normalisée s'écrit  $\overline{Sim}_{cos}(x,x') = \frac{Sim_{cos}(x,x') + 1}{2}$, d'où la distance $Dis_{cos}(x,x') = 1 - \overline{Sim}_{cos}(x,x')$.
 	
@@ -234,7 +234,7 @@ Ces métriques doivent être utilisées ensemble  pour compenser les limites de 
 
 
 %Un des désavantage de l'algorithme des K-médoïdes est son long temps de calcul dû à ???. Nous avons, par conséquent, remplacé la distance euclidienne par la WMD dans la version plus rapide de \cite{Park2009fastkmedoids} avec nombre de clusters prédéfinis, et celle de \cite{sabzi2011fuzzykmedoids} qui intègre une optimisation du nombre de clusters.
-%\section{Méthode 2: cartes auto-organisatrice de Kohonen et concaténation de plongement sémantique de phrases (sentence embedding)}
+%\section{Méthode 2: cartes auto-organisatrice de Kohonen et concaténation de plongement lexical de phrases (sentence embedding)}
 
 \section{Métrique apprise pour intégrer l'ordre des mots}
 Nous définissons la métrique suivante qui est fonction des transformations permettant de passer d'un document $d_i$ à un autre $d_j$ :
@@ -252,54 +252,42 @@ Un intérêt de cette distance est qu'elle tient compte de l'ordre des mots cont
 \forall (d_i, d_j) \in \mathcal{D} \times \mathcal{D}, f(\mathcal{M}_{d_i, d_j}) = \frac{\norm{\mathcal{M}_{d_i, d_j}}}{\norm{d_i}}, \label{eq:similarite:taux-modif}
 \end{equation}
 
-nous avons $Dis_{cos}(d_1, d_2) = 0.$ (car les deux textes contiennent exactement les mêmes mots) et $Dis_\mathcal{M}(d_1, d_2)=0.4$ (car $\mathcal{M} = \lbrace (\textit{chien}, \textit{chat}), (\textit{chat}, \textit{chien})\rbrace$,  et $\norm{d_1} = 5 \text{ mots}$). La limite de cette distance est d'être très stricte sur l'ordre des mots.
+nous avons $Dis_{cos}(d_1, d_2) = 0.$ (car les deux textes contiennent exactement les mêmes mots) et $Dis_\mathcal{M}(d_1, d_2)=0.4$ (car $\mathcal{M} = \lbrace (\textit{chien}, \textit{chat}), (\textit{chat}, \textit{chien})\rbrace$,  et $\norm{d_1} = 5 \text{ mots}$). La limite de cette distance est d'être très stricte sur l'ordre des mots. C'est pourquoi sa combinaison avec la distance cosinus est explorée dans ce chapitre. 
 
 Pour des textes de même taille, toute formulation mathématique permettrait de calculer $Dis_\mathcal{M}$ car il est facile de faire correspondre les mots par leur position. Par contre, pour des textes de tailles différentes, il est impossible de savoir les positions où des mots ont été supprimés ou ajoutés, et par conséquent, il devient impossible d'estimer leur distance par une formule. La distance étant une valeur continue, en entraînant un modèle de régression sur un ensemble de paires de documents pour lesquelles on connaît la distance, il est possible de la prédire pour des paires de textes de tailles quelconques. Nous proposons de générer une base synthétique de paires de documents dont l'un est un document du corpus original mais l'autre est le résultat de substitutions et suppression de mots du premier. Étant donné, ces modifications sont contrôlées, il est facile de calculer une valeur de $Dis_\mathcal{M}$ qui corresponde à chaque paire générée de documents, même s'ils sont de tailles différentes (en considérant la suppression d'un mot comme son remplacement par le \og mot vide \fg{}).
 
 \subsection{Génération d'une base d'apprentissage}
-La génération de la base synthétique nécessite de définir une formulation de la fonction $f(\mathcal{M}_{d_i, d_j})$ pour les documents de taille égale, comme par exemple celle de l'Équation \ref{eq:similarite:taux-modif}. Cette formulation ne considérant pas la similarité entre les mots substituants et les remplacés, nous proposons de pondérer chaque modification par la distance entre les mots substitués (le vecteur représentant le  \og mot vide \fg{} étant nul):
+La génération de la base synthétique nécessite de définir une formulation de la fonction $f(\mathcal{M}_{d_i, d_j})$ pour les documents de taille égale, comme par exemple celle de l'Équation \ref{eq:similarite:taux-modif}. Cette formulation ne considérant pas la similarité entre les mots substituants et les remplacés, nous proposons de pondérer chaque modification par la distance entre les mots substitués (le vecteur du  \og mot vide \fg{} étant nul):
 \begin{equation}
-\widetilde{f}(\mathcal{M}_{d_i, d_j}) = \frac{\sum\limits_{(d_{ik}, d_{jk}) \in \mathcal{M}_{x,y}} Dis_{cos}(\vec{d_{ik}}, \vec{d_{jk}})}{\norm{d_i}} \label{equation:similarite:somme-dist-mots}
+{Dis_\mathcal{M}}(d_i, d'_i) = {f}(\mathcal{M}_{d_i, d'_i}) = \frac{\sum\limits_{(d_{ik}, d'_{ik}) \in \mathcal{M}_{x,y}} Dis_{cos}(\vec{d_{ik}}, \vec{d_{ik}})}{\norm{d_i}} \label{equation:similarite:somme-dist-mots}
 \end{equation}
-$\vec{d_{ik}}$ désigne vecteur résultant du plongement sémantique du mot $d_{ik}$.
+$d_i$ est un document du corpus original $\mathcal{D}$, et $d'_i$ est le document synthétique obtenu par modifications contrôlées de $d_i$. $\vec{d_{ik}}$ désigne le plongement lexical du mot $d_{ik}$. Pour garantir la symétrie et la réflexivité de la métrique, nous imposons respectivement ${Dis_\mathcal{M}}(d_i, d'_i) = {Dis_\mathcal{M}}(d'_i, d_i)$ et ${Dis_\mathcal{M}}(d_i, d_i) = {Dis_\mathcal{M}}(d'_i, d'_i) = 0, \forall d \in \mathcal{D}$ sur le jeu d'entraînement généré. 
 
-Il est difficile de calculer de telles distances sur un grand corpus étant donné la longueur de notre document. 
-Nous ne pouvons que l'estimer. Pour cela, nous générons un jeu artificiel de données pour l'entraînement d'un modèle régressif d'estimation de la métrique entre deux textes $x$ et $y$. En effet, nous partons d'un ensemble $C$ de documents et pour chacun de ces documents, noté $x$, nous générons aléatoirement une valeur seuil de probabilité $p$ contrôlant le taux de transformation de $x$. Par la suite, le texte  $y$, résultant de la modification de $x$, est généré en modifiant les mots de $x$ :
+L'algorithme de génération de document synthétique utilise une valeur seuil de probabilité $p$ contrôlant le taux de modifications à effectuer sur le document original (Algorithme \ref{algo:similarite:modifierdoc}). 
 
 \begin{algorithm}[!htb] % Version française avec : https://pierre.chachatelier.fr/latex/index.php
- \KwData{texte $x$, valeur seuil de probabilité $p$}
- \KwResult{$x'$, $\widetilde{Dis}(x,x')$}
- ${x'} = [] $\; 
- $P_{x,x'} = \emptyset$\;
- \For{$w_x$ in $x$}{
+ \KwData{document $d_i$, valeur seuil de probabilité $p$, le vocabulaire $W$}
+ \KwResult{$d'_i$, $\mathcal{M}_{d_i, d'_i}$}
+ ${d'_i} = [] $\; 
+ $\mathcal{M}_{d_i, d'_i} = \emptyset$\;
+ \For{ $k \in [1\twodots \norm{d_i} ]$ }{
  	$v = random(0,1)$\;
     \eIf{v < p}{
-       $w_x' += modifie(w_x)$; // Algorithme \ref{algo:similarite:modifiemot} \;
-       ${x'} += w_{x'}$ \;
-       $P_{x,x'} = P_{x,x'} \cup \lbrace (w_x, w_{x'}) \rbrace$\;
+       $d'_{ik} = modifier\_mot(d_{ik}, W)$; // mot aléatoire de $W$ différent de $d_{ik}$\;
+       $\mathcal{M}_{d_{ik},d'_{ik}} = \mathcal{M}_{d_i, d'_i} \cup \lbrace (d_{ik},d'_{ik}) \rbrace$\;
      }{
      $x' += w_x$\;
-     }
-     $\widetilde{Dis}(x,x') = \frac{\sum\limits_{(w_x, w_{x'}) \in P_{x,x'}} Dis_{cos}(w_x,w_{x'})}{card(W_x)}$\;
+     }     
  }
- \Return $x', \widetilde{Dis}(x,x')$\;
- \caption{Génère une perturbation $x'$ de $x$: \textit{genereModification($x, p$)}} \label{algo:similarite:perturbation}
+ \Return $d'_i, \mathcal{M}_{d_i, d'_i}$\;
+ \caption{\textit{modifier\_document($d_i, p, W$)}} \label{algo:similarite:modifierdoc}
 \end{algorithm}
 
+Plusieurs documents sont ainsi générés pour chaque $d_i \in \mathcal{D}$ pour former une base d'entraînement $B_\mathcal{M} = \lbrace (d_i, d'_i, {Dis}(d_i, d'_i))\rbrace_{1 \leq i \leq \norm{B_\mathcal{M}}}$.
 
-\begin{algorithm}[H]
- \KwData{un mot $w$, le vocabulaire $W$ }
- \KwResult{un mot $w'$} 
- $w' = $ un mot différent de $w$ choisi aléatoirement dans $W$\;
- \Return $w'$
- \caption{Modifie un mot donné $w$: modifie($w$)} \label{algo:similarite:modifiemot}
-\end{algorithm}
+\subsection{Entraînement de la métrique}
 
-Pour garantir la symétrie de la métrique, nous imposons $\widetilde{Dis}(x', x) = \widetilde{Dis}(x, x'), \forall x \in C$. Pour garantir la réflexivité, nous imposons $\widetilde{Dis}(x, x) = 0, \forall x \in C$.
-
-\subsection{Apprentissage de la métrique}
-
-Sur l'ensemble $B = \lbrace (d_i, d'_i, \widetilde{Dis}(d_i, d'_i))\rbrace_{1 \leq i \leq \norm{B}}$ de données synthétiques d'entraînement, on entraîne un modèle régressif $m$ pour prédire la similarité entre 2 documents en fonction de leur représentation vectorielle. Ce modèle régressif peut être utilisé comme métrique de similarité dans un algorithme de clustering comme l'algorithme des K-moyennes au même titre que les métriques citées à la Section \ref{sec:similarite:distances}. Cependant, les modèles de régression ne supportent généralement qu'un seul vecteur en entrée, et pas deux vecteurs comme en dispose la base $B$. Nous somme donc amené à définir l'agrégation adéquate des vecteurs $d_i$ et $d'_i$. L'agrégation qui fonctionne le mieux est la soustraction avec laquelle les documents similaires auront une agrégation avec un grand nombre de composantes tendant vers 0. La fonction d'estimation automatique de la distance sémantique entre $x$ et $y$ s'écrit: $Dis(x, y) = m(x-y)$. 
+Sur $B_\mathcal{M}$, on entraîne un modèle régressif $m$ pour prédire la distance entre deux documents quelconques en fonction de leur représentation vectorielle. Ce modèle de régression $Reg$ peut être utilisé comme distance dans un algorithme de regroupement comme l'algorithme des K-moyennes. Cependant, les modèles de régression ne supportent généralement qu'un seul vecteur en entrée, et pas deux comme en dispose la base $B$. Les vecteurs $d_i$ et $d'_i$ doivent donc être agrégés en un seul. L'agrégation qui fonctionne le mieux est la soustraction avec laquelle les documents similaires auront une agrégation avec un grand nombre de composantes tendant vers 0. La fonction d'estimation automatique de la distance sémantique entre $x$ et $y$ s'écrit: $Dis(d_i, d_j) = Reg(\vec{d_{i}} - \vec{d_{j}})$. 
 
 %\textcolor{red}{Issues:}
 %\begin{itemize}
