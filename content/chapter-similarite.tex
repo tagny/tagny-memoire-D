@@ -19,7 +19,7 @@ Cette section fait une synthèse bibliographique des différents aspects rentran
 
 \subsection{Choix de l’algorithme de clustering}
 
-Le clustering de documents est une tâche dont l'objectif est d'identifier, sans supervision\footnote{Sans exemples annotés.}, une structure pertinente (pour le domaine expert) dans un ensemble $D = \lbrace d_1, \dots, d_N \rbrace$ de $N$ documents non annotés en construisant des groupes représentants des catégories inconnues au départ. Ces groupes, appelés clusters, peuvent être disjoints ou à chevauchements, et plates ou hiérarchiques suivant les contraintes du domaine expert. L’algorithme à utiliser dépend généralement de la forme qu’on souhaite donner à l’organisation. 
+Le clustering de documents est une tâche dont l'objectif est d'identifier, sans supervision\footnote{Sans exemples annotés.}, une structure pertinente (pour le domaine expert) dans un ensemble $\mathcal{D} = \lbrace d_1, \dots, d_N \rbrace$ de $N$ documents non annotés en construisant des groupes représentants des catégories inconnues au départ. Ces groupes, appelés clusters, peuvent être disjoints ou à chevauchements, et plates ou hiérarchiques suivant les contraintes du domaine expert. L’algorithme à utiliser dépend généralement de la forme qu’on souhaite donner à l’organisation. 
 \subsubsection{Partitionnement disjoint}
 Pour réaliser des partitions distinctes\footnote{Chaque document n'appartient qu'à un seul cluster.} (\textit{hard clustering}), des algorithmes tels que celui des K-moyennes \citep{forgey1965kmeans} et celui des \textit{K-medoïdes} \citep{kaufman1987kmedoids} seront préférés \citep{balabantaray2015kmeanskmedoids}. Ces deux algorithmes fonctionnent de manière similaire, et nécessitent que le nombre $K$ de clusters soient prédéfini. Ils commencent par une définition aléatoire de $K$ centres initiaux de clusters (centroïdes) et l'affectation des différents documents au cluster dont le centre est le plus proche. S'en suit une boucle dans laquelle le centroïde est recalculé (le point à distance totale minimale avec les membres du cluster) et les documents sont réaffectés chacun au cluster dont le centroïde est le plus proche. L'algorithme s'arrête si aucune amélioration n'est plus observée, ce qui se traduit soit par l'atteinte d'une valeur minimale prédéfinie de l'erreur de \textit{clustering}\footnote{Somme des distances au carré entre les points et leur centre respectif.} ou d'une mesure d'évaluation non supervisée (\ref{sec:similarite:biblio:unsupeval}). La différence entre l'algorithmes des K-moyennes et celui des \textit{K-medoïdes} tient principalement au fait que les centroïdes du premier ne sont pas nécessairement des points (documents) de l'ensemble d'origine, mais des points moyennes des représentations vectorielles des membres du cluster, contrairement à l'algorithme des \textit{K-medoïdes} qui ne considère que les documents originaux qui ont une distance minimale à tous les documents dans leur cluster. Cette différence donne l'avantage au \textit{K-medoïdes} de ne pas dépendre d'une représentation vectorielle nécessaire au calcul de la moyenne, mais elle a aussi l'inconvénient d'augmenter sa complexité en temps  car il faut calculer et stocker la distance entre toutes les paires de documents. Il existe plusieurs autres algorithmes de clustering disjoint dont le principe de fonctionnement est différent de celui des K-moyennes. Par exemple, l'algorithme DBSCAN (\textit{Density-based spatial clustering of applications with noise}) \citep{ester1996dbscan}  ne prend pas en paramètre le nombre de clusters à construire. Il est défini sur le concept de régions de densité caractérisées par la distance minimale $\epsilon$ autorisée entre deux points d'une même région, et le nombre maximal de points qui doivent être dans le voisinage de rayon $\epsilon$ d'un point pour que ce voisinage soit une région de densité (le point central est appelé "point noyau" (\textit{core point}). Le principe du DBSCAN est de construire les clusters successivement en reliant les régions (voisinages) dont les noyaux sont à distance plus ou moins inférieure à $\epsilon$. Les points qui sont seul dans leur cluster sont qualifiés d'\textit{outliers}. 
 % amélioration par réduction de dimension
@@ -149,6 +149,9 @@ Dis(d, d') = 	& \min\limits_{T>0}
 % 	\item L'analyse discriminante locale de Fisher (LFDA) \citep{sugiyama2007LFDA, } méthode supervisée (données labellisées) de réduction de dimension
 % \end{itemize}
 
+\subsection{Représentations des textes}
+La formulation des distances exploite très souvent une représentation vectorielle des texte (cf.  \ref{sec:similarite:distances}). 
+
 
 \subsection{Déterminer le nombre approprié de clusters (validation)}
 
@@ -233,28 +236,28 @@ Ces métriques doivent être utilisées ensemble  pour compenser les limites de 
 %Un des désavantage de l'algorithme des K-médoïdes est son long temps de calcul dû à ???. Nous avons, par conséquent, remplacé la distance euclidienne par la WMD dans la version plus rapide de \cite{Park2009fastkmedoids} avec nombre de clusters prédéfinis, et celle de \cite{sabzi2011fuzzykmedoids} qui intègre une optimisation du nombre de clusters.
 %\section{Méthode 2: cartes auto-organisatrice de Kohonen et concaténation de plongement sémantique de phrases (sentence embedding)}
 
-\section{Apprentissage d'une métrique fondée la modification du document}
-Les algorithmes de clustering et de classification s'appuient généralement sur une représentation vectorielle à partir de laquelle une valeur de similarité est calculée de manière non supervisée et avec une formule mathématique statique. Dans le cas des textes, Il n'est pas toujours évident de choisir la représentation adaptée à une sémantique précise et objective voulue. De plus, il existe un large éventail de schémas de représentations vectorielles. Elles vont des représentations statistiques comme TF-IDF, aux représentations apprises comme le Doc2Vec ou Sent2Vec, et en passant par les agrégations pondérées de modèles distribués de mots (Word2Vec par ex.). 
-
-L'idée dans notre approche est de proposée une formulation de la similarité entre deux documents qui est basée les modifications nécessaires pour transformer un document en un autre. Cette fonction  est apprise à partir d'une base synthétique d'entraînement de similarité entre paires de textes. 
-\begin{postulat}
-La distance entre deux documents est une fonction des perturbations (modifications) permettant de transformer un document en l'autre. \label{post:similarite:distance}
-\end{postulat}
-La similarité est définie en fonction de la notion de perturbation du contenu d'un texte (Postulat \ref{post:similarite:distance}): après une légère perturbation, le sens d'un texte reste assez similaire à celui de l'original; et après un grand nombre de modification, le sens du  texte sera très différent de l'original. La similarité sémantique entre des textes décroît donc avec l'intensité des modifications permettant de passer d'un document à un autre. 
-
-La distance sémantique étant une valeur continue, en entrainant un modèle de régression sur un ensemble de paires de documents pour lesquelles on connait la distance, il est possible de la prédire pour de nouvelles paires. Nous proposons de générer une base synthétique de paires de documents dont l'un est un texte original mais l'autre est le résultat de substitutions et suppression de mots dans le premier. Etant donné, que nous contrôlons ces modifications il est plus facile d'affecter une distance qui y corresponde.
-
-\subsection{Génération d'une base d'apprentissage}
-Nous définissons une densité de probabilité de perturbation $P \in [0; 1]$ associée à la probabilité de modifier un mot (suppression / remplacement par un mot très différent). Considérons que pour tout texte $x$, $W_x$ désigne l'ensemble des mots dans $x$.
-Nous définissons un patron ou une famille de métriques:
+\section{Métrique apprise pour intégrer l'ordre des mots}
+Nous définissons la métrique suivante qui est fonction des transformations permettant de passer d'un document $d_i$ à un autre $d_j$ :
 \begin{equation}
 \begin{array}{cccccc}
-Dis & : & C \times C & \to & \mathbb{R} & \\
- & & x, y & \mapsto & Dis(x, y) & = f(P_{x,y}) \\
+Dis_\mathcal{M} & : & \mathcal{D} \times \mathcal{D} & \to & \mathbb{R} & \\
+& & d_i, d_j & \mapsto & Dis_{modif}(d_i, d_j) & = f(\mathcal{M}_{d_i, d_j}). \\
 \end{array}
 \end{equation}
 
-$C$ est le corpus. $P_{x,y}$ est l'ensemble des modifications de $x$ nécessaire pour obtenir $y$ i.e. les paires $(w_x, w_y)$ telles que $w_x \in W_x$ a été remplacé par $w_y \in W_y$. $Dis$ désigne la métrique. Un simple estimateur de $Dis$ peut être de considérer le taux de mots modifiés dans $x$: 
+$\mathcal{D}$ est le corpus. $\mathcal{M}_{d_i, d_j}$ est l'ensemble des modifications de $d_i$ permettant pour obtenir $d_j$ i.e. les paires de mots $(d_{ik}, d_{jk})$ telles que le mot $d_{ik}$ à la position $k$ dans $d_i$ a été remplacé par $d_{jk}$ à la position $k$ dans $d_j$. $f$ est une fonction qui croît modifications. Après une légère modification, le sens d'un texte reste assez similaire à celui de l'original. Tandis qu'après un grand nombre de modifications, le sens du texte sera très différent de l'original. %La distance croît donc proportionnellement avec le taux de modification (d'où le produit de $Dis_{soft-cos}$ et $f$). $Dis_{soft-cos}$  est étendue car elle tient compte 
+
+Un intérêt de cette distance est qu'elle tient compte de l'ordre des mots contrairement à une distance classique comme la distance cosinus. Par exemple, en considérant les deux textes  $t_1 = \text{\og \textit{le chien poursuit le chat}\fg{}}$ et $t_2 = \text{\og \textit{le chat poursuit le chien} \fg{}}$, et en supposant que $f$ est simplement le taux de mots modifiés:
+\begin{equation}
+\forall (d_i, d_j) \in \mathcal{D} \times \mathcal{D}, f(\mathcal{M}_{d_i, d_j}) = \frac{\norm{\mathcal{M}_{d_i, d_j}}}{\norm{d_i}},
+\end{equation}
+
+nous avons $Dis_{cos}(d_1, d_2) = 0.$ (car les deux textes contiennent exactement les mêmes mots) et $Dis_\mathcal{M}(d_1, d_2)=0.4$ (car $\mathcal{M} = \lbrace (\textit{chien}, \textit{chat}), (\textit{chat}, \textit{chien})$,  et $\norm{d_1} = 5$). La limite de cette distance est d'être très stricte sur l'ordre des mots
+
+Pour des textes de même taille, toute formulation mathématique permettrait de calculer $Dis_\mathcal{M}$ car il est facile de faire correspondre les mots par leur position. Par contre, pour des textes de tailles différentes, il est impossible de savoir les positions où des mots ont été supprimés ou ajoutés, et par conséquent, il devient impossible d'estimer leur distance par une formule. La distance étant une valeur continue, en entraînant un modèle de régression sur un ensemble de paires de documents pour lesquelles on connaît la distance, il est possible de la prédire pour des paires de textes de tailles quelconques. Nous proposons de générer une base synthétique de paires de documents dont l'un est un document du corpus original mais l'autre est le résultat de substitutions et suppression de mots dans le premier. Étant donné, que nous contrôlons ces modifications il est plus facile d'affecter une distance qui y corresponde.
+
+\subsection{Génération d'une base d'apprentissage}
+ $Dis_{cf}$ désigne la métrique. Un simple estimateur de $Dis_{cf}$ peut être de considérer le taux de mots modifiés dans $x$: 
 \begin{equation}
 \widetilde{Dis}(x,y) = \frac{\vert P_{x,y} \vert }{\vert W_x\vert }
 \end{equation}
@@ -265,7 +268,7 @@ $C$ est le corpus. $P_{x,y}$ est l'ensemble des modifications de $x$ nécessaire
 $d_w$ désignant la distance sémantique entre les mots. Ainsi, les substitutions sont pondérées par la distance cosinus entre les vecteurs des mots échangés.
 
 Il est difficile de calculer de telles distances sur un grand corpus étant donné la longueur de notre document. 
-Nous ne pouvons que l'estimer. Pour cela, nous générons un jeu artificiel de données pour l'entraînement d'un modèle régressif d'estimation de la métrique entre deux textes $x$ et $y$. En effet, nous partons d'un ensemble $C$ de documents et pour chacun de ces documents, noté $x$, nous générons aléatoirement une valeur seuil de probabilité de perturbation en deça duquel un mot de $x$ est modifié. Par la suite, le texte  $y$, résultant de la modification de $x$, est généré en modifiant les mots de $x$ :
+Nous ne pouvons que l'estimer. Pour cela, nous générons un jeu artificiel de données pour l'entraînement d'un modèle régressif d'estimation de la métrique entre deux textes $x$ et $y$. En effet, nous partons d'un ensemble $C$ de documents et pour chacun de ces documents, noté $x$, nous générons aléatoirement une valeur seuil de probabilité $p$ contrôlant le taux de transformation de $x$. Par la suite, le texte  $y$, résultant de la modification de $x$, est généré en modifiant les mots de $x$ :
 
 \begin{algorithm}[!htb] % Version française avec : https://pierre.chachatelier.fr/latex/index.php
  \KwData{texte $x$, valeur seuil de probabilité $p$}
