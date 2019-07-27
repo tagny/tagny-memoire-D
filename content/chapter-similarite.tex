@@ -245,7 +245,7 @@ Dis_\mathcal{M} & : & \mathcal{D} \times \mathcal{D} & \to & \mathbb{R} & \\
 \end{array}
 \end{equation}
 
-$\mathcal{D}$ est le corpus. $\mathcal{M}_{d_i, d_j}$ est l'ensemble des modifications de $d_i$ permettant pour obtenir $d_j$ i.e. les paires de mots différents $(d_{ik}, d_{jk})$ telles que le mot $d_{ik}$ à la position $k$ dans $d_i$ a été remplacé par $d_{jk}$ à la position $k$ dans $d_j$. $f$ est une fonction qui croît modifications. Après une légère modification, le sens d'un texte reste assez similaire à celui de l'original. Tandis qu'après un grand nombre de modifications, le sens du texte sera très différent de l'original. %La distance croît donc proportionnellement avec le taux de modification (d'où le produit de $Dis_{soft-cos}$ et $f$). $Dis_{soft-cos}$  est étendue car elle tient compte 
+$\mathcal{D}$ est le corpus. $\mathcal{M}_{d_i, d_j}$ est l'ensemble des modifications de $d_i$ permettant pour obtenir $d_j$ i.e. les paires de mots différents $(d_{ik}, d_{jk})$ telles que le mot $d_{ik}$ à la position $k$ dans $d_i$ a été remplacé par $d_{jk}$ à la position $k$ dans $d_j$. $f$ est une fonction qui croît avec le nombre de modifications. Après une légère modification, le sens d'un texte reste assez similaire à celui de l'original. Tandis qu'après un grand nombre de modifications, le sens du texte sera très différent de l'original. %La distance croît donc proportionnellement avec le taux de modification (d'où le produit de $Dis_{soft-cos}$ et $f$). $Dis_{soft-cos}$  est étendue car elle tient compte 
 
 Un intérêt de cette distance est qu'elle tient compte de l'ordre des mots contrairement à une distance classique comme la distance cosinus. Par exemple, en considérant les deux textes  $t_1 = \text{\og \textit{le chien poursuit le chat}\fg{}}$ et $t_2 = \text{\og \textit{le chat poursuit le chien} \fg{}}$, et en supposant que $f$ est simplement le taux de mots modifiés:
 \begin{equation}
@@ -254,19 +254,19 @@ Un intérêt de cette distance est qu'elle tient compte de l'ordre des mots cont
 
 nous avons $Dis_{cos}(d_1, d_2) = 0.$ (car les deux textes contiennent exactement les mêmes mots) et $Dis_\mathcal{M}(d_1, d_2)=0.4$ (car $\mathcal{M} = \lbrace (\textit{chien}, \textit{chat}), (\textit{chat}, \textit{chien})\rbrace$,  et $\norm{d_1} = 5 \text{ mots}$). La limite de cette distance est d'être très stricte sur l'ordre des mots. C'est pourquoi sa combinaison avec la distance cosinus est explorée dans ce chapitre. 
 
-Pour des textes de même taille, toute formulation mathématique permettrait de calculer $Dis_\mathcal{M}$ car il est facile de faire correspondre les mots par leur position. Par contre, pour des textes de tailles différentes, il est impossible de savoir les positions où des mots ont été supprimés ou ajoutés, et par conséquent, il devient impossible d'estimer leur distance par une formule. La distance étant une valeur continue, en entraînant un modèle de régression sur un ensemble de paires de documents pour lesquelles on connaît la distance, il est possible de la prédire pour des paires de textes de tailles quelconques. Nous proposons de générer une base synthétique de paires de documents dont l'un est un document du corpus original mais l'autre est le résultat de substitutions et suppression de mots du premier. Étant donné, ces modifications sont contrôlées, il est facile de calculer une valeur de $Dis_\mathcal{M}$ qui corresponde à chaque paire générée de documents, même s'ils sont de tailles différentes (en considérant la suppression d'un mot comme son remplacement par le \og mot vide \fg{}).
+Pour des textes de même taille, toute formulation mathématique permettrait de calculer $Dis_\mathcal{M}$ car il est facile de faire correspondre les mots par leur position. Par contre, pour des textes de tailles différentes, il est impossible de savoir les positions où des mots ont été supprimés ou ajoutés, et par conséquent, il devient impossible d'estimer leur distance par une formule. La distance étant une valeur continue, en entraînant un modèle de régression sur un ensemble de paires de documents pour lesquelles on connaît la distance, il est possible de la prédire pour des paires de textes de tailles quelconques. Nous proposons de générer une base synthétique de paires de documents dont l'un est un document du corpus original mais l'autre est le résultat de substitutions et suppression de mots du premier. En contrôlant ces modifications, il est facile de calculer une valeur de $Dis_\mathcal{M}$ pour chaque paire générée de documents, même s'ils sont de tailles différentes (en considérant la suppression d'un mot comme son remplacement par le \og mot vide \fg{} considéré comme faisant partie du vocabulaire $W$).
 
 \subsection{Génération d'une base d'apprentissage}
 La génération de la base synthétique nécessite de définir une formulation de la fonction $f(\mathcal{M}_{d_i, d_j})$ pour les documents de taille égale, comme par exemple celle de l'Équation \ref{eq:similarite:taux-modif}. Cette formulation ne considérant pas la similarité entre les mots substituants et les remplacés, nous proposons de pondérer chaque modification par la distance entre les mots substitués (le vecteur du  \og mot vide \fg{} étant nul):
 \begin{equation}
 {Dis_\mathcal{M}}(d_i, d'_i) = {f}(\mathcal{M}_{d_i, d'_i}) = \frac{\sum\limits_{(d_{ik}, d'_{ik}) \in \mathcal{M}_{x,y}} Dis_{cos}(\vec{d_{ik}}, \vec{d_{ik}})}{\norm{d_i}} \label{equation:similarite:somme-dist-mots}
 \end{equation}
-$d_i$ est un document du corpus original $\mathcal{D}$, et $d'_i$ est le document synthétique obtenu par modifications contrôlées de $d_i$. $\vec{d_{ik}}$ désigne le plongement lexical du mot $d_{ik}$. Pour garantir la symétrie et la réflexivité de la métrique, nous imposons respectivement ${Dis_\mathcal{M}}(d_i, d'_i) = {Dis_\mathcal{M}}(d'_i, d_i)$ et ${Dis_\mathcal{M}}(d_i, d_i) = {Dis_\mathcal{M}}(d'_i, d'_i) = 0, \forall d \in \mathcal{D}$ sur le jeu d'entraînement généré. 
+$d_i$ est un document du corpus original $\mathcal{D}$, et $d'_i$ est le document synthétique obtenu par modifications contrôlées de $d_i$. $\vec{d_{ik}}$ désigne le plongement lexical du mot $d_{ik}$. Pour garantir la symétrie et la réflexivité de la métrique, nous imposons respectivement ${Dis_\mathcal{M}}(d_i, d'_i) = {Dis_\mathcal{M}}(d'_i, d_i)$ et ${Dis_\mathcal{M}}(d_i, d_i) = {Dis_\mathcal{M}}(d'_i, d'_i) = 0, \forall d_i \in \mathcal{D}$ sur le jeu d'entraînement généré. 
 
-L'algorithme de génération de document synthétique utilise une valeur seuil de probabilité $p$ contrôlant le taux de modifications à effectuer sur le document original (Algorithme \ref{algo:similarite:modifierdoc}). 
+L'algorithme de génération de document synthétique utilise une valeur seuil de probabilité $0<p<1$ contrôlant le taux de modifications à effectuer sur le document original (Algorithme \ref{algo:similarite:modifierdoc}). 
 
 \begin{algorithm}[!htb] % Version française avec : https://pierre.chachatelier.fr/latex/index.php
- \KwData{document $d_i$, valeur seuil de probabilité $p$, le vocabulaire $W$}
+ \KwData{document $d_i \in \mathcal{D}$, valeur seuil de probabilité $p$, le vocabulaire $W$}
  \KwResult{$d'_i$, $\mathcal{M}_{d_i, d'_i}$}
  ${d'_i} = [] $\; 
  $\mathcal{M}_{d_i, d'_i} = \emptyset$\;
@@ -276,14 +276,14 @@ L'algorithme de génération de document synthétique utilise une valeur seuil d
        $d'_{ik} = modifier\_mot(d_{ik}, W)$; // mot aléatoire de $W$ différent de $d_{ik}$\;
        $\mathcal{M}_{d_{ik},d'_{ik}} = \mathcal{M}_{d_i, d'_i} \cup \lbrace (d_{ik},d'_{ik}) \rbrace$\;
      }{
-     $x' += w_x$\;
+     $d'_{ik} = d_{ik}$\;
      }     
  }
  \Return $d'_i, \mathcal{M}_{d_i, d'_i}$\;
  \caption{\textit{modifier\_document($d_i, p, W$)}} \label{algo:similarite:modifierdoc}
 \end{algorithm}
 
-Plusieurs documents sont ainsi générés pour chaque $d_i \in \mathcal{D}$ pour former une base d'entraînement $B_\mathcal{M} = \lbrace (d_i, d'_i, {Dis}(d_i, d'_i))\rbrace_{1 \leq i \leq \norm{B_\mathcal{M}}}$.
+Pour une même valeur ou des valeurs différentes de $p$, plusieurs documents sont ainsi générés pour chaque $d_i \in \mathcal{D}$ pour former un ensemble de données d'entraînement $B_\mathcal{M} = \lbrace (d_i, d'_i, {Dis}(d_i, d'_i))\rbrace_{1 \leq i \leq \norm{B_\mathcal{M}}}$.
 
 \subsection{Entraînement de la métrique}
 
@@ -303,7 +303,7 @@ Sur $B_\mathcal{M}$, on entraîne un modèle régressif $m$ pour prédire la dis
 Cette section discute la validité, l'adéquation, et l'efficacité de la métrique apprise en comparaison avec d'autres métriques d'estimation de la similarité sémantique entre documents. La validité de la métrique est établie si cette dernière respecte les propriétés d'une distance. L'adéquation de la métrique avec le problème à résoudre mesure la capacité de la métrique à estimer une distance très faible entre documents du même cluster, en même temps qu'une similarité quasi nulle entre documents de clusters différents, indépendamment de l'algorithme de clustering appliqué. Enfin, l'efficacité de la métrique est liée à la qualité de clustering résultant de l'application d'un algorithme de clustering combiné avec la métrique apprise.
 
 
-\subsection{Annotations de données d'évaluation}
+\subsection{Annotation manuelle de données d'évaluation}
 Pour l'évaluation supervisée, nous disposons d'une base annotée sur la catégorie de demande "dommage-intérêts / action en responsabilité civile professionnelle contre les avocats" qui concerne les contentieux impliquant des avocats.
 L'expert annotateur a identifié quatre cas différents (a, b, c, d) décrits en annexe. En gros:
 \begin{itemize}
@@ -317,15 +317,15 @@ Cet ensemble de données comprend 81 documents répartis dans 4 groupes avec 6 d
 
 Pour l'évaluation non supervisée, les catégories de demande utilisée dans les chapitres \ref{chap:quanta} et \ref{chap:sensresultat} sont utilisés en plus.
 
-\subsection{Configuration}
+\subsection{Protocole}
 Pour analyser la validité et l'adéquation de la métrique apprise, nous effectuons une validation croisée en divisant les données annotées générées en 5 sous-ensembles (\textit{folds}). A chaque itération, la métrique est entraînée sur 4 jeux, puis testée sur une. Quant à l'efficacité de la métrique apprise, nous l'entraînons sur toutes les données annotées générées.
 
 Les documents sont pré-traités avant leur représentation sous forme vectorielle. Ce prétraitement consiste à sectionner les documents (chapitre \ref{chap:structuration}), à n'utiliser que la concaténation des section Litige et Motifs (\textcolor{red}{pourquoi?}), à mettre en minuscule et lemmatiser ce contenu, puis à éliminer des caractères de ponctuation et des mots inutiles (\textit{stop words})  car ils sont généralement indépendants de toute catégorie.
 
-La métrique utilisée entre les vecteur mots est la distance cosinus.
+Le vocabulaire $W$ utilisé est restreint au mots du corpus original $D$ sur lequel il faut appliquer les regroupements.
 
 \subsection{Validité de la distance apprise}
-Nous vérifions ici que la métrique respecte les propriétés des distances, et aussi si elle reste normale comme attendues:
+Nous vérifions ici que la métrique respecte les propriétés des distances, et aussi si elle reste normale comme attendues (\textcolor{red}{matrice des distances entre docs de $\mathcal{D}$}):
 \begin{enumerate}
 	\item $Dis(x,x') \geq 0$ ("non-négativité")
 	\item $Dis(x,x') = 0  \Leftrightarrow x = y$ (identité discernable)
