@@ -89,43 +89,38 @@ Il existe de nombreuses métriques de similarité généralement expérimentées
 	
 	La similarité cosinus  étant comprise entre -1 et +1, sa forme normalisée s'écrit  $\overline{Sim}_{cos}(x,x') = \frac{Sim_{cos}(x,x') + 1}{2}$, d'où la distance $Dis_{cos}(x,x') = 1 - \overline{Sim}_{cos}(x,x')$.
 	
-	\item Le coefficient similarité de Jaccard: $Sim_{Jaccard}(x,x') = \frac{x^Tx'}{\norm{x}^2\norm{x'}^2 - x^Tx'}$, où $\norm{x}$ désigne la taille de l'ensemble des termes de $x$ dans le cas où $x$ est un document;
-	\item Le coefficient similarité de Dice: $Sim_{Dice}(x,x') = \frac{2\cdot \vert tok(x) \cap tok(x') \vert}{\vert tok(x) \vert + \vert tok(x')} $
+	\item Le coefficient similarité de Jaccard: $Sim_{Jaccard}(x,x') = \frac{x^Tx'}{\norm{x}^2+\norm{x'}^2 - x^Tx'}$, où $\norm{x}$ désigne la taille de l'ensemble des termes de $x$ dans le cas où $x$ est un document;
+	%\item Le coefficient similarité de Dice: $Sim_{Dice}(x,x') = \frac{2\cdot \vert tok(x) \cap tok(x') \vert}{\vert tok(x) \vert + \vert tok(x')} $
 	\item La similarité basée sur le coefficient de corrélation de Pearson: avec $w(t_i,x)$ le poids du terme $t_i$ dans le texte $x$\footnote{Comme à la section \ref{sec:quanta:classification}} et $TF_x = \sum\limits^m_{i=1} w(t_i,x)$, la similarité est calculée par:
 	
-	\[Sim_{Pearson}(x,x') = \frac{m \sum\limits^m_{i=1} w(t_i,x) w(t_i,x') - TF_xTF_{x'}}{\sqrt{[m \sum\limits^m_{i=1} w^2(t_i,x) - TF^2_x][m \sum\limits^m_{i=1} w^2(t_i,x') - TF^2_{x'}}}\]
-et la distance par:$
-Dis_{Pearson} =
+	\[Sim_{Pearson}(x,x') = \frac{m \sum\limits^m_{i=1} w(t_i,x) \cdot w(t_i,x') - TF_x\cdot TF_{x'}}{\sqrt{[m \sum\limits^m_{i=1} w^2(t_i,x) - TF^2_x][m \sum\limits^m_{i=1} w^2(t_i,x') - TF^2_{x'}}}\]
+et la distance par:
+
+$Dis_{Pearson}(X,Y) =
 \left\{ \begin{array}{ll}
-1 - Sim & \text{si } Sim \geq 0 \\
-\vert Sim \vert & \text{si } Sim < 0
+1 - Sim_{Pearson}(X,Y) & \text{si } Sim_{Pearson}(X,Y) \geq 0 \\
+\vert Sim_{Pearson}(X,Y) \vert & \text{si } Sim_{Pearson}(X,Y) < 0
 \end{array}
 \right.$
-	\item Distance de la divergence moyenne de Kullback-Leibler considère un document comme une distribution de probabilité de termes, et mesure donc la similarité entre deux distributions: 
-	\[Dis_{avgKL}(x,x') = \sum\lim\limits_{i=1}^m\big(\pi_1 \cdot D(w(t_i,x) \vert\vert w_t) + \pi_2 \cdot D(w(t_i,x') \vert\vert w_t) \big)\]
-	avec $\pi_1 = \frac{w(t_i,x)}{w(t_i,x) + w(t_i,x')}$, $\pi_2 = \frac{w(t_i,x')}{w(t_i,x) + w(t_i,x')}$, $D(a \vert\vert b) = a\cdot  \log_2(\frac{a}{b})$, et $w_t = \pi_1 \cdot w(t_i,x) + \pi_2 \cdot w(t_i,x')$
-	\item Okapi BM25 est une métrique de similarité généralement utilisée en recherche d'information pour calculer un score de pertinence d'un document D par rapport à une requête Q: 
-	\[Sim(Q,D) = \sum\lim\limits_{w \in Q \cap D} \left( \frac{(k_3+1) \cdot c(w, Q)}{k_3 + c(w, Q)} \cdot f(w,D) \cdot \log \frac{N+1}{df(w) + 0.5)}\right),\]
-	\[\text{avec } f(w,D) = \frac{(k_1+1)\cdot c(w,D)}{k_1(1-b+b\frac{\vert D \vert}{avgdl})} = \frac{(k_1+1)\cdot c'(w,D)}{k_1 + c'(w,D)},\] où $c'(w,D) = \frac{c(w,D)}{1-b+b\frac{\vert D \vert}{avgdl} }$. $c'(w,D)$ pouvant approcher 0 pour des documents très longs, \citet{Lv2011BM25L} propose BM25L, une formulation plus robuste à la longueur des documents obtenue en remplaçant $f(w,D)$ par :
-	\[
-	f'(w,D) =
-	\left\{ \begin{array}{ll}
-	\frac{(k_1+1)\cdot (c'(q,D)+\delta)}{k_1+ (c'(w,D) + \delta)} & \text{si } c'(w,D) > 0 \\
-	0 & \text{si } sinon
-	\end{array}
-	\right.
-	\]
-%	\item TF-IDF ?
-%	\item BoW ?
-%	\item Componential Counting Grid ?
-%	\item mSDA ?
-%	\item LDA ?
-%	\item LSI ?
-	\item \og La distance du déplaceur de mot \fg{} (\textit{word mover's distance - WMD}) \citep{kusner2015wordmoverdist} est une méthode dont l'objectif est similaire au notre, i.e. inclure la similarité sémantique entre les paires de mots de deux documents dans l'estimation de la distance entre ces derniers. En effet, elle est la solution optimale du problème de transport suivant \footnote{Valeur minimale du cout cumulatif pondéré nécessaire pour déplacer  tous les mots de $d$ à $d'$ i.e. transformer $d$ en $d'$.}:
+%	\item Distance de la divergence moyenne de Kullback-Leibler considère un document comme une distribution de probabilité de termes, et mesure donc la similarité entre deux distributions: 
+%	\[Dis_{avgKL}(x,x') = \sum\limits_{i=1}^m\big(\pi_1 \cdot D(w(t_i,x) \vert\vert w_t) + \pi_2 \cdot D(w(t_i,x') \vert\vert w_t) \big)\]
+%	avec $\pi_1 = \frac{w(t_i,x)}{w(t_i,x) + w(t_i,x')}$, $\pi_2 = \frac{w(t_i,x')}{w(t_i,x) + w(t_i,x')}$, $D(a \vert\vert b) = a\cdot  \log_2(\frac{a}{b})$, et $w_t = \pi_1 \cdot w(t_i,x) + \pi_2 \cdot w(t_i,x')$
+%	\item Okapi BM25 est une métrique de similarité généralement utilisée en recherche d'information pour calculer un score de pertinence d'un document D par rapport à une requête Q: 
+%	\[Sim_{BM25}(Q,D) = \sum\limits_{w \in Q \cap D} \left( \frac{(k_3+1) \cdot c(w, Q)}{k_3 + c(w, Q)} \cdot f(w,D) \cdot \log \frac{N+1}{df(w) + 0.5)}\right),\]
+%	\[\text{avec } f(w,D) = \frac{(k_1+1)\cdot c(w,D)}{k_1(1-b+b\frac{\vert D \vert}{avgdl})} = \frac{(k_1+1)\cdot c'(w,D)}{k_1 + c'(w,D)},\] où $c'(w,D) = \frac{c(w,D)}{1-b+b\frac{\vert D \vert}{avgdl} }$. $c'(w,D)$ pouvant approcher 0 pour des documents très longs, \citet{Lv2011BM25L} propose BM25L, une formulation plus robuste à la longueur des documents obtenue en remplaçant $f(w,D)$ par :
+%	\[
+%	f'(w,D) =
+%	\left\{ \begin{array}{ll}
+%	\frac{(k_1+1)\cdot (c'(q,D)+\delta)}{k_1+ (c'(w,D) + \delta)} & \text{si } c'(w,D) > 0 \\
+%	0 & \text{si } sinon
+%	\end{array}
+%	\right.
+%	\]
+	\item \og La distance du déménageur de mot \fg{} (\textit{word mover's distance - WMD}) \citep{kusner2015wordmoverdist} est une méthode dont l'objectif est similaire au notre, i.e. inclure la similarité sémantique entre les paires de mots de deux documents dans l'estimation de la distance entre ces derniers. En effet, elle est la solution optimale du problème de transport suivant \footnote{Valeur minimale du cout cumulatif pondéré nécessaire pour déplacer  tous les mots de $d$ à $d'$ i.e. transformer $d$ en $d'$.}:
 	
 	\begin{equation*}
 	\begin{aligned}
-Dis(d, d') = 	& \min\limits_{T>0}
+Dis_{wmd}(d, d') = 	& \min\limits_{T>0}
 	& & \sum\limits_{i,j=1}^n T_{ij} c(i,j) \\
 	& \text{s.c.}
 	& & \sum\limits_{j=1}^n T_{ij} = d_i, \forall i \in {1, \dots, n} \\
@@ -242,7 +237,7 @@ Nous définissons la métrique suivante qui est fonction des transformations per
 \begin{array}{cccccc}
 Dis_\mathcal{M} & : & \mathcal{D} \times \mathcal{D} & \to & \mathbb{R} & \\
 & & d_i, d_j & \mapsto & Dis_{modif}(d_i, d_j) & = f(\mathcal{M}_{d_i, d_j}). \\
-\end{array}
+\end{array} \label{eq:similarite:taux-modif}
 \end{equation}
 
 $\mathcal{D}$ est le corpus. $\mathcal{M}_{d_i, d_j}$ est l'ensemble des modifications de $d_i$ permettant pour obtenir $d_j$ i.e. les paires de mots différents $(d_{ik}, d_{jk})$ telles que le mot $d_{ik}$ à la position $k$ dans $d_i$ a été remplacé par $d_{jk}$ à la position $k$ dans $d_j$. $f$ est une fonction qui croît avec le nombre de modifications. Après une légère modification, le sens d'un texte reste assez similaire à celui de l'original. Tandis qu'après un grand nombre de modifications, le sens du texte sera très différent de l'original. %La distance croît donc proportionnellement avec le taux de modification (d'où le produit de $Dis_{soft-cos}$ et $f$). $Dis_{soft-cos}$  est étendue car elle tient compte 
@@ -257,7 +252,7 @@ $\mathcal{D}$ est le corpus. $\mathcal{M}_{d_i, d_j}$ est l'ensemble des modific
 Pour des textes de même taille, toute formulation mathématique permettrait de calculer $Dis_\mathcal{M}$ car il est facile de faire correspondre les mots par leur position. Par contre, pour des textes de tailles différentes, il est impossible de savoir les positions où des mots ont été supprimés ou ajoutés, et par conséquent, il devient impossible d'estimer leur distance par une formule. La distance étant une valeur continue, en entraînant un modèle de régression sur un ensemble de paires de documents pour lesquelles on connaît la distance, il est possible de la prédire pour des paires de textes de tailles quelconques. Nous proposons de générer une base synthétique de paires de documents dont l'un est un document du corpus original mais l'autre est le résultat de substitutions et suppression de mots du premier. En contrôlant ces modifications, il est facile de calculer une valeur de $Dis_\mathcal{M}$ pour chaque paire générée de documents, même s'ils sont de tailles différentes (en considérant la suppression d'un mot comme son remplacement par le \og mot vide \fg{} considéré comme faisant partie du vocabulaire $W$).
 
 \subsection{Génération d'une base d'apprentissage}
-La génération de la base synthétique nécessite de définir une formulation de la fonction $f(\mathcal{M}_{d_i, d_j})$ pour les documents de taille égale, comme par exemple celle de l'Équation \ref{eq:similarite:taux-modif}. Cette formulation ne considérant pas la similarité entre les mots substituants et les remplacés, nous proposons de pondérer chaque modification par la distance entre les mots substitués (le vecteur du  \og mot vide \fg{} étant nul):
+La génération de la base synthétique nécessite de définir une formulation de la fonction $f(\mathcal{M}_{d_i, d_j})$ pour les documents de taille égale, comme par exemple celle de l'équation \ref{eq:similarite:taux-modif}. Cette formulation ne considérant pas la similarité entre les mots substituants et les remplacés, nous proposons de pondérer chaque modification par la distance entre les mots substitués (le vecteur du  \og mot vide \fg{} étant nul):
 \begin{equation}
 {Dis_\mathcal{M}}(d_i, d'_i) = {f}(\mathcal{M}_{d_i, d'_i}) = \frac{\sum\limits_{(d_{ik}, d'_{ik}) \in \mathcal{M}_{x,y}} Dis_{cos}(\vec{d_{ik}}, \vec{d_{ik}})}{\norm{d_i}} \label{equation:similarite:somme-dist-mots}
 \end{equation}
@@ -339,6 +334,24 @@ Nous vérifions ici que la métrique respecte les propriétés des distances, et
 \subsection{Adéquation de la métrique apprise avec le problème}
 L'adéquation est mesurée par la formule suivante qui doit tendre vers 0: \[A(Dis_\mathcal{M}) = \sum\limits_{\substack{(l,k) \in L \times L \\ l \neq k}} \sum\limits_{\substack{d \in D_l \\ d' \in D_k}} \left(1 - Dis_\mathcal{M}(d,d')\right) + \sum\limits_{l \in L} \sum\limits_{\substack{d \in D_l \\ d' \in D_l}} Dis_\mathcal{M}(d,d). \] $L = \lbrace a, b, c, d \rbrace$ est l'ensemble des labels. Pour tout $l \in L$, $D_l \subset \mathcal{D}$ désigne le sous-ensemble des documents de $\mathcal{D}$ qui ont le label $l$. Cette formule tend vers 0 lorsque la somme des similarités entre documents de labels différents (premier terme) et la somme des distances entre documents de labels égaux (second terme) tendent tous les deux vers 0.
 Sur les 74 document annotés, nous obtenons $A(Dis_\mathcal{M}) = 872.635 + 519.151 = 1391.786$ avec une moyenne de similarité entre labels de $0.537$ et de distance entre labels égaux de $0.482$.
+
+\textcolor{red}{Tableau comparatif des distances: inter-label - intralabel}
+\begin{table}[!htb]
+	\centering
+  \begin{tabular}{|l|c|c||c|c|}
+  	\hline
+	Dis & inter-label & intra-label & inter-intra & A(Dis) \\ \hline
+	$Dis_\mathcal{M}$ &0.537&0.482&0.055& 1391.786 \\ \hline
+	$Dis_{cos}$ &0.941&0.908&0,033&  \\ \hline
+	$Dis_{soft-cos}$ &&&&  \\ \hline
+	$Dis_{manhattan}$ &87.630&81.07&&  \\ \hline
+	$Dis_{euclidienne}$ &1.371&1.325&&  \\ \hline
+	$Dis_{jaccard}$ &&&&  \\ \hline
+	$Dis_{pearson}$ &&&&  \\ \hline
+	$Dis_{wmd}$ &&&&  \\ \hline	
+  \end{tabular}
+	\caption{Tableau comparatif de l'adéquation des distances au problème}
+\end{table}
 
 \subsection{Comparaison d'approches}
 Comparer la vectorisation du document sur tout son contenu vs. sur la restriction aux énoncés de demande de la catégorie (du type "constater", "dire et juger") vs restriction aux conclusions (le raisonnement des parties décrits les circonstances factuelles) + motifs sur la catégorie
