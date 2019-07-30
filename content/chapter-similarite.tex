@@ -67,7 +67,7 @@ Lorsque des chevauchements sont observables entre clusters (un document peut fai
 Les algorithmes de clustering dépendent de la distance utilisée qui doit être bien choisie pour que les regroupements révèlent au mieux la sémantique visée. Une distance ou métrique de dis-similarité est une fonction réelle d'une paire de éléments $x$ et $x'$ d'un ensemble $\mathcal{X}$. Une métrique de dis-similarité mesure le degré de différence entre $x$ et $x'$  généralement estimée par une fonction distance $Dis$  qui satisfait aux propriétés suivantes $\forall x,x',x'' \in \mathcal{X}$ \citep{wang2015distancemetriclearningsurvey}:
 \begin{enumerate}
 \item $Dis(x,x') \geq 0$ ("non-négativité")
-\item $Dis(x,x') = 0  \Leftrightarrow x = y$ (identité discernable)
+\item $Dis(x,x') = 0  \Leftrightarrow x = x'$ (identité discernable)
 \item $Dis(x,x') = Dis(x', x)$ (symétrie)
 \item $Dis(x,x'') \leq Dis(x,x') + Dis(x',x'')$ (inégalité triangulaire) \label{enum:sim:ineq-tri}
 \end{enumerate}
@@ -247,12 +247,12 @@ Dis_\mathcal{M} & : & \mathcal{D} \times \mathcal{D} & \to & \mathbb{R} & \\
 
 $\mathcal{D}$ est le corpus. $\mathcal{M}_{d_i, d_j}$ est l'ensemble des modifications de $d_i$ permettant pour obtenir $d_j$ i.e. les paires de mots différents $(d_{ik}, d_{jk})$ telles que le mot $d_{ik}$ à la position $k$ dans $d_i$ a été remplacé par $d_{jk}$ à la position $k$ dans $d_j$. $f$ est une fonction qui croît avec le nombre de modifications. Après une légère modification, le sens d'un texte reste assez similaire à celui de l'original. Tandis qu'après un grand nombre de modifications, le sens du texte sera très différent de l'original. %La distance croît donc proportionnellement avec le taux de modification (d'où le produit de $Dis_{soft-cos}$ et $f$). $Dis_{soft-cos}$  est étendue car elle tient compte 
 
-Un intérêt de cette distance est qu'elle tient compte de l'ordre des mots contrairement à une distance classique comme la distance cosinus. Par exemple, en considérant les deux textes  $t_1 = \text{\og \textit{le chien poursuit le chat}\fg{}}$ et $t_2 = \text{\og \textit{le chat poursuit le chien} \fg{}}$, et en supposant que $f$ est simplement le taux de mots modifiés:
-\begin{equation}
-\forall (d_i, d_j) \in \mathcal{D} \times \mathcal{D}, f(\mathcal{M}_{d_i, d_j}) = \frac{\norm{\mathcal{M}_{d_i, d_j}}}{\norm{d_i}}, \label{eq:similarite:taux-modif}
-\end{equation}
-
-nous avons $Dis_{cos}(d_1, d_2) = 0.$ (car les deux textes contiennent exactement les mêmes mots) et $Dis_\mathcal{M}(d_1, d_2)=0.4$ (car $\mathcal{M} = \lbrace (\textit{chien}, \textit{chat}), (\textit{chat}, \textit{chien})\rbrace$,  et $\norm{d_1} = 5 \text{ mots}$). La limite de cette distance est d'être très stricte sur l'ordre des mots. C'est pourquoi sa combinaison avec la distance cosinus est explorée dans ce chapitre. 
+%Un intérêt de cette distance est qu'elle tient compte de l'ordre des mots contrairement à une distance classique comme la distance cosinus. Par exemple, en considérant les deux textes  $t_1 = \text{\og \textit{le chien poursuit le chat}\fg{}}$ et $t_2 = \text{\og \textit{le chat poursuit le chien} \fg{}}$, et en supposant que $f$ est simplement le taux de mots modifiés:
+%\begin{equation}
+%\forall (d_i, d_j) \in \mathcal{D} \times \mathcal{D}, f(\mathcal{M}_{d_i, d_j}) = \frac{\norm{\mathcal{M}_{d_i, d_j}}}{\norm{d_i}}, \label{eq:similarite:taux-modif}
+%\end{equation}
+%
+%nous avons $Dis_{cos}(d_1, d_2) = 0.$ (car les deux textes contiennent exactement les mêmes mots) et $Dis_\mathcal{M}(d_1, d_2)=0.4$ (car $\mathcal{M} = \lbrace (\textit{chien}, \textit{chat}), (\textit{chat}, \textit{chien})\rbrace$,  et $\norm{d_1} = 5 \text{ mots}$). La limite de cette distance est d'être très stricte sur l'ordre des mots. C'est pourquoi sa combinaison avec la distance cosinus est explorée dans ce chapitre. 
 
 Pour des textes de même taille, toute formulation mathématique permettrait de calculer $Dis_\mathcal{M}$ car il est facile de faire correspondre les mots par leur position. Par contre, pour des textes de tailles différentes, il est impossible de savoir les positions où des mots ont été supprimés ou ajoutés, et par conséquent, il devient impossible d'estimer leur distance par une formule. La distance étant une valeur continue, en entraînant un modèle de régression sur un ensemble de paires de documents pour lesquelles on connaît la distance, il est possible de la prédire pour des paires de textes de tailles quelconques. Nous proposons de générer une base synthétique de paires de documents dont l'un est un document du corpus original mais l'autre est le résultat de substitutions et suppression de mots du premier. En contrôlant ces modifications, il est facile de calculer une valeur de $Dis_\mathcal{M}$ pour chaque paire générée de documents, même s'ils sont de tailles différentes (en considérant la suppression d'un mot comme son remplacement par le \og mot vide \fg{} considéré comme faisant partie du vocabulaire $W$).
 
@@ -287,7 +287,7 @@ Pour une même valeur ou des valeurs différentes de $p$, plusieurs documents so
 
 \subsection{Entraînement de la métrique}
 
-Sur $B_\mathcal{M}$, on entraîne un modèle régressif $m$ pour prédire la distance entre deux documents quelconques en fonction de leur représentation vectorielle. Ce modèle de régression $Reg$ peut être utilisé comme distance dans un algorithme de regroupement comme l'algorithme des K-moyennes. Cependant, les modèles de régression ne supportent généralement qu'un seul vecteur en entrée, et pas deux comme en dispose la base $B$. Les vecteurs $d_i$ et $d'_i$ doivent donc être agrégés en un seul. L'agrégation qui fonctionne le mieux est la soustraction avec laquelle les documents similaires auront une agrégation avec un grand nombre de composantes tendant vers 0. La fonction d'estimation automatique de la distance sémantique entre $x$ et $y$ s'écrit: $Dis(d_i, d_j) = Reg(\vec{d_{i}} - \vec{d_{j}})$. 
+Sur $B_\mathcal{M}$, on entraîne un modèle régressif $m$ pour prédire la distance entre deux documents quelconques en fonction de leur représentation vectorielle. Ce modèle de régression $Reg_\mathcal{M}$ peut être utilisé comme distance dans un algorithme de regroupement comme l'algorithme des K-moyennes. Cependant, les modèles de régression ne supportent généralement qu'un seul vecteur en entrée, et pas deux comme en dispose la base $B$. Les vecteurs $d_i$ et $d'_i$ doivent donc être agrégés en un seul. L'agrégation qui fonctionne le mieux est la soustraction avec laquelle les documents similaires auront une agrégation avec un grand nombre de composantes tendant vers 0. La fonction d'estimation automatique de la distance sémantique entre $x$ et $y$ s'écrit: $Dis_\mathcal{M}(d_i, d_j) = Reg_\mathcal{M}(\vec{d_{i}} - \vec{d_{j}})$. 
 
 %\textcolor{red}{Issues:}
 %\begin{itemize}
@@ -300,17 +300,16 @@ Sur $B_\mathcal{M}$, on entraîne un modèle régressif $m$ pour prédire la dis
 
 \section{Interprétation des résultats expérimentaux}
 \label{sec:similarite:experimentations}
-Cette section discute la validité, l'adéquation, et l'efficacité de la métrique apprise en comparaison avec d'autres métriques d'estimation de la similarité sémantique entre documents. La validité de la métrique est établie si cette dernière respecte les propriétés d'une distance. L'adéquation de la métrique avec le problème à résoudre mesure la capacité de la métrique à estimer une distance très faible entre documents du même cluster, en même temps qu'une similarité quasi nulle entre documents de clusters différents, indépendamment de l'algorithme de clustering appliqué. Enfin, l'efficacité de la métrique est liée à la qualité de clustering résultant de l'application d'un algorithme de clustering combiné avec la métrique apprise.
+Cette section discute la validité, l'adéquation, et l'efficacité de la métrique apprise en comparaison avec d'autres métriques d'estimation de la similarité sémantique entre documents. La validité de la métrique est établie si cette dernière respecte les propriétés d'une distance. L'adéquation de la métrique avec le problème à résoudre mesure la capacité de la métrique à estimer une distance très faible entre documents du même label (annotation manuelle), en même temps qu'une similarité quasi nulle entre documents de labels différents, indépendamment de l'algorithme de clustering appliqué. Enfin, l'efficacité de la métrique est liée à la qualité de clustering résultant de l'application d'un algorithme de clustering combiné avec la métrique apprise.
 
 
 \subsection{Annotation manuelle de données d'évaluation}
-Pour l'évaluation supervisée, nous disposons d'une base annotée sur la catégorie de demande "dommage-intérêts / action en responsabilité civile professionnelle contre les avocats" qui concerne les contentieux impliquant des avocats.
-L'expert annotateur a identifié quatre cas différents (a, b, c, d) décrits en annexe. En gros:
+Pour l'évaluation supervisée, nous disposons d'une base annotée sur la catégorie de demande "dommage-intérêts / action en responsabilité civile professionnelle contre les avocats" qui concerne les contentieux impliquant des avocats. Nous l'appellerons $DIRA$. L'expert annotateur a identifié quatre cas différents (a, b, c, d) décrits en annexe. En gros:
 \begin{itemize}
 \item pour le cas a) il s'agit d'un avocat qui est négligent et envoie son assignation de manière tardive (champ sémantique: retard/délai/prescription)
 \item pour le cas b) il s'agit d'un avocat qui n'a pas donné un conseil opportun, qui n'a pas soulevé le bon argument
 \item pour le cas c) un avocat qui n'a pas rédigé un acte valide ou réussi à obtenir un avantage fiscal (champ sémantique: rédacteur d'actes)
-\item pour le cas d) il s'agit d'un avocat attaqué par son adversaire et non pas par son propre client.
+\item pour le cas d) il s'agit d'un avocat attaqué par son adversaire et non par son propre client.
 \end{itemize}
 
 Cet ensemble de données comprend 81 documents répartis dans 4 groupes avec 6 documents appartenant chacun à 2 groupes (cas de chevauchements).
@@ -318,25 +317,28 @@ Cet ensemble de données comprend 81 documents répartis dans 4 groupes avec 6 d
 Pour l'évaluation non supervisée, les catégories de demande utilisée dans les chapitres \ref{chap:quanta} et \ref{chap:sensresultat} sont utilisés en plus.
 
 \subsection{Protocole}
-Pour analyser la validité et l'adéquation de la métrique apprise, nous effectuons une validation croisée en divisant les données annotées générées en 5 sous-ensembles (\textit{folds}). A chaque itération, la métrique est entraînée sur 4 jeux, puis testée sur une. Quant à l'efficacité de la métrique apprise, nous l'entraînons sur toutes les données annotées générées.
+Pour analyser la validité et l'adéquation de la métrique apprise, nous l'entraînons sur la base générée puis nous l'évaluons sur le corpus annoté ($\mathcal{D_{\text{DIRA}}}$). Quant à l'efficacité de la métrique apprise, nous l'entraînons sur toutes les données annotées générées.
 
 Les documents sont pré-traités avant leur représentation sous forme vectorielle. Ce prétraitement consiste à sectionner les documents (chapitre \ref{chap:structuration}), à n'utiliser que la concaténation des section Litige et Motifs (\textcolor{red}{pourquoi?}), à mettre en minuscule et lemmatiser ce contenu, puis à éliminer des caractères de ponctuation et des mots inutiles (\textit{stop words})  car ils sont généralement indépendants de toute catégorie.
 
-Le vocabulaire $W$ utilisé est restreint au mots du corpus original $D$ sur lequel il faut appliquer les regroupements.
+Le vocabulaire $W$ utilisé est restreint au mots du corpus original $D$ sur lequel il faut appliquer les regroupements. La représentation vectorielle est TF-IDF avec des n-grammes de 1 à 3 mots (pour prendre en compte l'ordre entre les mots).
 
 \subsection{Validité de la distance apprise}
-Nous vérifions ici que la métrique respecte les propriétés des distances, et aussi si elle reste normale comme attendues (\textcolor{red}{matrice des distances entre docs de $\mathcal{D}$}):
-\begin{enumerate}
-	\item $Dis(x,x') \geq 0$ ("non-négativité")
-	\item $Dis(x,x') = 0  \Leftrightarrow x = y$ (identité discernable)
-	\item $Dis(x,x') = Dis(x', x)$ (symétrie)
-	Elle est évidente car la métrique apprise applique un modèle de régression sur la valeur absolue de la différence membre à membre des deux vecteurs: \[Dis(x,x') = regression(\left\langle \vert x_1 - x'_1\vert, \vert x_2 - x'_2\vert, \cdots, \vert x_m - x'_m\vert\right\rangle )=Dis(x',x)\]
-	\item $Dis(x,x'') \leq Dis(x,x') + Dis(x',x'')$ (inégalité triangulaire) 
-	\item Normalité
-\end{enumerate}
+La base d'entraînement $B$ comprend 10 documents synthétiques générés pour chacun des 74 documents n'ayant qu'un seul label.
+\begin{figure}[!htb]
+	\centering \includegraphics[scale=0.5]{distance_matrix.png}
+	\caption{Matrice des distances de la métrique apprise sur les documents labellisés}\label{fig:similarite:distance_matrix}
+\end{figure}
+Nous vérifions ici que la métrique respecte les propriétés des distances, et aussi si elle reste normale après l'entraînement. D'après la matrice des distances entre toutes les paires de document de la base annotées $\mathcal{D_{\text{DIRA}}}$ (Figure \ref{fig:similarite:distance_matrix}),  la "non-négativité", l'identité discernable, et la symétrie sont respectée car toutes les valeurs sont non-négative, seule la diagonale est nulle, et la matrice est symétrique. De plus, toutes les distances sont comprises entre 0 et 1, et par conséquent la métrique est normée (donc la similarité est déduite par $Sim_\mathcal{M} = 1 - Dis_\mathcal{M}$). L'inégalité triangulaire est vérifié car $Reg_\mathcal{M}(X,Z) - (Reg_\mathcal{M}(X,Y) + Reg_\mathcal{M}(Y,Z)) \leq 0, \forall (X,Y,Z) \in \mathcal{D_{\text{DIRA}}} \times \mathcal{D_{\text{DIRA}}} \times \mathcal{D_{\text{DIRA}}}$ (Figure \ref{fig:similarite:matrice_inegalite_triangulaire}).
+\begin{figure}[!htb]
+	\centering \includegraphics[width=\textwidth]{inegalite_triangulaire.png}
+	\caption{Matrice de $Reg_\mathcal{M}(X,Z) - (Reg_\mathcal{M}(X,Y) + Reg_\mathcal{M}(Y,Z)), \forall (X,Y,Z) \in \mathcal{D_{\text{DIRA}}} \times \mathcal{D_{\text{DIRA}}} \times \mathcal{D_{\text{DIRA}}}$, avec les $X$ indicés en lignes et les paires $(Y,Z)$ en colonnes. }\label{fig:similarite:matrice_inegalite_triangulaire}
+\end{figure}
+
 
 \subsection{Adéquation de la métrique apprise avec le problème}
-Matrices de (dis)similarité pour chaque distance
+L'adéquation est mesurée par la formule suivante qui doit tendre vers 0: \[A(Dis_\mathcal{M}) = \sum\limits_{\substack{(l,k) \in L \times L \\ l \neq k}} \sum\limits_{\substack{d \in D_l \\ d' \in D_k}} \left(1 - Dis_\mathcal{M}(d,d')\right) + \sum\limits_{l \in L} \sum\limits_{\substack{d \in D_l \\ d' \in D_l}} Dis_\mathcal{M}(d,d). \] $L = \lbrace a, b, c, d \rbrace$ est l'ensemble des labels. Pour tout $l \in L$, $D_l \subset \mathcal{D}$ désigne le sous-ensemble des documents de $\mathcal{D}$ qui ont le label $l$. Cette formule tend vers 0 lorsque la somme des similarités entre documents de labels différents (premier terme) et la somme des distances entre documents de labels égaux (second terme) tendent tous les deux vers 0.
+Sur les 74 document annotés, nous obtenons $A(Dis_\mathcal{M}) = 872.635 + 519.151 = 1391.786$ avec une moyenne de similarité entre labels de $0.537$ et de distance entre labels égaux de $0.482$.
 
 \subsection{Comparaison d'approches}
 Comparer la vectorisation du document sur tout son contenu vs. sur la restriction aux énoncés de demande de la catégorie (du type "constater", "dire et juger") vs restriction aux conclusions (le raisonnement des parties décrits les circonstances factuelles) + motifs sur la catégorie
