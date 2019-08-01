@@ -6,7 +6,7 @@
 
 \section{Introduction}
 \label{sec:similarite:introduction}
-Les circonstances factuelles définissent les contextes possibles dans lesquels une catégorie de demande peut être formulée. Les analyses descriptives ou prédictives ne prennent sens que lorsqu'elles sont appliquées à un ensemble de décisions aux circonstances similaires. Par exemple, il serait imprudent de considérer toutes les décisions pour analyser les chances d'acceptation d'une demande de dommages-intérêts fondée sur l'\og article 700 du code de procédure civile \fg{} en cas de trouble de voisinage. Les taux d'acceptation ou de rejet peuvent être différents entre des affaires de licenciement et celles portant sur les troubles anormaux du voisinage, et même plus spécifiquement entre les troubles de voisinage entre particulier et entreprises. % (par exemple: chantier de construction), ou simplement entre particuliers (par exemple: troubles sonores). 
+Les circonstances factuelles définissent les contextes possibles dans lesquels une catégorie de demande peut être formulée (\textcolor{red}{N'est-ce pas simplement l'accusation ou l'objet du litige}). Les analyses descriptives ou prédictives ne prennent sens que lorsqu'elles sont appliquées à un ensemble de décisions aux circonstances similaires. Par exemple, il serait imprudent de considérer toutes les décisions pour analyser les chances d'acceptation d'une demande de dommages-intérêts fondée sur l'\og article 700 du code de procédure civile \fg{} en cas de trouble de voisinage. Les taux d'acceptation ou de rejet peuvent être différents entre des affaires de licenciement et celles portant sur les troubles anormaux du voisinage, et même plus spécifiquement entre les troubles de voisinage entre particulier et entreprises. % (par exemple: chantier de construction), ou simplement entre particuliers (par exemple: troubles sonores). 
  Il serait préférable de travailler uniquement avec des décisions similaires à la situation d'intérêt. L'identification des circonstances factuelles devient donc une étape préalable indispensable à l'analyse du résultat. Malheureusement, les circonstances sont très diverses et quasi infinies pour être identifier par classification supervisée à l'aide d'annotation manuelle d'exemples comme dans les chapitres précédent. Il est donc plus indiquer d'adopter une approche non-supervisée capable modéliser les circonstances factuelles à partir d'un corpus de documents d'une même catégorie de demande. Plus précisément, la méthode doit construire des sous-ensembles de décisions selon qu'elles traitent de contextes similaires.  Les objectifs de ce chapitre sont d'expérimenter des algorithmes  de \textit{clustrering} et des métriques de similarité. Il démontre aussi qu'une distance entraînée  sur des documents d'une catégorie de demande permet de mieux mesurer la (dis-) similarité sémantique définie par les circonstances factuelles.
 
 %\section{Formulation du Problème}
@@ -180,8 +180,8 @@ $K$ a une valeur optimale lorsque la largeur moyenne $S(k)$ atteint sa valeur ma
 
 %\subsection{Labeliser les clusters}
 
-\subsection{Evaluation du regroupement}
-L'évaluation des résultats peut être supervisée ou non selon que l'on dispose ou pas respectivement d'exemples de données annotés avec les groupes attendus.
+\subsection{Validation du regroupement}
+L'évaluation d'un regroupement peut être supervisée ou non selon que l'on dispose ou pas respectivement d'exemples de données annotés avec les groupes attendus.
 
 \subsubsection{Métriques supervisées ou mesures externes}
 \label{sec:similarite:biblio:supeval}
@@ -224,10 +224,14 @@ Ces métriques doivent être utilisées ensemble  pour compenser les limites de 
 
 
 
-\subsubsection{Métriques non-supervisées}
+\subsubsection{Métriques non-supervisées ou indices internes}
 \label{sec:similarite:biblio:unsupeval}
 
- Pour l'évaluation non-supervisée, la pureté, l'erreur et la silhouette sont les métriques généralement utilisées.
+ La cohésion et la séparation des clusters sont les principale indices internes. La cohésion mesure le degré de proximité entre objets d'un cluster à partir du carré de la somme des erreurs\footnote{Erreur: distance entre un point et le centre du cluster dont il est membre.} dans les clusters: $WCSS(C) = \sum\limits_{j=1}^K\sum\limits_{x \in C_j} Dis(x, m_j)$, où $C = \lbrace C_1, C_1, \cdots, C_K \rbrace$ est l'ensemble des clusters du regroupement, $m_j$ le centre de $C_j$, et $Dis(x,m_j)$ la distance (généralement euclidienne) entre un point $x$ et $m_j$. En général, une valeur faible de la cohésion indique que les clusters sont plus compactes, et donc de meilleur qualité. Tandis qu'une valeur élevée révèle une grande variabilité entre les objets à l'intérieur les clusters. La séparation quant à elle mesure l'éloignement de chaque cluster des autres à partir du carré de la somme des distances entre clusters: $BCSS(C) = \sum\limits_{j = 1}^{K} \vert C_j \vert (m - m_j)$, 
+  $m$ étant le centre l'ensemble des objets (la moyenne des vecteurs de tous les documents, où le document qui se trouve à une distance moyenne minimale de tous les autres). Une grande valeur de séparation indique que les clusters sont isolés les uns des autres, et par conséquent elle doit être maximisée pendant le regroupement.
+ 
+ Le coefficient de silhouette de \citet{rousseeuw1987silhouetteclusternumber} combine les idées de cohésion et séparation mais pour chaque objet. Il se calcule par $s(x) = \frac{b(x
+) - a(x)}{\max\lbrace a(x)b(x) \rbrace}$, où $x$ est un objet du cluster $A \in C$, $a(x) = \frac{1}{\vert A \vert} \sum\limits_{y\in A} Dis(x,y)$, $b(x) = \min\limits_{B \in C}\frac{1}{\vert B \vert} \sum\limits_{y\in B} Dis(x,y)$. Ses valeurs varient entre -1 (pire valeur) et +1 (meilleure valeur). Les valeurs proches de zéro indiquent que les clusters se chevauchent en $x$, et il est difficile de savoir à quel cluster $x$ doit être affecté. Une valeur négative indique que $x$ a été affecté à cluster inapproprié. Le coefficient de silhouette du regroupement $C$ est la moyenne des coefficients de l'ensemble des  objets.
 
 %\section{Méthodes proposées}
 
@@ -246,11 +250,12 @@ Nous définissons la métrique suivante qui est fonction des transformations per
 \begin{equation}
 \begin{array}{cccccc}
 Dis_\mathcal{M} & : & \mathcal{D} \times \mathcal{D} & \to & \mathbb{R} & \\
-& & d_i, d_j & \mapsto & Dis_{modif}(d_i, d_j) & = f(\mathcal{M}_{d_i, d_j}). \\
-\end{array} \label{eq:similarite:taux-modif}
+& & d_i, d_j & \mapsto & Dis_{\mathcal{M}}(d_i, d_j) & = f(\mathcal{M}_{d_i, d_j}). \\
+\end{array} \label{eq:similarite:distance-modif}
 \end{equation}
 
-$\mathcal{D}$ est le corpus. $\mathcal{M}_{d_i, d_j}$ est l'ensemble des modifications de $d_i$ permettant pour obtenir $d_j$ i.e. les paires de mots différents $(d_{ik}, d_{jk})$ telles que le mot $d_{ik}$ à la position $k$ dans $d_i$ a été remplacé par $d_{jk}$ à la position $k$ dans $d_j$. $f$ est une fonction qui croît avec le nombre de modifications. Après une légère modification, le sens d'un texte reste assez similaire à celui de l'original. Tandis qu'après un grand nombre de modifications, le sens du texte sera très différent de l'original. %La distance croît donc proportionnellement avec le taux de modification (d'où le produit de $Dis_{soft-cos}$ et $f$). $Dis_{soft-cos}$  est étendue car elle tient compte 
+$\mathcal{D}$ est le corpus. $\mathcal{M}_{d_i, d_j}$ est l'ensemble des modifications de $d_i$ permettant pour obtenir $d_j$ i.e. les paires de mots différents $(d_{ik}, d_{jk})$ telles que le mot $d_{ik}$ à la position $k$ dans $d_i$ a été remplacé par $d_{jk}$ à la position $k$ dans $d_j$. $f$ est une fonction qui croît avec le nombre de modifications. Après une légère modification, le sens d'un texte reste assez similaire à celui de l'original. Tandis qu'après un grand nombre de modifications, le sens du texte sera très différent de l'original. 
+ %La distance croît donc proportionnellement avec le taux de modification (d'où le produit de $Dis_{soft-cos}$ et $f$). $Dis_{soft-cos}$  est étendue car elle tient compte 
 
 %Un intérêt de cette distance est qu'elle tient compte de l'ordre des mots contrairement à une distance classique comme la distance cosinus. Par exemple, en considérant les deux textes  $t_1 = \text{\og \textit{le chien poursuit le chat}\fg{}}$ et $t_2 = \text{\og \textit{le chat poursuit le chien} \fg{}}$, et en supposant que $f$ est simplement le taux de mots modifiés:
 %\begin{equation}
@@ -259,23 +264,26 @@ $\mathcal{D}$ est le corpus. $\mathcal{M}_{d_i, d_j}$ est l'ensemble des modific
 %
 %nous avons $Dis_{cos}(d_1, d_2) = 0.$ (car les deux textes contiennent exactement les mêmes mots) et $Dis_\mathcal{M}(d_1, d_2)=0.4$ (car $\mathcal{M} = \lbrace (\textit{chien}, \textit{chat}), (\textit{chat}, \textit{chien})\rbrace$,  et $\norm{d_1} = 5 \text{ mots}$). La limite de cette distance est d'être très stricte sur l'ordre des mots. C'est pourquoi sa combinaison avec la distance cosinus est explorée dans ce chapitre. 
 
-Pour des textes de même taille, toute formulation mathématique permettrait de calculer $Dis_\mathcal{M}$ car il est facile de faire correspondre les mots par leur position. Par contre, pour des textes de tailles différentes, il est impossible de savoir les positions où des mots ont été supprimés ou ajoutés, et par conséquent, il devient impossible d'estimer leur distance par une formule. La distance étant une valeur continue, en entraînant un modèle de régression sur un ensemble de paires de documents pour lesquelles on connaît la distance, il est possible de la prédire pour des paires de textes de tailles quelconques. Nous proposons de générer une base synthétique de paires de documents dont l'un est un document du corpus original mais l'autre est le résultat de substitutions et suppression de mots du premier. En contrôlant ces modifications, il est facile de calculer une valeur de $Dis_\mathcal{M}$ pour chaque paire générée de documents, même s'ils sont de tailles différentes (en considérant la suppression d'un mot comme son remplacement par le \og mot vide \fg{} considéré comme faisant partie du vocabulaire $W$).
+Pour des textes de même taille, toute formulation mathématique permettrait de calculer $Dis_\mathcal{M}$ car il est facile de faire correspondre les mots par leur position. Par exemple, cette distance peut donc se formuler comme étant la proportion de mots modifiés:
+\begin{equation}
+{Dis_\mathcal{M}}(d_i, d'_i) = {f}(\mathcal{M}_{d_i, d'_i}) = \frac{\vert \mathcal{M}_{d_i, d'_i} \vert}{\vert d_i \vert } \label{eq:similarite:taux-modif}
+%  $\vert d_i \vert$ étant le nombre de mots de $d_i$.
+\end{equation}
+ Par contre, pour des textes de tailles différentes, il est impossible de savoir les positions où des mots ont été supprimés ou ajoutés, et par conséquent, il devient impossible d'estimer leur distance par une formule. La distance étant une valeur continue, en entraînant un modèle de régression sur un ensemble de paires de documents pour lesquelles on connaît la distance, il est possible de la prédire pour des paires de textes de tailles quelconques. Nous proposons de générer une base synthétique de paires de documents dont l'un est un document du corpus original mais l'autre est le résultat de substitutions et suppression de mots du premier. En contrôlant ces modifications, il est facile de calculer une valeur de $Dis_\mathcal{M}$ pour chaque paire générée de documents, même s'ils sont de tailles différentes (en considérant la suppression d'un mot comme son remplacement par le \og mot vide \fg{} considéré comme faisant partie du vocabulaire $W$).
 
 \subsection{Génération d'une base d'apprentissage}
-La génération de la base synthétique nécessite de définir une formulation de la fonction $f(\mathcal{M}_{d_i, d_j})$ pour les documents de taille égale, comme par exemple celle de l'équation \ref{eq:similarite:taux-modif}. Cette formulation ne considérant pas la similarité entre les mots substituants et les remplacés, nous proposons de pondérer chaque modification par la distance entre les mots substitués (le vecteur du  \og mot vide \fg{} étant nul):
+La génération de la base synthétique nécessite de définir une formulation de la fonction $f(\mathcal{M}_{d_i, d_j})$ pour les documents de taille égale, comme par exemple celle de l'Equation \ref{eq:similarite:taux-modif}. Cette formulation ne considérant pas la similarité entre les mots substituants et les remplacés, nous proposons de pondérer chaque modification par la distance entre les mots substitués (le vecteur du  \og mot vide \fg{} étant nul):
 \begin{equation}
-{Dis_\mathcal{M}}(d_i, d'_i) = {f}(\mathcal{M}_{d_i, d'_i}) = \frac{\sum\limits_{(d_{ik}, d'_{ik}) \in \mathcal{M}_{x,y}} Dis_{cos}(\vec{d_{ik}}, \vec{d_{ik}})}{\norm{d_i}} \label{equation:similarite:somme-dist-mots}
+{Dis_\mathcal{M}}(d_i, d'_i) = {f}(\mathcal{M}_{d_i, d'_i}) = \frac{\sum\limits_{(d_{ik}, d'_{ik}) \in \mathcal{M}_{d_i, d'_i}} Dis_{cos}(\vec{d_{ik}}, \vec{d_{ik}})}{\vert d_i \vert} \label{eq:similarite:somme-dist-mots}
 \end{equation}
-$d_i$ est un document du corpus original $\mathcal{D}$, et $d'_i$ est le document synthétique obtenu par modifications contrôlées de $d_i$. $\vec{d_{ik}}$ désigne le plongement lexical du mot $d_{ik}$. Pour garantir la symétrie et la réflexivité de la métrique, nous imposons respectivement ${Dis_\mathcal{M}}(d_i, d'_i) = {Dis_\mathcal{M}}(d'_i, d_i)$ et ${Dis_\mathcal{M}}(d_i, d_i) = {Dis_\mathcal{M}}(d'_i, d'_i) = 0, \forall d_i \in \mathcal{D}$ sur le jeu d'entraînement généré. 
-
-L'algorithme de génération de document synthétique utilise une valeur seuil de probabilité $0<p<1$ contrôlant le taux de modifications à effectuer sur le document original (Algorithme \ref{algo:similarite:modifierdoc}). 
+$d_i$ est un document du corpus original $\mathcal{D}$, et $d'_i$ est le document synthétique obtenu par modifications contrôlées de $d_i$. $\vec{d_{ik}}$ désigne le plongement lexical du mot $d_{ik}$. Pour garantir la symétrie et la réflexivité de la métrique, nous imposons respectivement ${Dis_\mathcal{M}}(d_i, d'_i) = {Dis_\mathcal{M}}(d'_i, d_i)$ et ${Dis_\mathcal{M}}(d_i, d_i) = {Dis_\mathcal{M}}(d'_i, d'_i) = 0, \forall d_i \in \mathcal{D}$ sur le jeu d'entraînement généré. L'algorithme de génération de document synthétique utilise une valeur seuil de probabilité $0<p<1$ contrôlant le taux de modifications à effectuer sur le document original (Algorithme \ref{algo:similarite:modifierdoc}). 
 
 \begin{algorithm}[!htb] % Version française avec : https://pierre.chachatelier.fr/latex/index.php
  \KwData{document $d_i \in \mathcal{D}$, valeur seuil de probabilité $p$, le vocabulaire $W$}
  \KwResult{$d'_i$, $\mathcal{M}_{d_i, d'_i}$}
  ${d'_i} = [] $\; 
  $\mathcal{M}_{d_i, d'_i} = \emptyset$\;
- \For{ $k \in [1\twodots \norm{d_i} ]$ }{
+ \For{ $k \in [1\twodots \vert d_i \vert ]$ }{
  	$v = random(0,1)$\;
     \eIf{v < p}{
        $d'_{ik} = modifier\_mot(d_{ik}, W)$; // mot aléatoire de $W$ différent de $d_{ik}$\;
@@ -309,19 +317,19 @@ Cette section discute la validité, l'adéquation, et l'efficacité de la métri
 
 
 \subsection{Annotation manuelle de données d'évaluation}
-Pour l'évaluation supervisée, nous disposons d'une base annotée sur la catégorie de demande "dommage-intérêts / action en responsabilité civile professionnelle contre les avocats" qui concerne les contentieux impliquant des avocats. Nous l'appellerons $DIRA$. L'expert annotateur a identifié quatre cas différents (a, b, c, d) décrits en annexe. En gros:
+Pour l'évaluation supervisée, nous disposons d'une base annotée sur la catégorie de demande "dommage-intérêts / action en responsabilité civile professionnelle contre les avocats" (\textit{DIRA}) qui concerne les contentieux impliquant des avocats.  L'expert annotateur a identifié quatre cas différents :
 \begin{itemize}
-\item pour le cas a) il s'agit d'un avocat qui est négligent et envoie son assignation de manière tardive (champ sémantique: retard/délai/prescription)
-\item pour le cas b) il s'agit d'un avocat qui n'a pas donné un conseil opportun, qui n'a pas soulevé le bon argument
-\item pour le cas c) un avocat qui n'a pas rédigé un acte valide ou réussi à obtenir un avantage fiscal (champ sémantique: rédacteur d'actes)
-\item pour le cas d) il s'agit d'un avocat attaqué par son adversaire et non par son propre client.
+\item cas $a$: il s'agit d'un avocat qui est négligent et envoie son assignation de manière tardive (champ sémantique: retard/délai/prescription)
+\item cas $b$ il s'agit d'un avocat qui n'a pas donné un conseil opportun, qui n'a pas soulevé le bon argument
+\item cas $c$ un avocat qui n'a pas rédigé un acte valide ou réussi à obtenir un avantage fiscal (champ sémantique: rédacteur d'actes)
+\item cas $d$: il s'agit d'un avocat attaqué par son adversaire et non par son propre client.
 \end{itemize}
 
 Cet ensemble de données comprend 81 documents répartis dans les 4 groupes (Figure \ref{fig:similarite:dira-data-distrib}) avec 6 documents appartenant chacun à 2 groupes (cas de chevauchements).
 
-\begin{figure}
-	\centering \includegraphics[scale=0.4]{dira-data-distrib.png}
-	\caption{Répartition des documents annotés par circonstances factuelles (action en responsabilité civile professionnelle contre les avocats).}\label{fig:similarite:dira-data-distrib}
+\begin{figure}[!htb]
+	\centering \includegraphics[scale=0.5]{dira-data-distrib.png}
+	\caption{Répartition des documents annotés par circonstances factuelles (\textit{DIRA}).}\label{fig:similarite:dira-data-distrib}
 \end{figure}
 
 Pour l'évaluation non supervisée, les catégories de demande utilisée dans les chapitres \ref{chap:quanta} et \ref{chap:sensresultat} sont utilisés en plus.
@@ -334,45 +342,88 @@ Les documents sont pré-traités avant leur représentation sous forme vectoriel
 Le vocabulaire $W$ utilisé est restreint au mots du corpus original $D$ sur lequel il faut appliquer les regroupements. La représentation vectorielle est TF-IDF avec des n-grammes de 1 à 3 mots (pour prendre en compte l'ordre entre les mots).
 
 \subsection{Validité de la distance apprise}
-La base d'entraînement $B$ comprend 10 documents synthétiques générés pour chacun des 74 documents n'ayant qu'un seul label.
+La base d'entraînement $B$ comprend 10 documents synthétiques générés pour chacun des 74 documents n'ayant qu'un seul label. Nous vérifions ici que la métrique respecte les propriétés des distances, et aussi si elle reste normale après l'entraînement. D'après la matrice des distances entre toutes les paires de document de la base annotées $\mathcal{D_{\text{DIRA}}}$ (Figure \ref{fig:similarite:distance_matrix}),  la "non-négativité", l'identité discernable, et la symétrie sont respectée car toutes les valeurs sont non-négative, seule la diagonale est nulle, et la matrice est symétrique. De plus, toutes les distances sont comprises entre 0 et 1, et par conséquent la métrique est normée (donc la similarité est déduite par $Sim_\mathcal{M} = 1 - Dis_\mathcal{M}$).
+
 \begin{figure}[!htb]
-	\centering \includegraphics[scale=0.5]{distance_matrix.png}
+	\centering \includegraphics[scale=0.8]{distance_matrix.png}
 	\caption{Matrice des distances de la métrique apprise sur les documents labellisés}\label{fig:similarite:distance_matrix}
 \end{figure}
-Nous vérifions ici que la métrique respecte les propriétés des distances, et aussi si elle reste normale après l'entraînement. D'après la matrice des distances entre toutes les paires de document de la base annotées $\mathcal{D_{\text{DIRA}}}$ (Figure \ref{fig:similarite:distance_matrix}),  la "non-négativité", l'identité discernable, et la symétrie sont respectée car toutes les valeurs sont non-négative, seule la diagonale est nulle, et la matrice est symétrique. De plus, toutes les distances sont comprises entre 0 et 1, et par conséquent la métrique est normée (donc la similarité est déduite par $Sim_\mathcal{M} = 1 - Dis_\mathcal{M}$). L'inégalité triangulaire est vérifié car $Reg_\mathcal{M}(X,Z) - (Reg_\mathcal{M}(X,Y) + Reg_\mathcal{M}(Y,Z)) \leq 0, \forall (X,Y,Z) \in \mathcal{D_{\text{DIRA}}} \times \mathcal{D_{\text{DIRA}}} \times \mathcal{D_{\text{DIRA}}}$ (Figure \ref{fig:similarite:matrice_inegalite_triangulaire}).
+
+L'inégalité triangulaire est vérifiée car $Reg_\mathcal{M}(X,Z) - (Reg_\mathcal{M}(X,Y) + Reg_\mathcal{M}(Y,Z)) \leq 0, \forall (X,Y,Z) \in \mathcal{D_{\text{DIRA}}} \times \mathcal{D_{\text{DIRA}}} \times \mathcal{D_{\text{DIRA}}}$ (Figure \ref{fig:similarite:matrice_inegalite_triangulaire}).
+
 \begin{figure}[!htb]
 	\centering \includegraphics[width=\textwidth]{inegalite_triangulaire.png}
 	\caption{Matrice de $Reg_\mathcal{M}(X,Z) - (Reg_\mathcal{M}(X,Y) + Reg_\mathcal{M}(Y,Z)), \forall (X,Y,Z) \in \mathcal{D_{\text{DIRA}}} \times \mathcal{D_{\text{DIRA}}} \times \mathcal{D_{\text{DIRA}}}$, avec les $X$ indicés en lignes et les paires $(Y,Z)$ en colonnes. }\label{fig:similarite:matrice_inegalite_triangulaire}
 \end{figure}
+ 
 
 
 \subsection{Adéquation de la métrique apprise avec le problème}
-L'adéquation est mesurée par la formule suivante qui doit tendre vers 0: \[A(Dis_\mathcal{M}) = \sum\limits_{\substack{(l,k) \in L \times L \\ l \neq k}} \sum\limits_{\substack{d \in D_l \\ d' \in D_k}} \left(1 - Dis_\mathcal{M}(d,d')\right) + \sum\limits_{l \in L} \sum\limits_{\substack{d \in D_l \\ d' \in D_l}} Dis_\mathcal{M}(d,d). \] $L = \lbrace a, b, c, d \rbrace$ est l'ensemble des labels. Pour tout $l \in L$, $D_l \subset \mathcal{D}$ désigne le sous-ensemble des documents de $\mathcal{D}$ qui ont le label $l$. Cette formule tend vers 0 lorsque la somme des similarités entre documents de labels différents (premier terme) et la somme des distances entre documents de labels égaux (second terme) tendent tous les deux vers 0.
+L'adéquation est mesurée par la formule suivante qui doit tendre vers 0: \[A(Dis) = \sum\limits_{\substack{(l,k) \in L \times L \\ l \neq k}} \sum\limits_{\substack{d \in D_l \\ d' \in D_k}} Sim(d,d') + \sum\limits_{l \in L} \sum\limits_{\substack{d \in D_l \\ d' \in D_l}} Dis(d,d). \] $L = \lbrace a, b, c \rbrace$ est l'ensemble des labels. Pour tout $l \in L$, $D_l \subset \mathcal{D}$ désigne le sous-ensemble des documents de $\mathcal{D}$ qui ont le label $l$. Cette formule tend vers 0 lorsque la somme des similarités entre documents de labels différents (premier terme) et la somme des distances entre documents de labels égaux (second terme) tendent tous les deux vers 0.
 Sur les 74 document annotés, nous obtenons $A(Dis_\mathcal{M}) = 872.635 + 519.151 = 1391.786$ avec une moyenne de similarité entre labels de $0.537$ et de distance entre labels égaux de $0.482$.
 
-\textcolor{red}{Tableau comparatif des distances: inter-label - intralabel}
 \begin{table}[!htb]
 	\centering
   \begin{tabular}{|l|c|c||c|c|}
   	\hline
-	Dis & inter-label & intra-label & inter - intra & A(Dis) \\ \hline
+	$Dis$ & Séparation & Cohésion & $Moy_{inter} - Moy_{intra}$ & $A(Dis)$ \\ \hline
 	$Dis_\mathcal{M}$ &0.537&0.482&0.055& 1391.786 \\ \hline
 	$Dis_{cos}$ &0.941&0.908&0,033&  \\ \hline
 	$Dis_{soft-cos}$ &&&&  \\ \hline
-	$Dis_{manhattan}$ &87.630&81.07&&  \\ \hline
+	$Dis_{manhattan}$ &87.630&81.07& 6,56 &  \\ \hline
 	$Dis_{euclidienne}$ &1.371&1.325&0.046&  \\ \hline
 	$Dis_{jaccard}$ &&&&  \\ \hline
 	$Dis_{pearson}$ &&&&  \\ \hline
 	$Dis_{wmd}$ &&&&  \\ \hline	
   \end{tabular}
-	\caption{Tableau comparatif de l'adéquation des distances au problème}
+	\caption{Tableau comparatif de l'adéquation des distances au problème} \label{tab:similarite:compare-dist-adequation}
 \end{table}
 
-\subsection{Comparaison d'approches}
-Comparer la vectorisation du document sur tout son contenu vs. sur la restriction aux énoncés de demande de la catégorie (du type "constater", "dire et juger") vs restriction aux conclusions (le raisonnement des parties décrits les circonstances factuelles) + motifs sur la catégorie
+\subsection{Comparaison des distances de similarité pour le regroupement}
+%Comparer la vectorisation du document sur tout son contenu vs. sur la restriction aux énoncés de demande de la catégorie (du type "constater", "dire et juger") vs restriction aux conclusions (le raisonnement des parties décrits les circonstances factuelles) + motifs sur la catégorie
 
-avec choix du nombre de clusters
+%avec choix du nombre de clusters
 
+Nous comparons ici les distances lorsqu'elles sont utilisées pour un partitionnement disjoint avec les algorithmes de k-means et k-medoids. 
+
+\begin{table}[!htb]
+	\centering
+	\begin{tabular}{|l|c|c|c||c|c|c|}
+		\hline
+		$Dis$ & $K$ & $ARI$ & $NMI$ & $precision$ & $rappel$ & $F1-mesure$  \\ \hline
+		$Dis_\mathcal{M}$ &3&&&&&  \\ \hline
+		$Dis_{cos}$ &3&&&&&  \\ \hline
+		$Dis_{soft-cos}$ &3&&&&&  \\ \hline
+		$Dis_{manhattan}$ &3&&&&&  \\ \hline
+		$Dis_{euclidienne}$ &3&&&&&  \\ \hline
+		$Dis_{jaccard}$ &3&&&&&  \\ \hline
+		$Dis_{pearson}$ &3&&&&&  \\ \hline
+		$Dis_{wmd}$ &3&&&&&  \\ \hline	
+		
+	\end{tabular}
+	\caption{Tableau comparatif de l'efficacité des distances pour le regroupement (évaluation supervisée)}\label{tab:similarite:compare-dist-evalsup}
+\end{table}
+
+
+\begin{table}[!htb]
+	\centering
+	\begin{tabular}{|l|c|c|c|c|}
+		\hline
+		$Dis$ & $K$ & Silhouette & Cohésion & Séparation \\ \hline
+		$Dis_\mathcal{M}$  &3&&&  \\ \hline
+		$Dis_{cos}$  &3&&&  \\ \hline
+		$Dis_{soft-cos}$  &3&&& \\ \hline
+		$Dis_{manhattan}$  &3&&&  \\ \hline
+		$Dis_{euclidienne}$  &3&&&  \\ \hline
+		$Dis_{jaccard}$  &3&&&  \\ \hline
+		$Dis_{pearson}$  &3&&&  \\ \hline
+		$Dis_{wmd}$  &3&&&  \\ \hline	
+	\end{tabular}
+	\caption{Tableau comparatif de l'efficacité des distances pour le regroupement (évaluation non-supervisée)}\label{tab:similarite:compare-dist-evalnonsup}
+\end{table}
+
+
+\subsection{Comparaison des algorithmes de regroupement}
 
 \section{Conclusion}
 \label{sec:similarite:conclusion}
