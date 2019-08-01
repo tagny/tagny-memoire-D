@@ -513,7 +513,7 @@ En représentant l'ensemble du document à l'aide de diverses représentations v
  Les scores F1 moyens des algorithmes  NBSVM et FastText n'excédent en général pas 0.5 malgré qu'ils soient spécialement conçus pour les textes. On peut estimer qu'ils sont très sensibles au déséquilibre des données entre les catégories (plus de rejets que d'acceptations), soit il est plus difficile de détecter l'acceptation des demandes. En effet, ces algorithmes classent toutes les données test avec le label (sens) majoritaire i.e. le rejet, et par conséquent, ils ne détectent quasiment pas d'acceptation de demande. Le cas des catégories DORIS et DCPPC pour le NBSVM ($F1_{macro} = 0.834$) tend à démontrer la forte sensibilité aux cas négatifs de ces algorithmes puisque même avec presque autant de labels "accepte" que "rejette", la F1-mesure de "rejette" est toujours supérieure à celle de "accepte" (Tableau \ref{tab:sensrst:fasttextnbsvm}). 
  
  \begin{table}[htb]
- 	\scriptsize
+ 	\scriptsize \centering
  	\begin{tabular}{|l|l|l|l|l|l|l|l|l|}
  		\hline
  	\textbf{Cat. Dmd.} & \textbf{Algo.} & \textbf{Préc.}   & \textbf{Préc. équi.} & \textbf{err-0} & \textbf{err-1} & \textbf{f1-0}  & \textbf{f1-1}  & \textbf{$F1_{macro}$} \\ \hline

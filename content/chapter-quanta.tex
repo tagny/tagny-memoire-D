@@ -517,8 +517,8 @@ Par conséquent, la métrique et le seuil doivent être bien sélectionnés en f
 \begin{table}[!htb]
 	\centering \scriptsize
 	\begin{tabular}{l|l|l|llll|llll}
-			\hline\noalign{\smallskip}
-		&                 &                       &          \multicolumn{4}{|c|}{Données d'entraînement}      &      \multicolumn{4}{|c}{Données de test}       \\ \hline
+			\hline
+		&                 &                       &          \multicolumn{4}{c|}{Données d'entraînement}      &      \multicolumn{4}{c}{Données de test}       \\ \hline
 		$c$ & Données & $\vert V_c \vert$ & P     & R     & F1                       & \%Docs & P     & R     & F1              & \%Docs \\ \hline
 		\multirow{5}{*}{\textit{acpa}}  & $q_d$ & 1 & 86.4 & 56.37 & 68.13 & 56.37 & 68.33 & 54 & 58.99 & 46 \\
 		& $q_r$ & 1 & 100 & 65.09 & 78.74 & 65.09 & 93.33 & 63 & 71.43 & 55 \\
@@ -588,7 +588,7 @@ Etant donné que la précision est en général supérieure au rappel, il est ce
 Trois raisons peuvent expliquer le fait que  peu de données attendues soient extraites. Premièrement, certaines valeurs d'attributs ne sont pas mentionnées dans les sections Litige et Dispositif utilisées (pourcentage inférieurs à 100 dans les Tableaux \ref{tab:quanta:mentionQd} et \ref{tab:quanta:mentionQr} comme par exemple les quanta résultat de \textit{doris} plus présents dans la section Motifs que dans le Dispositif).
 
 \begin{table}[!htb]
-	\scriptsize
+	\scriptsize  \centering
 	\begin{tabular}{|l|l|l|l|l|l|l|}
 		\hline
 		%\textbf{Catégorie}
@@ -600,12 +600,13 @@ Trois raisons peuvent expliquer le fait que  peu de données attendues soient ex
 		doris              & 94                   & 83                                           & 83 (100\%)                   & 82 (98.80\%)            & 21 (25.30)\%            & 6 (7.23\%)                  \\ \hline
 		styx               & 89                   & 86                                           & 86 (100\%)                   & 86 (100\%)              & 12 (13.95\%)            & 9 (10.47\%)                 \\ \hline
 	\end{tabular}
+
 	\textit{Les pourcentages ne sont calculés que pour les valeurs non nulles}
 	\caption{Taux de quanta demandés ($q_d$) mentionnés dans les documents annotés} \label{tab:quanta:mentionQd}
 \end{table}
 
 \begin{table}[!htb]
-	\scriptsize
+	\scriptsize \centering
 	\begin{tabular}{|l|l|l|l|l|l|l|}
 		\hline
 		%\textbf{Catégorie}
@@ -617,6 +618,7 @@ Trois raisons peuvent expliquer le fait que  peu de données attendues soient ex
 		doris              & 94                & 44                      & 44 (100\%)            & 28 (63.64\%)            & 40 (90.91)\%            & 24 (54.55\%)                \\ \hline
 		styx               & 89                & 30                      & 29 (96.67\%)          & 16 (53.33\%)            & 22 (73.33\%)            & 29 (96.67\%)                \\ \hline
 	\end{tabular}
+
 	\textit{Les pourcentages ne sont calculés que pour les valeurs non nulles}
 	\caption{Taux de quanta accordés ($q_r$) mentionnés dans les documents annotés} \label{tab:quanta:mentionQr}
 \end{table}

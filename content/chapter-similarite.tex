@@ -227,7 +227,7 @@ Ces métriques doivent être utilisées ensemble  pour compenser les limites de 
 \subsubsection{Métriques non-supervisées ou indices internes}
 \label{sec:similarite:biblio:unsupeval}
 
- La cohésion et la séparation des clusters sont les principale indices internes. La cohésion mesure le degré de proximité entre objets d'un cluster à partir du carré de la somme des erreurs\footnote{Erreur: distance entre un point et le centre du cluster dont il est membre.} dans les clusters: $WCSS(C) = \sum\limits_{j=1}^K\sum\limits_{x \in C_j} Dis(x, m_j)$, où $C = \lbrace C_1, C_1, \cdots, C_K \rbrace$ est l'ensemble des clusters du regroupement, $m_j$ le centre de $C_j$, et $Dis(x,m_j)$ la distance (généralement euclidienne) entre un point $x$ et $m_j$. En général, une valeur faible de la cohésion indique que les clusters sont plus compactes, et donc de meilleur qualité. Tandis qu'une valeur élevée révèle une grande variabilité entre les objets à l'intérieur les clusters. La séparation quant à elle mesure l'éloignement de chaque cluster des autres à partir du carré de la somme des distances entre clusters: $BCSS(C) = \sum\limits_{j = 1}^{K} \vert C_j \vert (m - m_j)$, 
+ La cohésion et la séparation des clusters sont les principaux indices internes. La cohésion mesure le degré de proximité entre objets d'un cluster à partir du carré de la somme des erreurs\footnote{Erreur: distance entre un point et le centre du cluster dont il est membre.} dans les clusters: $WCSS(C) = \sum\limits_{j=1}^K\sum\limits_{x \in C_j} Dis(x, m_j)$, où $C = \lbrace C_1, C_1, \cdots, C_K \rbrace$ est l'ensemble des clusters du regroupement, $m_j$ le centre de $C_j$, et $Dis(x,m_j)$ la distance (généralement euclidienne) entre un point $x$ et $m_j$. En général, une valeur faible de la cohésion indique que les clusters sont plus compactes, et donc de meilleur qualité. Tandis qu'une valeur élevée révèle une grande variabilité entre les objets à l'intérieur les clusters. La séparation quant à elle mesure l'éloignement de chaque cluster des autres à partir du carré de la somme des distances entre clusters: $BCSS(C) = \sum\limits_{j = 1}^{K} \vert C_j \vert (m - m_j)$, 
   $m$ étant le centre l'ensemble des objets (la moyenne des vecteurs de tous les documents, où le document qui se trouve à une distance moyenne minimale de tous les autres). Une grande valeur de séparation indique que les clusters sont isolés les uns des autres, et par conséquent elle doit être maximisée pendant le regroupement.
  
  Le coefficient de silhouette de \citet{rousseeuw1987silhouetteclusternumber} combine les idées de cohésion et séparation mais pour chaque objet. Il se calcule par $s(x) = \frac{b(x
@@ -319,9 +319,9 @@ Cette section discute la validité, l'adéquation, et l'efficacité de la métri
 \subsection{Annotation manuelle de données d'évaluation}
 Pour l'évaluation supervisée, nous disposons d'une base annotée sur la catégorie de demande "dommage-intérêts / action en responsabilité civile professionnelle contre les avocats" (\textit{DIRA}) qui concerne les contentieux impliquant des avocats.  L'expert annotateur a identifié quatre cas différents :
 \begin{itemize}
-\item cas $a$: il s'agit d'un avocat qui est négligent et envoie son assignation de manière tardive (champ sémantique: retard/délai/prescription)
-\item cas $b$ il s'agit d'un avocat qui n'a pas donné un conseil opportun, qui n'a pas soulevé le bon argument
-\item cas $c$ un avocat qui n'a pas rédigé un acte valide ou réussi à obtenir un avantage fiscal (champ sémantique: rédacteur d'actes)
+\item cas $a$: il s'agit d'un avocat qui est négligent et envoie son assignation de manière tardive; %(champ sémantique: retard/délai/prescription)
+\item cas $b$: il s'agit d'un avocat qui n'a pas donné un conseil opportun, qui n'a pas soulevé le bon argument;
+\item cas $c$: un avocat qui n'a pas rédigé un acte valide ou réussi à obtenir un avantage fiscal; % (champ sémantique: rédacteur d'actes)
 \item cas $d$: il s'agit d'un avocat attaqué par son adversaire et non par son propre client.
 \end{itemize}
 
@@ -345,7 +345,7 @@ Le vocabulaire $W$ utilisé est restreint au mots du corpus original $D$ sur leq
 La base d'entraînement $B$ comprend 10 documents synthétiques générés pour chacun des 74 documents n'ayant qu'un seul label. Nous vérifions ici que la métrique respecte les propriétés des distances, et aussi si elle reste normale après l'entraînement. D'après la matrice des distances entre toutes les paires de document de la base annotées $\mathcal{D_{\text{DIRA}}}$ (Figure \ref{fig:similarite:distance_matrix}),  la "non-négativité", l'identité discernable, et la symétrie sont respectée car toutes les valeurs sont non-négative, seule la diagonale est nulle, et la matrice est symétrique. De plus, toutes les distances sont comprises entre 0 et 1, et par conséquent la métrique est normée (donc la similarité est déduite par $Sim_\mathcal{M} = 1 - Dis_\mathcal{M}$).
 
 \begin{figure}[!htb]
-	\centering \includegraphics[scale=0.8]{distance_matrix.png}
+	\centering \includegraphics[scale=1]{distance_matrix.png}
 	\caption{Matrice des distances de la métrique apprise sur les documents labellisés}\label{fig:similarite:distance_matrix}
 \end{figure}
 
@@ -362,26 +362,27 @@ L'inégalité triangulaire est vérifiée car $Reg_\mathcal{M}(X,Z) - (Reg_\math
 L'adéquation est mesurée par la formule suivante qui doit tendre vers 0: \[A(Dis) = \sum\limits_{\substack{(l,k) \in L \times L \\ l \neq k}} \sum\limits_{\substack{d \in D_l \\ d' \in D_k}} Sim(d,d') + \sum\limits_{l \in L} \sum\limits_{\substack{d \in D_l \\ d' \in D_l}} Dis(d,d). \] $L = \lbrace a, b, c \rbrace$ est l'ensemble des labels. Pour tout $l \in L$, $D_l \subset \mathcal{D}$ désigne le sous-ensemble des documents de $\mathcal{D}$ qui ont le label $l$. Cette formule tend vers 0 lorsque la somme des similarités entre documents de labels différents (premier terme) et la somme des distances entre documents de labels égaux (second terme) tendent tous les deux vers 0.
 Sur les 74 document annotés, nous obtenons $A(Dis_\mathcal{M}) = 872.635 + 519.151 = 1391.786$ avec une moyenne de similarité entre labels de $0.537$ et de distance entre labels égaux de $0.482$.
 
-L'évaluation des algorithmes de regroupement considèrent parfaite la distance utilisée. En considérant les données annotées (regroupement parfait), les indices internes (section \ref{sec:similarite:biblio:unsupeval}) permettent d'évaluer les distances. Ces dernières sont ainsi comparées dans le Tableau \ref{tab:similarite:compare-dist-adequation}.
+L'évaluation des algorithmes de regroupement considèrent parfaite la distance utilisée. En considérant les données annotées (regroupement parfait), le coefficient de silhouette peut  permettre d'évaluer les distances. Les valeurs de ce dernier sont ainsi comparées dans le Tableau \ref{tab:similarite:compare-dist-adequation}.
 
 \begin{table}[!htb]
 	\centering
-  \begin{tabular}{|l|c|c|c|c|}
+  \begin{tabular}{|l|c|c|}
   	\hline
-	$Dis$ & Cohésion & Séparation & Silhouette &  $A(Dis)$ \\ \hline
-	$Dis_\mathcal{M}$ &&&& 1391.786 \\ \hline
-	$Dis_{cos}$ &&&& \\ \hline
-	$Dis_{soft-cos}$ &&&&  \\ \hline
-	$Dis_{manhattan}$ &&&& \\ \hline
-	$Dis_{euclidienne}$ &&&&  \\ \hline
-	$Dis_{jaccard}$ &&&&  \\ \hline
-	$Dis_{pearson}$ &&&& \\ \hline
-	$Dis_{wmd}$ &&&&  \\ \hline	
+	$Dis$ & Silhouette &  $A(Dis)$ \\ \hline
+	$Dis_\mathcal{M}$ &-0.007& 1391.786 \\ \hline
+	$Dis_{braycurtis}$ &-0.005& \\ \hline
+	$Dis_{cos}$ &-0.010& \\ \hline
+	$Dis_{soft-cos}$ && \\ \hline
+	$Dis_{manhattan}$ &-0.014& \\ \hline
+	$Dis_{euclidienne}$ &-0.005&  \\ \hline
+	$Dis_{jaccard}$ &-0.006&  \\ \hline
+	$Dis_{pearson}$ &-0.012& \\ \hline
+	$Dis_{wmd}$ &-0.029& \\ \hline	
   \end{tabular}
 	\caption{Tableau comparatif de l'adéquation des distances au problème} \label{tab:similarite:compare-dist-adequation}
 \end{table}
 
-\subsection{Comparaison des distances de similarité pour le regroupement}
+\subsection{Comparaison des distances pour le regroupement}
 %Comparer la vectorisation du document sur tout son contenu vs. sur la restriction aux énoncés de demande de la catégorie (du type "constater", "dire et juger") vs restriction aux conclusions (le raisonnement des parties décrits les circonstances factuelles) + motifs sur la catégorie
 
 %avec choix du nombre de clusters
@@ -393,14 +394,15 @@ Nous comparons ici les distances lorsqu'elles sont utilisées pour un partitionn
 	\begin{tabular}{|l|c|c|c||c|c|c|}
 		\hline
 		$Dis$ & $K$ & $ARI$ & $NMI$ & $precision$ & $rappel$ & $F1-mesure$  \\ \hline
-		$Dis_\mathcal{M}$ &3&&&&&  \\ \hline
-		$Dis_{cos}$ &3&&&&&  \\ \hline
+		$Dis_\mathcal{M}$ &3&-0.00&0.07&0.45&0.51& 0.48 \\ \hline
+		$Dis_{braycurtis}$ &3&0.04&0.05&0.50&0.44&0.47 \\ \hline
+		$Dis_{cos}$ &3&0.08&0.06&0.52&0.51&0.52 \\ \hline
 		$Dis_{soft-cos}$ &3&&&&&  \\ \hline
-		$Dis_{manhattan}$ &3&&&&&  \\ \hline
-		$Dis_{euclidienne}$ &3&&&&&  \\ \hline
-		$Dis_{jaccard}$ &3&&&&&  \\ \hline
-		$Dis_{pearson}$ &3&&&&&  \\ \hline
-		$Dis_{wmd}$ &3&&&&&  \\ \hline	
+		$Dis_{manhattan}$ &3&-0.04&0.04&0.40&0.92&0.56  \\ \hline
+		$Dis_{euclidienne}$ &3&0.08&0.06&0.52&0.51&0.52  \\ \hline
+		$Dis_{jaccard}$ &3&0.08&0.06&0.52&0.51&0.52 \\ \hline
+		$Dis_{pearson}$ &3&0.08&0.06&0.52&0.51&0.52  \\ \hline
+		$Dis_{wmd}$ &3&-0.02&0.01&0.45&0.37& 0.41 \\ \hline	
 		
 	\end{tabular}
 	\caption{Tableau comparatif de l'efficacité des distances pour le regroupement (évaluation supervisée)}\label{tab:similarite:compare-dist-evalsup}
@@ -412,14 +414,14 @@ Nous comparons ici les distances lorsqu'elles sont utilisées pour un partitionn
 	\begin{tabular}{|l|c|c|c|c|}
 		\hline
 		$Dis$ & $K$ & Silhouette & Cohésion & Séparation \\ \hline
-		$Dis_\mathcal{M}$  &3&&&  \\ \hline
-		$Dis_{cos}$  &3&&&  \\ \hline
+		$Dis_\mathcal{M}$  &3&0.00&& \\ \hline
+		$Dis_{cos}$  &3&0.01&&  \\ \hline
 		$Dis_{soft-cos}$  &3&&& \\ \hline
-		$Dis_{manhattan}$  &3&&&  \\ \hline
-		$Dis_{euclidienne}$  &3&&&  \\ \hline
-		$Dis_{jaccard}$  &3&&&  \\ \hline
-		$Dis_{pearson}$  &3&&&  \\ \hline
-		$Dis_{wmd}$  &3&&&  \\ \hline	
+		$Dis_{manhattan}$  &3&0.01&&  \\ \hline
+		$Dis_{euclidienne}$  &3&0.01&&  \\ \hline
+		$Dis_{jaccard}$  &3&0.01&&  \\ \hline
+		$Dis_{pearson}$  &3&0.01&&  \\ \hline
+		$Dis_{wmd}$  &3&0.00&&  \\ \hline	
 	\end{tabular}
 	\caption{Tableau comparatif de l'efficacité des distances pour le regroupement (évaluation non-supervisée)}\label{tab:similarite:compare-dist-evalnonsup}
 \end{table}
