@@ -362,18 +362,20 @@ L'inégalité triangulaire est vérifiée car $Reg_\mathcal{M}(X,Z) - (Reg_\math
 L'adéquation est mesurée par la formule suivante qui doit tendre vers 0: \[A(Dis) = \sum\limits_{\substack{(l,k) \in L \times L \\ l \neq k}} \sum\limits_{\substack{d \in D_l \\ d' \in D_k}} Sim(d,d') + \sum\limits_{l \in L} \sum\limits_{\substack{d \in D_l \\ d' \in D_l}} Dis(d,d). \] $L = \lbrace a, b, c \rbrace$ est l'ensemble des labels. Pour tout $l \in L$, $D_l \subset \mathcal{D}$ désigne le sous-ensemble des documents de $\mathcal{D}$ qui ont le label $l$. Cette formule tend vers 0 lorsque la somme des similarités entre documents de labels différents (premier terme) et la somme des distances entre documents de labels égaux (second terme) tendent tous les deux vers 0.
 Sur les 74 document annotés, nous obtenons $A(Dis_\mathcal{M}) = 872.635 + 519.151 = 1391.786$ avec une moyenne de similarité entre labels de $0.537$ et de distance entre labels égaux de $0.482$.
 
+L'évaluation des algorithmes de regroupement considèrent parfaite la distance utilisée. En considérant les données annotées (regroupement parfait), les indices internes (section \ref{sec:similarite:biblio:unsupeval}) permettent d'évaluer les distances. Ces dernières sont ainsi comparées dans le Tableau \ref{tab:similarite:compare-dist-adequation}.
+
 \begin{table}[!htb]
 	\centering
-  \begin{tabular}{|l|c|c||c|c|}
+  \begin{tabular}{|l|c|c|c|c|}
   	\hline
-	$Dis$ & Séparation & Cohésion & $Moy_{inter} - Moy_{intra}$ & $A(Dis)$ \\ \hline
-	$Dis_\mathcal{M}$ &0.537&0.482&0.055& 1391.786 \\ \hline
-	$Dis_{cos}$ &0.941&0.908&0,033&  \\ \hline
+	$Dis$ & Cohésion & Séparation & Silhouette &  $A(Dis)$ \\ \hline
+	$Dis_\mathcal{M}$ &&&& 1391.786 \\ \hline
+	$Dis_{cos}$ &&&& \\ \hline
 	$Dis_{soft-cos}$ &&&&  \\ \hline
-	$Dis_{manhattan}$ &87.630&81.07& 6,56 &  \\ \hline
-	$Dis_{euclidienne}$ &1.371&1.325&0.046&  \\ \hline
+	$Dis_{manhattan}$ &&&& \\ \hline
+	$Dis_{euclidienne}$ &&&&  \\ \hline
 	$Dis_{jaccard}$ &&&&  \\ \hline
-	$Dis_{pearson}$ &&&&  \\ \hline
+	$Dis_{pearson}$ &&&& \\ \hline
 	$Dis_{wmd}$ &&&&  \\ \hline	
   \end{tabular}
 	\caption{Tableau comparatif de l'adéquation des distances au problème} \label{tab:similarite:compare-dist-adequation}
