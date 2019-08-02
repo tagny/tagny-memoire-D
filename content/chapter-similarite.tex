@@ -6,8 +6,8 @@
 
 \section{Introduction}
 \label{sec:similarite:introduction}
-Les circonstances factuelles définissent les contextes possibles dans lesquels une catégorie de demande peut être formulée (\textcolor{red}{N'est-ce pas simplement l'accusation ou l'objet du litige}). Les analyses descriptives ou prédictives ne prennent sens que lorsqu'elles sont appliquées à un ensemble de décisions aux circonstances similaires. Par exemple, il serait imprudent de considérer toutes les décisions pour analyser les chances d'acceptation d'une demande de dommages-intérêts fondée sur l'\og article 700 du code de procédure civile \fg{} en cas de trouble de voisinage. Les taux d'acceptation ou de rejet peuvent être différents entre des affaires de licenciement et celles portant sur les troubles anormaux du voisinage, et même plus spécifiquement entre les troubles de voisinage entre particulier et entreprises. % (par exemple: chantier de construction), ou simplement entre particuliers (par exemple: troubles sonores). 
- Il serait préférable de travailler uniquement avec des décisions similaires à la situation d'intérêt. L'identification des circonstances factuelles devient donc une étape préalable indispensable à l'analyse du résultat. Malheureusement, les circonstances sont très diverses et quasi infinies pour être identifier par classification supervisée à l'aide d'annotation manuelle d'exemples comme dans les chapitres précédent. Il est donc plus indiquer d'adopter une approche non-supervisée capable modéliser les circonstances factuelles à partir d'un corpus de documents d'une même catégorie de demande. Plus précisément, la méthode doit construire des sous-ensembles de décisions selon qu'elles traitent de contextes similaires.  Les objectifs de ce chapitre sont d'expérimenter des algorithmes  de \textit{clustrering} et des métriques de similarité. Il démontre aussi qu'une distance entraînée  sur des documents d'une catégorie de demande permet de mieux mesurer la (dis-) similarité sémantique définie par les circonstances factuelles.
+Les circonstances factuelles définissent les contextes possibles dans lesquels une catégorie de demande peut être formulée (\textcolor{red}{N'est-ce pas simplement la raison de la demande (accusation)}). Les analyses descriptives ou prédictives ne prennent sens que lorsqu'elles sont appliquées à un ensemble de décisions aux circonstances similaires. Par exemple, il serait imprudent de considérer toutes les décisions pour analyser les chances d'acceptation d'une demande de dommages-intérêts fondée sur l'\og article 700 du code de procédure civile \fg{} en cas de trouble de voisinage. Les taux d'acceptation ou de rejet peuvent être différents entre des affaires de licenciement et celles portant sur les troubles anormaux du voisinage, et même plus spécifiquement entre les troubles de voisinage entre particulier et entreprises. % (par exemple: chantier de construction), ou simplement entre particuliers (par exemple: troubles sonores). 
+ Il serait préférable de travailler uniquement avec des décisions similaires à la situation d'intérêt. L'identification des circonstances factuelles devient donc une étape préalable indispensable à l'analyse du résultat. Malheureusement, les circonstances sont très diverses et quasi infinies pour être identifier par classification supervisée à l'aide d'annotation manuelle d'exemples comme dans les chapitres précédent. Il est donc plus indiquer d'adopter une approche non-supervisée capable modéliser les circonstances factuelles à partir d'un corpus de documents d'une même catégorie de demande. Plus précisément, la méthode doit construire des sous-ensembles de décisions selon qu'elles traitent de contextes similaires.  Les objectifs de ce chapitre sont d'expérimenter des algorithmes  de regroupement (\textit{clustrering}) et des métriques de similarité. Il démontre aussi qu'une distance entraînée  sur des documents d'une catégorie de demande permet de mieux mesurer la (dis-) similarité sémantique définie par les circonstances factuelles.
 
 %\section{Formulation du Problème}
 %\label{sec:similarite:probleme}
@@ -19,7 +19,7 @@ Cette section fait une synthèse bibliographique des différents aspects rentran
 
 \subsection{Choix de l’algorithme de clustering}
 
-Le clustering de documents est une tâche dont l'objectif est d'identifier, sans supervision\footnote{Sans exemples annotés.}, une structure pertinente (pour le domaine expert) dans un ensemble $\mathcal{D} = \lbrace d_1, \dots, d_N \rbrace$ de $N$ documents non annotés en construisant des groupes représentants des catégories inconnues au départ. Ces groupes, appelés clusters, peuvent être disjoints ou à chevauchements, et plates ou hiérarchiques suivant les contraintes du domaine expert. L’algorithme à utiliser dépend généralement de la forme qu’on souhaite donner à l’organisation. 
+Le clustering de documents est une tâche dont l'objectif est d'identifier, sans supervision\footnote{Sans exemples annotés.}, une structure pertinente (pour le domaine expert) dans un ensemble $\mathcal{D} = \lbrace d_1, \dots, d_N \rbrace$ de $N$ documents non annotés en construisant des groupes représentants des catégories inconnues au départ. Ces groupes, appelés clusters, peuvent être disjoints ou se chevaucher, et plates ou hiérarchiques suivant les contraintes du domaine expert. L’algorithme à utiliser dépend généralement de la forme qu’on souhaite donner à l’organisation. Le regroupement obtenu est un ensemble des clusters $C = \lbrace C_1, C_2, \cdots, C_K \rbrace$, $K$ étant le nombre de clusters formés.
 \subsubsection{Partitionnement disjoint}
 Pour réaliser des partitions distinctes\footnote{Chaque document n'appartient qu'à un seul cluster.} (\textit{hard clustering}), des algorithmes tels que celui des K-moyennes \citep{forgey1965kmeans} et celui des \textit{K-medoïdes} \citep{kaufman1987kmedoids} seront préférés \citep{balabantaray2015kmeanskmedoids}. Ces deux algorithmes fonctionnent de manière similaire, et nécessitent que le nombre $K$ de clusters soient prédéfini. Ils commencent par une définition aléatoire de $K$ centres initiaux de clusters (centroïdes) et l'affectation des différents documents au cluster dont le centre est le plus proche. S'en suit une boucle dans laquelle le centroïde est recalculé (le point à distance totale minimale avec les membres du cluster) et les documents sont réaffectés chacun au cluster dont le centroïde est le plus proche. L'algorithme s'arrête si aucune amélioration n'est plus observée, ce qui se traduit soit par l'atteinte d'une valeur minimale prédéfinie de l'erreur de \textit{clustering}\footnote{Somme des distances au carré entre les points et leur centre respectif.} ou d'une mesure d'évaluation non supervisée (\ref{sec:similarite:biblio:unsupeval}). La différence entre l'algorithmes des K-moyennes et celui des \textit{K-medoïdes} tient principalement au fait que les centroïdes du premier ne sont pas nécessairement des points (documents) de l'ensemble d'origine, mais des points moyennes des représentations vectorielles des membres du cluster, contrairement à l'algorithme des \textit{K-medoïdes} qui ne considère que les documents originaux qui ont une distance minimale à tous les documents dans leur cluster. Cette différence donne l'avantage au \textit{K-medoïdes} de ne pas dépendre d'une représentation vectorielle nécessaire au calcul de la moyenne, mais elle a aussi l'inconvénient d'augmenter sa complexité en temps  car il faut calculer et stocker la distance entre toutes les paires de documents. Il existe plusieurs autres algorithmes de clustering disjoint dont le principe de fonctionnement est différent de celui des K-moyennes. Par exemple, l'algorithme DBSCAN (\textit{Density-based spatial clustering of applications with noise}) \citep{ester1996dbscan}  ne prend pas en paramètre le nombre de clusters à construire. Il est défini sur le concept de régions de densité caractérisées par la distance minimale $\epsilon$ autorisée entre deux points d'une même région, et le nombre maximal de points qui doivent être dans le voisinage de rayon $\epsilon$ d'un point pour que ce voisinage soit une région de densité (le point central est appelé "point noyau" (\textit{core point}). Le principe du DBSCAN est de construire les clusters successivement en reliant les régions (voisinages) dont les noyaux sont à distance plus ou moins inférieure à $\epsilon$. Les points qui sont seul dans leur cluster sont qualifiés d'\textit{outliers}. 
 % amélioration par réduction de dimension
@@ -161,12 +161,12 @@ $\overline{x_j}$: échantillons moyens du cluster $j$
 
 La méthode du coude consiste à essayer différentes valeurs consécutive de $K$ (de $K_{min}$ à $K_{max}$) puis de choisir celle qui correspond au coude de la courbe du critère d'inertie $J(K)$. Le choix de ce coude est visuel et peut être ambigu (plusieurs valeurs de $K$ sur le coude par exemple). 
 
-La méthode de la silhouette moyenne \citep{rousseeuw1987silhouetteclusternumber} est une alternative qui consiste à choisir comme valeur optimale de $K$, celle qui maximise le critère de la largeur moyenne de la silhouette: $S(k) = \frac{1}{K}\sum\limits_{i=1}^N s(d_i)$. La largeur $s(d_i)$ de la silhouette est un indice qui compare la ressemblance d'un document $d_i$ aux autres membres de son cluster $C_t$ par rapport à ceux d'autres clusters $C_l, l \neq t$:
+La méthode de la silhouette moyenne \citep{rousseeuw1987silhouetteclusternumber} est une alternative qui consiste à choisir comme valeur optimale de $K$, celle qui maximise le critère de la largeur moyenne de la silhouette: $\overline{s_K}(C) = \frac{1}{K}\sum\limits_{i=1}^N s(d_i)$. La largeur $s(d_i)$ de la silhouette est un indice qui compare la ressemblance d'un document $d_i$ aux autres membres de son cluster $C_t$ par rapport à ceux d'autres clusters $C_l, l \neq t$:
 \[s(d_i) = \frac{b(d_i) - a(d_i)}{\max\lbrace a(d_i),b(d_i)\rbrace}\]
 
 où $a(d_i) = \frac{1}{\vert C_t \vert} \sum\limits_{j=1}^{\vert C_t \vert} Dis(d_i, d_j)$, et $b(d_i) = \min\limits_{l \neq t} \frac{1}{\vert C_l \vert} \sum\limits_{j=1}^{\vert C_l \vert} Dis(d_i, d_j)$.
 
-$K$ a une valeur optimale lorsque la largeur moyenne $S(k)$ atteint sa valeur maximale. Salvador et Chan (2004) propose d’utiliser l’intersection des deux lignes approximant la courbe. Mais plus récemment, Zhang et al. (2016) trouvent que cette approche n’est pas appropriée pour les cas où le graphe d’évaluation n’est ni lisse, ni monotone. Ils proposent d’exploiter la courbure du graphe i.e. la valeur dont un objet géométrique s'écarte d'être plat ou droit dans le cas d'une ligne.
+$K$ est optimal lorsque la largeur moyenne $\overline{s_K}(C)$ est maximale. % Salvador et Chan (2004) propose d’utiliser l’intersection des deux lignes approximant la courbe. Mais plus récemment, Zhang et al. (2016) trouvent que cette approche n’est pas appropriée pour les cas où le graphe d’évaluation n’est ni lisse, ni monotone. Ils proposent d’exploiter la courbure du graphe i.e. la valeur dont un objet géométrique s'écarte d'être plat ou droit dans le cas d'une ligne.
 
 %Etant donné le grand nombre de méthodes existantes \citep{liu2010interclustvalidation, Amorim2015recoveringnumclust}, la majorité des votes peut être appliquée pour choisir le bon $K$ \footnote{\url{https://www.datanovia.com/en/lessons/determining-the-optimal-number-of-clusters-3-must-know-methods/}}.
 
@@ -181,34 +181,33 @@ $K$ a une valeur optimale lorsque la largeur moyenne $S(k)$ atteint sa valeur ma
 %\subsection{Labeliser les clusters}
 
 \subsection{Validation du regroupement}
-L'évaluation d'un regroupement peut être supervisée ou non selon que l'on dispose ou pas respectivement d'exemples de données annotés avec les groupes attendus.
+La validation d'un regroupement peut être supervisée ou non selon que des documents labellisés dans les groupes attendus (données externes) sont employées.
 
 \subsubsection{Métriques supervisées ou mesures externes}
 \label{sec:similarite:biblio:supeval}
-Il s'agit de métriques comparant deux regroupements $X = \lbrace X_1, X_2, ..., X_r \rbrace$ et $Y = \lbrace Y_1, Y_2, ..., Y_s \rbrace$ pour mesurer leur ressemblance. Elles sont définies généralement à partir du tableau de contingence résumant les chevauchements que partagent $X$ et $Y$:
-\begin{table}[!htb]
-	\centering
-	\begin{tabular}{|c|c|c|c|c|c|}
-		\hline
-		& $Y_1$    & $Y_2$    & $\cdots$ & $Y_s$    & $\sum$   \\ \hline
-		$X_1$    & $n_{11}$ & $n_{11}$ & $\cdots$ & $n_{11}$ & $a_1$    \\ \hline
-		$X_2$    & $n_{21}$ & $n_{21}$ & $\cdots$ & $n_{21}$ & $a_2$    \\ \hline
-		$\cdots$ & $\cdots$ & $\cdots$ & $\ddots$ & $\cdots$ & $\cdots$ \\ \hline
-		$X_r$    & $n_{r1}$ & $n_{r1}$ & $\cdots$ & $n_{r1}$ & $a_r$    \\ \hline
-		$\sum$   & $b_1$    & $b_2$    & $\cdots$ & $b_s$    &          \\ \hline
-	\end{tabular}
-	\caption{Tableau de contingence des chevauchement entre les regroupements $X = \lbrace X_1, X_2, ..., X_r \rbrace$ et $Y = \lbrace Y_1, Y_2, ..., Y_s \rbrace$}
-\end{table}
-
-Même s'il existe un très grand nombre de mesures d'évaluation de la qualité du regroupement \citep{im2003clusteringsurvey}, trois métriques sont couramment employées pour l'évaluation supervisée:
+Elles comparent deux regroupements $X = \lbrace X_1, X_2, ..., X_r \rbrace$ et $Y = \lbrace Y_1, Y_2, ..., Y_s \rbrace$ pour mesurer leur ressemblance. Trois métriques sont couramment employées:
 \begin{itemize}
-	\item l'information mutuelle normalisée (NMI) \citep{strehl2000nmi, vinh2010clusteringComparison} normalise l'information mutuelle entre les labels attendus $Y$ et ceux des clusters $C$ par une agrégation de leur entropie respective. Par exemple, l'incertitude symétrique \citep{kvalseth1987entropy_NMI} utilise la moyenne comme agrégateur:  $NMI(Y,C) = \frac{2 \cdot I(Y;C)}{H(Y) + H(C)} $
-	Avec $I(Y;C) = H(Y) - H(Y \vert C)$ et $H(Y) = \sum\lim\limits_{Y_i \in Y}\big(- \p(Y_i)\cdot\log_2\p(Y_i)\big)$
 	\item l'indice ajusté par chance de Rand (\textit{ajusted Rand index} - ARI) \citep{hubert1985adjustedrandidx} corrigent l'indice de Rand (RI) \citep{rand1971randidx} pour obtenir une valeur très proche de 0.0 pour les clusterings aléatoires et exactement 1.0 lorsque les clusters sont identiques aux classes attendues: %\[ARI(Y,C) = \frac{RI(Y,C) - E_{perm}\left[RI(Y,C)\right]}{1.0 - E_{perm}\left[RI(Y,C)\right]} \]
-	\[ARI(Y,C) = \frac{\sum\limits_{i,j}\binom{n_{ij}}{2} - \frac{\sum\limits_{i}\binom{a_{i}}{2}\sum\limits_{j}\binom{b_{j}}{2}}{\binom{N}{2}}}{\frac{1}{2}\big[\sum\limits_{i}\binom{a_{i}}{2}+\sum\limits_{j}\binom{b_{j}}{2}\big] - \frac{\sum\limits_{i}\binom{a_{i}}{2}\sum\limits_{j}\binom{b_{j}}{2}}{\binom{N}{2}}}\]
-	avec $\binom{n}{2} = \frac{n(n-1)}{2}$.
+	\[ARI(X,Y) = \frac{\sum\limits_{i,j}\binom{n_{ij}}{2} - \frac{\sum\limits_{i}\binom{a_{i}}{2}\sum\limits_{j}\binom{b_{j}}{2}}{\binom{N}{2}}}{\frac{1}{2}\big[\sum\limits_{i}\binom{a_{i}}{2}+\sum\limits_{j}\binom{b_{j}}{2}\big] - \frac{\sum\limits_{i}\binom{a_{i}}{2}\sum\limits_{j}\binom{b_{j}}{2}}{\binom{N}{2}}}, \text{ avec } \binom{n}{2} = \frac{n(n-1)}{2}.\]
+	ARI est calculé à l'aide du tableau de contingence résumant les chevauchements que partagent $X$ et $Y$ (Tableau \ref{tab:similarite:tab-contingence}).
+	\begin{table}[!htb]
+		\centering \small
+		\begin{tabular}{|c|c|c|c|c|c|}
+			\hline
+			& $Y_1$    & $Y_2$    & $\cdots$ & $Y_s$    & $\sum$   \\ \hline
+			$X_1$    & $n_{11}$ & $n_{11}$ & $\cdots$ & $n_{11}$ & $a_1$    \\ \hline
+			$X_2$    & $n_{21}$ & $n_{21}$ & $\cdots$ & $n_{21}$ & $a_2$    \\ \hline
+			$\cdots$ & $\cdots$ & $\cdots$ & $\ddots$ & $\cdots$ & $\cdots$ \\ \hline
+			$X_r$    & $n_{r1}$ & $n_{r1}$ & $\cdots$ & $n_{r1}$ & $a_r$    \\ \hline
+			$\sum$   & $b_1$    & $b_2$    & $\cdots$ & $b_s$    &          \\ \hline
+		\end{tabular}
+		\caption{Tableau de contingence des chevauchement entre les regroupements $X = \lbrace X_1, X_2, ..., X_r \rbrace$ et $Y = \lbrace Y_1, Y_2, ..., Y_s \rbrace$, $n_{i,j} = \vert X_i \cap Y_j\vert$} \label{tab:similarite:tab-contingence}
+	\end{table}
 	% \item la précision du clustering (ACC) \citep{}.   \textcolor{red}{pas utilisé car nécessite de trouver le meilleur mapping entre les classes et les clusters}
-	\item les métriques ARI et NMI se contentent de mesurer la différence des proportions entre les clusters de deux regroupements indépendamment des affectations des documents. D'autres méthodes appelées mesures de comptage de pair (\textit{pair counting measures}) mesurent la capacité du modèle à mettre deux documents similaires (de labels identiques dans les données annotées) dans le même groupe, et des documents dis-similaires (de label différents dans les données annotées) dans des clusters différents. Par exemple, des mesures de précision, rappel, et F1-mesure \citet{manning2009irbook-flatclustering} sont définies par les formules:
+	\item L'information mutuelle normalisée (NMI) \citep{kvalseth1987entropy_NMI,strehl2000nmi, vinh2010clusteringComparison} normalise l'information mutuelle entre les regroupements $X$ et $Y$ par une agrégation de leur entropie respective. Par exemple, l'incertitude symétrique \citep{kvalseth1987entropy_NMI} utilise la moyenne comme agrégateur:  $NMI(X,Y) = \frac{2 \cdot I(X,Y)}{H(Y) + H(Y)} $, 
+	avec $I(X,Y) = H(X) - H(X \vert Y) = \sum\limits_{i=1}^{r}\sum\limits_{j=1}^{s} \frac{n_{ij}}{N} \log_2\frac{{n_{ij}}/{N}}{{a_ib_j}/{N}}$ et $H(X) = \sum\limits_{X_i \in X}\left(- p(X_i)\log_2 p(X_i)\right)$,  $p(X_i) = \frac{a_i}{N}$ et $p(Y_j) = \frac{b_j}{N}$; $n_{ij}, a_i$ et $b_j$ provenant du tableau de contingence (Tableau \ref{tab:similarite:tab-contingence}).
+	
+	\item les métriques ARI et NMI se contentent de mesurer la différence des proportions entre les clusters de deux regroupements indépendamment des affectations des documents. D'autres méthodes appelées mesures de comptage de pair (\textit{pair counting measures}) mesurent la capacité du modèle à mettre deux documents similaires (de labels identiques dans les données annotées) dans le même groupe, et des documents dis-similaires (de labels différents dans les données annotées) dans des clusters différents. Par exemple, des mesures de précision, rappel, et F1-mesure sont définies par les formules suivantes \citep{manning2009irbook-flatclustering}:
 	\[P = \frac{{TP}}{{TP} + {FP}}, R = \frac{{TP}}{{TP} + {FN}}, F1 = \frac{2 \times P \times R}{P + R}.\]
 	Les métriques de bases vrais/faux positifs/négatifs qui servent à les calculer, sont définies comme suit:
 	\begin{itemize}
@@ -220,7 +219,7 @@ Même s'il existe un très grand nombre de mesures d'évaluation de la qualité 
 	
 	
 \end{itemize}
-Ces métriques doivent être utilisées ensemble  pour compenser les limites de chacune d'elles \citep{yang2017kmeansfriendlyspaces}.
+%Ces métriques doivent être utilisées ensemble  pour compenser les limites de chacune d'elles \citep{yang2017kmeansfriendlyspaces}.
 
 
 
@@ -317,7 +316,7 @@ Cette section discute la validité, l'adéquation, et l'efficacité de la métri
 
 
 \subsection{Annotation manuelle de données d'évaluation}
-Pour l'évaluation supervisée, nous disposons d'une base annotée sur la catégorie de demande "dommage-intérêts / action en responsabilité civile professionnelle contre les avocats" (\textit{DIRA}) qui concerne les contentieux impliquant des avocats.  L'expert annotateur a identifié quatre cas différents :
+Pour l'évaluation supervisée, nous disposons d'une base annotée sur la catégorie de demande "dommage-intérêts / action en responsabilité civile professionnelle contre les avocats" (\textit{dira}) qui concerne les contentieux impliquant des avocats.  L'expert annotateur a identifié quatre cas différents :
 \begin{itemize}
 \item cas $a$: il s'agit d'un avocat qui est négligent et envoie son assignation de manière tardive; %(champ sémantique: retard/délai/prescription)
 \item cas $b$: il s'agit d'un avocat qui n'a pas donné un conseil opportun, qui n'a pas soulevé le bon argument;
@@ -329,31 +328,27 @@ Cet ensemble de données comprend 81 documents répartis dans les 4 groupes (Fig
 
 \begin{figure}[!htb]
 	\centering \includegraphics[scale=0.5]{dira-data-distrib.png}
-	\caption{Répartition des documents annotés par circonstances factuelles (\textit{DIRA}).}\label{fig:similarite:dira-data-distrib}
+	\caption{Répartition des documents annotés par circonstances factuelles (\textit{dira}).}\label{fig:similarite:dira-data-distrib}
 \end{figure}
 
-Pour l'évaluation non supervisée, les catégories de demande utilisée dans les chapitres \ref{chap:quanta} et \ref{chap:sensresultat} sont utilisés en plus.
+Pour l'évaluation non supervisée, les corpus des catégories de demande des chapitres \ref{chap:quanta} et \ref{chap:sensresultat} sont employés en plus pour l'évaluation non-supervisée. Nous les appelons respectivement $\mathcal{D}_{acpa}$, $\mathcal{D}_{concdel}$, $\mathcal{D}_{danais}$,$\mathcal{D}_{dcppc}$, $\mathcal{D}_{doris}$, $\mathcal{D}_{styx}$.
 
 \subsection{Protocole}
-Pour analyser la validité et l'adéquation de la métrique apprise, nous l'entraînons sur la base générée puis nous l'évaluons sur le corpus annoté ($\mathcal{D_{\text{DIRA}}}$). Quant à l'efficacité de la métrique apprise, nous l'entraînons sur toutes les données annotées générées.
-
-Les documents sont pré-traités avant leur représentation sous forme vectorielle. Ce prétraitement consiste à sectionner les documents (chapitre \ref{chap:structuration}), à n'utiliser que la concaténation des section Litige et Motifs (\textcolor{red}{pourquoi?}), à mettre en minuscule et lemmatiser ce contenu, puis à éliminer des caractères de ponctuation et des mots inutiles (\textit{stop words})  car ils sont généralement indépendants de toute catégorie.
-
-Le vocabulaire $W$ utilisé est restreint au mots du corpus original $D$ sur lequel il faut appliquer les regroupements. La représentation vectorielle est TF-IDF avec des n-grammes de 1 à 3 mots (pour prendre en compte l'ordre entre les mots).
+Pour analyser la validité et l'adéquation de la métrique apprise, nous l'entraînons sur la base générée puis nous l'évaluons sur le corpus annoté ($\mathcal{D_{\text{dira}}}$). Quant à l'efficacité de la métrique apprise, nous l'entraînons sur toutes les données annotées générées. Les documents sont pré-traités avant leur représentation sous forme vectorielle. Ce prétraitement consiste à sectionner les documents (chapitre \ref{chap:structuration}), à n'utiliser que le corps des documents (Litige + Motifs) (\textcolor{red}{pourquoi?}), à mettre en minuscule et lemmatiser ce contenu, puis à éliminer des caractères de ponctuation et des mots inutiles (\textit{stop words})  car ils sont généralement indépendants de toute catégorie. Le vocabulaire $W$ utilisé est restreint au mots du corpus original $D$ sur lequel il faut appliquer les regroupements. La représentation vectorielle emploie le modèle TF-IDF avec des n-grammes de 1 à 3 mots (pour prendre en compte l'ordre entre les mots).
 
 \subsection{Validité de la distance apprise}
-La base d'entraînement $B$ comprend 10 documents synthétiques générés pour chacun des 74 documents n'ayant qu'un seul label. Nous vérifions ici que la métrique respecte les propriétés des distances, et aussi si elle reste normale après l'entraînement. D'après la matrice des distances entre toutes les paires de document de la base annotées $\mathcal{D_{\text{DIRA}}}$ (Figure \ref{fig:similarite:distance_matrix}),  la "non-négativité", l'identité discernable, et la symétrie sont respectée car toutes les valeurs sont non-négative, seule la diagonale est nulle, et la matrice est symétrique. De plus, toutes les distances sont comprises entre 0 et 1, et par conséquent la métrique est normée (donc la similarité est déduite par $Sim_\mathcal{M} = 1 - Dis_\mathcal{M}$).
+La base d'entraînement $B$ comprend 10 documents synthétiques générés pour chacun des 74 documents n'ayant qu'un seul label. Nous vérifions ici que la métrique respecte les propriétés des distances, et aussi si elle reste normale après l'entraînement. D'après la matrice des distances entre toutes les paires de document de la base annotées $\mathcal{D_{\text{dira}}}$ (Figure \ref{fig:similarite:distance_matrix}),  la "non-négativité", l'identité discernable, et la symétrie sont respectée car toutes les valeurs sont non-négative, seule la diagonale est nulle, et la matrice est symétrique. De plus, toutes les distances sont comprises entre 0 et 1, et par conséquent la métrique est normée (donc la similarité est déduite par $Sim_\mathcal{M} = 1 - Dis_\mathcal{M}$).
 
 \begin{figure}[!htb]
-	\centering \includegraphics[scale=1]{distance_matrix.png}
+	\centering \includegraphics[scale=0.7]{distance_matrix.png}
 	\caption{Matrice des distances de la métrique apprise sur les documents labellisés}\label{fig:similarite:distance_matrix}
 \end{figure}
 
-L'inégalité triangulaire est vérifiée car $Reg_\mathcal{M}(X,Z) - (Reg_\mathcal{M}(X,Y) + Reg_\mathcal{M}(Y,Z)) \leq 0, \forall (X,Y,Z) \in \mathcal{D_{\text{DIRA}}} \times \mathcal{D_{\text{DIRA}}} \times \mathcal{D_{\text{DIRA}}}$ (Figure \ref{fig:similarite:matrice_inegalite_triangulaire}).
+L'inégalité triangulaire est vérifiée car $Reg_\mathcal{M}(X,Z) - (Reg_\mathcal{M}(X,Y) + Reg_\mathcal{M}(Y,Z)) \leq 0, \forall (X,Y,Z) \in \mathcal{D_{\text{dira}}} \times \mathcal{D_{\text{dira}}} \times \mathcal{D_{\text{dira}}}$ (Figure \ref{fig:similarite:matrice_inegalite_triangulaire}).
 
 \begin{figure}[!htb]
 	\centering \includegraphics[width=\textwidth]{inegalite_triangulaire.png}
-	\caption{Matrice de $Reg_\mathcal{M}(X,Z) - (Reg_\mathcal{M}(X,Y) + Reg_\mathcal{M}(Y,Z)), \forall (X,Y,Z) \in \mathcal{D_{\text{DIRA}}} \times \mathcal{D_{\text{DIRA}}} \times \mathcal{D_{\text{DIRA}}}$, avec les $X$ indicés en lignes et les paires $(Y,Z)$ en colonnes. }\label{fig:similarite:matrice_inegalite_triangulaire}
+	\caption{Matrice de $Reg_\mathcal{M}(X,Z) - (Reg_\mathcal{M}(X,Y) + Reg_\mathcal{M}(Y,Z)), \forall (X,Y,Z) \in \mathcal{D_{\text{dira}}} \times \mathcal{D_{\text{dira}}} \times \mathcal{D_{\text{dira}}}$, avec les $X$ indicés en lignes et les paires $(Y,Z)$ en colonnes. }\label{fig:similarite:matrice_inegalite_triangulaire}
 \end{figure}
  
 
@@ -362,10 +357,10 @@ L'inégalité triangulaire est vérifiée car $Reg_\mathcal{M}(X,Z) - (Reg_\math
 L'adéquation est mesurée par la formule suivante qui doit tendre vers 0: \[A(Dis) = \sum\limits_{\substack{(l,k) \in L \times L \\ l \neq k}} \sum\limits_{\substack{d \in D_l \\ d' \in D_k}} Sim(d,d') + \sum\limits_{l \in L} \sum\limits_{\substack{d \in D_l \\ d' \in D_l}} Dis(d,d). \] $L = \lbrace a, b, c \rbrace$ est l'ensemble des labels. Pour tout $l \in L$, $D_l \subset \mathcal{D}$ désigne le sous-ensemble des documents de $\mathcal{D}$ qui ont le label $l$. Cette formule tend vers 0 lorsque la somme des similarités entre documents de labels différents (premier terme) et la somme des distances entre documents de labels égaux (second terme) tendent tous les deux vers 0.
 Sur les 74 document annotés, nous obtenons $A(Dis_\mathcal{M}) = 872.635 + 519.151 = 1391.786$ avec une moyenne de similarité entre labels de $0.537$ et de distance entre labels égaux de $0.482$.
 
-L'évaluation des algorithmes de regroupement considèrent parfaite la distance utilisée. En considérant les données annotées (regroupement parfait), le coefficient de silhouette peut  permettre d'évaluer les distances. Les valeurs de ce dernier sont ainsi comparées dans le Tableau \ref{tab:similarite:compare-dist-adequation}.
+L'évaluation des algorithmes de regroupement considèrent parfaite la distance utilisée et la représentation des documents. En considérant les données annotées (regroupement parfait), le coefficient de silhouette peut  permettre d'évaluer les distances. Les valeurs de ce dernier sont ainsi comparées dans le Tableau \ref{tab:similarite:compare-dist-adequation}. La largeur de silhouette étant très proche de 0 pour toutes les distances, la représentation employée pour les documents  ne permet pas d'isoler les clusters (chevauchement).
 
 \begin{table}[!htb]
-	\centering
+	\centering \scriptsize
   \begin{tabular}{|l|c|c|}
   	\hline
 	$Dis$ & Silhouette &  $A(Dis)$ \\ \hline
@@ -387,47 +382,51 @@ L'évaluation des algorithmes de regroupement considèrent parfaite la distance 
 
 %avec choix du nombre de clusters
 
-Nous comparons ici les distances lorsqu'elles sont utilisées pour un partitionnement disjoint avec les algorithmes de k-means et k-medoids. 
+Le Tableau \ref{tab:similarite:compare-dist-1} compare les distances lorsqu'elles sont utilisées pour un partitionnement disjoint avec les algorithmes de k-means et k-medoids. 
 
 \begin{table}[!htb]
-	\centering
-	\begin{tabular}{|l|c|c|c||c|c|c|}
+	\scriptsize\centering
+	\begin{tabular}{|l||c|c||c|c|c||c||l|}
 		\hline
-		$Dis$ & $K$ & $ARI$ & $NMI$ & $precision$ & $rappel$ & $F1-mesure$  \\ \hline
-		$Dis_\mathcal{M}$ &3&-0.00&0.07&0.45&0.51& 0.48 \\ \hline
-		$Dis_{braycurtis}$ &3&0.04&0.05&0.50&0.44&0.47 \\ \hline
-		$Dis_{cos}$ &3&0.08&0.06&0.52&0.51&0.52 \\ \hline
-		$Dis_{soft-cos}$ &3&&&&&  \\ \hline
-		$Dis_{manhattan}$ &3&-0.04&0.04&0.40&0.92&0.56  \\ \hline
-		$Dis_{euclidienne}$ &3&0.08&0.06&0.52&0.51&0.52  \\ \hline
-		$Dis_{jaccard}$ &3&0.08&0.06&0.52&0.51&0.52 \\ \hline
-		$Dis_{pearson}$ &3&0.08&0.06&0.52&0.51&0.52  \\ \hline
-		$Dis_{wmd}$ &3&-0.02&0.01&0.45&0.37& 0.41 \\ \hline	
+		Distance & ARI & NMI & Précision & Rappel & F1-mesure & Silhouette & Algorithme\\ \hline
+		
+		\multirow{2}{*}{$Dis_\mathcal{M}$} & 0.008$\pm$0.035 & 0.027$\pm$0.018 & 0.437$\pm$0.042 & 0.561$\pm$0.123 & 0.483$\pm$0.039 & 0.011$\pm$0.007 & k-means \\
+		& 0.026 & 0.060 & 0.492 & 0.432 & 0.460 & 0.009 & k-medoids \\ \hline
+		
+		
+		\multirow{2}{*}{$Dis_{braycurtis}$} & 0.004$\pm$0.023 & 0.022$\pm$0.014 & 0.446$\pm$0.055 & 0.490$\pm$0.080 & 0.463$\pm$0.052 & 0.012$\pm$0.006 & k-means \\
+		 & -0.009 & 0.008 & 0.435 & 0.371 & 0.400 & 0.004 & k-medoids \\ \hline
+		
+		\multirow{2}{*}{$Dis_{cos}$} & 0.013$\pm$0.022 & 0.030$\pm$0.021 & 0.446$\pm$0.036 & 0.479$\pm$0.079 & 0.458$\pm$0.038 & 0.016$\pm$0.005 & k-means \\
+		& -0.011 & 0.011 & 0.510 & 0.465 & 0.486 & 0.009 & k-medoids \\ \hline
+		
+		\multirow{2}{*}{$Dis_{soft-cos}$}  &&&&&&&  \\  
+		 &&&&&&&  \\ \hline  		
+		
+		\multirow{2}{*}{$Dis_{manhattan}$} & -0.009$\pm$0.020 & 0.035$\pm$0.019 & 0.481$\pm$0.057 & 0.627$\pm$0.153 & 0.536$\pm$0.069 & -0.006$\pm$0.012 & k-means \\
+		& 0.009 & 0.028 & 0.394 & 0.491 & 0.437 & 0.000 & k-medoids \\ \hline
+		
+		\multirow{2}{*}{$Dis_{euclidienne}$} & 0.009$\pm$0.027 & 0.033$\pm$0.022 & 0.445$\pm$0.042 & 0.492$\pm$0.107 & 0.461$\pm$0.049 & 0.017$\pm$0.006 & k-means \\
+		& -0.011 & 0.011 & 0.510 & 0.465 & 0.486 & 0.009 & k-medoids \\ \hline
+		
+		\multirow{2}{*}{$Dis_{jaccard}$} & 0.011$\pm$0.029 & 0.027$\pm$0.019 & 0.442$\pm$0.044 & 0.487$\pm$0.083 & 0.460$\pm$0.047 & 0.019$\pm$0.005 & k-means \\
+		& -0.011 & 0.011 & 0.510 & 0.465 & 0.486 & 0.009 & k-medoids \\ \hline
+		
+		\multirow{2}{*}{$Dis_{pearson}$} & 0.019$\pm$0.028 & 0.032$\pm$0.023 & 0.441$\pm$0.044 & 0.510$\pm$0.098 & 0.468$\pm$0.045 & 0.018$\pm$0.006 & k-means \\
+		& 0.010 & 0.030 & 0.548 & 0.519 & 0.533 & 0.011 & k-medoids \\ \hline
+		
+		
+		$Dis_{wmd}$ & -0.023 & 0.007 & 0.446 & 0.372 & 0.405 & 0.001 & k-medoids \\ \hline	
 		
 	\end{tabular}
-	\caption{Tableau comparatif de l'efficacité des distances pour le regroupement (évaluation supervisée)}\label{tab:similarite:compare-dist-evalsup}
+	\caption{Tableau comparatif de l'efficacité des distances pour le regroupement}\label{tab:similarite:compare-dist-1}
 \end{table}
 
-
-\begin{table}[!htb]
-	\centering
-	\begin{tabular}{|l|c|c|c|c|}
-		\hline
-		$Dis$ & $K$ & Silhouette & Cohésion & Séparation \\ \hline
-		$Dis_\mathcal{M}$  &3&0.00&& \\ \hline
-		$Dis_{cos}$  &3&0.01&&  \\ \hline
-		$Dis_{soft-cos}$  &3&&& \\ \hline
-		$Dis_{manhattan}$  &3&0.01&&  \\ \hline
-		$Dis_{euclidienne}$  &3&0.01&&  \\ \hline
-		$Dis_{jaccard}$  &3&0.01&&  \\ \hline
-		$Dis_{pearson}$  &3&0.01&&  \\ \hline
-		$Dis_{wmd}$  &3&0.00&&  \\ \hline	
-	\end{tabular}
-	\caption{Tableau comparatif de l'efficacité des distances pour le regroupement (évaluation non-supervisée)}\label{tab:similarite:compare-dist-evalnonsup}
-\end{table}
 
 
 \subsection{Comparaison des algorithmes de regroupement}
+
+%\subsection{Comparaison de la section à vectoriser}
 
 \section{Conclusion}
 \label{sec:similarite:conclusion}
