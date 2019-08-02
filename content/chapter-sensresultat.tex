@@ -31,7 +31,7 @@ Ce postulat est légitime car les statistiques sur les données labellisées de 
 \begin{postulat}\label{postulat:sens:sensbinaire}
 Le sens du résultat est généralement binaire: accepte ou rejette.
 \end{postulat} 
-Ce postulat est justifié car le sens d'un résultat est pratiquement toujours une de ces deux valeurs (Figure \ref{stat-sensrst}). Les autres sens ne sont pas considérés car ils sont très rares.
+Ce postulat est justifié car le sens d'un résultat est majoritairement une de ces deux valeurs (Figure \ref{stat-sensrst}). Les autres sens ne sont pas considérés car ils sont très rares.
 
 \begin{figure}
 \includegraphics[width=\textwidth]{chartDistrSens.png}
@@ -200,7 +200,7 @@ La faible quantité \citep{ruparel2013smalldataclass} et le déséquilibre des d
 %Livre Data mining : Combinaison de classifieurs \citep{kittler1996combiningclassifiers,kuncheva2004combiningclassifiers, tulyakov2008combiningclassifiers} , ... 
 Par ailleurs, La représentation vectorielle des textes résulte généralement en des vecteurs de haute dimension dont les  coordonnées sont en majorité nulle, colinéaire, ou plus efficaces si combinées. Par conséquent, les techniques de réduction ou transformation des dimensions, comme les analyses discriminantes, permet de d'obtenir des vecteurs plus efficaces pour la classification.
 
-\section{Application de l'analyse PLS  à la classification des textes}
+\section{Application du PLS  à la classification des textes}
 \label{sec:sensresultat:pls}
 %\textcolor{red}{Justification: Pourquoi le PLS?:}
 %https://link.springer.com/content/pdf/10.1007\%2FBF02174528.pdf, 
@@ -422,7 +422,7 @@ L'algorithme LOGIT-Gini-PLS généralise est donc le suivant :
 	Déduire le paramètre optimal $\nu^*$ qui minimise l'erreur \; 
 	\Return Prédiction $\hat{y}$ avec Gini-PLS ($h^*$, $\nu^*$) \;
 	\Return Prédiction $\hat{y}$ avec SVM, LOGIT, Bayes, LDA sur les composantes $(t_1,\ldots,t_{h^*})$\;
-	\caption{LOGIT-Gini-PLS Généralisé}\label{G-GPLS}
+	\caption{LOGIT-Gini-PLS Généralisé}\label{LG-GPLS}
 \end{algorithm}
 
 
@@ -447,7 +447,7 @@ L'algorithme LOGIT-Gini-PLS généralise est donc le suivant :
 
 \section{Expérimentations et résultats}
 \label{sec:sensresultat:experimentations}
-Nous discutons ici les performances de divers algorithmes populaires et l'impact de la quantité et du déséquilibre des données, de l'heuristique, et de la restriction explicite des documents aux passages relatifs à la catégorie de demandes, ainsi que leur capacité à faire abstraction des autres demandes du document. {Ces expériences visent aussi à comparer l'efficacité du Gini-Logit-PLS par rapport à d'autres analyses discriminantes}.  Comme \citet{im2017textclasstermweighting}, différentes combinaisons d'algorithmes de classification et méthodes de pondération  sont comparées; ce qui représente un total de 8 algorithmes * 11 métriques globales * 5 métriques locales = 440 configurations (+ 2 i.e. FastText et NBSVM). La méthode Gini-Logit-PLS réalisant une projection dans un espace de petite dimension, elle a été comparée aussi à d'autres méthode de réduction de dimension.
+Nous discutons ici les performances de divers algorithmes populaires et l'impact de la quantité et du déséquilibre des données, de l'heuristique, et de la restriction explicite des documents aux passages relatifs à la catégorie de demandes, ainsi que leur capacité à faire abstraction des autres demandes du document. {Ces expériences visent aussi à comparer l'efficacité du Gini-Logit-PLS par rapport à d'autres analyses discriminantes}.  Comme \citet{im2017textclasstermweighting}, différentes combinaisons d'algorithmes de classification et méthodes de pondération  sont comparées; ce qui représente un total de 8 algorithmes * 11 métriques globales * 5 métriques locales = 440 configurations (+ 2 algorithme i.e. FastText et NBSVM). La méthode Gini-Logit-PLS réalisant une projection dans un espace de petite dimension, elle a été comparée aussi à d'autres méthode de réduction de dimension.
 
 \subsection{Protocole d'évaluation}
 Deux métriques d'évaluation sont utilisées: la précision et la F1-mesure. Pour tenir compte du déséquilibre entre les classes, la moyenne macro est préférée. Il s'agit de l'agrégation de la contribution individuelle de chaque classe: $F1_{macro} = \frac{2 \times P_{macro} \times R_{macro}}{P_{macro} + R_{macro}}$, où les macro-moyennes de la précision ($P_{macro}$) et du rappel ($R_{macro}$) sont calculées en fonction des nombres moyens de vrais positifs ($\overline{TP}$), faux positifs ($\overline{FP}$), et faux négatifs ($\overline{FN}$) comme suit \citep{van2013macromicroeval}:

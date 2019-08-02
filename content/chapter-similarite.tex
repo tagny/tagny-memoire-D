@@ -1,4 +1,4 @@
- \chapter{Modélisation des Circonstances Factuelles}
+ \chapter{Modélisation des Circonstances Factuelles par regroupement non supervisé des documents}
 \label{chap:similarite}
 
 %\epigraph{Le plus important, c'est d'avoir un langage métaphorique ; car c'est le seul mérite qu'on ne puisse emprunter à un autre et qui dénote un esprit naturellement bien doué ; vu que, bien placer une métaphore, c'est avoir égard aux rapports de ressemblance.}{Aristote, Poétique}
@@ -15,11 +15,14 @@ Les circonstances factuelles définissent les contextes possibles dans lesquels 
 \section{Regroupement non-supervisé de documents}
 \label{sec:similarite:biblio}
 
-Cette section fait une synthèse bibliographique des différents aspects rentrant dans la conception d'un modèle de \textit{clustering}. Elle aborde principalement le choix de l'algorithme, la définition d'une mésure de similarité adéquate, la représentation des documents, la détermination du nombre de \textit{clusters}, l'affectation de labels aux \textit{clusters}, et l'évaluation du regroupement généré.
+Cette section fait une synthèse bibliographique des différents aspects rentrant dans la conception d'un système de regroupement de documents. Elle aborde principalement le choix de l'algorithme, la définition d'une mesure de similarité adéquate, la représentation des documents, la détermination du nombre de {clusters}, et l'évaluation du regroupement généré.
 
-\subsection{Choix de l’algorithme de clustering}
+L'ensemble des $N$ documents est noté $\mathcal{D}$. Tout document $d \in \mathcal{D}$ est une séquence de mots $d=(d_1, d_2, \dots, d_{\setsize{d}})$, où $d_i$ est le mot à la position $i$ dans $d$. Sa représentation vectorielle est notée $\vec{d}=(\vec{d}_1, \vec{d}_2, \dots, \vec{d}_m)$. Pour un modèle vectoriel TF-IDF de vocabulaire $W = (t_1, t_2, \dots, t_m)$, $\vec{d}_i = w(t_i,d)$ est le poids du terme $t_i \in W$ dans le texte $d$ ({cf. \ref{sec:quanta:classification}}). Le regroupement obtenu est un ensemble de clusters $C = \lbrace C_1, C_2, \cdots, C_K \rbrace$, $K$ étant le nombre de clusters formés.
 
-Le clustering de documents est une tâche dont l'objectif est d'identifier, sans supervision\footnote{Sans exemples annotés.}, une structure pertinente (pour le domaine expert) dans un ensemble $\mathcal{D} = \lbrace d_1, \dots, d_N \rbrace$ de $N$ documents non annotés en construisant des groupes représentants des catégories inconnues au départ. Ces groupes, appelés clusters, peuvent être disjoints ou se chevaucher, et plates ou hiérarchiques suivant les contraintes du domaine expert. L’algorithme à utiliser dépend généralement de la forme qu’on souhaite donner à l’organisation. Le regroupement obtenu est un ensemble des clusters $C = \lbrace C_1, C_2, \cdots, C_K \rbrace$, $K$ étant le nombre de clusters formés.
+\subsection{Algorithmes de regroupement non-supervisé}
+
+Le regroupement de documents a pour objectif  d'identifier, sans supervision\footnote{Sans utiliser des exemples annotés.}, une structure pertinente (pour le domaine expert) dans l'ensemble $\mathcal{D}$ en construisant des groupes représentants des catégories inconnues au départ. Ces groupes, appelés clusters, peuvent être disjoints ou se chevaucher, et plates ou hiérarchiques suivant les contraintes du domaine expert. L’algorithme à utiliser dépend généralement de la forme qu’on souhaite donner à l’organisation. 
+
 \subsubsection{Partitionnement disjoint}
 Pour réaliser des partitions distinctes\footnote{Chaque document n'appartient qu'à un seul cluster.} (\textit{hard clustering}), des algorithmes tels que celui des K-moyennes \citep{forgey1965kmeans} et celui des \textit{K-medoïdes} \citep{kaufman1987kmedoids} seront préférés \citep{balabantaray2015kmeanskmedoids}. Ces deux algorithmes fonctionnent de manière similaire, et nécessitent que le nombre $K$ de clusters soient prédéfini. Ils commencent par une définition aléatoire de $K$ centres initiaux de clusters (centroïdes) et l'affectation des différents documents au cluster dont le centre est le plus proche. S'en suit une boucle dans laquelle le centroïde est recalculé (le point à distance totale minimale avec les membres du cluster) et les documents sont réaffectés chacun au cluster dont le centroïde est le plus proche. L'algorithme s'arrête si aucune amélioration n'est plus observée, ce qui se traduit soit par l'atteinte d'une valeur minimale prédéfinie de l'erreur de \textit{clustering}\footnote{Somme des distances au carré entre les points et leur centre respectif.} ou d'une mesure d'évaluation non supervisée (\ref{sec:similarite:biblio:unsupeval}). La différence entre l'algorithmes des K-moyennes et celui des \textit{K-medoïdes} tient principalement au fait que les centroïdes du premier ne sont pas nécessairement des points (documents) de l'ensemble d'origine, mais des points moyennes des représentations vectorielles des membres du cluster, contrairement à l'algorithme des \textit{K-medoïdes} qui ne considère que les documents originaux qui ont une distance minimale à tous les documents dans leur cluster. Cette différence donne l'avantage au \textit{K-medoïdes} de ne pas dépendre d'une représentation vectorielle nécessaire au calcul de la moyenne, mais elle a aussi l'inconvénient d'augmenter sa complexité en temps  car il faut calculer et stocker la distance entre toutes les paires de documents. Il existe plusieurs autres algorithmes de clustering disjoint dont le principe de fonctionnement est différent de celui des K-moyennes. Par exemple, l'algorithme DBSCAN (\textit{Density-based spatial clustering of applications with noise}) \citep{ester1996dbscan}  ne prend pas en paramètre le nombre de clusters à construire. Il est défini sur le concept de régions de densité caractérisées par la distance minimale $\epsilon$ autorisée entre deux points d'une même région, et le nombre maximal de points qui doivent être dans le voisinage de rayon $\epsilon$ d'un point pour que ce voisinage soit une région de densité (le point central est appelé "point noyau" (\textit{core point}). Le principe du DBSCAN est de construire les clusters successivement en reliant les régions (voisinages) dont les noyaux sont à distance plus ou moins inférieure à $\epsilon$. Les points qui sont seul dans leur cluster sont qualifiés d'\textit{outliers}. 
 % amélioration par réduction de dimension
@@ -37,9 +40,7 @@ Il est aussi possible d'utiliser les arbres de décision pour améliorer les ré
 
 \subsubsection{Regroupement avec chevauchements}
 
-Lorsque des chevauchements sont observables entre clusters (un document peut faire partie de plusieurs groupes à la fois), chaque objet peut être affecté partiellement à chaque cluster grâce à la notion de degré d'appartenance (\textit{membership degree}) entre un point $x_i \in X$ et le cluster $j \in [1..K]$ estimé par une fonction $u_{ij}$  \citep{baraldi1999surveyfuzzyclstering}. Il est par conséquent préférable d'employer des algorithmes de partitionnement "mou" comme l'algorithme flou des c-moyennes (FCM) \citep{bezdek1984fcm, hathaway1989fuzzycmeans}, ou le fuzzy c-Medoids (FDMdd) \citep{krishnapuram2001fuzzycmedoids}, ou la version améliorée IFKM (\textit{improved fuzzy K-medoids})\citep{sabzi2011fuzzykmedoids}. \textcolor{red}{FONCTIONNEMENT DE CES DEUX ALGO}. Le principe des algorithmes de clustering flou consiste en deux étapes principales \citep{sabzi2011fuzzykmedoids}: 
-
-Lorsque des chevauchements sont observables entre clusters (un document peut faire partie de plusieurs groupes à la fois), chaque objet peut être affecté partiellement à chaque cluster grâce à la notion de degré d'appartenance (\textit{membership degree}) entre en jeu \citep{baraldi1999surveyfuzzyclstering}. Il est par conséquent préférable d'employer des algorithmes de partitionnement "mou" comme l'algorithme flou des c-moyennes (\textit{fuzzy c-means}) \citep{bezdek1984fcm, hathaway1989fuzzycmeans}, ou le fuzzy c-medoid \citep{krishnapuram2001fuzzycmedoids}. \textcolor{red}{FONCTIONNEMENT DE CES DEUX ALGO}. Le principe des algorithmes de clustering flou consiste en deux étapes principales \citep{sabzi2011fuzzykmedoids}: 
+Lorsque des chevauchements sont observables entre clusters (un document peut faire partie de plusieurs groupes à la fois), chaque objet peut être affecté partiellement à chaque cluster grâce à la notion de degré d'appartenance (\textit{membership degree}) entre un point $x_i \in X$ et le cluster $j \in [1..K]$ estimé par une fonction $u_{ij}$  \citep{baraldi1999surveyfuzzyclstering}. Il est par conséquent préférable d'employer des algorithmes de partitionnement "mou" comme l'algorithme des c-moyennes flou (FCM) \citep{bezdek1984fcm, hathaway1989fuzzycmeans}, ou le fuzzy c-Medoids (FDMdd) \citep{krishnapuram2001fuzzycmedoids}, ou la version améliorée IFKM (\textit{improved fuzzy K-medoids})\citep{sabzi2011fuzzykmedoids}.  Le principe de ces algorithmes consiste en deux étapes principales \citep{sabzi2011fuzzykmedoids}: 
 
 \begin{enumerate}
  \item l'estimation des degrés d'appartenance de chaque instance $x_i \in X$ à chaque cluster $j \in [1..K]$ de centroïde $z_j$ réalisée par la minimisation de la fonction objective $P(X,Z) = \sum\limits_{i=1}^{n}\sum\limits_{j=1}^{k} \left[u_{ij}r(x_i,z_j)\right]$ \citep{krishnapuram2001fuzzycmedoids}  améliorée par \citet{sabzi2011fuzzykmedoids} en:
@@ -52,7 +53,7 @@ Lorsque des chevauchements sont observables entre clusters (un document peut fai
 \end{enumerate}
  Ainsi l'objectif de l'entrainement des algorithmes de clustering flou est double: déterminer les valeurs optimales du vecteur  $U$ des degrés d'appartenance et de l'ensemble $Z$ des centroïdes. 
  
- Les regroupements avec chevauchement sont intéressants parce qu'il n'est pas exclu qu'une décision traite de plus d'une circonstance factuelle.
+ Les regroupements avec chevauchement sont intéressants parce qu'il est possible qu'une décision traite de plusieurs circonstances factuelles.
 %\textcolor{red}{A COMPLETER!!!!!!!!!!}
 %Pour des regroupements hiérarchiques, des algorithmes comme celui du clustering par agglomération (\textit{agglomeration clustering}) sont mieux indiqués. Le principe du clustering par agglomération est de ...
 %si les chevauchements sont négligeables ou n'existent pas, ou bien si la structure hiérarchique permettrait de mieux expliquer et distinguer les différences inter-groupes et les ressemblances intra-groupes. Nous souhaitons organiser des décisions de justices en fonction des circonstances factuelles auxquelles ces documents sont liés.  On pourrait par exemple faire une restriction des données aux cas où chaque document n’appartient qu’à une classe et proposer un système de clustering disjoint.
@@ -64,42 +65,43 @@ Lorsque des chevauchements sont observables entre clusters (un document peut fai
 
 \subsection{Métriques de dis-similarité (distances)}
 \label{sec:similarite:distances}
-Les algorithmes de clustering dépendent de la distance utilisée qui doit être bien choisie pour que les regroupements révèlent au mieux la sémantique visée. Une distance ou métrique de dis-similarité est une fonction réelle d'une paire de éléments $x$ et $x'$ d'un ensemble $\mathcal{X}$. Une métrique de dis-similarité mesure le degré de différence entre $x$ et $x'$  généralement estimée par une fonction distance $Dis$  qui satisfait aux propriétés suivantes $\forall x,x',x'' \in \mathcal{X}$ \citep{wang2015distancemetriclearningsurvey}:
+Les algorithmes de clustering dépendent de la distance utilisée qui doit être bien choisie pour que les regroupements révèlent au mieux la sémantique visée.
+ Une métrique de dis-similarité $Dis$ est une fonction réelle d'une paire $(d,d')$ qui mesure le degré de dis-similarité entre $d$ et $d'$  en satisfaisant aux propriétés suivantes $\forall d,d',d'' \in \mathcal{D}$ \citep{wang2015distancemetriclearningsurvey}:
 \begin{enumerate}
-\item $Dis(x,x') \geq 0$ ("non-négativité")
-\item $Dis(x,x') = 0  \Leftrightarrow x = x'$ (identité discernable)
-\item $Dis(x,x') = Dis(x', x)$ (symétrie)
-\item $Dis(x,x'') \leq Dis(x,x') + Dis(x',x'')$ (inégalité triangulaire) \label{enum:sim:ineq-tri}
+\item $Dis(d,d') \geq 0$ ("non-négativité")
+\item $Dis(d,d') = 0  \Leftrightarrow d = d'$ (identité discernable)
+\item $Dis(d,d') = Dis(d', d)$ (symétrie)
+\item $Dis(d,d'') \leq Dis(d,d') + Dis(d',d'')$ (inégalité triangulaire) \label{enum:sim:ineq-tri}
 \end{enumerate}
 
 
-La métrique peut être normalisée ($\forall a,b \in \mathcal{X};  0 \leq Dis(a,b) \leq 1$), à l'instar de la distance basée sur la similarité cosinus normalisée et celle de Jaccard. Dans ce cas, la relation entre la similarité $Sim$ et la dis-similarité $Dis$ est définie par $Sim(a,b) = 1 - Dis(a,b)$.
+La métrique peut être normalisée ($\forall (d,d') \in \mathcal{D} \times \mathcal{D};  0 \leq Dis(d,d') \leq 1$), à l'instar de la distance basée sur la similarité cosinus normalisée et celle de Jaccard. Dans ce cas, la relation entre la similarité $Sim$ et la dis-similarité $Dis$ est définie par $Sim(d,d') = 1 - Dis(d,d')$.
 %On parle de \textbf{pseudo-métrique} lorsque la condition \ref{enum:sim:ineq-tri} n'est pas satisfaite.
 
-Il existe de nombreuses métriques de similarité généralement expérimentées pour le clustering de textes \citep{huang2008similarityTextClustering, vijaymeena2016surveySim, afzali2018SimKmeans}:
+ Il existe de nombreuses métriques de similarité généralement expérimentées pour le clustering de textes \citep{huang2008similarityTextClustering, vijaymeena2016surveySim, afzali2018SimKmeans}:
 \begin{itemize}
-	\item Les distances de Minkowski de forme générale $Dis(x,x') = \norm{x - x'}_{Lp} = \sqrt[p]{\sum \vert x_i - x'_i \vert ^p}$, dont font partie la distance euclidienne ($p=2$) et la distance de Manhattan ($p=1$).
-	\item La distance de Braycurtis calcule la distance entre deux documents $x$ et $x'$ par la formule: $Dis_{Braycurtis}(x,x') = \frac{\sum \vert x_i - x'_i \vert}{\sum \vert x_i + x'_i \vert}$.
-	\item La similarité cosinus est basée sur la mesure de l'angle entre les vecteurs représentant les documents $x$ et $x'$, et est calculée par: $Sim_{cos}(X,Y) = \frac{X^tY}{\norm{X}\norm{Y}}$.
-	Cette formulation considérant que tous les termes du vocabulaire $W$, définissant le modèle de représentation vectoriel, sont différents et ne partagent aucune relation, \citet{sidorov2014softcosine} la corrigent en proposant la fonction \textit{soft-cosine} en introduisant une matrice $S = {S_{ij}}_{1\leq i,j \leq \vert W \vert}$ de similarité entre  termes: 
+	\item Les distances de Minkowski de forme générale $Dis(d,d') = \norm{\vec{d} - \vec{d'}}_{Lp} = \sqrt[p]{\sum\limits_{i=1}^m \vert \vec{d}_i - \vec{d}_i \vert ^p}$, dont font partie la distance euclidienne $Dis_{euclidienne}$ ($p=2$) et la distance de Manhattan $Dis_{manhattan}$ ($p=1$).
+	\item La distance de \citet{bray1957distance-braycurtis}: $Dis_{braycurtis}(d,d') = \frac{\sum\limits_{i=1}^m \vert \vec{d}_i - \vec{d'}_i \vert}{\sum\limits_{i=1}^m \vert \vec{d}_i + \vec{d'}_i \vert}$\citep{huang2008similarityTextClustering}.
+	\item La similarité cosinus est basée sur la mesure de l'angle entre $\vec{d}$ et $\vec{d'}$ par la formule: $Sim_{cos}(d,d') = \frac{\vec{d}^t\vec{d'}}{\norm{\vec{d}}\norm{\vec{d'}}}$.
+	Pour un modèle vectoriel du type TF-IDF, cette formulation considère que tous les termes du vocabulaire $W$ définissant le modèle vectoriel, sont différents et ne partagent aucune relation. \citet{sidorov2014softcosine} la corrigent en proposant la fonction \textit{soft-cosine} en introduisant une matrice $S = {S_{ij}}_{1\leq i,j \leq m}$ de similarité entre  termes: 
 	
-	$Sim_{soft-cos}(X,Y)= \frac{X^t\cdot S\cdot Y}{\sqrt{X^t\cdot S\cdot X}\cdot \sqrt{Y^t\cdot S\cdot Y}} = \frac{\sum\limits_{i,j}^{\vert W \vert}s_{ij}x_iy_j}{\sqrt{\sum\limits_{i,j}^{\vert W \vert}s_{ij}x_ix_j}\sqrt{\sum\limits_{i,j}^{\vert W \vert}s_{ij}y_iy_j}}$,
+	$Sim_{soft-cos}(d,d')= \frac{{\vec{d}}^T\cdot S\cdot \vec{d'}}{\sqrt{{\vec{d}}^T\cdot S\cdot \vec{d'}}\cdot \sqrt{\vec{d'}^T\cdot S\cdot \vec{d'}}} = \frac{\sum\limits_{1\leq i,j \leq m}s_{ij}\vec{d}_i\vec{d'}_j}{\sqrt{\sum\limits_{1\leq i,j \leq m}s_{ij}\vec{d}_i\vec{d}_j}\sqrt{\sum\limits_{1\leq i,j \leq m}s_{ij}\vec{d'}_i\vec{d'}_j}}$,
 	
 	où $S$, la matrice de similarité entre les termes, peut être calculée à partir de n'importe quelle métrique comme la distance d'édition de Levenshtein (similarité lexicale) \citep{sidorov2014softcosine},  la similarité cosinus entre  plongements lexicaux \citep{charlet2017simbow_acl, charlet2017simbow_tal}, ou la similarité WordNet.
 	
-	La similarité cosinus  étant comprise entre -1 et +1, sa forme normalisée s'écrit  $\overline{Sim}_{cos}(x,x') = \frac{Sim_{cos}(x,x') + 1}{2}$, d'où la distance $Dis_{cos}(x,x') = 1 - \overline{Sim}_{cos}(x,x')$.
+	La fonction cosinus  étant comprise entre -1 et +1, sa forme normalisée s'écrit  $\overline{Sim}_{cos}(d,d') = \frac{Sim_{cos}(d,d') + 1}{2}$, d'où la distance $Dis_{cos}(d,d') = 1 - \overline{Sim}_{cos}(d,d')$.
 	
-	\item Le coefficient similarité de Jaccard: $Sim_{Jaccard}(x,x') = \frac{x^Tx'}{\norm{x}^2+\norm{x'}^2 - x^Tx'}$, où $\norm{x}$ désigne la taille de l'ensemble des termes de $x$ dans le cas où $x$ est un document;
+	\item Le coefficient similarité de \cite{jaccard1901similarite-jaccard}: $Sim_{Jaccard}(d,d') = \frac{\vec{d}^T\vec{d'}}{\norm{\vec{d}}^2+\norm{\vec{d'}}^2 - \vec{d}^T\vec{d'}}$ \citep{huang2008similarityTextClustering} qui, étant normée, donne la distance $Dis_{jaccard}(d,d') = 1-Sim(d,d')$.
 	%\item Le coefficient similarité de Dice: $Sim_{Dice}(x,x') = \frac{2\cdot \vert tok(x) \cap tok(x') \vert}{\vert tok(x) \vert + \vert tok(x')} $
-	\item La similarité basée sur le coefficient de corrélation de Pearson: avec $w(t_i,x)$ le poids du terme $t_i$ dans le texte $x$\footnote{Comme à la section \ref{sec:quanta:classification}} et $TF_x = \sum\limits^m_{i=1} w(t_i,x)$, la similarité est calculée par:
+	\item La similarité basée sur le coefficient de corrélation de Pearson est calculée par \citep{huang2008similarityTextClustering}:
 	
-	\[Sim_{Pearson}(x,x') = \frac{m \sum\limits^m_{i=1} w(t_i,x) \cdot w(t_i,x') - TF_x\cdot TF_{x'}}{\sqrt{[m \sum\limits^m_{i=1} w^2(t_i,x) - TF^2_x][m \sum\limits^m_{i=1} w^2(t_i,x') - TF^2_{x'}}}\]
-et la distance par:
+	\[Sim_{pearson}(d,d') = \frac{ \sum\limits^m_{i=1} \vec{d}_i \cdot \vec{d'}_i - TF_d\cdot TF_{d'}}{\sqrt{[m \sum\limits^m_{i=1} \vec{d'}_i^2 - TF^2_d][m \sum\limits^m_{i=1} \vec{d'}_i^2 - TF^2_{d'}}}\]
+avec $TF_d = \sum\limits^m_{i=1} \vec{d}_i$. Sa distance est déduite par:
 
-$Dis_{Pearson}(X,Y) =
+$Dis_{pearson}(d,d') =
 \left\{ \begin{array}{ll}
-1 - Sim_{Pearson}(X,Y) & \text{si } Sim_{Pearson}(X,Y) \geq 0 \\
-\vert Sim_{Pearson}(X,Y) \vert & \text{si } Sim_{Pearson}(X,Y) < 0
+1 - Sim_{pearson}(d,d') & \text{si } Sim_{pearson}(d,d') \geq 0 \\
+\vert Sim_{pearson}(d,d') \vert & \text{si } Sim_{pearson}(d,d') < 0.
 \end{array}
 \right.$
 %	\item Distance de la divergence moyenne de Kullback-Leibler considère un document comme une distribution de probabilité de termes, et mesure donc la similarité entre deux distributions: 
@@ -187,9 +189,9 @@ La validation d'un regroupement peut être supervisée ou non selon que des docu
 \label{sec:similarite:biblio:supeval}
 Elles comparent deux regroupements $X = \lbrace X_1, X_2, ..., X_r \rbrace$ et $Y = \lbrace Y_1, Y_2, ..., Y_s \rbrace$ pour mesurer leur ressemblance. Trois métriques sont couramment employées:
 \begin{itemize}
-	\item l'indice ajusté par chance de Rand (\textit{ajusted Rand index} - ARI) \citep{hubert1985adjustedrandidx} corrigent l'indice de Rand (RI) \citep{rand1971randidx} pour obtenir une valeur très proche de 0.0 pour les clusterings aléatoires et exactement 1.0 lorsque les clusters sont identiques aux classes attendues: %\[ARI(Y,C) = \frac{RI(Y,C) - E_{perm}\left[RI(Y,C)\right]}{1.0 - E_{perm}\left[RI(Y,C)\right]} \]
+	\item l'indice ajusté par chance de Rand (\textit{ajusted Rand index} - ARI) \citep{hubert1985adjustedrandidx} corrigent l'indice de Rand (RI) \citep{rand1971randidx} pour obtenir une valeur très proche de 0.0 pour les clusterings aléatoires et exactement 1.0 lorsque les clusters sont identiques aux classes attendues. En effet, l'indice de Rand prend ses valeurs en pratique dans l'intervalle $[0.5;1]$, et a par conséquent une valeur de base très élevée. ARI est calculé à l'aide du tableau de contingence résumant les chevauchements que partagent $X$ et $Y$ (Tableau \ref{tab:similarite:tab-contingence}) par la formule: %\[ARI(Y,C) = \frac{RI(Y,C) - E_{perm}\left[RI(Y,C)\right]}{1.0 - E_{perm}\left[RI(Y,C)\right]} \]
 	\[ARI(X,Y) = \frac{\sum\limits_{i,j}\binom{n_{ij}}{2} - \frac{\sum\limits_{i}\binom{a_{i}}{2}\sum\limits_{j}\binom{b_{j}}{2}}{\binom{N}{2}}}{\frac{1}{2}\big[\sum\limits_{i}\binom{a_{i}}{2}+\sum\limits_{j}\binom{b_{j}}{2}\big] - \frac{\sum\limits_{i}\binom{a_{i}}{2}\sum\limits_{j}\binom{b_{j}}{2}}{\binom{N}{2}}}, \text{ avec } \binom{n}{2} = \frac{n(n-1)}{2}.\]
-	ARI est calculé à l'aide du tableau de contingence résumant les chevauchements que partagent $X$ et $Y$ (Tableau \ref{tab:similarite:tab-contingence}).
+	
 	\begin{table}[!htb]
 		\centering \small
 		\begin{tabular}{|c|c|c|c|c|c|}
@@ -203,9 +205,10 @@ Elles comparent deux regroupements $X = \lbrace X_1, X_2, ..., X_r \rbrace$ et $
 		\end{tabular}
 		\caption{Tableau de contingence des chevauchement entre les regroupements $X = \lbrace X_1, X_2, ..., X_r \rbrace$ et $Y = \lbrace Y_1, Y_2, ..., Y_s \rbrace$, $n_{i,j} = \vert X_i \cap Y_j\vert$} \label{tab:similarite:tab-contingence}
 	\end{table}
+ARI a des valeurs dans $[-1;1]$. Une valeur négative indique que le regroupement obtenu s'accorde moins avec l'attendu qu'un regroupement aléatoire. 
 	% \item la précision du clustering (ACC) \citep{}.   \textcolor{red}{pas utilisé car nécessite de trouver le meilleur mapping entre les classes et les clusters}
 	\item L'information mutuelle normalisée (NMI) \citep{kvalseth1987entropy_NMI,strehl2000nmi, vinh2010clusteringComparison} normalise l'information mutuelle entre les regroupements $X$ et $Y$ par une agrégation de leur entropie respective. Par exemple, l'incertitude symétrique \citep{kvalseth1987entropy_NMI} utilise la moyenne comme agrégateur:  $NMI(X,Y) = \frac{2 \cdot I(X,Y)}{H(Y) + H(Y)} $, 
-	avec $I(X,Y) = H(X) - H(X \vert Y) = \sum\limits_{i=1}^{r}\sum\limits_{j=1}^{s} \frac{n_{ij}}{N} \log_2\frac{{n_{ij}}/{N}}{{a_ib_j}/{N}}$ et $H(X) = \sum\limits_{X_i \in X}\left(- p(X_i)\log_2 p(X_i)\right)$,  $p(X_i) = \frac{a_i}{N}$ et $p(Y_j) = \frac{b_j}{N}$; $n_{ij}, a_i$ et $b_j$ provenant du tableau de contingence (Tableau \ref{tab:similarite:tab-contingence}).
+	avec $I(X,Y) = H(X) - H(X \vert Y) = \sum\limits_{i=1}^{r}\sum\limits_{j=1}^{s} \frac{n_{ij}}{N} \log_2\frac{{n_{ij}}/{N}}{{a_ib_j}/{N}}$ et $H(X) = \sum\limits_{X_i \in X}\left(- p(X_i)\log_2 p(X_i)\right)$,  $p(X_i) = \frac{a_i}{N}$ et $p(Y_j) = \frac{b_j}{N}$; $n_{ij}, a_i$ et $b_j$ provenant du tableau de contingence (Tableau \ref{tab:similarite:tab-contingence}). Le meilleure regroupement est celui qui a la plus grande valeur.
 	
 	\item les métriques ARI et NMI se contentent de mesurer la différence des proportions entre les clusters de deux regroupements indépendamment des affectations des documents. D'autres méthodes appelées mesures de comptage de pair (\textit{pair counting measures}) mesurent la capacité du modèle à mettre deux documents similaires (de labels identiques dans les données annotées) dans le même groupe, et des documents dis-similaires (de labels différents dans les données annotées) dans des clusters différents. Par exemple, des mesures de précision, rappel, et F1-mesure sont définies par les formules suivantes \citep{manning2009irbook-flatclustering}:
 	\[P = \frac{{TP}}{{TP} + {FP}}, R = \frac{{TP}}{{TP} + {FN}}, F1 = \frac{2 \times P \times R}{P + R}.\]
@@ -217,6 +220,7 @@ Elles comparent deux regroupements $X = \lbrace X_1, X_2, ..., X_r \rbrace$ et $
 		\item un faux positif (FP) survient si deux documents dissemblables sont dans le même cluster.
 	\end{itemize}
 	
+	La précision, le rappel, et la F1-mesure prennent leurs valeurs dans $[0;1]$. 
 	
 \end{itemize}
 %Ces métriques doivent être utilisées ensemble  pour compenser les limites de chacune d'elles \citep{yang2017kmeansfriendlyspaces}.
@@ -354,10 +358,11 @@ L'inégalité triangulaire est vérifiée car $Reg_\mathcal{M}(X,Z) - (Reg_\math
 
 
 \subsection{Adéquation de la métrique apprise avec le problème}
-L'adéquation est mesurée par la formule suivante qui doit tendre vers 0: \[A(Dis) = \sum\limits_{\substack{(l,k) \in L \times L \\ l \neq k}} \sum\limits_{\substack{d \in D_l \\ d' \in D_k}} Sim(d,d') + \sum\limits_{l \in L} \sum\limits_{\substack{d \in D_l \\ d' \in D_l}} Dis(d,d). \] $L = \lbrace a, b, c \rbrace$ est l'ensemble des labels. Pour tout $l \in L$, $D_l \subset \mathcal{D}$ désigne le sous-ensemble des documents de $\mathcal{D}$ qui ont le label $l$. Cette formule tend vers 0 lorsque la somme des similarités entre documents de labels différents (premier terme) et la somme des distances entre documents de labels égaux (second terme) tendent tous les deux vers 0.
+\label{sec:similarite:adequation}
+L'adéquation est mesurée par la formule suivante qui doit tendre vers 0: \[A(Dis) = \sum\limits_{\substack{(l,k) \in L \times L \\ l \neq k}} \sum\limits_{\substack{d \in \mathcal{D}_l \\ d' \in \mathcal{D}_k}} Sim(d,d') + \sum\limits_{l \in L} \sum\limits_{\substack{d \in \mathcal{D}_l \\ d' \in \mathcal{D}_l}} Dis(d,d). \] $L = \lbrace a, b, c \rbrace$ est l'ensemble des labels. Pour tout $l \in L$, $\mathcal{D}_l \subset \mathcal{D}$ désigne le sous-ensemble des documents de $\mathcal{D}$ annotés manuellement avec le label $l$. Cette formule tend vers 0 lorsque la somme des similarités entre documents de labels différents (premier terme) et la somme des distances entre documents de labels égaux (second terme) tendent tous les deux vers 0.
 Sur les 74 document annotés, nous obtenons $A(Dis_\mathcal{M}) = 872.635 + 519.151 = 1391.786$ avec une moyenne de similarité entre labels de $0.537$ et de distance entre labels égaux de $0.482$.
 
-L'évaluation des algorithmes de regroupement considèrent parfaite la distance utilisée et la représentation des documents. En considérant les données annotées (regroupement parfait), le coefficient de silhouette peut  permettre d'évaluer les distances. Les valeurs de ce dernier sont ainsi comparées dans le Tableau \ref{tab:similarite:compare-dist-adequation}. La largeur de silhouette étant très proche de 0 pour toutes les distances, la représentation employée pour les documents  ne permet pas d'isoler les clusters (chevauchement).
+L'évaluation des algorithmes de regroupement considèrent parfaite la distance utilisée et la représentation des documents. En considérant les données annotées (regroupement parfait), le coefficient de silhouette peut  permettre d'évaluer les distances. Les valeurs de ce dernier sont ainsi comparées dans le Tableau \ref{tab:similarite:compare-dist-adequation}. La largeur de silhouette étant très proche de 0 pour toutes les distances, la représentation employée pour les documents  ne permet pas d'isoler les clusters (chevauchement). 
 
 \begin{table}[!htb]
 	\centering \scriptsize
@@ -382,7 +387,7 @@ L'évaluation des algorithmes de regroupement considèrent parfaite la distance 
 
 %avec choix du nombre de clusters
 
-Le Tableau \ref{tab:similarite:compare-dist-1} compare les distances lorsqu'elles sont utilisées pour un partitionnement disjoint avec les algorithmes de k-means et k-medoids. 
+Le Tableau \ref{tab:similarite:compare-dist-1} compare les distances lorsqu'elles sont utilisées pour un partitionnement disjoint avec les algorithmes \textit{k-means} et \textit{k-medoids}. Comme sur le regroupement manuel (\ref{sec:similarite:adequation}), les coefficients de silhouette restent très proches de 0 pour toutes les distances, et  par conséquent le regroupement est considéré comme très aléatoire. Mais par rapport
 
 \begin{table}[!htb]
 	\scriptsize\centering
@@ -419,6 +424,8 @@ Le Tableau \ref{tab:similarite:compare-dist-1} compare les distances lorsqu'elle
 		$Dis_{wmd}$ & -0.023 & 0.007 & 0.446 & 0.372 & 0.405 & 0.001 & k-medoids \\ \hline	
 		
 	\end{tabular}
+
+	\textit{moyenne $\pm$ écart-type (sur 30 exécutions)}
 	\caption{Tableau comparatif de l'efficacité des distances pour le regroupement}\label{tab:similarite:compare-dist-1}
 \end{table}
 

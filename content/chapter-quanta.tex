@@ -1,4 +1,4 @@
-\chapter{Extraction des données concernant les demandes et leurs résultats correspondants}
+\chapter{Extraction des données des demandes à base de terminologies extraites}
 %\chapter{Extraction des demandes et résultats correspondants}
 \label{chap:quanta}
 
@@ -255,7 +255,7 @@ Les métriques supervisées mesurent l'information contenue dans les labels des 
 %\textcolor{red}{PRISE EN COMPTE DE LA LONGUEUR VARIÉE ($\log(l) * f(t)$ ou $l^a * w^b$ / DE L'IMBRICATION / DU CONTEXTE DES TERMES;;;; AFFINER LA LISTE: ENCHAINEMENT FILTRES > MÉTRIQUES STATS > FONCTION CONTRASTIVE}
 %\cite{LossioVentura2014biotex}, \cite{Bonin2010multiwordncvalue}
 
-A l'exception de la $\text{C-value}$, ces métriques ne tiennent pas explicitement compte de la taille des termes dans les situations où on souhaiterait manipuler des termes de tailles différentes. \citep{brown2013ngram1100languages} propose que soit affecté à un n-gramme $t$ le poids $\left(\frac{N_t}{N}\right)^{0.27} * \vert t \vert^{0.09}$, une formule obtenue empiriquement pour l'identification du langage d'un document. Par ailleurs, la méthode $\text{C-value}$ \citep{frantzi2000CValueNCValue} propose un produit similaire avec le logarithme de la longueur à la place des puissances. Il est par conséquent évident que le produit lissé de la longueur du terme (puissance ou logarithme) avec les métriques décrites précédemment, permet de booster les longs termes qui, bien que rares, sont très souvent plus pertinents que certains termes plus courts. \textcolor{red}{Aussi, le temps  pour calculer ces différentes métriques devient rapidement long, surtout pour des n-grammes de mots de $n$ variés. Pour compter rapidement les occurrences des n-grammes des corpus, nous avons utilisé la librairie SML\footnote{\url{http://www.semantic-measures-library.org/sml/index.php?q=lib}} \cite{harispe2013semlib} lors des expérimentations.}
+A l'exception de la $\text{C-value}$, ces métriques ne tiennent pas explicitement compte de la taille des termes dans les situations où on souhaiterait manipuler des termes de tailles différentes. \citep{brown2013ngram1100languages} propose que soit affecté à un n-gramme $t$ le poids $\left(\frac{N_t}{N}\right)^{0.27} * \vert t \vert^{0.09}$, une formule obtenue empiriquement pour l'identification du langage d'un document. Par ailleurs, la méthode $\text{C-value}$ \citep{frantzi2000CValueNCValue} propose un produit similaire avec le logarithme de la longueur à la place des puissances. Il est par conséquent évident que le produit lissé de la longueur du terme (puissance ou logarithme) avec les métriques décrites précédemment, permet de booster les longs termes qui, bien que rares, sont très souvent plus pertinents que certains termes plus courts. Aussi, le temps  pour calculer ces différentes métriques devient rapidement long, surtout pour des n-grammes de mots de $n$ variés. Pour compter rapidement les occurrences des n-grammes des corpus, nous avons utilisé la librairie SML\footnote{\url{http://www.semantic-measures-library.org/sml/index.php?q=lib}} \citep{harispe2013semlib} lors des expérimentations.
 
 
 \section{Méthode}
@@ -289,10 +289,10 @@ A l'exception de la $\text{C-value}$, ces métriques ne tiennent pas expliciteme
 
 Etant donné le grand nombre de métriques de pondération existantes, la métrique choisie est celle qui fournit la meilleure performance sur les données d'apprentissage.
 
-\subsection{Extraction basée sur la proximité entre sommes d'argent et les termes-clés}
+\subsection{Extraction basée sur la proximité entre sommes d'argent et termes-clés}
 \label{sec:quanta:extraction}
 
-Diverses approches d'extractions d'informations existent (section \ref{quanta:related-approaches}). Il parait important de proposer dans un premier temps une approche basique explorant la solvabilité du problème du fait de ses multiples spécificités dont l'annotation d'une seule catégorie dans un document qui en contient plusieurs, l'annotation dans un tableau et donc à l'extérieur du document, la très faible quantité des données annotées, la multiplicité des demandes et des catégories dans un même document. Par conséquent, nous proposons ici une chaîne d'extraction à base de termes-clés, applicable pour chaque catégorie de demande. Il s'agit d'une approche qui tente de reproduire une lecture naïve du document en se basant sur des expressions couramment employées pour énoncer les demandes et résultats. La méthode consiste en deux phases dont une phase d'apprentissage des termes-clés de la catégorie, à proximité desquels seront identifiés les attributs durant la phase d'application comme l'illustre la Figure \ref{fig:quanta:exemple-proximite}. On remarque en effet que, naïvement, le seul fait que $1500$ euros soit aussi proche des termes-clés \textit{amende civile} et \textit{pour procédure abusive} signifie bien qu'il s'agit du quantum demandé comme amende civile pour procédure abusive.
+Diverses approches d'extractions d'informations existent (\ref{quanta:related-approaches}). Il parait important de proposer dans un premier temps une approche basique explorant la solvabilité du problème du fait de ses multiples spécificités dont l'annotation d'une seule catégorie dans un document qui en contient plusieurs, l'annotation dans un tableau et donc à l'extérieur du document, la très faible quantité des données annotées, la multiplicité des demandes et des catégories dans un même document. Par conséquent, nous proposons ici une chaîne d'extraction à base de termes-clés, applicable pour chaque catégorie de demande. Il s'agit d'une approche qui tente de reproduire une lecture naïve du document en se basant sur des expressions couramment employées pour énoncer les demandes et résultats. La méthode consiste en deux phases dont une phase d'apprentissage des termes-clés de la catégorie, à proximité desquels seront identifiés les attributs durant la phase d'application comme l'illustre la Figure \ref{fig:quanta:exemple-proximite}. On remarque en effet que, naïvement, le seul fait que $1500$ euros soit aussi proche des termes-clés \textit{amende civile} et \textit{pour procédure abusive} signifie bien qu'il s'agit du quantum demandé comme amende civile pour procédure abusive.
 
 \begin{figure}[!htb]
 	\scriptsize
@@ -333,7 +333,7 @@ Diverses approches d'extractions d'informations existent (section \ref{quanta:re
 Le pré-traitement est nécessaire pour :
 \begin{enumerate}
 	\item sectionner le document comme décrit au chapitre \ref{chap:structuration} en sections Entête, Litige, Motifs, Dispositif;
-	\item annoter les sommes d'argent (en chiffre) à l'aide de l'expression régulière \og \texttt{[0-9]([0-9]|[',.]|\textbackslash s)*\textbackslash s*([Ee]uro[s]\{0,1\} |franc[s]\{0,1\} |\euro|F|XPF|CFP|EUR|EUROS|[i])( |\$)}\fg{};
+	\item annoter les sommes d'argent (en chiffre) à l'aide de l'expression régulière \og \texttt{[0-9]([0-9]|[',.]|\textbackslash s)*\textbackslash s*([Ee]uro[s]\{0,1\} |franc[s]\{0,1\} \\ |\euro|F|XPF|CFP|EUR|EUROS|[i])( |\$)}\fg{};
 	\item annoter les énoncés de demandes et de résultats respectivement dans les sections Litige et Dispositif. Pour cela, les mots introductifs du tableau \ref{tab:quanta:mots-introductifs} sont employés car ils indiquent le début d'un énoncé indépendamment de la catégorie.
 	 
 	\begin{table}[!htb]
@@ -481,7 +481,8 @@ Les implémentations de la bibliothèque Weka \citep{frank2016weka} ont permis d
 		styx    & 1.0 & 1.0 & 1.0 & 0.984 & 0.983 & 0.983 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 \\
 		\hline
 	\end{tabular}
-(P= Précision, R=Rappel, F1 = F1-mesure)
+
+P= Précision, R=Rappel, F1 = F1-mesure
 	\caption{Résultats d'une 5-\textit{fold} validation croisée pour la détection de catégories }\label{tab:quanta:resultat-detect-cat}
 \end{table}
 
@@ -497,15 +498,15 @@ Les scores des termes-clés candidats étant normalisés, si on sélectionne les
 		& \textit{acpa} & \textit{concdel} & \textit{danais} & \textit{dcppc} & \textit{doris} & \textit{styx} & \textbf{Moyenne} \\ \hline
 		$bidf$ & 37.33 & 32.73 & 23.96 & 20.46 & 8.08 & 28.43 & 25.17 \\ \hline
 		$\chi^2$ & \textbf{54.55} & 25.88 & 43.97 & 28.35 & 13.11 & 52.73 & 36.43 \\ \hline
-		$dbidf$ & 37.58 & 24.63 & \textbf{56.25} & \textbf{29.06} & 11.58 & 52.73 & 35.31 \\ \hline
+		$dbidf$ & 37.58 & 24.63 & 56.25 & \textbf{29.06} & 11.58 & 52.73 & 35.31 \\ \hline
 		$\Delta_{DF}$ & \textbf{54.55} & 25.55 & 48.16 & 28.1 & \textbf{19.64} & 52.73 & \textbf{38.12} \\ \hline
 		$dsidf$ & 37.58 & 25.25 & \textbf{56.42} & 26.05 & 8.72 & \textbf{53.46} & 34.58 \\ \hline
 		$gss$ & \textbf{54.55} & 25.11 & 48.16 & 28.1 & \textbf{19.64} & 52.73 & \textbf{38.05} \\ \hline
-		$idf$ & 38.78 & \textbf{32.73} & 22.31 & 20.53 & 8.27 & 25.22 & 24.64 \\ \hline
+		$idf$ & 38.78 & 32.73 & 22.31 & 20.53 & 8.27 & 25.22 & 24.64 \\ \hline
 		$ig$ & 4 & 12.4 & 45.21 & 14.99 & 16.74 & 51.13 & 24.08 \\ \hline
 		$marascuilo$ & \textbf{54.55} & 23.65 & 43.97 & 26.67 & 17.91 & 52.73 & 36.58 \\ \hline
 		$ngl$ & 42.02 & 23.97 & 52.31 & 27.21 & 13.29 & 53.2 & 35.33 \\ \hline
-		$pidf$ & 26.19 & 33.71 & 21.83 & 20.46 & 8.76 & 27.68 & 23.11 \\ \hline
+		$pidf$ & 26.19 & \textbf{33.71} & 21.83 & 20.46 & 8.76 & 27.68 & 23.11 \\ \hline
 		$rf$ & 41.11 & 33.09 & 55.72 & 28.56 & 14.93 & 51.23 & 37.44 \\ \hline
 	\end{tabular}
 \caption{$F1_{c,(q_d, s_r, q_r), D_c}$ moyenne pour une 5-\textit{fold} validation croisée pour chaque métrique de sélection de termes pour un seuil égal à $0.5$} \label{tab:quanta:compareGW}
@@ -553,7 +554,7 @@ Par conséquent, la métrique et le seuil doivent être bien sélectionnés en f
 			\hline\noalign{\smallskip}
 	\end{tabular}
 
-P: précision, R: rappel, F1: F1-mesure
+P= Précision, R=Rappel, F1 = F1-mesure
 	
 \%Docs: proportion de documents dont l'ensemble des données extraites est égale à l'attendu (documents parfaitement traités)
 
