@@ -211,6 +211,7 @@ $T_t$ étant l'ensemble des termes candidats qui contiennent $t$.
 
 
 \subsubsection{Métriques supervisées}
+\label{sec:quanta:poids-globaux-superv}
 Les métriques supervisées mesurent l'information contenue dans les labels des documents de la base d'apprentissage. Pour un terme $t$, elles expriment généralement la différence de proportion qui existe entre les occurrences de $t$ dans $D_c$ et ses occurrences dans $D_{\overline{c}}$. Elles sont ainsi mieux adaptées à la distinction entre catégories. Parmi les nombreuses métriques existantes, nous avons expérimenté les suivantes : 
 \begin{description}
 	\item[La différence de fréquence] $\Delta_{DF}$ consiste simplement à calculer la différence entre les proportions de documents contenant $t$ respectivement dans $c$ et $\overline{c}$:
@@ -226,7 +227,7 @@ Les métriques supervisées mesurent l'information contenue dans les labels des 
 	\[rf(t,c) = \log\left(2 + \frac{N_{t,c}}{max(1, N_{t,\overline{c}})}\right)\]
 	\item[Le coefficient du $\chi^2$] \citep{schutze1995chi2} estime le manque d'indépendance entre $t$ et $c$. Par conséquent, une grande valeur de  $\chi^2(t,c)$ indique une relation étroite entre $t$ et $c$. Elle est calculée par la formule:
 	\[\chi^2(t,c) = \frac{N ((N_{t,c} N_{\overline{t},\overline{c}}) - (N_{t,\overline{c}} N_{\overline{t},c}))^2}{N_t N_{\overline{t}} \vert D_c \vert  \vert D_{\overline{c}} \vert }\]
-	\item[Le coefficient de correlation $ngl$] de Ng, Goh et Low \citep{ng1997ngl} est la racine carré positive du $\chi^2$ \citep{schutze1995chi2}:
+	\item[Le coefficient de corrélation $ngl$] de Ng, Goh et Low \citep{ng1997ngl} est la racine carré positive du $\chi^2$ \citep{schutze1995chi2}:
 	\[ngl(t,c) = \frac{\sqrt{N} ((N_{t,c} N_{\overline{t},\overline{c}}) - (N_{t,\overline{c}} N_{\overline{t},c}))}{\sqrt{N_t N_{\overline{t}} \vert D_c \vert  \vert D_{\overline{c}} \vert }}.\]
 	L'intuition est de ne regarder que les termes qui proviennent de $D_c$ et qui indiquent l'appartenance à $c$.
 	\item[Le coefficient $gss$] de Galavotti, Sebastiani, et Simi
