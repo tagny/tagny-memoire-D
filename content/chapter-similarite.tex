@@ -1,4 +1,4 @@
- \chapter{Modélisation des Circonstances Factuelles par regroupement non supervisé des documents}
+ \chapter{Modélisation des circonstances factuelles par catégorisation non supervisé de documents}
 \label{chap:similarite}
 
 %\epigraph{Le plus important, c'est d'avoir un langage métaphorique ; car c'est le seul mérite qu'on ne puisse emprunter à un autre et qui dénote un esprit naturellement bien doué ; vu que, bien placer une métaphore, c'est avoir égard aux rapports de ressemblance.}{Aristote, Poétique}
@@ -6,7 +6,7 @@
 
 \section{Introduction}
 \label{sec:similarite:introduction}
-Les circonstances factuelles définissent les contextes possibles dans lesquels une catégorie de demande peut être formulée (\textcolor{red}{N'est-ce pas simplement la raison de la demande (accusation)}). Les analyses descriptives ou prédictives ne prennent sens que lorsqu'elles sont appliquées à un ensemble de décisions aux circonstances similaires. Par exemple, il serait imprudent de considérer toutes les décisions pour analyser les chances d'acceptation d'une demande de dommages-intérêts fondée sur l'\og article 700 du code de procédure civile \fg{} en cas de trouble de voisinage. Les taux d'acceptation ou de rejet peuvent être différents entre des affaires de licenciement et celles portant sur les troubles anormaux du voisinage, et même plus spécifiquement entre les troubles de voisinage entre particulier et entreprises. % (par exemple: chantier de construction), ou simplement entre particuliers (par exemple: troubles sonores). 
+Les circonstances factuelles définissent les contextes possibles dans lesquels une catégorie de demande peut être formulée. Les analyses descriptives ou prédictives ne prennent sens que lorsqu'elles sont appliquées à un ensemble de décisions aux circonstances similaires. Par exemple, il serait imprudent de considérer toutes les décisions pour analyser les chances d'acceptation d'une demande de dommages-intérêts fondée sur l'\og article 700 du code de procédure civile \fg{} en cas de trouble de voisinage. Les taux d'acceptation ou de rejet peuvent être différents entre des affaires de licenciement et celles portant sur les troubles anormaux du voisinage, et même plus spécifiquement entre les troubles de voisinage entre particulier et entreprises. % (par exemple: chantier de construction), ou simplement entre particuliers (par exemple: troubles sonores). 
  Il serait préférable de travailler uniquement avec des décisions similaires à la situation d'intérêt. L'identification des circonstances factuelles devient donc une étape préalable indispensable à l'analyse du résultat. Malheureusement, les circonstances sont très diverses et quasi infinies pour être identifier par classification supervisée à l'aide d'annotation manuelle d'exemples comme dans les chapitres précédent. Il est donc plus indiquer d'adopter une approche non-supervisée capable modéliser les circonstances factuelles à partir d'un corpus de documents d'une même catégorie de demande. Plus précisément, la méthode doit construire des sous-ensembles de décisions selon qu'elles traitent de contextes similaires.  Les objectifs de ce chapitre sont d'expérimenter des algorithmes  de regroupement (\textit{clustrering}) et des métriques de similarité. Il démontre aussi qu'une distance entraînée  sur des documents d'une catégorie de demande permet de mieux mesurer la (dis-) similarité sémantique définie par les circonstances factuelles.
 
 %\section{Formulation du Problème}
@@ -49,9 +49,9 @@ Lorsque des chevauchements sont observables entre clusters (un document peut fai
  \[0 \leq u_{ij} < 1\]
  
  dont la valeur approximative généralement utilisée de la solution est \[u_{ij} = \frac{\exp\left(\frac{-r(x_i,z_j)}{\lambda}\right)}{\sum_{l=1}^{k}\exp\left(\frac{-r(x_l,z_j)}{\lambda}\right)},\] $r(x_i,z_j)$ étant la mesure de dis-similarité (distance) entre $x_i$ et  $z_j$;
- \item la détermination des nouveaux centres de clusters qui s'effectue toujours par la moyenne des membres du cluster chez le fuzzy c-means, mais par le choix de l'objet $x_q$ qui optimise la somme des distances de cet objet aux autres membres pondérée chacune par le degré d'appartenance de ces autres membres: \[\forall j \in \left[ \left[1;k \right] \right], q = \argmin\limits_{1 \leq l < s_j} \sum\limits_{l=1}^{s_j} \left[u_{lj}r(x_l,z_j)\right]\] $s_j$ étant le nombre de membres du cluster $j$.
+ \item la détermination des nouveaux centres de clusters qui s'effectue toujours par la moyenne des membres du cluster chez le fuzzy c-means, mais par le choix de l'objet $x_q$ qui optimise la somme des distances de cet objet aux autres membres pondérée chacune par le degré d'appartenance de ces autres membres: \[\forall j \in  \left[1\twodots k \right], q = \argmin\limits_{1 \leq l < s_j} \sum\limits_{l=1}^{s_j} \left[u_{lj}r(x_l,z_j)\right]\] $s_j$ étant le nombre de membres du cluster $j$.
 \end{enumerate}
- Ainsi l'objectif de l'entrainement des algorithmes de regroupement flou est double: déterminer les valeurs optimales du vecteur  $U$ des degrés d'appartenance et de l'ensemble $Z$ des centroïdes. 
+ Ainsi l'objectif de l'entraînement des algorithmes de regroupement flou est double: déterminer les valeurs optimales de la matrice $U$ des degrés d'appartenance et l'ensemble $Z$ des centroïdes. 
  
  Les regroupements avec chevauchement sont intéressants parce qu'il est possible qu'une décision traite de plusieurs circonstances factuelles.
 %\textcolor{red}{A COMPLETER!!!!!!!!!!}
@@ -320,168 +320,157 @@ Cette section discute la validité, l'adéquation, et l'efficacité de la métri
 
 
 \subsection{Annotation manuelle de données d'évaluation}
-Pour l'évaluation supervisée, nous disposons d'une base annotée sur la catégorie de demande "dommage-intérêts / action en responsabilité civile professionnelle contre les avocats" (\textit{dira}) qui concerne les contentieux impliquant des avocats.  L'expert annotateur a annoté 81 documents (Figure \ref{fig:similarite:dira-data-distrib}) avec 6 documents appartenant chacun à 2 circonstances factuelles (chevauchements) parmi les 4 identifiées :
+Pour l'évaluation supervisée, nous disposons d'une base annotée sur la catégorie de demande "dommage-intérêts / action en responsabilité civile professionnelle contre les avocats" (\textit{arcpa}) qui concerne les contentieux impliquant des avocats.  L'expert annotateur a annoté 81 documents avec 6 documents appartenant chacun à 2 circonstances factuelles (chevauchements) parmi les 4 identifiées :
 \begin{itemize}
-\item cas $a$: il s'agit d'un avocat qui est négligent et envoie son assignation de manière tardive; %(champ sémantique: retard/délai/prescription)
-\item cas $b$: il s'agit d'un avocat qui n'a pas donné un conseil opportun, qui n'a pas soulevé le bon argument;
-\item cas $c$: un avocat qui n'a pas rédigé un acte valide ou réussi à obtenir un avantage fiscal; % (champ sémantique: rédacteur d'actes)
-\item cas $d$: il s'agit d'un avocat attaqué par son adversaire et non par son propre client.
+\item cas $a$ (46 documents): il s'agit d'un avocat qui est négligent et envoie son assignation de manière tardive; %(champ sémantique: retard/délai/prescription)
+\item cas $b$ (20 documents): il s'agit d'un avocat qui n'a pas donné un conseil opportun, qui n'a pas soulevé le bon argument;
+\item cas $c$ (18 documents): un avocat qui n'a pas rédigé un acte valide ou réussi à obtenir un avantage fiscal; % (champ sémantique: rédacteur d'actes)
+\item cas $d$ (3 documents): il s'agit d'un avocat attaqué par son adversaire et non par son propre client.
 \end{itemize}
 
-%Cet ensemble de données comprend 81 documents répartis dans les 4 groupes (Figure \ref{fig:similarite:dira-data-distrib}) avec 6 documents appartenant chacun à 2 groupes (chevauchements).
 
-\begin{figure}[!htb]
-	\centering \includegraphics[scale=0.5]{dira-data-distrib.png}
-	\caption{Répartition des documents annotés par circonstances factuelles (\textit{dira}).}\label{fig:similarite:dira-data-distrib}
-\end{figure}
+%\begin{figure}[!htb]
+%	\centering \includegraphics[scale=0.5]{arcpa-data-distrib.png}
+%	\caption{Répartition des documents annotés par circonstances factuelles (\textit{arcpa}).}\label{fig:similarite:arcpa-data-distrib}
+%\end{figure}
 
-Les terminologies des différents cas se distinguent bien (Tableau \ref{tab:similarite:terminologie-resp_avocat}), et par conséquent, une représentation des documents qui mettrait en évidence ces différents termes permettrait de retrouver les 
+Les terminologies des différents cas se distinguent bien (Tableau \ref{tab:similarite:terminologie-resp_avocat}), et par conséquent, une représentation des documents qui mettrait en évidence ces différents termes permettrait de retrouver les circonstances factuelles associées. 
 \begin{table}[!htb]
-	\centering \small%\scriptsize
-	\begin{tabular}{|l|p{.95\textwidth}|}
+	\centering \scriptsize
+	\begin{tabular}{|l|p{.85\textwidth}|}
 		\hline
 		\textbf{Corpus} & \textbf{Terminologie} \\ \hline
-		\textit{dira} & "perte de chance", 
-		"responsabilité civile professionnelle", 
-		"civile professionnelle", 
-		"chance d' obtenir", 
-		"faute de l' avocat", 
-		"chance", 
-		"avocat est tenu", 
-		"nécessairement rejet", 
-		"obtenir gain", 
-		"obtenir gain de cause", 
-		"responsabilité professionnelle", 
-		"chances", 
-		"aucune chance", 
-		"perte de chance d' obtenir", 
-		"perdu une chance", 
-		"fait perdre une chance", 
-		"devoir de compétence", 
-		"exposé complet des prétentions", 
-		"débats en audience", 
-		"après débats en audience publique", 
-		"après débats en audience", 
-		"débats en audience publique", 
-		"délibéré , statuant publiquement", 
-		"tarbes", 
-		"défense des intérêts", 
-		"chance de voir", 
-		"chance réelle et sérieuse", 
-		"chance réelle", 
-		"complet des prétentions", 
-		"toute chance"
+		\textit{arcpa} & perte de chance, 
+		responsabilité civile professionnelle, 
+		civile professionnelle, 
+		chance d' obtenir, 
+		faute de l' avocat, 
+		chance, 
+		contradictoirement après débats en audience, 
+		nécessairement rejet, 
+		avocat est tenu, 
+		obtenir gain, 
+		obtenir gain de cause, 
+		responsabilité professionnelle, 
+		audience publique et après, 
+		publique et après, 
+		chances, 
+		aucune chance, 
+		perte de chance d' obtenir, 
+		délibéré statuant publiquement, 
+		perdu une chance, 
+		fait perdre une chance, 		
 		\\ \hline
-		\textit{cas a} & "perte de chance", 
-		"chance", 
-		"obtenir gain", 
-		"obtenir gain de cause", 
-		"chances", 
-		"perdu une chance", 
-		"gain de cause", 
-		"confié la défense", 
-		"commis une faute", 
-		"toute chance", 
-		"projet d' assignation", 
-		"conseil' ; attendu", 
-		"perte", 
-		"chances de succès", 
-		"devoir de diligence", 
-		"grande instance de belfort", 
-		"faute engageant", 
-		"mandat ad", 
-		"chance de recouvrer", 
-		"vouée à l' échec"
+		\textit{cas a} & obtenir gain
+		obtenir gain de cause
+		perte de chance
+		perdu une chance
+		chances
+		nécessairement rejet
+		chance
+		confié la défense
+		conseil' attendu
+		chances d' aboutir
+		appel que ces condamnations
+		nécessairement rejet de la demande
+		appel que ces condamnations emportent
+		emportent nécessairement
+		condamnations emportent
+		condamnations emportent nécessairement rejet
+		condamnations emportent nécessairement
+		emportent nécessairement rejet
+		projet d' assignation
+		toute chance		
 		\\ \hline
-		\textit{cas b} & "412 du code de procédure", 
-		"avocat au barreau de dijon", 
-		"barreau de dijon", 
-		"412 du code", 
-		"responsabilité professionnelle", 
-		"pouvoir et devoir de conseiller", 
-		"devoir de conseiller la partie", 
-		"pouvoir général de représentation", 
-		"professionnelle des avocats relève", 
-		"procédure civile , l' avocat", 
-		"professionnelles , en sorte", 
-		"relève de la responsabilité contractuelle", 
-		"responsabilité professionnelle des avocats", 
-		"tous les actes nécessités", 
-		"intérêts sans l' obliger", 
-		"instance en s' assurant", 
-		"imposant d' accomplir tous", 
-		"imposant d' accomplir", 
-		"justice lui imposant", 
-		"justice emportant pouvoir et devoir"
+		\textit{cas b} & avocat au barreau de dijon
+		412 du code de procédure
+		barreau de dijon
+		412 du code
+		devoir de compétence
+		régularité et d' autre part
+		obliger qu' en l' espèce
+		emportant pouvoir
+		régime de la responsabilité professionnelle
+		régularité et d' autre
+		représentation en justice lui imposant
+		relève de la responsabilité contractuelle
+		imposant d' accomplir
+		dispositions combinées des articles 411
+		avocat est investi
+		avocats relève
+		responsabilité professionnelle des avocats
+		devoir de conseiller la partie
+		tous les actes nécessités
+		appel et le jugement entrepris		 
 		\\ \hline
-		\textit{cas c} & "avocat rédacteur", 
-		"rédacteur d' acte", 
-		"rédacteur d' un acte", 
-		"avocat rédacteur d' un acte", 
-		"qualité de rédacteur d' acte", 
-		"article 7.2 du règlement", 
-		"souscrits de part", 
-		"deux parties à la convention", 
-		"7.2 du règlement", 
-		"prévisions des parties", 
-		"présence et de prendre", 
-		"conseiller les deux parties", 
-		"conseiller les deux", 
-		"convention sur la portée", 
-		"rédacteur d' un acte juridique", 
-		"validité et la pleine", 
-		"initiative de conseiller les deux", 
-		"engagements souscrits de part", 
-		"7.2 du règlement intérieur", 
-		"article 7.2 du règlement intérieur", 		
+		\textit{cas c} &avocat rédacteur d' un acte
+		qualité de rédacteur d' acte
+		rédacteur d' acte
+		rédacteur d' un acte
+		avocat rédacteur
+		7.2 du règlement intérieur
+		7.2 du règlement
+		article 7.2 du règlement
+		article 7.2 du règlement intérieur
+		deux parties à la convention
+		validité et la pleine
+		portée et les incidences
+		initiative de conseiller les deux
+		initiative de conseiller
+		prévisions des parties
+		prendre l' initiative de conseiller
+		présence et de prendre
+		conseiller les deux parties
+		conseiller les deux
+		convention sur la portée
 		\\ \hline
-		\textit{cas d} & "effectivement faire droit", 
-		"effet les saisies attribution", 
-		"effectivement tenue", 
-		"effectivement faire droit aux demandes", 
-		"pénale et l' autre civile", 
-		"pénale en cours en suisse", 
-		"bourg en bresse , tandis", 
-		"flatteurs", 
-		"tribunal pouvait valablement être saisi", 
-		"bon fonctionnement de la justice", 
-		"octobre 2007 comportait", 
-		"transmises le 10 juin 2016", 
-		"trophée , observant en particulier", 
-		"pénale et l' autre", 
-		"effet les saisies", 
-		"effet les saisies attribution pratiquées", 
-		"octobre 2010 , la mise", 
-		"occupation , de sorte", 
-		"octobre 2010 ; statuant", 
-		"tant la sarl institut", 
+		\textit{cas d} & instances introduites
+		chaque mois sous
+		référé du 5 mai
+		réunies car
+		référé renvoyons
+		réception du 20 avril 2009
+		référés compte
+		référé du 22 novembre
+		référé du 27 novembre
+		obtenir une décision différente
+		référés compte tenu
+		l. doivent être condamnés
+		appartenait aux appelants
+		appelant il n' en demeure
+		appel relativement à la juridiction
+		appel que les dépens
+		apparaît constituer
+		valoir tous
+		66-879 du 29
+		66-879 du 29 novembre 1966				 
 		\\ \hline
 	\end{tabular}
 
-	\textit{20 premiers termes sélectionnés à l'aide du coefficient de corrélation $ngl$ (cf. \ref{sec:quanta:poids-globaux-superv})}
-	\caption{Terminologies  de la catégorie \textit{dira}, et de ses circonstances factuelles annotées.}\label{tab:similarite:terminologie-resp_avocat}
+	\textit{20 premiers termes de 1 à 5 mots sélectionnés à l'aide du coefficient de corrélation $ngl$ (cf. \ref{sec:quanta:poids-globaux-superv})}
+	\caption{Terminologies  de la catégorie \textit{arcpa}, et de ses circonstances factuelles annotées.}\label{tab:similarite:terminologie-resp_avocat}
 \end{table}
 
 Pour l'évaluation non supervisée, les corpus des catégories de demande des chapitres \ref{chap:quanta} et \ref{chap:sensresultat} sont employés en plus pour l'évaluation non-supervisée. Nous les appelons respectivement $\mathcal{D}_{acpa}$, $\mathcal{D}_{concdel}$, $\mathcal{D}_{danais}$,$\mathcal{D}_{dcppc}$, $\mathcal{D}_{doris}$, $\mathcal{D}_{styx}$.
 
 \subsection{Protocole}
-Pour analyser la validité et l'adéquation de la métrique apprise, nous l'entraînons sur la base générée puis nous l'évaluons sur le corpus annoté ($\mathcal{D}_{dira}$). Quant à l'efficacité de la métrique apprise, nous l'entraînons sur toutes les données annotées générées. Les documents sont pré-traités avant leur représentation sous forme vectorielle. Ce prétraitement consiste à sectionner les documents (chapitre \ref{chap:structuration}), à n'utiliser que le corps des documents (Litige + Motifs) (\textcolor{red}{pourquoi?}), à mettre en minuscule et lemmatiser ce contenu, puis à éliminer des caractères de ponctuation et des mots inutiles (\textit{stop words})  car ils sont généralement indépendants de toute catégorie. Le vocabulaire $W$ utilisé est restreint au mots du corpus original $D$ sur lequel il faut appliquer les regroupements. La représentation vectorielle emploie le modèle TF-IDF avec des n-grammes de 1 à 3 mots (pour prendre en compte l'ordre entre les mots).
+Pour analyser la validité et l'adéquation de la métrique apprise, nous l'entraînons sur la base générée puis nous l'évaluons sur le corpus annoté ($\mathcal{D}_{arcpa}$). Quant à l'efficacité de la métrique apprise, nous l'entraînons sur toutes les données annotées générées. Les documents sont pré-traités avant leur représentation sous forme vectorielle. Ce prétraitement consiste à sectionner les documents (chapitre \ref{chap:structuration}), à n'utiliser que le corps des documents (Litige + Motifs) (\textcolor{red}{pourquoi?}), à mettre en minuscule et lemmatiser ce contenu, puis à éliminer des caractères de ponctuation et des mots inutiles (\textit{stop words})  car ils sont généralement indépendants de toute catégorie. Le vocabulaire $W$ utilisé est restreint au mots du corpus original $D$ sur lequel il faut appliquer les regroupements. La représentation vectorielle emploie le modèle TF-IDF avec des n-grammes de 1 à 3 mots (pour prendre en compte l'ordre entre les mots).
 
 \subsection{Validité de la distance apprise}
-La base d'entraînement $B$ comprend 10 documents synthétiques générés pour chacun des 74 documents n'ayant qu'un seul label (circonstance factuelle). Nous vérifions ici que la métrique respecte les propriétés des distances, et aussi si elle reste normale après l'entraînement. D'après la matrice des distances entre toutes les paires de document de la base annotées $\mathcal{D_{\text{dira}}}$ (Figure \ref{fig:similarite:distance_matrix}),  la "non-négativité", l'identité discernable, et la symétrie sont respectée car toutes les valeurs sont non-négative, seule la diagonale est nulle, et la matrice est symétrique. De plus, toutes les distances sont comprises entre 0 et 1, et par conséquent la métrique est normée (donc la similarité est déduite par $Sim_\mathcal{M} = 1 - Dis_\mathcal{M}$).
+La base d'entraînement $B$ comprend 10 documents synthétiques générés pour chacun des 74 documents n'ayant qu'un seul label (circonstance factuelle). Nous vérifions ici que la métrique respecte les propriétés des distances, et aussi si elle reste normale après l'entraînement. D'après la matrice des distances entre toutes les paires de document de la base annotées $\mathcal{D_{\text{arcpa}}}$ (Figure \ref{fig:similarite:distance_matrix}),  la "non-négativité", l'identité discernable, et la symétrie sont respectée car toutes les valeurs sont non-négative, seule la diagonale est nulle, et la matrice est symétrique. De plus, toutes les distances sont comprises entre 0 et 1, et par conséquent la métrique est normée (donc la similarité est déduite par $Sim_\mathcal{M} = 1 - Dis_\mathcal{M}$).
 
 \begin{figure}[!htb]
 	\centering \includegraphics[scale=0.7]{distance_matrix.png}
-	\caption{Matrice des distances de la métrique apprise sur $\mathcal{D_{\text{dira}}}$}\label{fig:similarite:distance_matrix}
+	\caption{Matrice des distances de la métrique apprise sur $\mathcal{D_{\text{arcpa}}}$}\label{fig:similarite:distance_matrix}
 \end{figure}
 
 L'inégalité triangulaire est vérifiée car $Dis_\mathcal{M}(d,d'') - (Dis_\mathcal{M}(d,d') + Dis_\mathcal{M}(d',d'')) \leq 0, \forall (
-d,d,d') \in \mathcal{D_{\text{dira}}} \times \mathcal{D_{\text{dira}}} \times \mathcal{D_{\text{dira}}}$ (Figure \ref{fig:similarite:matrice_inegalite_triangulaire}).
+d,d,d') \in \mathcal{D_{\text{arcpa}}} \times \mathcal{D_{\text{arcpa}}} \times \mathcal{D_{\text{arcpa}}}$ (Figure \ref{fig:similarite:matrice_inegalite_triangulaire}).
 
 \begin{figure}[!htb]
 	\centering \includegraphics[width=\textwidth]{inegalite_triangulaire.png}
 	
-	\scriptsize{$Dis_\mathcal{M}(d,d'') - (Dis_\mathcal{M}(d,d') + Dis_\mathcal{M}(d',d'')), \forall (d,d',d'') \in \mathcal{D_{\text{dira}}} \times \mathcal{D_{\text{dira}}} \times \mathcal{D_{\text{dira}}}$, avec les $d$ indicés en lignes et les paires $(d',d'')$ en colonnes.}
+	\scriptsize{$Dis_\mathcal{M}(d,d'') - (Dis_\mathcal{M}(d,d') + Dis_\mathcal{M}(d',d'')), \forall (d,d',d'') \in \mathcal{D_{\text{arcpa}}} \times \mathcal{D_{\text{arcpa}}} \times \mathcal{D_{\text{arcpa}}}$, avec les $d$ indicés en lignes et les paires $(d',d'')$ en colonnes.}
 	\caption{Matrice de vérification de l'inégalité triangulaire}\label{fig:similarite:matrice_inegalite_triangulaire}
 \end{figure}
  
@@ -517,7 +506,7 @@ L'évaluation des algorithmes de regroupement considèrent parfaite la distance 
 
 %avec choix du nombre de clusters
 
-Le Tableau \ref{tab:similarite:compare-dist-1} compare les distances pour un partitionnement disjoint avec les algorithmes \textit{k-means} et \textit{k-medoids}. Le corpus $\mathcal{D}_{dira}$ est restreint aux documents annotés avec les labels $L = \lbrace a, b, c \rbrace$. Le  nombre de clusters $K$ est fixé par conséquent à 3. Comme sur le regroupement manuel (\ref{sec:similarite:adequation}), les coefficients de silhouette restent très proches de 0 pour toutes les distances, tout comme les valeurs de ARI  et NMI. Par conséquent le regroupement est considéré similaire à un regroupement aléatoire. Néanmoins, $Dis_{pearson}$ et $Dis_{manhattan}$ donnent les meilleurs regroupements avec respectivement le \textit{k-medoids} et le \textit{k-means} (F1-mesure). Comparativement, la distance apprise par régression $Dis_\mathcal{M}$ a une efficacité du même ordre que les distances aux plus fortes mesures F1. Elle parvient même à avoir les meilleures valeurs de ARI et NMI avec le \textit{k-means}.
+Le Tableau \ref{tab:similarite:compare-dist-1} compare les distances pour un partitionnement disjoint avec les algorithmes \textit{k-means} et \textit{k-medoids}. Le corpus $\mathcal{D}_{arcpa}$ est restreint aux documents annotés avec les labels $L = \lbrace a, b, c \rbrace$. Le  nombre de clusters $K$ est fixé par conséquent à 3. Comme sur le regroupement manuel (\ref{sec:similarite:adequation}), les coefficients de silhouette restent très proches de 0 pour toutes les distances, tout comme les valeurs de ARI  et NMI. Par conséquent le regroupement est considéré similaire à un regroupement aléatoire. Néanmoins, $Dis_{pearson}$ et $Dis_{manhattan}$ donnent les meilleurs regroupements avec respectivement le \textit{k-medoids} et le \textit{k-means} (F1-mesure). Comparativement, la distance apprise par régression $Dis_\mathcal{M}$ a une efficacité du même ordre que les distances aux plus fortes mesures F1. Elle parvient même à avoir les meilleures valeurs de ARI et NMI avec le \textit{k-means}.
 
 \begin{table}[!htb]
 	\scriptsize\centering
