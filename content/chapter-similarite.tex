@@ -95,7 +95,7 @@ La métrique peut être normalisée ($\forall (d,d') \in \mathcal{D} \times \mat
 	%\item Le coefficient similarité de Dice: $Sim_{Dice}(x,x') = \frac{2\cdot \vert tok(x) \cap tok(x') \vert}{\vert tok(x) \vert + \vert tok(x')} $
 	\item La similarité basée sur le coefficient de corrélation de Pearson est calculée par \citep{huang2008similarityTextClustering}:
 	
-	\[Sim_{pearson}(d,d') = \frac{ \sum\limits^m_{i=1} \vec{d}_i \cdot \vec{d'}_i - TF_d\cdot TF_{d'}}{\sqrt{[m \sum\limits^m_{i=1} \vec{d'}_i^2 - TF^2_d][m \sum\limits^m_{i=1} \vec{d'}_i^2 - TF^2_{d'}}}\]
+	\[Sim_{pearson}(d,d') = \frac{ \sum\limits^m_{i=1} \vec{d}_i \cdot \vec{d'}_i - TF_d\cdot TF_{d'}}{\sqrt{[m \sum\limits^m_{i=1} \vec{d'}_i^2 - TF^2_d][m \sum\limits^m_{i=1} \vec{d'}_i^2 - TF^2_{d'}]}}\]
 avec $TF_d = \sum\limits^m_{i=1} \vec{d}_i$. Sa distance est déduite par:
 
 $Dis_{pearson}(d,d') =
