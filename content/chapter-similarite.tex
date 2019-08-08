@@ -318,7 +318,7 @@ Cette section discute la validité, l'adéquation, et l'efficacité de la métri
 
 
 \subsection{Annotation manuelle de données d'évaluation}
-Pour l'évaluation supervisée, nous disposons d'une base annotée sur la catégorie de demande "dommage-intérêts / action en responsabilité civile professionnelle contre les avocats" (\textit{arcpa}) qui concerne les contentieux impliquant des avocats.  L'expert annotateur a annoté 81 documents avec 6 documents appartenant chacun à 2 circonstances factuelles (chevauchements) parmi les 4 identifiées :
+Pour l'évaluation supervisée, nous disposons d'une base annotée sur la catégorie de demande "dommage-intérêts / action en responsabilité civile professionnelle contre les avocats" (\textit{arcpa}) qui concerne les contentieux impliquant des avocats.  L'expert annotateur a annoté 81 documents\footnote{Sur 85 documents disponibles de catégorie \textit{dira}} avec 6 documents appartenant chacun à 2 circonstances factuelles (chevauchements) parmi les 4 identifiées :
 \begin{itemize}
 \item cas $a$ (46 documents): il s'agit d'un avocat qui est négligent et envoie son assignation de manière tardive; %(champ sémantique: retard/délai/prescription)
 \item cas $b$ (20 documents): il s'agit d'un avocat qui n'a pas donné un conseil opportun, qui n'a pas soulevé le bon argument;
@@ -452,7 +452,7 @@ Les terminologies des différents cas se distinguent bien (Tableau \ref{tab:simi
 Pour l'évaluation non supervisée, les corpus des catégories de demande des chapitres \ref{chap:quanta} et \ref{chap:sensresultat} sont employés en plus pour l'évaluation non-supervisée. Nous les appelons respectivement $\mathcal{D}_{acpa}$, $\mathcal{D}_{concdel}$, $\mathcal{D}_{danais}$,$\mathcal{D}_{dcppc}$, $\mathcal{D}_{doris}$, $\mathcal{D}_{styx}$.
 
 \subsection{Protocole et outils logiciels}
-Pour analyser la validité et l'adéquation de la métrique apprise, nous l'entraînons sur la base générée puis nous l'évaluons sur le corpus annoté $\mathcal{D}_{arcpa}$ restreint aux 74 documents n'appartenant qu'à l'un des cas $L = \lbrace a, b, c \rbrace$. Quant à l'efficacité de la métrique apprise, nous l'entraînons sur toutes les données annotées générées. Les documents sont pré-traités avant leur représentation sous forme vectorielle. Ce prétraitement consiste à sectionner les documents (chapitre \ref{chap:structuration}), à n'utiliser que le contenu principal des documents (Litige + Motifs + Dispositif), à mettre en minuscule et lemmatiser ce contenu, puis à éliminer la ponctuation et des mots inutiles (\textit{stop words})  car ils sont généralement indépendants de toute catégorie. Le vocabulaire $W$ utilisé est restreint au mots du corpus original $D$ sur lequel il faut appliquer les regroupements. La représentation vectorielle emploie les modèles de types TF-IDF avec des n-grammes de 1 à 3 mots (pour prendre en compte l'ordre entre les mots) avec des valeurs de poids globaux supervisés ($\chi_2, gss, ig, marascuilo, ngl, rf$) comprises entre 0.95 et 0.15. Les poids globaux ne sont appris sur la discrimination entre les cas $a,b,c$ mais plutôt entre deux corpus $\mathcal{D}_{arcpa}$ (84 documents) et $\mathcal{D}_{\overline{arcpa}}$ (427) i.e. la terminologie de $\mathcal{D}_{arcpa}$.
+Pour analyser la validité et l'adéquation de la métrique apprise, nous l'entraînons sur la base générée puis nous l'évaluons sur le corpus annoté $\mathcal{D}_{arcpa}$ restreint aux 74 documents n'appartenant qu'à l'un des cas $L = \lbrace a, b, c \rbrace$. Quant à l'efficacité de la métrique apprise, nous l'entraînons sur toutes les données annotées générées. Les documents sont pré-traités avant leur représentation sous forme vectorielle. Ce prétraitement consiste à sectionner les documents (chapitre \ref{chap:structuration}), à n'utiliser que le contenu principal des documents (Litige + Motifs + Dispositif), à mettre en minuscule et lemmatiser ce contenu, puis à éliminer la ponctuation et des mots inutiles (\textit{stop words})  car ils sont généralement indépendants de toute catégorie. Après pré-traitement, les documents ont une taille allant de 208 à 3812 mots dont une moyenne de 1381 mots. Le vocabulaire $W$ utilisé est restreint au mots du corpus original $D$ sur lequel il faut appliquer les regroupements. La représentation vectorielle emploie les modèles de types TF-IDF avec des n-grammes de 1 à 3 mots (pour prendre en compte l'ordre entre les mots) avec des valeurs de poids globaux supervisés ($\chi_2, gss, ig, marascuilo, ngl, rf$) comprises entre 0.95 et 0.15. Les poids globaux ne sont appris sur la discrimination entre les cas $a,b,c$ mais plutôt entre deux corpus $\mathcal{D}_{arcpa}$ (84 documents) et $\mathcal{D}_{\overline{arcpa}}$ (427) i.e. la terminologie de $\mathcal{D}_{arcpa}$.
 
 \subsection{Validité de la distance apprise}
 La base d'entraînement $B$ comprend 10 documents synthétiques générés pour chacun des 74 documents n'ayant qu'un seul label (circonstance factuelle). Nous vérifions ici que la métrique respecte les propriétés des distances, et aussi si elle reste normale après l'entraînement. D'après la matrice des distances entre toutes les paires de document de la base annotées $\mathcal{D_{\text{arcpa}}}$ (Figure \ref{fig:similarite:distance_matrix}),  la "non-négativité", l'identité discernable, et la symétrie sont respectée car toutes les valeurs sont non-négative, seule la diagonale est nulle, et la matrice est symétrique. De plus, toutes les distances sont comprises entre 0 et 1, et par conséquent la métrique est normée (donc la similarité est déduite par $Sim_\mathcal{M} = 1 - Dis_\mathcal{M}$).
@@ -508,55 +508,16 @@ L'évaluation des algorithmes de regroupement considèrent parfaite la distance 
 	\caption{Silhouettes sur le corpus annotée pour différentes distances.} \label{tab:similarite:compare-dist-adequation}
 \end{table}
 
-\subsection{Capacité à retrouver les cas annotés}
+\subsection{Capacité à retrouver les cas annotés manuellement}
 %Comparer la vectorisation du document sur tout son contenu vs. sur la restriction aux énoncés de demande de la catégorie (du type "constater", "dire et juger") vs restriction aux conclusions (le raisonnement des parties décrits les circonstances factuelles) + motifs sur la catégorie
 
 %avec choix du nombre de clusters
 
-Le Tableau \ref{tab:similarite:compare-dist-1} compare les distances pour un partitionnement disjoint avec les algorithmes \textit{k-means} et \textit{k-medoids}. Le corpus $\mathcal{D}_{arcpa}$ est restreint aux documents annotés avec les labels $L = \lbrace a, b, c \rbrace$. Le  nombre de clusters $K$ est fixé par conséquent à 3. %Comme sur le regroupement manuel (\ref{sec:similarite:adequation}), les coefficients de silhouette restent très proches de 0 pour toutes les distances, tout comme les valeurs de ARI  et NMI. Par conséquent le regroupement est considéré similaire à un regroupement aléatoire. Néanmoins, $Dis_{pearson}$ et $Dis_{manhattan}$ donnent les meilleurs regroupements avec respectivement le \textit{k-medoids} et le \textit{k-means} (F1-mesure). Comparativement, la distance apprise par régression $Dis_\mathcal{M}$ a une efficacité du même ordre que les distances aux plus fortes mesures F1. Elle parvient même à avoir les meilleures valeurs de ARI et NMI avec le \textit{k-means}.
+L'objectif ici est d'obtenir un partitionnement disjoint avec les algorithmes \textit{k-means} et \textit{k-medoids} qui ressemble au mieux à l'annotation manuelle. Le corpus $\mathcal{D}_{arcpa}$ est restreint aux 74 documents annotés des cas $L = \lbrace a, b, c \rbrace$. Le  nombre de clusters $K$ est fixé par conséquent à 3. Le Tableau \ref{tab:similarite:compare-dist-tfidf} présente les scores de validation enregistrés pour chaque distance sur des représentations de base (à base de plongements de mots pour $Dis_{wmd}$, et le modèle TF-IDF pour les autres). Comme sur le regroupement manuel (\ref{sec:similarite:adequation}), les coefficients de silhouette restent très proches de 0 pour toutes les distances, tout comme les valeurs de ARI  et NMI. Par conséquent le regroupement est considéré similaire à un regroupement aléatoire. Néanmoins, $Dis_{pearson}$ et $Dis_{manhattan}$ donnent les meilleurs regroupements avec respectivement le \textit{k-medoids} et le \textit{k-means} (F1-mesure). Comparativement avec les données annotées, les valeurs des différentes métriques de validation restent très faibles. 
 
-%\begin{table}[!htb] % TF-IDF
-%	\scriptsize\centering
-%	\begin{tabular}{|l||c|c||c|c|c||c||l|}
-%		\hline
-%		Distance & ARI & NMI & Précision & Rappel & F1-mesure & Silhouette & Algorithme\\ \hline
-%		
-%		
-%		\multirow{2}{*}{$Dis_\mathcal{M}$} & 0.008$\pm$0.035 & 0.027$\pm$0.018 & 0.437$\pm$0.042 & 0.561$\pm$0.123 & 0.483$\pm$0.039 & 0.011$\pm$0.007 & k-means \\
-%		 & -0.019 & 0.003 & 0.463 & 0.412 & 0.436 & 0.005 & kmedoids \\ \hline
-%		
-%		
-%		\multirow{2}{*}{$Dis_{braycurtis}$} & 0.004$\pm$0.023 & 0.022$\pm$0.014 & 0.446$\pm$0.055 & 0.490$\pm$0.080 & 0.463$\pm$0.052 & 0.012$\pm$0.006 & k-means \\
-%		 & 0.027 & 0.041 & 0.415 & 0.353 & 0.382 & 0.004 & kmedoids \\ \hline
-%		
-%		\multirow{2}{*}{$Dis_{cos}$} & 0.013$\pm$0.022 & 0.030$\pm$0.021 & 0.446$\pm$0.036 & 0.479$\pm$0.079 & 0.458$\pm$0.038 & 0.016$\pm$0.005 & k-means \\
-%		 & 0.016 & 0.025 & 0.419 & 0.397 & 0.408 & -0.001 & kmedoids \\ \hline
-%		
-%		\multirow{2}{*}{$Dis_{soft-cos}$}  &&&&&&&  \\  
-%		 &&&&&&&  \\ \hline  		
-%		
-%		\multirow{2}{*}{$Dis_{manhattan}$} & -0.009$\pm$0.020 & 0.035$\pm$0.019 & 0.481$\pm$0.057 & \textbf{0.627$\pm$0.153} & 0.536$\pm$0.069 & -0.006$\pm$0.012 & k-means \\
-%		 & -0.029 & 0.022 & 0.463 & 0.511 & 0.486 & -0.006 & kmedoids \\ \hline
-%		
-%		\multirow{2}{*}{$Dis_{euclidienne}$} & 0.009$\pm$0.027 & 0.033$\pm$0.022 & 0.445$\pm$0.042 & 0.492$\pm$0.107 & 0.461$\pm$0.049 & 0.017$\pm$0.006 & k-means \\
-%		 & 0.016 & 0.025 & 0.419 & 0.397 & 0.408 & -0.001 & kmedoids \\ \hline
-%		
-%		\multirow{2}{*}{$Dis_{jaccard}$} & 0.011$\pm$0.029 & 0.027$\pm$0.019 & 0.442$\pm$0.044 & 0.487$\pm$0.083 & 0.460$\pm$0.047 & \textbf{0.019$\pm$0.005} & k-means \\
-%		 & 0.016 & 0.025 & 0.419 & 0.397 & 0.408 & -0.001 & kmedoids \\ \hline
-%		
-%		\multirow{2}{*}{$Dis_{pearson}$} & 0.019$\pm$0.028 & 0.032$\pm$0.023 & 0.441$\pm$0.044 & 0.510$\pm$0.098 & 0.468$\pm$0.045 & 0.018$\pm$0.006 & k-means \\
-%		 & -0.016 & 0.004 & 0.503 & 0.451 & 0.475 & 0.008 & kmedoids \\ \hline
-%		
-%		
-%		$Dis_{wmd}$   & -0.015 & 0.059 & 0.427 & 0.404 & 0.415 & -0.001 & kmedoids \\ \hline
-%		
-%	\end{tabular}
-%
-%	\textit{(moyenne sur 10 exécutions)}
-%	\caption{Efficacité des distances à retrouver les 3 cas $a,b,c$ (sélection de modèle avec la silhouette)}\label{tab:similarite:compare-dist-1}
-%\end{table}
+Les scores des Tableaux \ref{tab:similarite:compare-dist-silhouette}, et \ref{tab:similarite:compare-dist-wcss} concernent la sélection des valeurs optimale d'hyper-paramètres (algorithme, poids local et global) selon la silhouette  et le critère de cohésion WCSS respectivement. L'objectif est de choisir le critère de validation interne dont la valeur maximale S pour la silhouette ou minimal pour WCSS traduirait une valeur la plus élevée possible des critères externes. Dans l'ensemble, la valeur maximale observée de F1-mesure est 0.558, celle de ARI est 0.180, et celle du NMI est 0.237. Ces valeurs ne correspondent cependant pas aux valeurs optimales de silhouette ou de WCSS (la F1 max est obtenue pour une silhouette nulle par exemple). On observe néanmoins que ces critères pénalisent plus le ARI et le NMI, que la F1, et que le meilleur critère n'est pas le même pour toutes les distances. La distance $Dis_{\mathcal{M}}$ proposée dans ce chapitre parvient à la F1-score maximal pour la valeur minimal de WCSS, de même que $Dis_{pearson}$ pour le max de la silhouette. Nous ne disposons pas malheureusement, de corpus annotée sur d'autres catégories de demande, pour généraliser ces observations et en tirer une conclusion. Néanmoins, le meilleur critère sur la F1-mesure sur le corpus annoté $arcpa$ pour chaque distance est utilisé ci-dessous pour déterminer les valeurs optimales des hyper-paramètres sur les corpus non-annotés i.e. $WCSS_{max}$ pour $Dis_{\mathcal{M}}$, et la $S_{max}$ pour les autres.
 
-\begin{table}[!htb]
+\begin{table}[!htb] % TF-IDF
 	\scriptsize\centering
 	\begin{tabular}{|l||c|c||c|c|c||c||l|}
 		\hline
@@ -564,21 +525,92 @@ Le Tableau \ref{tab:similarite:compare-dist-1} compare les distances pour un par
 		
 		
 		\multirow{2}{*}{$Dis_\mathcal{M}$} & 0.008$\pm$0.035 & 0.027$\pm$0.018 & 0.437$\pm$0.042 & 0.561$\pm$0.123 & 0.483$\pm$0.039 & 0.011$\pm$0.007 & k-means \\
-		& -0.019 & 0.003 & 0.463 & 0.412 & 0.436 & 0.005 & kmedoids \\ \hline
+		 & -0.019 & 0.003 & 0.463 & 0.412 & 0.436 & 0.005 & kmedoids \\ \hline
+		
+		
+		\multirow{2}{*}{$Dis_{braycurtis}$} & 0.004$\pm$0.023 & 0.022$\pm$0.014 & 0.446$\pm$0.055 & 0.490$\pm$0.080 & 0.463$\pm$0.052 & 0.012$\pm$0.006 & k-means \\
+		 & 0.027 & 0.041 & 0.415 & 0.353 & 0.382 & 0.004 & kmedoids \\ \hline
+		
+		\multirow{2}{*}{$Dis_{cos}$} & 0.013$\pm$0.022 & 0.030$\pm$0.021 & 0.446$\pm$0.036 & 0.479$\pm$0.079 & 0.458$\pm$0.038 & 0.016$\pm$0.005 & k-means \\
+		 & 0.016 & 0.025 & 0.419 & 0.397 & 0.408 & -0.001 & kmedoids \\ \hline
+		
+		%\multirow{2}{*}{$Dis_{soft-cos}$}  &&&&&&&  \\  
+		 %&&&&&&&  \\ \hline  		
+		
+		\multirow{2}{*}{$Dis_{manhattan}$} & -0.009$\pm$0.020 & 0.035$\pm$0.019 & 0.481$\pm$0.057 & \textbf{0.627$\pm$0.153} & 0.536$\pm$0.069 & -0.006$\pm$0.012 & k-means \\
+		 & -0.029 & 0.022 & 0.463 & 0.511 & 0.486 & -0.006 & kmedoids \\ \hline
+		
+		\multirow{2}{*}{$Dis_{euclidienne}$} & 0.009$\pm$0.027 & 0.033$\pm$0.022 & 0.445$\pm$0.042 & 0.492$\pm$0.107 & 0.461$\pm$0.049 & 0.017$\pm$0.006 & k-means \\
+		 & 0.016 & 0.025 & 0.419 & 0.397 & 0.408 & -0.001 & kmedoids \\ \hline
+		
+		\multirow{2}{*}{$Dis_{jaccard}$} & 0.011$\pm$0.029 & 0.027$\pm$0.019 & 0.442$\pm$0.044 & 0.487$\pm$0.083 & 0.460$\pm$0.047 & \textbf{0.019$\pm$0.005} & k-means \\
+		 & 0.016 & 0.025 & 0.419 & 0.397 & 0.408 & -0.001 & kmedoids \\ \hline
+		
+		\multirow{2}{*}{$Dis_{pearson}$} & 0.019$\pm$0.028 & 0.032$\pm$0.023 & 0.441$\pm$0.044 & 0.510$\pm$0.098 & 0.468$\pm$0.045 & 0.018$\pm$0.006 & k-means \\
+		 & -0.016 & 0.004 & 0.503 & 0.451 & 0.475 & 0.008 & kmedoids \\ \hline
+		
 		
 		$Dis_{wmd}$   & -0.015 & 0.059 & 0.427 & 0.404 & 0.415 & -0.001 & kmedoids \\ \hline
 		
 	\end{tabular}
-	
+
+	\textit{(moyenne $\pm$ écart-type sur 10 exécutions)}
+	\caption{Efficacité des distances à retrouver les 3 cas $a,b,c$ (représentation de base des documents)}\label{tab:similarite:compare-dist-tfidf}
+\end{table}
+
+\begin{table}[!htb]
+	\scriptsize
+	\begin{center}		
+	\begin{tabular}{|l|l|l|l|c|c|c|c|c|c|c|c|}%"algorithm","K","lw","gw","s","wcss","ARI","NMI","AMI","P","R","F1"
+		\hline
+		Distance & Algorithme& K& lw& gw& S$_{max}$ & WCSS & ARI& NMI& P& R& F1 \\ \hline
+		$Dis_\mathcal{M}$ & kmeans & 3 & TP & MARASCUILO & 0.172 & 15.654 & -0.004 & 0.032 & 0.396 & 0.356 & 0.374 \\ \hline
+		braycurtisDistance & kmeans & 3 & TP & CHI2 & 0.308 & 16.689 & -0.007 & 0.099 & 0.397 & 0.472 & 0.426 \\ \hline
+		cosineDistanceNorm & kmeans & 3 & LOGAVE & CHI2 & 0.323 & 1.567 & 0.039 & 0.100 & 0.424 & 0.380 & 0.400 \\ \hline
+		euclideanDistance & kmeans & 3 & LOGAVE & CHI2 & 0.252 & 35.305 & 0.010 & 0.078 & 0.405 & 0.397 & 0.398 \\ \hline
+		jaccardDistance & kmeans & 3 & LOGAVE & MARASCUILO & 0.329 & 4.713 & 0.049 & 0.039 & 0.420 & 0.603 & 0.491 \\ \hline
+		manhattanDistance & kmeans & 3 & ATF & CHI2 & 0.273 & 2103.432 & 0.002 & 0.080 & 0.401 & 0.407 & 0.401 \\ \hline
+		pearsonDistance & kmeans & 3 & ATF & MARASCUILO & 0.374 & 5.915 & 0.067 & 0.043 & 0.425 & 0.714 & 0.533 \\ \hline
+	\end{tabular}
+
 	\textit{(moyenne sur 10 exécutions)}
-	\caption{Efficacité des distances à retrouver les 3 cas $a,b,c$ (sélection de modèle avec la silhouette)}\label{tab:similarite:compare-dist-1}
+\end{center}
+	
+	S = silhouette, P = précision, R = rappel, F1 = F1-mesure
+	
+	lw = poids local, gw = poids global
+
+	\caption{Efficacité des distances à retrouver les 3 cas $a,b,c$ (largeur maximale de la silhouette)}\label{tab:similarite:compare-dist-silhouette}
 \end{table}
 
 
-\subsection{Détermination du nombre optimal de clusters}
+\begin{table}[!htb]
+	\scriptsize
+	\begin{center}		
+		\begin{tabular}{|l|l|l|l|c|c|c|c|c|c|c|c|}%"algorithm","K","lw","gw","s","wcss","ARI","NMI","AMI","P","R","F1"
+			\hline
+			Distance & Algorithme& K& lw& gw& S & WCSS$_{min}$ & ARI& NMI& P& R& F1 \\ \hline
+			$Dis_\mathcal{M}$ & kmedoids & 3 & LOGAVE & NGL & -0.000 & 4.585 & -0.027 & 0.029 & 0.390 & 0.927 & 0.549 \\ \hline
+			braycurtisDistance & kmedoids & 3 & ATF & MARASCUILO & -0.015 & 4.949 & -0.003 & 0.030 & 0.396 & 0.331 & 0.361 \\ \hline
+			cosineDistanceNorm & kmedoids & 3 & ATF & MARASCUILO & 0.004 & 0.341 & 0.005 & 0.049 & 0.402 & 0.347 & 0.372 \\ \hline
+			euclideanDistance & kmedoids & 3 & ATF & MARASCUILO & -0.015 & 15.019 & 0.014 & 0.039 & 0.408 & 0.370 & 0.388 \\ \hline
+			jaccardDistance & kmeans & 3 & ATF & MARASCUILO & 0.321 & 3.858 & 0.034 & 0.037 & 0.415 & 0.534 & 0.461 \\ \hline
+			manhattanDistance & kmedoids & 3 & ATF & MARASCUILO & 0.033 & 449.012 & 0.044 & 0.060 & 0.428 & 0.372 & 0.398 \\ \hline
+			pearsonDistance & kmeans & 3 & LOGTF & IG & 0.131 & 5.231 & 0.017 & 0.057 & 0.411 & 0.358 & 0.382 \\ \hline
+		\end{tabular}
+		
+		\textit{(moyenne sur 10 exécutions)}
+	\end{center}
+	
+	S = silhouette, P = précision, R = rappel, F1 = F1-mesure
+	
+	lw = poids local, gw = poids global
+	
+	
+	\caption{Efficacité des distances à retrouver les 3 cas $a,b,c$ (WCSS minimal)}\label{tab:similarite:compare-dist-wcss}
+\end{table}
 
-
-\subsection{Comparaison des algorithmes de regroupement}
+\subsection{Evaluation non supervisée des algorithmes sur les 7 catégories de demandes}
 
 %\subsection{Comparaison des zones et représentation vectorielle}
 
