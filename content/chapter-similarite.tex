@@ -479,27 +479,36 @@ d,d,d') \in \mathcal{D_{\text{arcpa}}} \times \mathcal{D_{\text{arcpa}}} \times 
 L'adéquation est mesurée par la formule suivante qui doit tendre vers 0: \[A(Dis) = \sum\limits_{\substack{(l,k) \in L \times L \\ l \neq k}} \sum\limits_{\substack{d \in \mathcal{D}_l \\ d' \in \mathcal{D}_k}} Sim(d,d') + \sum\limits_{l \in L} \sum\limits_{\substack{d \in \mathcal{D}_l \\ d' \in \mathcal{D}_l}} Dis(d,d). \] $L = \lbrace a, b, c \rbrace$ est l'ensemble des labels. Pour tout $l \in L$, $\mathcal{D}_l \subset \mathcal{D}$ désigne le sous-ensemble des documents de $\mathcal{D}$ annotés manuellement avec le label $l$. Cette formule tend vers 0 lorsque la somme des similarités entre documents de labels différents (premier terme) et la somme des distances entre documents de labels égaux (second terme) tendent tous les deux vers 0.
 Sur les 74 document annotés, nous obtenons $A(Dis_\mathcal{M}) = 872.635 + 519.151 = 1391.786$ avec une moyenne de similarité entre labels de $0.537$ et de distance entre labels égaux de $0.482$.
 
-L'évaluation des algorithmes de regroupement considèrent parfaite la distance utilisée et la représentation des documents. En considérant les données annotées (regroupement parfait), le coefficient de silhouette peut  permettre d'évaluer les distances. Les valeurs de ce dernier sont ainsi comparées dans le Tableau \ref{tab:similarite:compare-dist-adequation}. La largeur de silhouette étant très proche de 0 pour toutes les distances, la représentation employée pour les documents ne permet pas d'isoler les clusters (chevauchement). La représentation vectorielle de l'ensemble du document ne permet pas de distinguer les champs sémantiques des circonstances factuelles.
+L'évaluation des algorithmes de regroupement considèrent parfaite la distance utilisée et la représentation des documents. En considérant les données annotées (regroupement parfait), le coefficient de silhouette peut  permettre d'évaluer les distances. Les valeurs de ce dernier sont ainsi comparées dans le Tableau \ref{tab:similarite:compare-dist-adequation}. La largeur de silhouette étant très proche de 0 et négative pour toutes les distances, les représentations employées pour les documents ne permettent pas d'isoler suffisamment les clusters. Néanmoins, il est possible de trouver une pondération supervisée des termes capable d'améliorée la silhouette, sa valeur devenant même positive pour la distance proposée $Dis_M$ et celle de Manhattan. $Dis_{wmd}$, qui a pourtant la silhouette la plus faible, ne peut pas en profiter car elle n'est pas basée sur un modèle vectoriel.
 
 \begin{table}[!htb]
-	\centering \scriptsize
-  \begin{tabular}{|l|c|c|}
+	\small
+	\begin{center}
+  \begin{tabular}{|l|c|l|}
   	\hline
-	\textbf{Distance} & \textbf{Silhouette (TF-IDF)}  & \textbf{Silhouette (meilleure pondération supervisée)} \\ \hline
-	$Dis_\mathcal{M}$ &-0.007& 1391.786 \\ \hline
-	$Dis_{braycurtis}$ &-0.005& \\ \hline
-	$Dis_{cos}$ &-0.010& \\ \hline
-	$Dis_{soft-cos}$ && \\ \hline
-	$Dis_{manhattan}$ &-0.014& \\ \hline
-	$Dis_{euclidienne}$ &-0.005&  \\ \hline
-	$Dis_{jaccard}$ &-0.006&  \\ \hline
-	$Dis_{pearson}$ &-0.012& \\ \hline
-	$Dis_{wmd}$ &-0.029& \\ \hline	
+  	 & \multicolumn{2}{c|}{\textbf{Silhouette}} \\ 
+  	\hline
+	\textbf{Distance} & \textbf{ base$^{(*)}$}  & \textbf{modèles vectoriels supervisés$^{(**)}$} \\ \hline
+	$Dis_\mathcal{M}$ &-0.007& 0.003 (ATF-NGL) \\ \hline
+	$Dis_{braycurtis}$ &-0.005& -0.001 (TF-NGL)\\ \hline
+	$Dis_{cos}$ &-0.010& -0.007 (ATF-RF)\\ \hline
+	%$Dis_{soft-cos}$ && \\ \hline
+	$Dis_{manhattan}$ &-0.014& 0.005 (ATF-NGL) \\ \hline
+	$Dis_{euclidienne}$ &-0.005& -0.001 (LOGTF-NGL)  \\ \hline
+	$Dis_{jaccard}$ &-0.006& -0.002 (LOGTF-NGL) \\ \hline
+	$Dis_{pearson}$ &-0.012& -0.005 (ATF-RF)\\ \hline
+	$Dis_{wmd}$  &-0.029& -\\ \hline	
   \end{tabular}
-	\caption{Tableau comparatif de l'adéquation des distances au problème} \label{tab:similarite:compare-dist-adequation}
+\end{center}
+\scriptsize
+(*) modèle basé sur les plongements sémantiques de mots pour $Dis_{wmd}$, et modèle TF-IDF pour les autres
+
+(**) modèles vectoriels basés sur la terminologie de la catégorie de demande $arpa$
+
+	\caption{Silhouettes sur le corpus annotée pour différentes distances.} \label{tab:similarite:compare-dist-adequation}
 \end{table}
 
-\subsection{Comparaison des distances pour le regroupement}
+\subsection{Capacité à retrouver les cas annotés}
 %Comparer la vectorisation du document sur tout son contenu vs. sur la restriction aux énoncés de demande de la catégorie (du type "constater", "dire et juger") vs restriction aux conclusions (le raisonnement des parties décrits les circonstances factuelles) + motifs sur la catégorie
 
 %avec choix du nombre de clusters
@@ -542,8 +551,8 @@ Le Tableau \ref{tab:similarite:compare-dist-1} compare les distances pour un par
 		
 	\end{tabular}
 
-	\textit{moyenne $\pm$ écart-type (sur 30 exécutions)}
-	\caption{Tableau comparatif de l'efficacité des distances pour le regroupement}\label{tab:similarite:compare-dist-1}
+	\textit{(moyenne sur 10 exécutions)}
+	\caption{Efficacité des distances à retrouver les 3 cas $a,b,c$}\label{tab:similarite:compare-dist-1}
 \end{table}
 
 \subsection{Détermination du nombre optimal de clusters}
