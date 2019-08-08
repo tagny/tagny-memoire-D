@@ -452,7 +452,7 @@ Les terminologies des différents cas se distinguent bien (Tableau \ref{tab:simi
 Pour l'évaluation non supervisée, les corpus des catégories de demande des chapitres \ref{chap:quanta} et \ref{chap:sensresultat} sont employés en plus pour l'évaluation non-supervisée. Nous les appelons respectivement $\mathcal{D}_{acpa}$, $\mathcal{D}_{concdel}$, $\mathcal{D}_{danais}$,$\mathcal{D}_{dcppc}$, $\mathcal{D}_{doris}$, $\mathcal{D}_{styx}$.
 
 \subsection{Protocole et outils logiciels}
-Pour analyser la validité et l'adéquation de la métrique apprise, nous l'entraînons sur la base générée puis nous l'évaluons sur le corpus annoté $\mathcal{D}_{arcpa}$ restreint aux 74 documents n'appartenant qu'à l'un des cas $L = \lbrace a, b, c \rbrace$. Quant à l'efficacité de la métrique apprise, nous l'entraînons sur toutes les données annotées générées. Les documents sont pré-traités avant leur représentation sous forme vectorielle. Ce prétraitement consiste à sectionner les documents (chapitre \ref{chap:structuration}), à n'utiliser que le contenu principal des documents (Litige + Motifs + Dispositif), à mettre en minuscule et lemmatiser ce contenu, puis à éliminer la ponctuation et des mots inutiles (\textit{stop words})  car ils sont généralement indépendants de toute catégorie. Après pré-traitement, les documents ont une taille allant de 208 à 3812 mots dont une moyenne de 1381 mots. Le vocabulaire $W$ utilisé est restreint au mots du corpus original $D$ sur lequel il faut appliquer les regroupements. La représentation vectorielle emploie les modèles de types TF-IDF avec des n-grammes de 1 à 3 mots (pour prendre en compte l'ordre entre les mots) avec des valeurs de poids globaux supervisés ($\chi_2, gss, ig, marascuilo, ngl, rf$) comprises entre 0.95 et 0.15. Les poids globaux ne sont appris sur la discrimination entre les cas $a,b,c$ mais plutôt entre deux corpus $\mathcal{D}_{arcpa}$ (84 documents) et $\mathcal{D}_{\overline{arcpa}}$ (427) i.e. la terminologie de $\mathcal{D}_{arcpa}$.
+Pour analyser la validité et l'adéquation de la métrique apprise, nous l'entraînons sur la base générée puis nous l'évaluons sur le corpus annoté $\mathcal{D}_{arcpa}$ restreint aux 74 documents n'appartenant qu'à l'un des cas $L = \lbrace a, b, c \rbrace$. Quant à l'efficacité de la métrique apprise, nous l'entraînons sur toutes les données annotées générées. Les documents sont pré-traités avant leur représentation sous forme vectorielle. Ce prétraitement consiste à sectionner les documents (chapitre \ref{chap:structuration}), à n'utiliser que le contenu principal des documents (Litige + Motifs + Dispositif), à mettre en minuscule et lemmatiser ce contenu, puis à éliminer la ponctuation et des mots inutiles (\textit{stop words})  car ils sont généralement indépendants de toute catégorie. Après pré-traitement, les documents ont une taille allant de 208 à 3812 mots dont une moyenne de 1381 mots. Le vocabulaire $W$ utilisé est restreint au mots du corpus original $D$ sur lequel il faut appliquer les regroupements. La représentation vectorielle emploie les modèles de types TF-IDF avec des n-grammes de 1 à 3 mots (pour prendre en compte l'ordre entre les mots) avec des valeurs de poids globaux supervisés ($\chi_2, gss, ig, mar, ngl, rf$) comprises entre 0.95 et 0.15. Les poids globaux ne sont appris sur la discrimination entre les cas $a,b,c$ mais plutôt entre deux corpus $\mathcal{D}_{arcpa}$ (84 documents) et $\mathcal{D}_{\overline{arcpa}}$ (427) i.e. la terminologie de $\mathcal{D}_{arcpa}$.
 
 \subsection{Validité de la distance apprise}
 La base d'entraînement $B$ comprend 10 documents synthétiques générés pour chacun des 74 documents n'ayant qu'un seul label (circonstance factuelle). Nous vérifions ici que la métrique respecte les propriétés des distances, et aussi si elle reste normale après l'entraînement. D'après la matrice des distances entre toutes les paires de document de la base annotées $\mathcal{D_{\text{arcpa}}}$ (Figure \ref{fig:similarite:distance_matrix}),  la "non-négativité", l'identité discernable, et la symétrie sont respectée car toutes les valeurs sont non-négative, seule la diagonale est nulle, et la matrice est symétrique. De plus, toutes les distances sont comprises entre 0 et 1, et par conséquent la métrique est normée (donc la similarité est déduite par $Sim_\mathcal{M} = 1 - Dis_\mathcal{M}$).
@@ -561,16 +561,16 @@ Les scores des Tableaux \ref{tab:similarite:compare-dist-silhouette}, et \ref{ta
 \begin{table}[!htb]
 	\scriptsize
 	\begin{center}		
-	\begin{tabular}{|l|l|l|l|c|c|c|c|c|c|c|c|}%"algorithm","K","lw","gw","s","wcss","ARI","NMI","AMI","P","R","F1"
+	\begin{tabular}{|l|l|l|c|c|c|c|c|c|c|c|}%"algorithm","K","lw","gw","s","wcss","ARI","NMI","AMI","P","R","F1"
 		\hline
-		Distance & Algorithme& K& lw& gw& S$_{max}$ & WCSS & ARI& NMI& P& R& F1 \\ \hline
-		$Dis_\mathcal{M}$ & kmeans & 3 & TP & MARASCUILO & 0.172 & 15.654 & -0.004 & 0.032 & 0.396 & 0.356 & 0.374 \\ \hline
-		braycurtisDistance & kmeans & 3 & TP & CHI2 & 0.308 & 16.689 & -0.007 & 0.099 & 0.397 & 0.472 & 0.426 \\ \hline
-		cosineDistanceNorm & kmeans & 3 & LOGAVE & CHI2 & 0.323 & 1.567 & 0.039 & 0.100 & 0.424 & 0.380 & 0.400 \\ \hline
-		euclideanDistance & kmeans & 3 & LOGAVE & CHI2 & 0.252 & 35.305 & 0.010 & 0.078 & 0.405 & 0.397 & 0.398 \\ \hline
-		jaccardDistance & kmeans & 3 & LOGAVE & MARASCUILO & 0.329 & 4.713 & 0.049 & 0.039 & 0.420 & 0.603 & 0.491 \\ \hline
-		manhattanDistance & kmeans & 3 & ATF & CHI2 & 0.273 & 2103.432 & 0.002 & 0.080 & 0.401 & 0.407 & 0.401 \\ \hline
-		pearsonDistance & kmeans & 3 & ATF & MARASCUILO & 0.374 & 5.915 & 0.067 & 0.043 & 0.425 & 0.714 & 0.533 \\ \hline
+		Distance & Algorithme & lw& gw& S$_{max}$ & WCSS & ARI& NMI& P& R& F1 \\ \hline
+		$Dis_\mathcal{M}$ & kmeans  & TP & MAR & 0.172 & 15.654 & -0.004 & 0.032 & 0.396 & 0.356 & 0.374 \\ \hline
+		$Dis_{braycurtis}$ & kmeans  & TP & CHI2 & 0.308 & 16.689 & -0.007 & 0.099 & 0.397 & 0.472 & 0.426 \\ \hline
+		$Dis_{cos}$ & kmeans  & LOGAVE & CHI2 & 0.323 & 1.567 & 0.039 & 0.100 & 0.424 & 0.380 & 0.400 \\ \hline
+		$Dis_{euclidean}$ & kmeans  & LOGAVE & CHI2 & 0.252 & 35.305 & 0.010 & 0.078 & 0.405 & 0.397 & 0.398 \\ \hline
+		$Dis_{jaccard}$ & kmeans  & LOGAVE & MAR & 0.329 & 4.713 & 0.049 & 0.039 & 0.420 & 0.603 & 0.491 \\ \hline
+		$Dis_{manhattan}$ & kmeans  & ATF & CHI2 & 0.273 & 2103.432 & 0.002 & 0.080 & 0.401 & 0.407 & 0.401 \\ \hline
+		$Dis_{pearson}$ & kmeans  & ATF & MAR & 0.374 & 5.915 & 0.067 & 0.043 & 0.425 & 0.714 & 0.533 \\ \hline
 	\end{tabular}
 
 	\textit{(moyenne sur 10 exécutions)}
@@ -587,16 +587,16 @@ Les scores des Tableaux \ref{tab:similarite:compare-dist-silhouette}, et \ref{ta
 \begin{table}[!htb]
 	\scriptsize
 	\begin{center}		
-		\begin{tabular}{|l|l|l|l|c|c|c|c|c|c|c|c|}%"algorithm","K","lw","gw","s","wcss","ARI","NMI","AMI","P","R","F1"
+		\begin{tabular}{|l|l|l|c|c|c|c|c|c|c|c|}%"algorithm","K","lw","gw","s","wcss","ARI","NMI","AMI","P","R","F1"
 			\hline
-			Distance & Algorithme& K& lw& gw& S & WCSS$_{min}$ & ARI& NMI& P& R& F1 \\ \hline
-			$Dis_\mathcal{M}$ & kmedoids & 3 & LOGAVE & NGL & -0.000 & 4.585 & -0.027 & 0.029 & 0.390 & 0.927 & 0.549 \\ \hline
-			braycurtisDistance & kmedoids & 3 & ATF & MARASCUILO & -0.015 & 4.949 & -0.003 & 0.030 & 0.396 & 0.331 & 0.361 \\ \hline
-			cosineDistanceNorm & kmedoids & 3 & ATF & MARASCUILO & 0.004 & 0.341 & 0.005 & 0.049 & 0.402 & 0.347 & 0.372 \\ \hline
-			euclideanDistance & kmedoids & 3 & ATF & MARASCUILO & -0.015 & 15.019 & 0.014 & 0.039 & 0.408 & 0.370 & 0.388 \\ \hline
-			jaccardDistance & kmeans & 3 & ATF & MARASCUILO & 0.321 & 3.858 & 0.034 & 0.037 & 0.415 & 0.534 & 0.461 \\ \hline
-			manhattanDistance & kmedoids & 3 & ATF & MARASCUILO & 0.033 & 449.012 & 0.044 & 0.060 & 0.428 & 0.372 & 0.398 \\ \hline
-			pearsonDistance & kmeans & 3 & LOGTF & IG & 0.131 & 5.231 & 0.017 & 0.057 & 0.411 & 0.358 & 0.382 \\ \hline
+			Distance & Algorithme & lw& gw& S & WCSS$_{min}$ & ARI& NMI& P& R& F1 \\ \hline
+			$Dis_\mathcal{M}$ & kmedoids  & LOGAVE & NGL & -0.000 & 4.585 & -0.027 & 0.029 & 0.390 & 0.927 & 0.549 \\ \hline
+			$Dis_{braycurtis}$ & kmedoids  & ATF & MAR & -0.015 & 4.949 & -0.003 & 0.030 & 0.396 & 0.331 & 0.361 \\ \hline
+			$Dis_{cos}$ & kmedoids  & ATF & MAR & 0.004 & 0.341 & 0.005 & 0.049 & 0.402 & 0.347 & 0.372 \\ \hline
+			$Dis_{euclidean}$ & kmedoids  & ATF & MAR & -0.015 & 15.019 & 0.014 & 0.039 & 0.408 & 0.370 & 0.388 \\ \hline
+			$Dis_{jaccard}$ & kmeans  & ATF & MAR & 0.321 & 3.858 & 0.034 & 0.037 & 0.415 & 0.534 & 0.461 \\ \hline
+			$Dis_{manhattan}$ & kmedoids  & ATF & MAR & 0.033 & 449.012 & 0.044 & 0.060 & 0.428 & 0.372 & 0.398 \\ \hline
+			$Dis_{pearson}$ & kmeans  & LOGTF & IG & 0.131 & 5.231 & 0.017 & 0.057 & 0.411 & 0.358 & 0.382 \\ \hline
 		\end{tabular}
 		
 		\textit{(moyenne sur 10 exécutions)}
