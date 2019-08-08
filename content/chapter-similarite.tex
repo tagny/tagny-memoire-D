@@ -187,7 +187,7 @@ La validation d'un regroupement peut être supervisée ou non selon que des docu
 
 \subsubsection{Métriques supervisées ou mesures externes}
 \label{sec:similarite:biblio:supeval}
-Elles comparent deux regroupements $X = \lbrace X_1, X_2, ..., X_r \rbrace$ et $Y = \lbrace Y_1, Y_2, ..., Y_s \rbrace$ pour mesurer leur ressemblance. Trois métriques sont couramment employées:
+Les métriques couramment employées mesurent la ressemblance entre deux regroupements $X = \lbrace X_1, X_2,..., X_r \rbrace$ et $Y = \lbrace Y_1,Y_2,..., Y_s \rbrace$:
 \begin{itemize}
 	\item l'indice ajusté par chance de Rand (\textit{ajusted Rand index} - ARI) \citep{hubert1985adjustedrandidx} corrigent l'indice de Rand (RI) \citep{rand1971randidx} pour obtenir une valeur très proche de 0.0 pour les regroupements aléatoires et exactement 1.0 lorsque les clusters sont identiques aux classes attendues. En effet, l'indice de Rand prend ses valeurs en pratique dans l'intervalle $[0.5;1]$, et a par conséquent une valeur de base très élevée. ARI est calculé à l'aide du tableau de contingence résumant les chevauchements que partagent $X$ et $Y$ (Tableau \ref{tab:similarite:tab-contingence}) par la formule: %\[ARI(Y,C) = \frac{RI(Y,C) - E_{perm}\left[RI(Y,C)\right]}{1.0 - E_{perm}\left[RI(Y,C)\right]} \]
 	\[ARI(X,Y) = \frac{\sum\limits_{i,j}\binom{n_{ij}}{2} - \frac{\sum\limits_{i}\binom{a_{i}}{2}\sum\limits_{j}\binom{b_{j}}{2}}{\binom{N}{2}}}{\frac{1}{2}\big[\sum\limits_{i}\binom{a_{i}}{2}+\sum\limits_{j}\binom{b_{j}}{2}\big] - \frac{\sum\limits_{i}\binom{a_{i}}{2}\sum\limits_{j}\binom{b_{j}}{2}}{\binom{N}{2}}}, \text{ avec } \binom{n}{2} = \frac{n(n-1)}{2}.\]
@@ -212,16 +212,14 @@ ARI a des valeurs dans $[-1;1]$. Une valeur négative indique que le regroupemen
 	
 	\item les métriques ARI et NMI se contentent de mesurer la différence des proportions entre les clusters de deux regroupements indépendamment des affectations des documents. D'autres méthodes appelées mesures de comptage de pair (\textit{pair counting measures}) mesurent la capacité du modèle à mettre deux documents similaires (de labels identiques dans les données annotées) dans le même groupe, et des documents dis-similaires (de labels différents dans les données annotées) dans des clusters différents. Par exemple, des mesures de précision, rappel, et F1-mesure sont définies par les formules suivantes \citep{manning2009irbook-flatclustering}:
 	\[P = \frac{{TP}}{{TP} + {FP}}, R = \frac{{TP}}{{TP} + {FN}}, F1 = \frac{2 \times P \times R}{P + R}.\]
-	Les métriques de bases vrais/faux positifs/négatifs qui servent à les calculer, sont définies comme suit:
+	Ces scores prennent leurs valeurs dans $[0;1]$. Les métriques de bases vrais/faux positifs/négatifs qui servent à les calculer, sont définies comme suit:
 	\begin{itemize}
 		\item un vrai positif (TP) survient si le modèle place deux documents similaires dans le même cluster (groupe généré par le modèle);
 		\item un faux négatif (FN) survient si deux documents similaires sont dans des clusters différents;
 		\item un vrai négatif (TN) est une décision qui place deux documents dissemblables dans deux clusters différents;
 		\item un faux positif (FP) survient si deux documents dissemblables sont dans le même cluster.
 	\end{itemize}
-	
-	La précision, le rappel, et la F1-mesure prennent leurs valeurs dans $[0;1]$. 
-	
+		
 \end{itemize}
 %Ces métriques doivent être utilisées ensemble  pour compenser les limites de chacune d'elles \citep{yang2017kmeansfriendlyspaces}.
 
@@ -335,7 +333,7 @@ Pour l'évaluation supervisée, nous disposons d'une base annotée sur la catég
 %\end{figure}
 
 Les terminologies des différents cas se distinguent bien (Tableau \ref{tab:similarite:terminologie-resp_avocat}), et par conséquent, une représentation des documents qui mettrait en évidence ces différents termes permettrait de retrouver les circonstances factuelles associées. 
-\begin{table}[!htb]
+\begin{table}[h]
 	\centering \scriptsize
 	\begin{tabular}{|l|p{.85\textwidth}|}
 		\hline
@@ -454,7 +452,7 @@ Les terminologies des différents cas se distinguent bien (Tableau \ref{tab:simi
 Pour l'évaluation non supervisée, les corpus des catégories de demande des chapitres \ref{chap:quanta} et \ref{chap:sensresultat} sont employés en plus pour l'évaluation non-supervisée. Nous les appelons respectivement $\mathcal{D}_{acpa}$, $\mathcal{D}_{concdel}$, $\mathcal{D}_{danais}$,$\mathcal{D}_{dcppc}$, $\mathcal{D}_{doris}$, $\mathcal{D}_{styx}$.
 
 \subsection{Protocole}
-Pour analyser la validité et l'adéquation de la métrique apprise, nous l'entraînons sur la base générée puis nous l'évaluons sur le corpus annoté ($\mathcal{D}_{arcpa}$). Quant à l'efficacité de la métrique apprise, nous l'entraînons sur toutes les données annotées générées. Les documents sont pré-traités avant leur représentation sous forme vectorielle. Ce prétraitement consiste à sectionner les documents (chapitre \ref{chap:structuration}), à n'utiliser que le corps des documents (Litige + Motifs) (\textcolor{red}{pourquoi?}), à mettre en minuscule et lemmatiser ce contenu, puis à éliminer des caractères de ponctuation et des mots inutiles (\textit{stop words})  car ils sont généralement indépendants de toute catégorie. Le vocabulaire $W$ utilisé est restreint au mots du corpus original $D$ sur lequel il faut appliquer les regroupements. La représentation vectorielle emploie le modèle TF-IDF avec des n-grammes de 1 à 3 mots (pour prendre en compte l'ordre entre les mots).
+Pour analyser la validité et l'adéquation de la métrique apprise, nous l'entraînons sur la base générée puis nous l'évaluons sur le corpus annoté $\mathcal{D}_{arcpa}$ restreint aux 74 documents n'appartenant qu'à l'un des cas $L = \lbrace a, b, c \rbrace$. Quant à l'efficacité de la métrique apprise, nous l'entraînons sur toutes les données annotées générées. Les documents sont pré-traités avant leur représentation sous forme vectorielle. Ce prétraitement consiste à sectionner les documents (chapitre \ref{chap:structuration}), à n'utiliser que le contenu principal des documents (Litige + Motifs + Dispositif), à mettre en minuscule et lemmatiser ce contenu, puis à éliminer la ponctuation et des mots inutiles (\textit{stop words})  car ils sont généralement indépendants de toute catégorie. Le vocabulaire $W$ utilisé est restreint au mots du corpus original $D$ sur lequel il faut appliquer les regroupements. La représentation vectorielle emploie les modèles de types TF-IDF avec des n-grammes de 1 à 3 mots (pour prendre en compte l'ordre entre les mots) avec des valeurs de poids globaux supervisés ($\chi_2, gss, ig, marascuilo, ngl, rf$) comprises entre 0.95 et 0.15. Les poids globaux ne sont appris sur la discrimination entre les cas $a,b,c$ mais plutôt entre deux corpus $\mathcal{D}_{arcpa}$ (84 documents) et $\mathcal{D}_{\overline{arcpa}}$ (427) i.e. la terminologie de $\mathcal{D}_{arcpa}$.
 
 \subsection{Validité de la distance apprise}
 La base d'entraînement $B$ comprend 10 documents synthétiques générés pour chacun des 74 documents n'ayant qu'un seul label (circonstance factuelle). Nous vérifions ici que la métrique respecte les propriétés des distances, et aussi si elle reste normale après l'entraînement. D'après la matrice des distances entre toutes les paires de document de la base annotées $\mathcal{D_{\text{arcpa}}}$ (Figure \ref{fig:similarite:distance_matrix}),  la "non-négativité", l'identité discernable, et la symétrie sont respectée car toutes les valeurs sont non-négative, seule la diagonale est nulle, et la matrice est symétrique. De plus, toutes les distances sont comprises entre 0 et 1, et par conséquent la métrique est normée (donc la similarité est déduite par $Sim_\mathcal{M} = 1 - Dis_\mathcal{M}$).
@@ -487,7 +485,7 @@ L'évaluation des algorithmes de regroupement considèrent parfaite la distance 
 	\centering \scriptsize
   \begin{tabular}{|l|c|c|}
   	\hline
-	$Dis$ & Silhouette &  $A(Dis)$ \\ \hline
+	\textbf{Distance} & \textbf{Silhouette (TF-IDF)}  & \textbf{Silhouette (meilleure pondération supervisée)} \\ \hline
 	$Dis_\mathcal{M}$ &-0.007& 1391.786 \\ \hline
 	$Dis_{braycurtis}$ &-0.005& \\ \hline
 	$Dis_{cos}$ &-0.010& \\ \hline
@@ -557,7 +555,4 @@ Le Tableau \ref{tab:similarite:compare-dist-1} compare les distances pour un par
 
 \section{Conclusion}
 \label{sec:similarite:conclusion}
-jhk
-lk
-
-lkjkl
+Il aurait été judicieux d'augmenter au préalable le volume des corpus par la détection de la présence de catégorie par classification de documents, étant donnée qu'elle est triviale pour les algorithmes traditionnels.
