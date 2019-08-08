@@ -146,15 +146,15 @@ Dis_{wmd}(d, d') = 	& \min\limits_{T>0}
 % 	\item L'analyse discriminante locale de Fisher (LFDA) \citep{sugiyama2007LFDA, } méthode supervisée (données labellisées) de réduction de dimension
 % \end{itemize}
 
-\subsection{Représentations des textes}
-La formulation des distances exploite très souvent une représentation vectorielle des texte (cf.  \ref{sec:similarite:distances}). 
+%\subsection{Représentations des textes}
+%La formulation des distances exploite très souvent une représentation vectorielle des texte (cf.  \ref{sec:similarite:distances}). 
 
 
-\subsection{Déterminer le nombre approprié de clusters (validation)}
+\subsection{Déterminer le nombre optimal de clusters}
 
 %\textcolor{red}{faire un tableau des indices comme dans l'article, et comparer les combinaison indices-algo-distance}
 
- Au delà de l’algorithme à utiliser, le nombre $K$ approprié de clusters doit être déterminé mais pas prédéfini, puisqu'il est difficile de savoir à l'avance le nombre de groupes, le regroupement permettant de proposer automatiquement un regroupement. Une méthode très connue est celle du \og coude \fg{}  (ou \og genou \fg{}) \citep{halkidi2001clustvalidation}, qui est basé sur le principe de base des algorithmes de partitionnement (e.g. K-moyennes) i.e. minimiser le critère d'inertie\footnote{la variance intra-cluster qui est la somme au carré des erreurs (distance d'un membre au centre).}:
+ Au delà de l’algorithme à utiliser, le nombre $K$ approprié de clusters doit être déterminé mais pas prédéfini, puisqu'il est difficile de savoir à l'avance le nombre de groupes. Une méthode très connue est celle du \og coude \fg{}  (ou \og genou \fg{}) \citep{halkidi2001clustvalidation}, qui est basé sur le principe de base des algorithmes de partitionnement (e.g. K-moyennes) i.e. minimiser le critère d'inertie\footnote{la variance intra-cluster qui est la somme au carré des erreurs (distance d'un membre au centre).}:
 \[J(K) = \sum\limits_{j=1}^K\sum\limits_{d_i \in C_j}\norm{\vec{d}_i-\overline{\vec{d}_j}}^2\]
 
 $C_j$: ensemble des objets du cluster $j$
@@ -230,7 +230,7 @@ ARI a des valeurs dans $[-1;1]$. Une valeur négative indique que le regroupemen
 \subsubsection{Métriques non-supervisées ou indices internes}
 \label{sec:similarite:biblio:unsupeval}
 
- La cohésion et la séparation des clusters sont les principaux indices internes. La cohésion mesure le degré de proximité entre objets d'un cluster à partir du carré de la somme des erreurs\footnote{Erreur: distance entre un point et le centre du cluster dont il est membre.} dans les clusters: $WCSS(C) = \sum\limits_{j=1}^K\sum\limits_{x \in C_j} Dis(x, m_j)$, où $C = \lbrace C_1, C_1, \cdots, C_K \rbrace$ est l'ensemble des clusters du regroupement, $m_j$ le centre de $C_j$, et $Dis(x,m_j)$ la distance (généralement euclidienne) entre un point $x$ et $m_j$. En général, une valeur faible de la cohésion indique que les clusters sont plus compactes, et donc de meilleur qualité. Tandis qu'une valeur élevée révèle une grande variabilité entre les objets à l'intérieur les clusters. La séparation quant à elle mesure l'éloignement de chaque cluster des autres à partir du carré de la somme des distances entre clusters: $BCSS(C) = \sum\limits_{j = 1}^{K} \vert C_j \vert (m - m_j)$, 
+ La cohésion et la séparation des clusters sont les principaux indices internes. La cohésion mesure le degré de proximité entre objets d'un cluster à partir du carré de la somme des erreurs\footnote{Erreur: distance entre un point et le centre du cluster dont il est membre.} dans les clusters: $WCSS(C) = \sum\limits_{j=1}^K\sum\limits_{x \in C_j} (Dis(x, m_j))^2$, où $C = \lbrace C_1, C_1, \cdots, C_K \rbrace$ est l'ensemble des clusters du regroupement, $m_j$ le centre de $C_j$, et $Dis(x,m_j)$ la distance (généralement euclidienne) entre un point $x$ et $m_j$. En général, une valeur faible de la cohésion indique que les clusters sont plus compactes, et donc de meilleur qualité. Tandis qu'une valeur élevée révèle une grande variabilité entre les objets à l'intérieur les clusters. La séparation quant à elle mesure l'éloignement de chaque cluster des autres à partir du carré de la somme des distances entre clusters: $BCSS(C) = \sum\limits_{j = 1}^{K} \vert C_j \vert (m - m_j)$, 
   $m$ étant le centre l'ensemble des objets (la moyenne des vecteurs de tous les documents, où le document qui se trouve à une distance moyenne minimale de tous les autres). Une grande valeur de séparation indique que les clusters sont isolés les uns des autres, et par conséquent elle doit être maximisée pendant le regroupement.
  
  Le coefficient de silhouette de \citet{rousseeuw1987silhouetteclusternumber} combine les idées de cohésion et séparation mais pour chaque objet. Il se calcule par $s(x) = \frac{b(x

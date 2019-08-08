@@ -1,44 +1,40 @@
-%\renewcommand{\appendixname}{Annexe }
-\renewcommand{\thechapter}{\Alph{chapter}}
-%\renewcommand{\cftchappresnum}{\hspace{0.5cm}Annexe: }
-%{\usefont{OT1}{ptm}{b}{n}
- \titleformat{\chapter}[display]
-{\bfseries\Large\filleft}
-{\filright {\appendixname } 
-\Large\thechapter}
-{1ex}
-{\titlerule[3pt]%
-\vspace{2pt}%
-\titlerule
-\vspace{2ex}%
-\filright}
-[\vspace{2ex}%
-\titlerule]
-
-\def\chaptertitlename{Chapitre }
-%\renewcommand{\thepart}{\arabic{part}}
-%{\usefont{OT1}{ptm}{b}{n}
- \titleformat{\part}[display]
-{\bfseries\Huge\filleft}
-{\filright {\partname } %\textcolor{blue}
-\Huge}
-{1ex}
-{\titlerule[3pt]%
-\vspace{5pt}%
-\titlerule
-\vspace{5ex}%
-\filright} % \textcolor{blue}
-[\vspace{5ex}%
-\titlerule]
-
-%
-%}
-
-% % partie
-%  \titleformat{\part}[frame]
-% {\normalfont}
-% {\filright
-% \footnotesize
-% \enspace \bf \Huge \thepart\enspace}
-% {18pt}
-% {\Large\bfseries\filcenter}
+\renewcommand*\thesection{\roman{section}}
+\renewcommand*\thesubsection{\thesection.\alph{subsection}}
+\setcounter{section}{0}
+\makeatletter
+\def\thickhrulefill{\leavevmode \leaders
+	\hrule height 1ex \hfill \kern \z@}
+\def\@makechapterhead#1{%
+	\vspace*{10\p@}%
+	{\parindent \z@
+		{\reset@font
+			%\usefont{OT1}{phv}{b}{n}
+			\large \bf Chapitre \thechapter\par\nobreak}%
+		\par\nobreak
+		\vspace*{20\p@}
+		\interlinepenalty\@M
+		%\usefont{OT1}{ptm}{b}{n}
+		{\raggedright \Large  \bfseries #1}%
+		\par\nobreak
+		\vskip 20\p@
+		%\hrule height 2pt
+		\par\nobreak
+		\vskip 45\p@
+}}
+\def\@makeschapterhead#1{%
+	\vspace*{10\p@}%
+	{\parindent \z@
+		{\raggedleft \reset@font
+			\scshape \vphantom{\@chapapp{} \thechapter}
+			\par\nobreak}%
+		\par\nobreak
+		\vspace*{15\p@}
+		\interlinepenalty\@M
+		%\usefont{OT1}{ptm}{b}{n}
+		{\raggedright \Large \bfseries #1}%
+		\par\nobreak
+		\vskip 20\p@
+		\hrule height 2pt
+		\par\nobreak
+		\vskip 20\p@
+}}
