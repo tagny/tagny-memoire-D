@@ -78,9 +78,10 @@ Les algorithmes de regroupement dépendent de la distance utilisée qui doit êt
 La métrique peut être normalisée ($\forall (d,d') \in \mathcal{D} \times \mathcal{D};  0 \leq Dis(d,d') \leq 1$), à l'instar de la distance basée sur la similarité cosinus normalisée et celle de Jaccard. Dans ce cas, la relation entre la similarité $Sim$ et la dis-similarité $Dis$ est définie par $Sim(d,d') = 1 - Dis(d,d')$.
 %On parle de \textbf{pseudo-métrique} lorsque la condition \ref{enum:sim:ineq-tri} n'est pas satisfaite.
 
- Il existe de nombreuses métriques de similarité généralement expérimentées pour le regroupement de textes \citep{huang2008similarityTextClustering, vijaymeena2016surveySim, afzali2018SimKmeans}:
+ Il existe de nombreuses métriques de similarité généralement expérimentées pour le regroupement de textes \citep{huang2008similarityTextClustering, vijaymeena2016surveySim, afzali2018SimKmeans}. Voici les quelques métriques de similarité syntaxique explorées dans ce chapitre:
 \begin{itemize}
 	\item Les distances de Minkowski de forme générale $Dis(d,d') = \norm{\vec{d} - \vec{d'}}_{Lp} = \sqrt[p]{\sum\limits_{i=1}^m \vert \vec{d}_i - \vec{d}_i \vert ^p}$, dont font partie la distance euclidienne $Dis_{euclidienne}$ ($p=2$) et la distance de Manhattan $Dis_{manhattan}$ ($p=1$).
+	\item L'indice de Dice définit la similarité entre $d$ et $d'$ comme étant la proportion de termes qui leur sont communs: $Sim_{dice}(d,d') = \frac{2 \setsize{d \cap d'}}{\setsize{d} + \setsize{d'}}$.
 	\item La distance de \citet{bray1957distance-braycurtis}: $Dis_{braycurtis}(d,d') = \frac{\sum\limits_{i=1}^m \vert \vec{d}_i - \vec{d'}_i \vert}{\sum\limits_{i=1}^m \vert \vec{d}_i + \vec{d'}_i \vert}$\citep{huang2008similarityTextClustering}.
 	\item La similarité cosinus est basée sur la mesure de l'angle entre $\vec{d}$ et $\vec{d'}$ par la formule: $Sim_{cos}(d,d') = \frac{\vec{d}^t\vec{d'}}{\norm{\vec{d}}\norm{\vec{d'}}}$.
 	Pour un modèle vectoriel du type TF-IDF, cette formulation considère que tous les termes du vocabulaire $T$ définissant le modèle vectoriel, sont différents et ne partagent aucune relation. \citet{sidorov2014softcosine} la corrigent en proposant la fonction \textit{soft-cosine} en introduisant une matrice $S = {S_{ij}}_{1\leq i,j \leq m}$ de similarité entre  termes: 
@@ -146,12 +147,13 @@ Dis_{wmd}(d, d') = 	& \min\limits_{T>0}
 % 	\item L'analyse discriminante locale de Fisher (LFDA) \citep{sugiyama2007LFDA, } méthode supervisée (données labellisées) de réduction de dimension
 % \end{itemize}
 
-%\subsection{Représentations des textes}
-%La formulation des distances exploite très souvent une représentation vectorielle des texte (cf.  \ref{sec:similarite:distances}). 
-
+\subsection{Représentation des textes}
+\label{sec:similarite:representation}
+La formulation des distances exploite très souvent une représentation vectorielle des texte (cf.  \ref{sec:similarite:distances}). Les variantes du modèle TF-IDF décrites au Chapitre \ref{chap:quanta} en font des distances plus lexicales que sémantiques. Plusieurs techniques permettent de définir les dimensions par les thématiques et apportent par conséquent plus de sémantique à la représentation vectorielle. Ce chapitre explore l'usage de deux approches.
+D'une part,  l'analyse latente sémantique (LSA) \citep{dumais1988LSI} est une technique réalisant une décomposition en valeurs singulières de la matrice de cooccurrence document-terme où chaque cellule contient le poids du terme dans le document correspondant. La LSA permet ainsi de réduire la grande dimension lexicale des documents à un espace de thématique défini par le nombre de valeurs propres choisies. D'autre part, à partir de vecteurs de mots apprise d'entraînement à l'aide de méthodes comme Word2Vec \citep{mikolov2013word2vec} ou GloVe \citep{pennington2014glove}, il est possible d'obtenir des thématiques en catégorisant sans supervision les mots. Il est souvent proposer de considérer le document comme le barycentre des mots qu'il contient, et de le représenter comme la moyenne des vecteurs de mots pondérés par leur poids dans le document (par exemple TF-IDF) \citep{charlet2017simbow_tal,arora2017wordAvgSentEmbedd}. Pour de longs documents comme les décisions de justice, la moyenne des vecteurs peut devenir inintéressante. Nous proposons de catégoriser les termes de la catégorie de demande avec les K-moyennes, puis de considérer chaque cluster de termes comme une thématique, et enfin de représenter chaque document par un vecteur binaire dont les dimensions sont définies par les clusters de termes. Une composante est à 1 si le document contient un terme du cluster correspondant et à 0 si non. Le vecteur d'un terme à multiples mots étant la moyenne pondérée des vecteurs de ses mots.
 
 \subsection{Déterminer le nombre optimal de clusters}
-
+\label{sec:similarite:k-optimal}
 %\textcolor{red}{faire un tableau des indices comme dans l'article, et comparer les combinaison indices-algo-distance}
 
  Au delà de l’algorithme à utiliser, le nombre $K$ approprié de clusters doit être déterminé mais pas prédéfini, puisqu'il est difficile de savoir à l'avance le nombre de groupes. Une méthode très connue est celle du \og coude \fg{}  (ou \og genou \fg{}) \citep{halkidi2001clustvalidation}, qui est basé sur le principe de base des algorithmes de partitionnement (e.g. K-moyennes) i.e. minimiser le critère d'inertie\footnote{la variance intra-cluster qui est la somme au carré des erreurs (distance d'un membre au centre).}:
@@ -168,7 +170,7 @@ La méthode de la silhouette moyenne \citep{rousseeuw1987silhouetteclusternumber
 
 où $a(d) = \frac{1}{\vert C_t \vert} \sum\limits_{d' \in C_t} Dis(d, d')$, et $b(d) = \min\limits_{l \neq t} \frac{1}{\vert C_l \vert} \sum\limits_{d' \in C_t} Dis(d, d')$, pour $d \in C_l$.
 
-$K$ est optimal lorsque la largeur moyenne $\overline{s_K}(C)$ est maximale. % Salvador et Chan (2004) propose d’utiliser l’intersection des deux lignes approximant la courbe. Mais plus récemment, Zhang et al. (2016) trouvent que cette approche n’est pas appropriée pour les cas où le graphe d’évaluation n’est ni lisse, ni monotone. Ils proposent d’exploiter la courbure du graphe i.e. la valeur dont un objet géométrique s'écarte d'être plat ou droit dans le cas d'une ligne.
+$K$ est optimal lorsque la largeur moyenne $\overline{s_K}(C)$ est maximale. Les valeurs de ce dernier varient entre -1 (pire valeur) et +1 (meilleure valeur). Les valeurs proches de zéro indiquent que les clusters se chevauchent en $x$, et il est difficile de savoir à quel cluster $x$ doit être affecté. Une valeur négative indique que $x$ a été affecté à cluster inapproprié % Salvador et Chan (2004) propose d’utiliser l’intersection des deux lignes approximant la courbe. Mais plus récemment, Zhang et al. (2016) trouvent que cette approche n’est pas appropriée pour les cas où le graphe d’évaluation n’est ni lisse, ni monotone. Ils proposent d’exploiter la courbure du graphe i.e. la valeur dont un objet géométrique s'écarte d'être plat ou droit dans le cas d'une ligne.
 
 %Etant donné le grand nombre de méthodes existantes \citep{liu2010interclustvalidation, Amorim2015recoveringnumclust}, la majorité des votes peut être appliquée pour choisir le bon $K$ \footnote{\url{https://www.datanovia.com/en/lessons/determining-the-optimal-number-of-clusters-3-must-know-methods/}}.
 
@@ -229,22 +231,7 @@ ARI a des valeurs dans $[-1;1]$. Une valeur négative indique que le regroupemen
 \label{sec:similarite:biblio:unsupeval}
 
  La cohésion et la séparation des clusters sont les principaux indices internes. La cohésion mesure le degré de proximité entre objets d'un cluster à partir du carré de la somme des erreurs\footnote{Erreur: distance entre un point et le centre du cluster dont il est membre.} dans les clusters: $WCSS(C) = \sum\limits_{j=1}^K\sum\limits_{x \in C_j} (Dis(x, m_j))^2$, où $C = \lbrace C_1, C_1, \cdots, C_K \rbrace$ est l'ensemble des clusters du regroupement, $m_j$ le centre de $C_j$, et $Dis(x,m_j)$ la distance (généralement euclidienne) entre un point $x$ et $m_j$. En général, une valeur faible de la cohésion indique que les clusters sont plus compactes, et donc de meilleur qualité. Tandis qu'une valeur élevée révèle une grande variabilité entre les objets à l'intérieur les clusters. La séparation quant à elle mesure l'éloignement de chaque cluster des autres à partir du carré de la somme des distances entre clusters: $BCSS(C) = \sum\limits_{j = 1}^{K} \vert C_j \vert (m - m_j)$, 
-  $m$ étant le centre l'ensemble des objets (la moyenne des vecteurs de tous les documents, où le document qui se trouve à une distance moyenne minimale de tous les autres). Une grande valeur de séparation indique que les clusters sont isolés les uns des autres, et par conséquent elle doit être maximisée pendant le regroupement.
- 
- Le coefficient de silhouette de \citet{rousseeuw1987silhouetteclusternumber} combine les idées de cohésion et séparation mais pour chaque objet. Il se calcule par $s(x) = \frac{b(x
-) - a(x)}{\max\lbrace a(x)b(x) \rbrace}$, où $x$ est un objet du cluster $A \in C$, $a(x) = \frac{1}{\vert A \vert} \sum\limits_{y\in A} Dis(x,y)$, $b(x) = \min\limits_{B \in C}\frac{1}{\vert B \vert} \sum\limits_{y\in B} Dis(x,y)$. Ses valeurs varient entre -1 (pire valeur) et +1 (meilleure valeur). Les valeurs proches de zéro indiquent que les clusters se chevauchent en $x$, et il est difficile de savoir à quel cluster $x$ doit être affecté. Une valeur négative indique que $x$ a été affecté à cluster inapproprié. Le coefficient de silhouette du regroupement $C$ est la moyenne des coefficients de l'ensemble des  objets.
-
-%\section{Méthodes proposées}
-
-%\subsection{K-médoïdes et \og Word Mover's Distance \fg}
-
-%Les approches de clustering sont généralement appliquées à une représentation vectorielle des objets. Particulièrement la méthodes des K-moyennes qui met à jour le centroïde en faisant la moyenne des menbres de son cluster. Cependant, \citet{kusner2015wordmoverdist} ont proposé récemment \textit{la distance du déplaceur de mot} (\textit{word mover's distance - WMD}), une métrique non-supervisée qui permet à la méthode des \textit{K plus proches voisins} (KNN) d'obtenir des performances sans précédents. De plus, l'algorithme de clustering K-médoïdes \citep{kaufman1987kmedoids}, similaire aux K-moyennes, choisi comme centroïde le membre du cluster qui minimise la distance aux restes des membres; ce qui n'impose pas de représentation vectorielle. Ainsi, nous pouvons utiliser la métrique WMD dans  l'algorithme des K-médoïdes. Tout en nous appuyant sur un algorithme établi de clustering, nous évitons aussi la recherche de la meilleure représentation vectorielle qui influence souvent les performances du clustering. 
-
-%Algorithme: \url{http://isiarticles.com/bundles/Article/pre/pdf/79087.pdf}
-
-
-%Un des désavantage de l'algorithme des K-médoïdes est son long temps de calcul dû à ???. Nous avons, par conséquent, remplacé la distance euclidienne par la WMD dans la version plus rapide de \cite{Park2009fastkmedoids} avec nombre de clusters prédéfinis, et celle de \cite{sabzi2011fuzzykmedoids} qui intègre une optimisation du nombre de clusters.
-%\section{Méthode 2: cartes auto-organisatrice de Kohonen et concaténation de plongement lexical de phrases (sentence embedding)}
+  $m$ étant le centre l'ensemble des objets (la moyenne des vecteurs de tous les documents, où le document qui se trouve à une distance moyenne minimale de tous les autres). Une grande valeur de séparation indique que les clusters sont isolés les uns des autres, et par conséquent elle doit être maximisée pendant le regroupement. Le coefficient de silhouette de \citet{rousseeuw1987silhouetteclusternumber} (cf. \ref{sec:similarite:k-optimal})  combine les idées de cohésion et séparation mais pour chaque objet.
 
 \section{Apprentissage d'une distance basée sur la transformation de document}
 Nous définissons la métrique suivante qui est fonction des transformations permettant de passer d'un document $d$ à un autre $d'$ :
@@ -256,14 +243,6 @@ Dis_\mathcal{M} & : & \mathcal{D} \times \mathcal{D} & \to & \mathbb{R} & \\
 \end{equation}
 
 $\mathcal{D}$ est le corpus. $\mathcal{M}_{d, d'}$ est l'ensemble des modifications de $d$ permettant pour obtenir $d'$ i.e. les paires de mots différents $(d_{k}, d'_{k})$ telles que le mot $d_{k}$ à la position $k$ dans $d$ a été remplacé par $d_{k}$ à la position $k$ dans $d'$. $f$ est une fonction qui croît avec le nombre de modifications. Après une légère modification, le sens d'un texte reste assez similaire à celui de l'original. Tandis qu'après un grand nombre de modifications, le sens du texte sera très différent de l'original. 
- %La distance croît donc proportionnellement avec le taux de modification (d'où le produit de $Dis_{soft-cos}$ et $f$). $Dis_{soft-cos}$  est étendue car elle tient compte 
-
-%Un intérêt de cette distance est qu'elle tient compte de l'ordre des mots contrairement à une distance classique comme la distance cosinus. Par exemple, en considérant les deux textes  $t_1 = \text{\og \textit{le chien poursuit le chat}\fg{}}$ et $t_2 = \text{\og \textit{le chat poursuit le chien} \fg{}}$, et en supposant que $f$ est simplement le taux de mots modifiés:
-%\begin{equation}
-%\forall (d, d') \in \mathcal{D} \times \mathcal{D}, f(\mathcal{M}_{d, d'}) = \frac{\norm{\mathcal{M}_{d, d'}}}{\norm{d_i}}, \label{eq:similarite:taux-modif}
-%\end{equation}
-%
-%nous avons $Dis_{cos}(d_1, d_2) = 0.$ (car les deux textes contiennent exactement les mêmes mots) et $Dis_\mathcal{M}(d_1, d_2)=0.4$ (car $\mathcal{M} = \lbrace (\textit{chien}, \textit{chat}), (\textit{chat}, \textit{chien})\rbrace$,  et $\norm{d_1} = 5 \text{ mots}$). La limite de cette distance est d'être très stricte sur l'ordre des mots. C'est pourquoi sa combinaison avec la distance cosinus est explorée dans ce chapitre. 
 
 Pour des textes de même taille, toute formulation mathématique permettrait de calculer $Dis_\mathcal{M}$ car il est facile de faire correspondre les mots par leur position. Par exemple, cette distance peut donc se formuler comme étant la proportion de mots modifiés:
 \begin{equation}
@@ -561,16 +540,16 @@ Les scores des Tableaux \ref{tab:similarite:compare-dist-silhouette}, et \ref{ta
 \begin{table}[!htb]
 	\scriptsize
 	\begin{center}		
-	\begin{tabular}{|l|l|l|c|c|c|c|c|c|c|c|}%"algorithm","K","lw","gw","s","wcss","ARI","NMI","AMI","P","R","F1"
+	\begin{tabular}{|l|l|l|l|c|c|c|c|c|c|c|c|}%"algorithm","K","lw","gw","s","wcss","ARI","NMI","AMI","P","R","F1"
 		\hline
-		Distance & Algorithme & lw& gw& S$_{max}$ & WCSS & ARI& NMI& P& R& F1 \\ \hline
-		$Dis_\mathcal{M}$ & kmeans  & TP & MAR & 0.172 & 15.654 & -0.004 & 0.032 & 0.396 & 0.356 & 0.374 \\ \hline
-		$Dis_{braycurtis}$ & kmeans  & TP & CHI2 & 0.308 & 16.689 & -0.007 & 0.099 & 0.397 & 0.472 & 0.426 \\ \hline
-		$Dis_{cos}$ & kmeans  & LOGAVE & CHI2 & 0.323 & 1.567 & 0.039 & 0.100 & 0.424 & 0.380 & 0.400 \\ \hline
-		$Dis_{euclidean}$ & kmeans  & LOGAVE & CHI2 & 0.252 & 35.305 & 0.010 & 0.078 & 0.405 & 0.397 & 0.398 \\ \hline
-		$Dis_{jaccard}$ & kmeans  & LOGAVE & MAR & 0.329 & 4.713 & 0.049 & 0.039 & 0.420 & 0.603 & 0.491 \\ \hline
-		$Dis_{manhattan}$ & kmeans  & ATF & CHI2 & 0.273 & 2103.432 & 0.002 & 0.080 & 0.401 & 0.407 & 0.401 \\ \hline
-		$Dis_{pearson}$ & kmeans  & ATF & MAR & 0.374 & 5.915 & 0.067 & 0.043 & 0.425 & 0.714 & 0.533 \\ \hline
+		Distance & Algorithme & K & lw& gw& S$_{max}$ & WCSS & ARI& NMI& P& R& F1 \\ \hline
+		$Dis_\mathcal{M}$ & kmeans & 3 & LOGAVE & GSS & 0.048 & 33.838 & 0.026 & 0.054 & 0.417 & 0.345 & 0.377 \\ \hline 
+		braycurtisDistance & kmeans & 3 & ATF & MARASCUILO & 0.313 & 4.015 & 0.015 & 0.037 & 0.404 & 0.594 & 0.476 \\ \hline 
+		cosineDistanceNorm & kmeans & 3 & LOGAVE & IG & 0.296 & 0.567 & 0.017 & 0.079 & 0.410 & 0.379 & 0.393 \\ \hline 
+		euclideanDistance & kmeans & 3 & ATF & MARASCUILO & 0.265 & 12.240 & 0.041 & 0.050 & 0.419 & 0.583 & 0.481 \\ \hline 
+		jaccardDistance & kmeans & 3 & LOGAVE & CHI2 & 0.334 & 10.252 & 0.021 & 0.091 & 0.412 & 0.367 & 0.388 \\ \hline 
+		manhattanDistance & kmeans & 3 & TP & CHI2 & 0.296 & 1530.600 & -0.004 & 0.085 & 0.398 & 0.430 & 0.408 \\ \hline 
+		pearsonDistance & kmeans & 3 & ATF & MARASCUILO & 0.348 & 3.803 & 0.072 & 0.049 & 0.430 & 0.673 & 0.520 \\ \hline 
 	\end{tabular}
 
 	\textit{(moyenne sur 10 exécutions)}
@@ -587,16 +566,16 @@ Les scores des Tableaux \ref{tab:similarite:compare-dist-silhouette}, et \ref{ta
 \begin{table}[!htb]
 	\scriptsize
 	\begin{center}		
-		\begin{tabular}{|l|l|l|c|c|c|c|c|c|c|c|}%"algorithm","K","lw","gw","s","wcss","ARI","NMI","AMI","P","R","F1"
+		\begin{tabular}{|l|l|l|l|c|c|c|c|c|c|c|c|}%"algorithm","K","lw","gw","s","wcss","ARI","NMI","AMI","P","R","F1"
 			\hline
-			Distance & Algorithme & lw& gw& S & WCSS$_{min}$ & ARI& NMI& P& R& F1 \\ \hline
-			$Dis_\mathcal{M}$ & kmedoids  & LOGAVE & NGL & -0.000 & 4.585 & -0.027 & 0.029 & 0.390 & 0.927 & 0.549 \\ \hline
-			$Dis_{braycurtis}$ & kmedoids  & ATF & MAR & -0.015 & 4.949 & -0.003 & 0.030 & 0.396 & 0.331 & 0.361 \\ \hline
-			$Dis_{cos}$ & kmedoids  & ATF & MAR & 0.004 & 0.341 & 0.005 & 0.049 & 0.402 & 0.347 & 0.372 \\ \hline
-			$Dis_{euclidean}$ & kmedoids  & ATF & MAR & -0.015 & 15.019 & 0.014 & 0.039 & 0.408 & 0.370 & 0.388 \\ \hline
-			$Dis_{jaccard}$ & kmeans  & ATF & MAR & 0.321 & 3.858 & 0.034 & 0.037 & 0.415 & 0.534 & 0.461 \\ \hline
-			$Dis_{manhattan}$ & kmedoids  & ATF & MAR & 0.033 & 449.012 & 0.044 & 0.060 & 0.428 & 0.372 & 0.398 \\ \hline
-			$Dis_{pearson}$ & kmeans  & LOGTF & IG & 0.131 & 5.231 & 0.017 & 0.057 & 0.411 & 0.358 & 0.382 \\ \hline
+			Distance & Algorithme & K & lw& gw& S & WCSS$_{min}$ & ARI& NMI& P& R& F1 \\ \hline
+			$Dis_\mathcal{M}$ & kmeans & 3 & ATF & CHI2 & 0.007 & 8.769 & 0.008 & 0.070 & 0.403 & 0.406 & 0.402 \\ \hline 
+			braycurtisDistance & kmeans & 3 & ATF & MARASCUILO & 0.313 & 4.015 & 0.015 & 0.037 & 0.404 & 0.594 & 0.476 \\ \hline 
+			cosineDistanceNorm & kmeans & 3 & ATF & MARASCUILO & 0.275 & 0.212 & 0.050 & 0.050 & 0.424 & 0.524 & 0.465 \\ \hline 
+			euclideanDistance & kmeans & 3 & ATF & MARASCUILO & 0.265 & 12.240 & 0.041 & 0.050 & 0.419 & 0.583 & 0.481 \\ \hline 
+			jaccardDistance & kmeans & 3 & ATF & MARASCUILO & 0.221 & 2.811 & 0.014 & 0.051 & 0.407 & 0.546 & 0.461 \\ \hline 
+			manhattanDistance & kmeans & 3 & TP & MARASCUILO & 0.232 & 356.961 & 0.006 & 0.022 & 0.402 & 0.426 & 0.410 \\ \hline 
+			pearsonDistance & kmeans & 3 & TF & IG & 0.134 & 3.639 & 0.019 & 0.055 & 0.412 & 0.356 & 0.381 \\ \hline 
 		\end{tabular}
 		
 		\textit{(moyenne sur 10 exécutions)}
