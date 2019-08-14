@@ -14,7 +14,6 @@
 \usepackage{eurosym}
 \graphicspath{ {gfx/} }
 \usepackage{mathpazo}
-\usepackage[hidelinks]{hyperref}
 \usepackage{fancyhdr}
 %\usepackage{cite}
 %\usepackage{epigraph}
@@ -46,6 +45,8 @@
 \usepackage{pst-plot} % For axes
 
 %\usepackage{underscore} % for undescores in the bib file
+
+\usepackage[hidelinks]{hyperref} % rule "load hyperref as the last package" 
 
 \author{Gildas TAGNY NGOMPE}
 \title{Analyse sémantique d'un corpus exhaustif de décisions jurisprudentielles}
@@ -88,8 +89,8 @@
 
 
 %\include{entete_pied}
-\makenomenclature
-\renewcommand{\nomname}{Glossaire}
+%\makenomenclature
+%\renewcommand{\nomname}{Glossaire}
 
 \renewcommand{\nomentryend}{.}
 \renewcommand{\nomlabel}[1]{\hfil {\bf #1}\hfil:}
@@ -138,6 +139,7 @@
 
 \pagestyle{fancy}
 \fancyhf{}
+\setlength{\headheight}{15pt}
 \fancyhead[L]{\scriptsize \it \rightmark}
 \fancyhead[R]{\thepage}
 \renewcommand{\headrulewidth}{0pt}
@@ -192,10 +194,10 @@
 \addcontentsline{toc}{chapter}{\bibname}
 \bibliography{bib/references-pub}
 
-\newpage
+%\newpage
 %Glossaire
-\printnomenclature[2cm]
-\addcontentsline{toc}{chapter}{\nomname}
+%\printnomenclature[2cm]
+%\addcontentsline{toc}{chapter}{\nomname}
 %Annexes
 %annexes
 %\appendix

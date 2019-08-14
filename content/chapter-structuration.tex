@@ -156,8 +156,8 @@ La définition manuelle des caractéristiques suivie de la sélection est souven
 %https://towardsdatascience.com/conditional-random-field-tutorial-in-pytorch-ca0d04499463
 
 \subsection{Schéma d'étiquetage}
-Nous traitons d'entités dont les occurrences comprennent un ou plusieurs éléments atomiques. Pour améliorer les résultats d'un modèle d'étiquetage, certaines parties des entités peuvent être mises en évidence à travers une représentation appropriée de segments. La figure \ref{p4_sample-tagmod} illustre l'utilisation la différence entre des schémas appelés IO, BIO, IEO et BIEO, sur un extrait de décision de justice pour l'annotation du nom d'un juge et de sa fonction:
-\begin{figure}[!h]
+Nous traitons d'entités dont les occurrences comprennent un ou plusieurs éléments atomiques. Pour améliorer les résultats d'un modèle d'étiquetage, certaines parties des entités peuvent être mises en évidence à travers une représentation appropriée de segments. La figure \ref{p4_sample-tagmod} illustre l'utilisation la différence entre des schémas appelés IO, BIO, IEO et BIEO, sur un extrait de décision de justice pour l'annotation du nom d'un juge et de sa fonction.
+\begin{figure}[!ht]
 	\tiny
 	\begin{tabular}{l|ccccccccccc}
 		& \textit{composée} & \textit{de} & \textit{Madame} & \textit{Martine} & \textit{JEAN} & , & \textit{Président} & \textit{de} & \textit{chambre} & , & \textit{de} \\ 
@@ -185,7 +185,7 @@ Un autre intérêt des schémas plus complexes que IO est de pouvoir distinguer 
 
 \section{Architecture proposée}
 \label{sec:structuration:proposition}
-\begin{figure}[!h]
+\begin{figure}[!ht]
 %\sidecaption
 \centering
 \includegraphics [width=0.45\textwidth]{structuration-preprocess.png}
@@ -196,7 +196,7 @@ Un autre intérêt des schémas plus complexes que IO est de pouvoir distinguer 
 \end{figure}
 Nous proposons de travailler uniquement avec le contenu textuel des documents. Ce contenu est extrait des documents téléchargés en éliminant les éléments inutiles, principalement des espaces vides. Ces éléments sont typiques des documents formatés (\verb|.rtf, .doc(x), .pdf|). Ils ne fournissent pas une indication standard sur le début des sections. Le choix de ne pas exploiter le formatage des documents permet d'avoir à gérer un nombre plus faible de diversités entre les textes tout en appliquant le même processus de traitement à tout document indépendamment de son format d'origine. Une simple architecture d'étiquetage de sections et d'entités juridiques a été conçue avec cette uniformisation des documents comme point d'entrée (Figure \ref{fig:structuration:archAppli}). Ainsi, les documents sont collectés puis pré-traités suivant leur format d'origine (extraction du texte et séparation des décisions apparaissant dans le même document).  Ensuite, après le sectionnement des décisions, les entités sont identifiées dans les différentes sections. Par ailleurs, comme segment atomique à étiqueter nous avons choisi les lignes pour la détection des sections, et les mots pour les entités. 
 
-\begin{figure}[!h]
+\begin{figure}[!ht]
 %\sidecaption
 \centering
 \includegraphics [width=\textwidth]{structuration-training.png}
@@ -246,7 +246,7 @@ Néanmoins, l'ordre des sujets ne changeant pas de manière significative, nous 
 \subsubsection{Sélection  pour le modèle CRF}
  Nous avons étudié deux approches enveloppantes qui semblent toujours converger et qui ne nécessitent pas de définir manuellement la taille du sous-ensemble cible. %Il s'agit de la recherche bidirectionnelle et de la  sélection séquentielle à flottement avant. 
 
-\begin{algorithm}[H] \small
+\begin{algorithm}[ht] \small
 	\KwData{Données annotées, $X$ liste de tous les descripteurs candidats}
 	\KwResult{Sous-ensemble optimal de descripteurs}
 	Démarrer la SFS avec $Y_{F_0}= \emptyset $\; 
@@ -266,7 +266,7 @@ La SFS recherche un sous-ensemble optimal, en commençant par un ensemble vide e
 
 
 
-\begin{algorithm}[H] %\small
+\begin{algorithm}[ht] %\small
 	\KwData{Données annotées, $X$ liste de tous les descripteurs candidats}
 	\KwResult{Sous-ensemble optimal de descripteurs}
 	$Y_0= \emptyset $\; 
@@ -306,9 +306,9 @@ Chaque document annoté comprend en moyenne 262,257 lignes et 3955,215 mots. Les
 \subsubsection{Mesures d'évaluation}
 Nous avons utilisé la précision, le rappel et la F1-mesure comme mesures d'évaluation car elles sont généralement utilisées comme références en extraction d'information. % Nous présentons aussi des performances au niveau micro c'est-à-dire en général sans distinction des classes. 
 La F1-mesure se calcule à l'aide de la formule suivante:  
-%\begin{equation}\label{eq:structuration:f1mesure}
-\[F1 = 2 \times \frac{Precision \times Rappel} {Precision + Rappel}.\]
-%\end{equation}
+\begin{equation}\label{eq:structuration:f1mesure}
+F1 = 2 \times \frac{Precision \times Rappel} {Precision + Rappel}.
+\end{equation}
 %La précision et le rappel quant à eux se calculent suivant les formules
 % \begin{equation}\label{NER-precision}
 % Precision = \frac{TP}{}
@@ -339,7 +339,7 @@ Nous avons utilisé les modèles HMM et CRF tels qu'implémentés dans la librai
 présente des mots représentatifs trouvés dans les premiers thèmes inférés. L'extraction des autres descripteurs a été implémentée pour cette expérimentation. 
 
 
-\begin{table}[!h]
+\begin{table}[!ht]
 \scriptsize
 \begin{center}
 \begin{tabular}{c|l}
@@ -365,7 +365,7 @@ Les valeurs de précision, rappel, et F1-mesure ont été calculées à l'aide d
 \subsection{Sélection du schéma d'étiquetage}
 Dans le but d'évaluer comment la représentation de segment affecte les performances, nous avons implémenté quatre représentations (IO, IEO2, BIO2, BIEO).  Nous avons réalisé un simple découpage des données en deux ensembles: $25 \%$ pour l'entraînement et $75 \%$ pour les tests. Les performances reportées dans le Tableau \ref{fig:structuration:select-segm-repr} sont les performances globales sur la base de test. Seul l'élément (mot/ligne) est utilisé comme descripteur. La durée d'entraînement est très longue, particulièrement pour la détection d'entités dans l'entête avec le CRF. Il semble évident que cette durée croisse proportionnellement avec le nombre de labels candidats de la section et la complexité du schéma d'étiquetage. En effet, BIEO exige beaucoup plus de temps, et IO exige le temps d'entraînement le plus bas, et le schéma IOE semble être plus rapide que BIO même s'ils ont le même nombre de labels. Nous remarquons aussi que les représentations complexes n'améliorent pas significativement les résultats par rapport au simple IO qui demande pourtant beaucoup moins de temps.
 
-\begin{table}[h]
+\begin{table}[ht]
 \scriptsize
 \begin{center}
 \begin{tabular}{p{0.9cm}|c|cccccccc}
@@ -476,8 +476,7 @@ Par ailleurs, les algorithmes de sélection forment des combinaisons inattendues
 \subsection{Evaluation détaillée pour chaque classe}
 Nous discutons ici la capacité des modèles à identifier individuellement chaque type d'entité et de section. Les expérimentations ont été réalisées avec tous les descripteurs pour les modèles CRF. Seuls \verb|absLength| et \verb|token| ont été utilisés comme descripteurs dans les modèles HMM pour l'identification des sections et des entités respectivement. Le schéma d'étiquetage est IO. Le nombre d'itérations maximal a été fixé à 500 pour assurer la convergence lors de l'entraînement même si les modèles HMM ne convergeaient jamais après 500 itérations. Les Tableaux \ref{tab:structuration:perf-detail-token} et \ref{tab:structuration:perf-detail-entity} présentent les résultats d'une validation croisée à 5 itérations, respectivement aux niveaux atomique et entité. 
 
-D'un point de vue général (évaluation globale), les modèles HMM se comportent assez bien au niveau élément avec un seul descripteur, particulièrement pour l'identification des sections et des normes. Le modèle HMM est capable de labelliser les normes car plusieurs d'entre elles sont répétées entre les décisions. De plus, la citation des normes est quasi standard (\verb|article [IDENTIFIANT] [TEXTE D'ORIGINE]|). Le modèle HMM n'est cependant pas aussi efficace pour détecter entièrement les mots des entités d'où le faible score enregistré au niveau entité. Quant aux modèles CRF, leurs résultats sont très bons sur toutes les tâches et à tous les niveaux d'évaluation malgré quelques limites observées sur l'identification des parties.
-\begin{table}[!h]
+\begin{table}[!ht]
 	\centering
 	\scriptsize
 	\begin{tabular}{|l|l|l|l|l|l|l|}
@@ -508,7 +507,9 @@ D'un point de vue général (évaluation globale), les modèles HMM se comporten
 \end{table}
 
 
-\begin{table}[!h]
+D'un point de vue général (évaluation globale), les modèles HMM se comportent assez bien au niveau élément avec un seul descripteur, particulièrement pour l'identification des sections et des normes. Le modèle HMM est capable de labelliser les normes car plusieurs d'entre elles sont répétées entre les décisions. De plus, la citation des normes est quasi standard (\verb|article [IDENTIFIANT] [TEXTE D'ORIGINE]|). Le modèle HMM n'est cependant pas aussi efficace pour détecter entièrement les mots des entités d'où le faible score enregistré au niveau entité. Quant aux modèles CRF, leurs résultats sont très bons sur toutes les tâches et à tous les niveaux d'évaluation malgré quelques limites observées sur l'identification des parties.
+
+\begin{table}[!ht]
 	\scriptsize
 	\centering
 	\begin{tabular}{|l|l|l|l|l|l|l|}
@@ -542,7 +543,7 @@ D'un point de vue général (évaluation globale), les modèles HMM se comporten
 \subsubsection{Confusion de classes}
 Certaines erreurs sont probablement dues à la proximité des entités de types différents. D'après la matrice de confusion des méta-données d'entête (Figure \ref{fig:structuration:matrice-confusion-entete}), les \textit{intervenants} sont parfois classifiés comme \textit{appelant, intimé} ou \textit{avocat} probablement parce qu'il s'agit d'entités mentionnées les unes à la suite des autres dans l'entête (les \textit{intervenants} sont mentionnés juste après les \textit{avocats} des \textit{intimés}). De plus, les intervenants apparaissent dans une très faible proportion de documents annotés.  Par ailleurs, une quantité considérable d'\textit{appelants} sont aussi classifiés comme \textit{intimés}. 
 
-\begin{figure}[h!]
+\begin{figure}[ht]
     \centering
     \includegraphics[width=0.8\textwidth]{confusion_matrix_entete.png}
     %\textcolor{red}{Matrices de confusion}
@@ -552,9 +553,9 @@ Certaines erreurs sont probablement dues à la proximité des entités de types 
 
  La proximité crée aussi des confusions entre les sections CORPS et DISPOSITIF qui se suivent (Figure \ref{fig:structuration:matrice-confusion-section}). 
 
-\begin{figure}[h!]
+\begin{figure}[!ht]
 	\centering
-	\includegraphics[width=0.6\textwidth]{confusion_matrix_section.png}
+	\includegraphics[width=0.5\textwidth]{confusion_matrix_section.png}
 	%\textcolor{red}{Matrices de confusion}
 	\caption{Matrice de confusion entre lignes des sections avec le modèle CRF}
 	\label{fig:structuration:matrice-confusion-section}
@@ -566,29 +567,34 @@ Cet aspect peut être exploité afin de combler l'imperfection des modèles.
 
 
 \subsubsection{Impact de la quantité d'exemples annotés}
-\begin{figure}[!h]
+
+\begin{figure}[ht]
 	\centering
-	\begin{subfigure}[t]{0.95\textwidth}
+	\begin{subfigure}[ht]{0.95\textwidth}
 		\centering
-		\includegraphics[width=0.85\textwidth]{lc-crf.png}
+		\includegraphics[width=0.8\textwidth]{lc-crf.png}
 		\caption{CRF} \label{fig:structuration:learning-curves-crf}
 	\end{subfigure} 
 	
-	\begin{subfigure}[t]{0.95\textwidth}
+	\begin{subfigure}[ht]{0.95\textwidth}
 		\centering
-		\includegraphics[width=0.85\textwidth]{lc-hmm.png}
+		\includegraphics[width=0.8\textwidth]{lc-hmm.png}
 		\caption{HMM} \label{fig:structuration:learning-curves-hmm}
 	\end{subfigure}
 	\caption{Courbes d'apprentissages aux niveaux élément et entité} \label{fig:structuration:learning-curves}
 \end{figure}
 
-Des expérimentations ont été menées pour évaluer la manière dont les modèles s'améliorent lorsqu'on augmente le nombre de données d'entraînement. Pour cela, nous avons évalué différentes tailles de la base d'entraînement. Les données ont été divisées en $75\%-25\%$ pour resp. l'entraînement et le test. 20 fractions de l'ensemble d'entraînement ont été utilisées  (de 5\% à 100\%). A chaque session entraînement-test, le même jeu de test a été employé pour les différentes fractions de l'ensemble d'entraînement. Les courbes d'apprentissage des modèles CRF et HMM sont représentées resp. sur les Figures \ref{fig:structuration:learning-curves-crf} et \ref{fig:structuration:learning-curves-hmm}. Il est évident que les scores F1 croissent avec le nombre de données d'entraînement pour les CRF et HMM, mais cette amélioration devient très faible au-delà de 60\% de données d'entraînement quelle que soit la tâche. Il est possible que les exemples ajoutés à partir de là partagent la même structure que celle de ceux qui ont été ajoutés auparavant. Ainsi, cette étude doit être étendue à la sélection des exemples les plus utiles. \citet{raman2003exampleSelection} ont démontré les avantages des algorithmes de sélection d'exemples combinés à celle des caractéristiques pour la classification. Les mêmes méthodes sont probablement applicables à l'étiquetage de séquences.
+Des expérimentations ont été menées pour évaluer la manière dont les modèles s'améliorent lorsqu'on augmente le nombre de données d'entraînement. Pour cela, nous avons évalué différentes tailles de la base d'entraînement. Les données ont été divisées en $75\%-25\%$ pour resp. l'entraînement et le test. 20 fractions de l'ensemble d'entraînement ont été utilisées  (de 5\% à 100\%). A chaque session entraînement-test, le même jeu de test a été employé pour les différentes fractions de l'ensemble d'entraînement. Les courbes d'apprentissage des modèles CRF et HMM sont représentées resp. sur les Figures \ref{fig:structuration:learning-curves-crf} et \ref{fig:structuration:learning-curves-hmm}. 
+
+
+
+Il est évident que les scores F1 croissent avec le nombre de données d'entraînement pour les CRF et HMM, mais cette amélioration devient très faible au-delà de 60\% de données d'entraînement quelle que soit la tâche. Il est possible que les exemples ajoutés à partir de là partagent la même structure que celle de ceux qui ont été ajoutés auparavant. Ainsi, cette étude doit être étendue à la sélection des exemples les plus utiles. \citet{raman2003exampleSelection} ont démontré les avantages des algorithmes de sélection d'exemples combinés à celle des caractéristiques pour la classification. Les mêmes méthodes sont probablement applicables à l'étiquetage de séquences.
 
 
 
 \subsubsection{Descripteurs manuels vs. réseau de neurones}
 
-\begin{table}[!h]
+\begin{table}[!ht]
 	\scriptsize
 	\centering
 	\begin{tabular}{|l|l|l|l|l|l|l|}

@@ -147,10 +147,20 @@ Dis_{wmd}(d, d') = 	& \min\limits_{T>0}
 % 	\item L'analyse discriminante locale de Fisher (LFDA) \citep{sugiyama2007LFDA, } méthode supervisée (données labellisées) de réduction de dimension
 % \end{itemize}
 
+%@inproceedings{lemikolov2014word2vec,
+%	title={Distributed representations of sentences and documents},
+%	author={Le, Quoc and Mikolov, Tomas},
+%	booktitle={International Conference on Machine Learning},
+%	pages={1188--1196},
+%	year={2014}
+%}
+
+
+
 \subsection{Représentation des textes}
 \label{sec:similarite:representation}
 La formulation des distances exploite très souvent une représentation vectorielle des texte (cf.  \ref{sec:similarite:distances}). Les variantes du modèle TF-IDF décrites au Chapitre \ref{chap:quanta} en font des distances plus lexicales que sémantiques. Plusieurs techniques permettent de définir les dimensions par les thématiques et apportent par conséquent plus de sémantique à la représentation vectorielle. Ce chapitre explore l'usage de deux approches.
-D'une part,  l'analyse latente sémantique (LSA) \citep{dumais1988LSI} est une technique réalisant une décomposition en valeurs singulières de la matrice de cooccurrence document-terme où chaque cellule contient le poids du terme dans le document correspondant. La LSA permet ainsi de réduire la grande dimension lexicale des documents à un espace de thématique défini par le nombre de valeurs propres choisies. D'autre part, à partir de vecteurs de mots apprise d'entraînement à l'aide de méthodes comme Word2Vec \citep{mikolov2013word2vec} ou GloVe \citep{pennington2014glove}, il est possible d'obtenir des thématiques en catégorisant sans supervision les mots. Il est souvent proposer de considérer le document comme le barycentre des mots qu'il contient, et de le représenter comme la moyenne des vecteurs de mots pondérés par leur poids dans le document (par exemple TF-IDF) \citep{charlet2017simbow_tal,arora2017wordAvgSentEmbedd}. Pour de longs documents comme les décisions de justice, la moyenne des vecteurs peut devenir inintéressante. Nous proposons de catégoriser les termes de la catégorie de demande avec les K-moyennes, puis de considérer chaque cluster de termes comme une thématique, et enfin de représenter chaque document par un vecteur binaire dont les dimensions sont définies par les clusters de termes. Une composante est à 1 si le document contient un terme du cluster correspondant et à 0 si non. Le vecteur d'un terme à multiples mots étant la moyenne pondérée des vecteurs de ses mots.
+D'une part,  l'analyse latente sémantique (LSA) \citep{dumais1988LSI} est une technique réalisant une décomposition en valeurs singulières de la matrice de cooccurrence document-terme où chaque cellule contient le poids du terme dans le document correspondant. La LSA permet ainsi de réduire la grande dimension lexicale des documents à un espace de thématique défini par le nombre de valeurs propres choisies. D'autre part, à partir de vecteurs de mots apprise d'entraînement à l'aide de méthodes comme Word2Vec \citep{mikolov2013word2vec} ou GloVe \citep{pennington2014glove}, il est possible d'obtenir des thématiques en catégorisant sans supervision les mots. Il est souvent proposer de considérer le document comme le barycentre des mots qu'il contient, et de le représenter comme la moyenne des vecteurs de mots pondérés par leur poids dans le document (par exemple TF-IDF) \citep{lemikolov2014word2vec, charlet2017simbow_tal,arora2017wordAvgSentEmbedd}. Pour de longs documents comme les décisions de justice, la moyenne des vecteurs peut devenir inintéressante. Nous proposons de catégoriser les termes de la catégorie de demande avec les K-moyennes, puis de considérer chaque cluster de termes comme une thématique, et enfin de représenter chaque document par un vecteur binaire dont les dimensions sont définies par les clusters de termes. Une composante est à 1 si le document contient un terme du cluster correspondant et à 0 si non. Le vecteur d'un terme à multiples mots étant la moyenne pondérée des vecteurs de ses mots.
 
 \subsection{Déterminer le nombre optimal de clusters}
 \label{sec:similarite:k-optimal}
@@ -296,7 +306,7 @@ Sur $B_\mathcal{M}$, on entraîne un modèle régressif $m$ pour prédire la dis
 Cette section discute la validité, l'adéquation, et l'efficacité de la métrique apprise en comparaison avec d'autres métriques d'estimation de la similarité sémantique entre documents. La validité de la métrique est établie si cette dernière respecte les propriétés d'une distance. L'adéquation de la métrique avec le problème à résoudre mesure la capacité de la métrique à estimer une distance très faible entre documents du même label (regroupement manuel), en même temps qu'une similarité quasi nulle entre documents de labels différents, indépendamment de l'algorithme de regroupement appliqué. Enfin, l'efficacité de la métrique est liée à la qualité de regroupement  résultant de l'application d'un algorithme de regroupement  combiné avec la métrique apprise.
 
 
-\subsection{Annotation manuelle de données d'évaluation}
+\subsection{Données}
 Pour l'évaluation supervisée, nous disposons d'une base annotée sur la catégorie de demande "dommage-intérêts / action en responsabilité civile professionnelle contre les avocats" (\textit{arcpa}) qui concerne les contentieux impliquant des avocats.  L'expert annotateur a annoté 81 documents\footnote{Sur 85 documents disponibles de catégorie \textit{dira}} avec 6 documents appartenant chacun à 2 circonstances factuelles (chevauchements) parmi les 4 identifiées :
 \begin{itemize}
 \item cas $a$ (46 documents): il s'agit d'un avocat qui est négligent et envoie son assignation de manière tardive; %(champ sémantique: retard/délai/prescription)
@@ -312,7 +322,7 @@ Pour l'évaluation supervisée, nous disposons d'une base annotée sur la catég
 %\end{figure}
 
 Les terminologies des différents cas se distinguent bien (Tableau \ref{tab:similarite:terminologie-resp_avocat}), et par conséquent, une représentation des documents qui mettrait en évidence ces différents termes permettrait de retrouver les circonstances factuelles associées. 
-\begin{table}[h]
+\begin{table}[ht]
 	\centering \scriptsize
 	\begin{tabular}{|l|p{.85\textwidth}|}
 		\hline
@@ -487,14 +497,14 @@ L'évaluation des algorithmes de regroupement considèrent parfaite la distance 
 	\caption{Silhouettes sur le corpus annotée pour différentes distances.} \label{tab:similarite:compare-dist-adequation}
 \end{table}
 
-\subsection{Capacité à retrouver les cas annotés manuellement}
+\subsection{Capacité à retrouver les cas manuellement annotés}
 %Comparer la vectorisation du document sur tout son contenu vs. sur la restriction aux énoncés de demande de la catégorie (du type "constater", "dire et juger") vs restriction aux conclusions (le raisonnement des parties décrits les circonstances factuelles) + motifs sur la catégorie
 
 %avec choix du nombre de clusters
 
 L'objectif ici est d'obtenir un partitionnement disjoint avec les algorithmes \textit{k-means} et \textit{k-medoids} qui ressemble au mieux à l'annotation manuelle. Le corpus $\mathcal{D}_{arcpa}$ est restreint aux 74 documents annotés des cas $L = \lbrace a, b, c \rbrace$. Le  nombre de clusters $K$ est fixé par conséquent à 3. Le Tableau \ref{tab:similarite:compare-dist-tfidf} présente les scores de validation enregistrés pour chaque distance sur des représentations de base (à base de plongements de mots pour $Dis_{wmd}$, et le modèle TF-IDF pour les autres). Comme sur le regroupement manuel (\ref{sec:similarite:adequation}), les coefficients de silhouette restent très proches de 0 pour toutes les distances, tout comme les valeurs de ARI  et NMI. Par conséquent le regroupement est considéré similaire à un regroupement aléatoire. Néanmoins, $Dis_{pearson}$ et $Dis_{manhattan}$ donnent les meilleurs regroupements avec respectivement le \textit{k-medoids} et le \textit{k-means} (F1-mesure). Comparativement avec les données annotées, les valeurs des différentes métriques de validation restent très faibles. 
 
-Les scores des Tableaux \ref{tab:similarite:compare-dist-silhouette}, et \ref{tab:similarite:compare-dist-wcss} concernent la sélection des valeurs optimale d'hyper-paramètres (algorithme, poids local et global) selon la silhouette  et le critère de cohésion WCSS respectivement. L'objectif est de choisir le critère de validation interne dont la valeur maximale S pour la silhouette ou minimal pour WCSS traduirait une valeur la plus élevée possible des critères externes. Dans l'ensemble, la valeur maximale observée de F1-mesure est 0.558, celle de ARI est 0.180, et celle du NMI est 0.237. Ces valeurs ne correspondent cependant pas aux valeurs optimales de silhouette ou de WCSS (la F1 max est obtenue pour une silhouette nulle par exemple). On observe néanmoins que ces critères pénalisent plus le ARI et le NMI, que la F1, et que le meilleur critère n'est pas le même pour toutes les distances. La distance $Dis_{\mathcal{M}}$ proposée dans ce chapitre parvient à la F1-score maximal pour la valeur minimal de WCSS, de même que $Dis_{pearson}$ pour le max de la silhouette. Nous ne disposons pas malheureusement, de corpus annotée sur d'autres catégories de demande, pour généraliser ces observations et en tirer une conclusion. Néanmoins, le meilleur critère sur la F1-mesure sur le corpus annoté $arcpa$ pour chaque distance est utilisé ci-dessous pour déterminer les valeurs optimales des hyper-paramètres sur les corpus non-annotés i.e. $WCSS_{max}$ pour $Dis_{\mathcal{M}}$, et la $S_{max}$ pour les autres.
+Les scores des Tableaux \ref{tab:similarite:compare-dist-silhouette}, et \ref{tab:similarite:compare-dist-wcss} concernent la sélection des valeurs optimale d'hyper-paramètres (algorithme, poids local et global) selon la silhouette  et le critère de cohésion WCSS respectivement. L'objectif est de choisir le critère de validation interne dont la valeur maximale S pour la silhouette ou minimal pour WCSS traduirait une valeur la plus élevée possible des critères externes. Dans l'ensemble, la valeur maximale observée de F1-mesure est 0.558, celle de ARI est 0.180, et celle du NMI est 0.237. Ces valeurs ne correspondent cependant pas aux valeurs optimales de silhouette ou de WCSS (la F1 max est obtenue pour une silhouette nulle par exemple). On observe néanmoins que ces critères pénalisent plus le ARI et le NMI, que la F1, et que le meilleur critère n'est pas le même pour toutes les distances. La distance $Dis_{\mathcal{M}}$ proposée dans ce chapitre parvient à la F1-score maximal pour la valeur minimal de WCSS, de même que $Dis_{pearson}$ pour le max de la silhouette. Nous ne disposons pas malheureusement, de corpus annotée sur d'autres catégories de demande, pour généraliser ces observations et en tirer une conclusion. Néanmoins, le meilleur critère sur la F1-mesure sur le corpus annoté $arcpa$ pour chaque distance est utilisé ci-dessous pour déterminer les valeurs optimales des hyper-paramètres sur les corpus non-annotés i.e. $WCSS_{min}$ pour $Dis_{\mathcal{M}}$, et la $S_{max}$ pour les autres.
 
 \begin{table}[!htb] % TF-IDF
 	\scriptsize\centering

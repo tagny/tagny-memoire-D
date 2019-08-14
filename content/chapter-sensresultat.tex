@@ -104,7 +104,7 @@ où $C$ est la constante de régularisation pour éviter un sur-apprentissage ou
 
 La classification par SVM ne s'applique que lorsque les exemples d'apprentissage des classes sont linéairement séparables. Cependant, ils ne le sont pas toujours dans l'espace  $\mathcal{X}$. Ainsi, une fonction \og noyau \fg{} (\textit{kernel}) $K: \mathcal{X} \longrightarrow \mathcal{F}$ doit être choisie pour transformer chaque donnée entrée $x$ de l'espace original  $\mathcal{X}$ vers un nouvel espace  $\mathcal{F}$ dite de caractéristiques dans lequel les classes sont linéairement séparables. Par conséquent, la fonction de classification s'écrit \[f(x) = \sum\limits_{i=1}^n \alpha_i K(x,x_i) + b\] où les $\alpha_i$ sont les coefficients de la combinaison linéaire des exemples d'apprentissage égale à $w$ ($w = \sum\limits_{i=1}^n\alpha_i x_i$) \citep{Ben-Hur2010svm}. Parmi les multiples formes qu'il peut prendre, le noyau peut être, par exemple, soit linéaire($K(x,x_i) = x^Tx_i + c$), soit polynomial ($K(x,x_i) = (\gamma x^Tx_i + c)^d$), soit Gaussien ou RBF\footnote{\textit{radial base function}} ($K(x,x_i) = \exp{-\gamma \norm{x-x_i}}$), soit une sigmoïde ($K(x,x_i) = \tanh(\gamma x^Tx_i + c)$) \citep{Amami2015PracticalModelSelectionSVM}.
 
-\subsubsection{$k$-plus-proches-voisins (kNN)}
+\subsubsection{k-plus-proches-voisins (kNN)}
 L'algorithme $k$-plus-proches-voisins est un algorithme très simple qui consiste à affecter à un nouvel objet la classe majoritaire $y'$ parmi ceux des $k$ points d'exemples d'entrainement $\lbrace (x_i,y_i) \rbrace_{1:k}$, les plus proches du point $x'$ de cet objet selon la métrique $d$ choisie. Ainsi, trois éléments clés influencent l'efficacité de la classification:
 \begin{enumerate}
 	\item les données d'entrainement dont le nombre s'il est très grand peut rendre chère le processus de classification, car la distance du nouvel objet à chaque point annoté, est calculée;
@@ -128,7 +128,7 @@ L'algorithme $k$-plus-proches-voisins est un algorithme très simple qui consist
 \subsubsection{Arbre de décision}
 Un arbre de décision est structure arborescente utilisée en fouille de données pour associer un label prédéfini à des objets (classification), ou prédire la valeur d'une variable continue (régression). Il comprend des noeuds internes qui correspondent chacun à un test sur la valeur d'un attribut (test uni-varié), des arêtes correspondant à une sortie du test, et enfin des feuilles ou noeuds terminaux qui correspondent chacune à une prédiction. La classification d'un nouvel objet $x$ faire passer successivement les tests en fonction des valeurs des attributs de $x$,  de la racine jusqu'à une feuille dont le label est retourné comme classe de $x$ (Algorithme \ref{algo:sensresultat:classifywithtree}).
 
-\begin{algorithm}[H] \small
+\begin{algorithm}[ht] \small
 	\KwData{Objet $x$, Arbre $A$}
 	\KwResult{label}
 	$n := racine(A)$ \; 
@@ -376,10 +376,10 @@ et
 \[
 Rd(y; t_1,\ldots,t_h) := \frac{1}{p}\sum_{\ell=1}^{h}\cor^2(y,t_\ell) =: \sum_{\ell=1}^{h}Rd(y;t_\ell).
 \]
-où $cor^2(y,t_\ell)$ est le coefficient de corrélation de Pearson entre $y$ et la composante $t_\ell$. Cette information est rétro-propagée dans le modèle (une seule fois) afin d'obtenir les variables latentes $t_{h^*}$ et leurs coefficients estimés $\hat{c}_{h^*}$ sur les données d'entrainement. La variable cible $y$ est ensuite prédite grâce à (\ref{forecast}). Cette prévision est comparée aux modèles standards SVM, LOGIT, Bayes et LDA lorsque les données tests sont projetées dans le sous-espace $\{t_1,\ldots,t_{h^*}\}$.\\
+où $cor^2(y,t_\ell)$ est le coefficient de corrélation de Pearson entre $y$ et la composante $t_\ell$. Cette information est rétro-propagée dans le modèle (une seule fois) afin d'obtenir les variables latentes $t_{h^*}$ et leurs coefficients estimés $\hat{c}_{h^*}$ sur les données d'entraînement. La variable cible $y$ est ensuite prédite grâce à (\ref{forecast}). Cette prévision est comparée aux modèles standards SVM, LOGIT, Bayes et LDA lorsque les données tests sont projetées dans le sous-espace $\{t_1,\ldots,t_{h^*}\}$.
 
 
-\begin{algorithm}[H]
+\begin{algorithm}[h]
 	\scriptsize
 	\KwResult{ Prédiction du juge $y=0;1$ }
 	\Repeat{ $\nu=14$ $[\nu=\nu+2]$ }{
@@ -409,7 +409,7 @@ w_j = \frac{\beta_j}{\| \beta\|}
 \]
 L'algorithme LOGIT-Gini-PLS généralise est donc le suivant :
 
-\begin{algorithm}[H]
+\begin{algorithm}[h]
 	\scriptsize
 	\KwResult{ Prédiction du juge $y=0;1$ }
 	\Repeat{ $\nu=14$ $[\nu=\nu+2]$ }{
@@ -424,26 +424,6 @@ L'algorithme LOGIT-Gini-PLS généralise est donc le suivant :
 	\Return Prédiction $\hat{y}$ avec SVM, LOGIT, Bayes, LDA sur les composantes $(t_1,\ldots,t_{h^*})$\;
 	\caption{LOGIT-Gini-PLS Généralisé}\label{LG-GPLS}
 \end{algorithm}
-
-
-%La regression PLS est une méthode de regression avec laquelle l'on tente d'expliquer une ou plusieurs variables Y (dite dépendantes) par des variables $X=x_1,x_2,...,x_p$ (dites explicatives). Elle consiste principalement à transformer les variables explicatives en un nombre réduit de composantes principales orthogonales $t_1, t_2, ..., t_h$. Les composantes $t_h$ sont construites étapes par étapes en applicant l'algorithme du PLS de façon récurrente sur les données mal prédites (résidus). Plus précisément, à chaque itération $h$, la composante $t_h$ est calculée par la formule $t_h = w_{h1} x_1 + \cdots + w_{hj} x_j + \cdots + w_{hp} x_p$. 
-%
-%Malgré quelques faiblesses comme celles liées au choix du nombre de composantes, à la complexité des sorties et la linéarité du modèle, la regression PLS présente quelques atouts qui ont notamment de l'intérêt dans notre cas de figure. Par exemple, le PLS gère assez bien la forte disproportion entre le nombre de variables explicatives et le nombre d'observations, lorsque ce dernier est faible comme on peut l'observer dans nos données (faible quantité de données d'apprentissage). Nous avons aussi la prise en compte de la multicolinéarité qui peut exister entre les variables explicatives, notamment quand celles-ci sont associées aux mots/termes souvent cooccurrents de nos documents.
-%
-%Il est intéressant de noter la floraison d'extensions proposées pour répondre aux différentes limites du PLS. Notamment, nous pouvons citer la "\textit{sparse}" PLS introduite pour palier à la "\textit{sparsité}" et la colinéarité des variables explicatives [?], la PLS non-linéaire proposée pour les cas de données non-linéairement séparables [?], ou encore la PLS discriminante combinant la régression PLS et l'analyse discriminante [?]. Nos nous sommes intéressés à deux extensions particulières: la régression Gini-PLS \citep{mussard2018ginipls} dont l'intérêt est de réduire la sensibilité aux valeurs aberrantes des variables, et la regression Logit-PLS \citep{tenenhaus2005logitpls}  combinant la regression logistique et la PLS.
-%\subsection{Gini-PLS}
-%Cette méthode élimine la sensibilité du PLS aux valeurs extrêmes en remplaçant la covariance $cov(x_j, y)$ par la covariance de Gini $cog(y; x_j) := cov(y; R(x_j))$ pour l'estimation des résidus $u_{(h)j}$ et des poids $w_{hj}$ \citep{mussard2018ginipls}.
-%
-%
-%\subsection{Logit-PLS}
-%Dans cette approche, $\forall j > 1$, les $w_{hj} $ sont les coefficients de la régression logistique de $y$ sur les composantes $t_1, ..., t_{h-1}, u_{(h-1)j}$ \cite{tenenhaus2005logitpls}.
-%
-%\subsection{Gini-Logit-PLS}
-%Cette approche combine la covariance Gini pour $u_{(h)j}$ et le coefficient Logit pour les $w_{hj}$.
-
-
-%\section{Méthode}
-%Nous raisonnons toujours suivant une seule catégorie $c$. Notre solution est une chaîne à 2 étapes de classification: un filtre des décisions à une demande de la catégorie $c$ et un identificateur de la polarité du résultat. Le premier classifieur discrimine les document entre 2 classes: \og une demande \fg{} et \og plusieurs demandes \fg{}.
 
 \section{Expérimentations et résultats}
 \label{sec:sensresultat:experimentations}
