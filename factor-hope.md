@@ -1,3 +1,81 @@
+# Why would you do better
+## annotation des sections
+*  annotation manuelle des 4 sections: entete, litige, motifs, dispositif
+*  sélection des descripteurs
+*  sélection de la représentation de segment
+*  lemmatisation
+*  annoter des juridictions variées: tribunaux et cours d'appel
+## annotation des entités
+*  annoter des juridictions variées: tribunaux et cours d'appel
+## extraction des demandes
+*  apprentissage des termes sur la lemmatisation totale du doc
+*  extraction après conservation des sommes d'argent, des verbes d'énoncés et des ponctuations
+*  extraction des demandes et résultat indépendamment de la section
+## modélisation des circonstances factuelles
+*  expérimenter la combinaison clustering + topic modeling
+## démo
+*  un notebook jupyter avec des méthodes de stats sur la BD
+*  double-histogramme zoomable: qr en haut et qd en bas
+ 
+
+select EXTRACT(YEAR FROM date_decision) as annee, count(id_demande) as r, lower(ville) as v 
+from (((decision 
+inner join demande on decision.id_decision=demande.id_decision)
+inner join categorie on categorie.id_categorie=demande.id_categorie)
+inner join norme on norme.id_norme=demande.id_norme)
+where objet="amende civile" AND norme="32-1 code de procédure civile + 559 code de procédure civile : pour procédure abusive" AND EXTRACT(YEAR FROM date_decision) = "2008"
+group by v, annee
+order by annee asc;
+
+
+
+select count(id_demande) as c_val, count(id_demande)*100/t.total, ville as v
+from ((((decision 
+inner join demande on decision.id_decision=demande.id_decision)
+inner join categorie on categorie.id_categorie=demande.id_categorie)
+inner join norme on norme.id_norme=demande.id_norme)
+join (
+    select count(id_demande) as total, ville as v
+    from (((decision 
+    inner join demande on decision.id_decision=demande.id_decision)
+    inner join categorie on categorie.id_categorie=demande.id_categorie)
+    inner join norme on norme.id_norme=demande.id_norme)
+    where objet="amende civile" AND norme="32-1 code de procédure civile + 559 code de procédure civile : pour procédure abusive" AND EXTRACT(YEAR FROM date_decision) = "2008"
+    group by v
+) as t on  v = t.v)
+where objet="amende civile" AND norme="32-1 code de procédure civile + 559 code de procédure civile : pour procédure abusive" AND EXTRACT(YEAR FROM date_decision) = "2008" AND resultat = "accepte"
+group by v;
+
+
+select count(id_demande) * 100 / (select count(*) from demande) as "%accepte"
+from demande
+where resultat = "accepte";
+
+
+select EXTRACT(YEAR FROM date_decision) as annee, resultat, lower(ville) as v 
+from ((decision 
+inner join demande on decision.id_decision=demande.id_decision)
+inner join categorie on categorie.id_categorie=demande.id_categorie)
+where objet="amende civile"
+group by v, annee
+order by annee asc;
+
+
+select EXTRACT(YEAR FROM date_decision) as annee, count(id_demande) as n, lower(ville) as v 
+from ((decision 
+inner join demande on decision.id_decision=demande.id_decision)
+inner join categorie on categorie.id_categorie=demande.id_categorie)
+where objet="amende civile" AND resultat="accepte" AND ville != ""
+group by v, annee
+order by annee asc;
+
+select EXTRACT(YEAR FROM date_decision) as annee, count(id_demande) as n_decisions, lower(ville) as v 
+from decision inner join demande on decision.id_decision=demande.id_decision
+where objet="amende civile" AND resultat="accepte"
+group by v, annee 
+order by annee asc;
+
+
 # Extraction des circonstances factuelles par restriction sur les phrases de la catégorie dans les motifs
 
 ## Introduction
@@ -32,4 +110,5 @@ Code Java: `taj.data_representation_pls.CorpusPreprocessor.replaceWordByClusterI
 ### Vectorisation TF-IDF
 
 Code Java: `extraction.circonstances_factuelles.Vectorization` appelé dans `extraction.circonstances_factuelles.ExtracteurDeCirconstancesFactuelles.generateMatricesFromTxt`
+
 
