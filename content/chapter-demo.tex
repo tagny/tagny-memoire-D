@@ -1,6 +1,8 @@
 \chapter{Application à l'analyse descriptive d'un grand corpus}
 \label{chap:demo}
-Ce chapitre décrit des résultats d'analyses statistiques observés lors de l'application de la chaîne proposée (Figure \ref{fig:intro:pipeline-globale}) sur un corpus formé de la base CAPP de la \citet{dila2019capp} (+65k XML sur 1997-2019),  une base du tribunal de commerce de Paris (300k MS DOC sur ?-?), 500k décisions collectées de Legifrance, et plus de 10k autres documents de cours d'appels. Le module d'extraction d'information (Figure \ref{fig:demo:module-extraction}) est un système qui comprend les modèles développés durant les expérimentations de cette thèse. 
+Ce chapitre décrit des résultats d'analyses statistiques observés lors de l'application de la chaîne proposée (Figure \ref{fig:intro:pipeline-globale}) sur un corpus formé de la base CAPP de la \citet{dila2019capp} (+65k XML sur 1997-2019), et plus de 10k autres documents de cours d'appels. Le module d'extraction d'information (Figure \ref{fig:demo:module-extraction}) est un système qui comprend les modèles développés durant les expérimentations de cette thèse. 
+
+%  une base du tribunal de commerce de Paris (300k MS DOC sur ?-?), 500k décisions collectées de Legifrance
 %à CAPP\_20190805-214041.tar.gz et Freemium_capp\_global\_20180315-170000.tar.gz 
 
 %\verb|wget -c --accept='*.tar.gz' -r  ftp://echanges.dila.gouv.fr/CAPP/|
@@ -11,7 +13,7 @@ Ce chapitre décrit des résultats d'analyses statistiques observés lors de l'a
 	\caption{Détails du module d'extraction d'information}\label{fig:demo:module-extraction}
 \end{figure}
 
-Après extraction, la base de données comprend +65k documents répartis dans l'espace (ville) comme sur la figure \ref{fig:demo:doc-per-city} et dans le temps comme sur la figure \ref{fig:demo:doc-per-year}.
+Après extraction, la base de données comprend environ 65k documents répartis dans l'espace (ville) comme sur la figure \ref{fig:demo:doc-per-city} et dans le temps comme sur la figure \ref{fig:demo:doc-per-year}. Les demandes extraites se répartissent par catégorie comme suit: 476 ACPA, 409 CONCDEL, 160 DANAIS, 0 DCPPC, 34 DORIS, et 45928 STYX.  
 
 \begin{figure}[ht]
 	\centering
@@ -30,7 +32,7 @@ Après extraction, la base de données comprend +65k documents répartis dans l'
 \end{figure}
 
 
-La structuration des données dans la base de données permet de comprendre mieux la jurisprudence à l'aide de graphiques appropriés. Une application de visualisation a notamment été développée suivant les besoins d'un expert juriste par \citet{PRYSIAZHNIUK2017jurisprudence-demo-web}.
+La structuration des données dans la base de données permet de mieux comprendre la jurisprudence à l'aide de graphiques appropriés. Une application de visualisation a notamment été développée suivant les besoins d'un expert juriste par \citet{PRYSIAZHNIUK2017jurisprudence-demo-web}.
 Les analyses des sections suivantes sont restreintes aux 5 villes ayant les plus grands nombres de décision: Paris, Lyon, Versailles, Angers, Bastia; sur la période 2000-2019
 
 \subsection{Analyse du sens du résultat}
@@ -44,17 +46,52 @@ Par exemple, pour les dommages intérêts sur l'article 700 du Code de Procédur
 	\caption{Evolution du sens du résultat des demandes STYX dans le temps à Paris, Lyon, Versailles, Angers, Bastia.}\label{fig:demo:analyse-sens-resultat-styx}
 \end{figure}
 
-La visualisation par l'application de \citet{PRYSIAZHNIUK2017jurisprudence-demo-web} permet de comparer les villes en fonction de l'épaisseur des branches d'arbre (Figure \ref{label})
+La visualisation par l'application de \citet{PRYSIAZHNIUK2017jurisprudence-demo-web} permet de comparer les villes en observant sur un arbre l'épaisseur des branches associées aux catégories de demande (Figure \ref{fig:demo:web-styx}). On peut ainsi facilement observer quelles villes acceptent les demandes d'une certaine catégorie plus que d'autres par exemple.
+
+% webdemo-sensresultat-5villes.png
+
+\begin{figure}[!htb]
+	\centering 
+	\includegraphics[width=0.6\textwidth]{webdemo-sensresultat-5villes.png}
+	\caption{Comparaison des Paris, Lyon, Versailles, Angers, Bastia sur l'acceptation des demandes STYX à partir d'une visualisation arborée.}\label{fig:demo:web-styx}
+\end{figure}
 
 \subsection{Analyse des quanta}
-,bkjlihio
 \subsubsection{Evolution dans le temps}
+De même l'évolution des quanta demandés et accordés peut être facilement visualisée par un diagramme en barre comme celui de la Figure \ref{fig:demo:evolution-quanta-styx} qui correspond aux demandes STYX entre 2000  et 2019. Même si le nombre total de demandes est à prendre en compte, un tel diagramme donne un aperçu des sommes d'argent demandés et accordés chaque année. 
+
+\begin{figure}[!htb]
+	\centering 
+	\includegraphics[width=0.6\textwidth]{evolution_quanta_styx.png}
+	\caption{Evolution des quanta moyens par année des demandes STYX entre  2000  et 2019.}\label{fig:demo:evolution-quanta-styx}
+\end{figure}
+
+
 \subsubsection{Différence dans l'espace}
+
+Pour avoir une idée du montant qu'on peut recevoir sur pour une catégorie de demande, l'évolution des valeurs généralement accordés peut être comparée entre deux villes en visualisant les boîtes à moustaches (\textit{boxplot}) 
+des quanta accordés dans ces villes. La Figure \ref{fig:demo:evolution-qr-styx-compare-ville} permet d'effectuer une comparaison entre Bastia et Lyon. 
+
+\begin{figure}[!htb]
+	\centering 
+	\includegraphics[width=0.6\textwidth]{qr_STYX_Bastia.png}
+	\includegraphics[width=0.6\textwidth]{qr_STYX_Lyon.png}
+	\caption{Evolution des quanta accordés par année sur les demandes STYX entre 2000 et 2016 à Bastia et à Lyon.}\label{fig:demo:evolution-qr-styx-compare-ville}
+\end{figure}
+
+
 \subsubsection{Quantum demandé vs. quantum accordé}
+La méthode de prédiction du quantum résultat doit définir un modèle dont la forme s'accorde avec celle du nuage de points correspondant. Le quantum demandé ne semble pas suffisant seul pour déterminer le quantum accordé\footnote{Différentes valeurs de quantum résultat observées pour la même valeur de quantum demandé.}. Il sera ainsi nécessaire de tenir compte des circonstances factuelles et autres spécificités du cas traité qui permettront de filtrer les décisions sur lesquelles se basera la modélisation. On remarque néanmoins une ressemblance de forme entre les nuages de points des différentes villes. 
 
-
+\begin{figure}[!htb]
+	\centering 
+	\includegraphics[width=0.47\textwidth]{qr-vs-qd_STYX_Bastia.png}
+	\includegraphics[width=0.47\textwidth]{qr-vs-qd_STYX_Lyon.png}
+	\includegraphics[width=0.47\textwidth]{qr-vs-qd_STYX_Paris.png}
+	\includegraphics[width=0.47\textwidth]{qr-vs-qd_STYX_Angers.png}
+	\caption{Nuages des points (quantum accordé, quantum demandé) pour les demandes STYX entre 2000 et 2019 à Bastia et à Lyon (quantum demandé < 10000) .}\label{fig:demo:qr-vs-qd-styx-compare-ville}
+\end{figure}
 
 \section{Conclusion}
 \label{sec:demo:conclusion}
-hgfgh
-lkhk
+Les démonstrations de ce chapitre donnent quelques exemples de statistiques qui informent de l'état de la jurisprudence à partir d'informations extraites à l'aide des approches proposées dans cette thèse. Les analyses du sens du résultat et des quanta sont les principales applications directes de la chaîne de traitement développée. Ce chapitre se limite aux filtres sur l'année, la ville, et la catégorie de demande, mais les analyses peuvent déjà être affinées en associant d'autres filtres comme  des mot-clés,  les normes appliqués, ou le type de juridiction. Les analyses pourront être plus riches grâce l'extraction future de nouvelles informations comme les motivations des juges et de meilleurs modèles de circonstances factuelles.
