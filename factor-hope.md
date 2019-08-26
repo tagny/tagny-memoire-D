@@ -5,12 +5,15 @@
 *  sélection de la représentation de segment
 *  lemmatisation
 *  annoter des juridictions variées: tribunaux et cours d'appel
+*  annotation au niveau du mot en considérant des morceaux du documents (300 mots par exemples)
 ## annotation des entités
 *  annoter des juridictions variées: tribunaux et cours d'appel
 ## extraction des demandes
 *  apprentissage des termes sur la lemmatisation totale du doc
 *  extraction après conservation des sommes d'argent, des verbes d'énoncés et des ponctuations
 *  extraction des demandes et résultat indépendamment de la section
+*  extraction des termes clés sur la lemmatisation
+*  apprentissage des termes clés par one-live-out ou 5 ou 10-fold crossvalidation (prendre l'union des termes sélectionnés)
 ## modélisation des circonstances factuelles
 *  expérimenter la combinaison clustering + topic modeling
 ## démo
