@@ -35,7 +35,7 @@ Après extraction, la base de données comprend environ 65k documents répartis 
 La structuration des données dans la base de données permet de mieux comprendre la jurisprudence à l'aide de graphiques appropriés. Une application de visualisation a notamment été développée suivant les besoins d'un expert juriste par \citet{PRYSIAZHNIUK2017jurisprudence-demo-web}.
 Les analyses des sections suivantes sont restreintes aux 5 villes ayant les plus grands nombres de décision: Paris, Lyon, Versailles, Angers, Bastia; sur la période 2000-2019
 
-\subsection{Analyse du sens du résultat}
+\section{Analyse du sens du résultat}
 A partir de la base des données extraites, l'évolution du pourcentage de demandes acceptées  peut être observée sur une courbe. En traçant une telle courbe pour chaque ville il est possible de comparer les villes.
 Par exemple, pour les dommages intérêts sur l'article 700 du Code de Procédure Civile (STYX), la Figure \ref{fig:demo:analyse-sens-resultat-styx} compare l'évolution du sens du résultat entre les villes citées précédemment. On remarque que les demandes sont beaucoup plus rejetées qu'acceptées. La courbe du nombre total de demandes doit être associée pour savoir si le pourcentage de succès est considérable\footnote{Pour une année ou une seule demande est extraite et acceptée, le pourcentage est à 100\%, mais ce n'est pas considérable.}.
 
@@ -56,8 +56,8 @@ La visualisation par l'application de \citet{PRYSIAZHNIUK2017jurisprudence-demo-
 	\caption{Comparaison des Paris, Lyon, Versailles, Angers, Bastia sur l'acceptation des demandes STYX à partir d'une visualisation arborée.}\label{fig:demo:web-styx}
 \end{figure}
 
-\subsection{Analyse des quanta}
-\subsubsection{Evolution dans le temps}
+\section{Analyse des quanta}
+\subsection{Evolution dans le temps}
 De même l'évolution des quanta demandés et accordés peut être facilement visualisée par un diagramme en barre comme celui de la Figure \ref{fig:demo:evolution-quanta-styx} qui correspond aux demandes STYX entre 2000  et 2019. Même si le nombre total de demandes est à prendre en compte, un tel diagramme donne un aperçu des sommes d'argent demandés et accordés chaque année. 
 
 \begin{figure}[!htb]
@@ -67,7 +67,7 @@ De même l'évolution des quanta demandés et accordés peut être facilement vi
 \end{figure}
 
 
-\subsubsection{Différence dans l'espace}
+\subsection{Différence dans l'espace}
 
 Pour avoir une idée du montant qu'on peut recevoir sur pour une catégorie de demande, l'évolution des valeurs généralement accordés peut être comparée entre deux villes en visualisant les boîtes à moustaches (\textit{boxplot}) 
 des quanta accordés dans ces villes. La Figure \ref{fig:demo:evolution-qr-styx-compare-ville} permet d'effectuer une comparaison entre Bastia et Lyon. 
@@ -80,7 +80,7 @@ des quanta accordés dans ces villes. La Figure \ref{fig:demo:evolution-qr-styx-
 \end{figure}
 
 
-\subsubsection{Quantum demandé vs. quantum accordé}
+\subsection{Quantum demandé vs. quantum accordé}
 La méthode de prédiction du quantum résultat doit définir un modèle dont la forme s'accorde avec celle du nuage de points correspondant. Le quantum demandé ne semble pas suffisant seul pour déterminer le quantum accordé\footnote{Différentes valeurs de quantum résultat observées pour la même valeur de quantum demandé.}. Il sera ainsi nécessaire de tenir compte des circonstances factuelles et autres spécificités du cas traité qui permettront de filtrer les décisions sur lesquelles se basera la modélisation. On remarque néanmoins une ressemblance de forme entre les nuages de points des différentes villes. 
 
 \begin{figure}[!htb]
