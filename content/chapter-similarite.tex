@@ -87,7 +87,7 @@ La métrique peut être normalisée ($\forall (d,d') \in \mathcal{D} \times \mat
 	
 	où $S$, la matrice de similarité entre les termes, peut être calculée à partir de n'importe quelle métrique comme la distance d'édition de Levenshtein (similarité lexicale) \citep{sidorov2014softcosine},  la similarité cosinus entre  plongements lexicaux \citep{charlet2017simbow_acl, charlet2017simbow_tal}, ou la similarité WordNet.
 	
-	La fonction cosinus  étant comprise entre -1 et +1, sa forme normalisée s'écrit  $\overline{Sim}_{cos}(d,d') = \frac{Sim_{cos}(d,d') + 1}{2}$, d'où la distance $Dis_{cos}(d,d') = 1 - \overline{Sim}_{cos}(d,d')$.
+	La fonction cosinus  étant comprise entre -1 et +1, la distance déduite $Dis_{cos}(d,d') = 1 - Sim_{cos}(d,d')$ est comprise entre 1 et 2.
 	
 	\item Le coefficient similarité de \cite{jaccard1901similarite-jaccard}: $Sim_{Jaccard}(d,d') = \frac{\vec{d}^T\vec{d'}}{\norm{\vec{d}}^2+\norm{\vec{d'}}^2 - \vec{d}^T\vec{d'}}$ \citep{huang2008similarityTextClustering} qui, étant normée, donne la distance $Dis_{jaccard}(d,d') = 1-Sim(d,d')$.
 	%\item Le coefficient similarité de Dice: $Sim_{Dice}(x,x') = \frac{2\cdot \vert tok(x) \cap tok(x') \vert}{\vert tok(x) \vert + \vert tok(x')} $
@@ -157,19 +157,27 @@ Dis_{wmd}(d, d') = 	& \min\limits_{T>0}
 \subsection{Représentation des textes}
 \label{sec:similarite:representation}
 \subsubsection{Modèle vectoriel}
-La formulation des distances exploite très souvent une représentation vectorielle des texte (cf.  \ref{sec:similarite:distances}).
+La formulation des distances exploite très souvent une représentation vectorielle des textes (cf.  \ref{sec:similarite:distances}). Le Chapitre \ref{chap:quanta} décrit différentes métriques de pondération des termes qui permettent de définir des variantes du modèle TF-IDF. Ces dernières sont explorées dans les expérimentations de ce chapitre. Cependant, il s'agit de modèles basés uniquement sur le lexique des textes, et par conséquence, les distances appliquées sur ces représentations sont correspondent à une similarité plus lexicale que sémantique. Il existe quelques techniques permettant de définir des dimensions par des thématiques transparaissant dans le corpus, et apportant par conséquent plus de sémantique à la représentation vectorielle.
 
 \subsubsection{Réduction de dimension}
- Les variantes du modèle TF-IDF décrites au Chapitre \ref{chap:quanta} en font des distances plus lexicales que sémantiques. Plusieurs techniques permettent de définir les dimensions par les thématiques et apportent par conséquent plus de sémantique à la représentation vectorielle.
-\paragraph[PCA]{Analyse des composantes principales}
-\paragraph[LSA]{Analyse latente sémantique}
-L'analyse latente sémantique (LSA) \citep{dumais1988LSI} est une technique réalisant une décomposition en valeurs singulières de la matrice de cooccurrence document-terme où chaque cellule contient le poids du terme dans le document correspondant. La LSA permet ainsi de réduire la grande dimension lexicale des documents à un espace de thématique défini par le nombre de valeurs propres choisies.
-\paragraph[LDA]{Allocation latente de Dirichlet}
-\paragraph[NMF]{Factorisation de matrice non-négative}
-\paragraph[w2v*TF-IDF]{Centroïde de termes}
-A partir de vecteurs de mots apprise d'entraînement à l'aide de méthodes comme Word2Vec \citep{mikolov2013word2vec} ou GloVe \citep{pennington2014glove}, il est souvent proposé de considérer le document comme le barycentre des mots qu'il contient, et de le représenter comme la moyenne des vecteurs de mots pondérés par leur poids dans le document (par exemple TF-IDF) \citep{lemikolov2014word2vec, charlet2017simbow_tal,arora2017wordAvgSentEmbedd}. Pour de longs documents comme les décisions de justice, la moyenne des vecteurs peut devenir inintéressante. 
 
-\subsection{Déterminer le nombre optimal de clusters}
+\paragraph[PCA]{Analyse en composantes principales (ACP)}
+L'analyse en composantes principales \citep{burrows1992PCA} est une technique de transformation de l'espace originel en un espace de dimension réduite ($p < m$)  préservant au mieux l'inertie du nuage originel\footnote{Distance entre les individus pris 2 à 2, ou dispersion autour du barycentre}. L'intérêt de l'ACP se traduit par une meilleur interprétation des données dans le nouvel espace. Son principe consiste à construire successivement les composantes principales qui sont des combinaisons linéaires des observations, chaque composantes étant orthogonales à la suivante. Le nombre de composante peut-être obtenue par la règle de Kaiser qui juge que seules les valeurs propres supérieures ou égales à la moyenne des valeurs propres sont plus informatives que les variables initiales.
+
+\paragraph[LDA]{Allocation latente de Dirichlet}
+L'allocation latente de Dirichlet (ALD) \citep{blei2003lda} est une technique qui extrait un nombre $k$ de thématiques qui transparaissent dans un corpus. Elle introduit les "variables latentes" comme pont pour modéliser les relations entre les textes et les termes. Chaque document est caractérisé comme une distribution de Dirichlet sur les variables latentes (thématiques), et chaque thématique est caractérisée par une autre distribution de Dirichlet sur tous les termes. La réduction de dimension est déduite de la première distribution en obtenant pour chaque document, un vecteur de taille $k$ représentant la distribution de probabilité des thématiques dans le document. Un des défi de la modélisation thématiques est la détermination d'une valeur optimale du nombre de thèmes $k$. Parmi plusieurs valeurs candidates, celle qui maximise la cohérence du modèle peut être choisie. La cohérence do modèle est la moyenne des  cohérences des thèmes. La cohérence de chaque thème peut être considérée comme étant la moyenne de la similarité entre les paires de termes de la description du thème \footnote{les premiers termes les plus fréquents du thème}. \citet{fang2016w2v_for_topiccoherence} démontrent que la cohérence est mieux estimée avec la similarité cosinus des plongements lexicaux des termes, qu'avec les métriques basées sur l'information mutuelle ponctuelle et sur l'analyse latente sémantique.
+
+\paragraph[LSA]{Analyse latente sémantique}
+L'analyse latente sémantique (ALS) \citep{dumais1988LSI, deerwester1990indexingbyLSA} réalise une décomposition en valeurs singulières de la matrice de scores de co-occurrence document-terme où chaque cellule contient le poids du terme dans le document correspondant (par exemple TF-IDF). L'ALS permet ainsi de réduire la grande dimension lexicale des documents à un espace de thématiques défini par le nombre de valeurs propres choisies. Comme pour l'ALD, le nombre de composantes (ou thématiques) peut être sélectionné comme étant celui qui  maximise la cohérence.
+
+
+\paragraph[NMF]{Factorisation de matrice non-négative} La factorisation de matrice non-négative (FMN) \citep{bibid} construit deux matrices non négative $(W,H)$ dont le produit se rapproche de la matrice non-négative des score de co-occurrence $X$.
+
+
+\paragraph[w2v*TF-IDF]{Barycentre des termes}
+A partir de vecteurs de mots apprise d'entraînement à l'aide de méthodes comme Word2Vec \citep{mikolov2013word2vec} ou GloVe \citep{pennington2014glove}, il est souvent proposé de considérer le document comme le barycentre des mots qu'il contient, et de le représenter comme la moyenne des vecteurs de termes pondérés par leur poids dans le document (par exemple TF-IDF) \citep{lemikolov2014word2vec, charlet2017simbow_tal,arora2017wordAvgSentEmbedd}. Pour de longs documents comme les décisions de justice, la moyenne des vecteurs court le risque devenir inintéressante. 
+
+\subsection{Sélection du nombre optimal de clusters}
 \label{sec:similarite:k-optimal}
 %\textcolor{red}{faire un tableau des indices comme dans l'article, et comparer les combinaison indices-algo-distance}
 
@@ -224,7 +232,7 @@ Les métriques couramment employées mesurent la ressemblance entre deux regroup
 		\end{tabular}
 		\caption{Tableau de contingence des chevauchement entre les regroupements $X = \lbrace X_1, X_2, ..., X_r \rbrace$ et $Y = \lbrace Y_1, Y_2, ..., Y_s \rbrace$, $n_{i,j} = \vert X_i \cap Y_j\vert$} \label{tab:similarite:tab-contingence}
 	\end{table}
-ARI a des valeurs dans $[-1;1]$. Une valeur négative indique que le regroupement obtenu s'accorde moins avec l'attendu qu'un regroupement aléatoire. 
+ARI a des valeurs dans $[-1;1]$. Une valeur négative indique que le regroupement obtenu s'accorde moins bien avec l'attendu qu'un regroupement aléatoire. 
 	% \item la précision du clustering (ACC) \citep{}.   \textcolor{red}{pas utilisé car nécessite de trouver le meilleur mapping entre les classes et les clusters}
 	\item L'information mutuelle normalisée (NMI) \citep{kvalseth1987entropy_NMI,strehl2000nmi, vinh2010clusteringComparison} normalise l'information mutuelle entre les regroupements $X$ et $Y$ par une agrégation de leur entropie respective. Par exemple, l'incertitude symétrique \citep{kvalseth1987entropy_NMI} utilise la moyenne comme agrégateur:  $NMI(X,Y) = \frac{2 \cdot I(X,Y)}{H(Y) + H(Y)} $, 
 	avec $I(X,Y) = H(X) - H(X \vert Y) = \sum\limits_{i=1}^{r}\sum\limits_{j=1}^{s} \frac{n_{ij}}{N} \log_2\frac{{n_{ij}}/{N}}{{a_ib_j}/{N}}$ et $H(X) = \sum\limits_{X_i \in X}\left(- p(X_i)\log_2 p(X_i)\right)$,  $p(X_i) = \frac{a_i}{N}$ et $p(Y_j) = \frac{b_j}{N}$; $n_{ij}, a_i$ et $b_j$ provenant du tableau de contingence (Tableau \ref{tab:similarite:tab-contingence}). Le meilleure regroupement est celui qui a la plus grande valeur.
