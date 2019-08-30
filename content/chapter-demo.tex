@@ -17,13 +17,13 @@ Après extraction, la base de données comprend environ 65k documents répartis 
 
 \begin{figure}[ht]
 	\centering
-	\begin{subfigure}[ht]{0.5\textwidth}
+	\begin{subfigure}[ht]{0.55\textwidth}
 		\centering
 		\centering
 		\includegraphics[width=\textwidth]{demo-pourcentage-decision-par-ville.png}
 		\caption{Par ville (pourcentage>0)} \label{fig:demo:doc-per-city}
 	\end{subfigure} 
-	\begin{subfigure}[ht]{0.45\textwidth}
+	\begin{subfigure}[ht]{0.43\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{demo-repartition-decision-par-annee-1900_2019.png}
 		\caption{Par an (entre 1900 et 2019)} \label{fig:demo:doc-per-year}
@@ -37,7 +37,7 @@ Les analyses des sections suivantes sont restreintes aux 5 villes ayant les plus
 
 \section{Analyse du sens du résultat}
 A partir de la base des données extraites, l'évolution du pourcentage de demandes acceptées  peut être observée sur une courbe. En traçant une telle courbe pour chaque ville il est possible de comparer les villes.
-Par exemple, pour les dommages intérêts sur l'article 700 du Code de Procédure Civile (STYX), la Figure \ref{fig:demo:analyse-sens-resultat-styx} compare l'évolution du sens du résultat entre les villes citées précédemment. On remarque que les demandes sont beaucoup plus rejetées qu'acceptées. La courbe du nombre total de demandes doit être associée pour savoir si le pourcentage de succès est considérable\footnote{Pour une année ou une seule demande est extraite et acceptée, le pourcentage est à 100\%, mais ce n'est pas considérable.}.
+Par exemple, pour les dommages intérêts sur l'article 700 du Code de Procédure Civile (STYX), la Figure \ref{fig:demo:analyse-sens-resultat-styx} compare l'évolution du sens du résultat entre les villes citées précédemment. On remarque que les demandes sont beaucoup plus rejetées qu'acceptées. La courbe du nombre total de demandes doit y être associée pour savoir si le pourcentage de succès est considérable\footnote{Pour une année où une seule demande est extraite et acceptée, le pourcentage est à 100\%, mais ce n'est pas considérable.}.
 
 \begin{figure}[!htb]
 	\centering 
@@ -81,7 +81,7 @@ des quanta accordés dans ces villes. La Figure \ref{fig:demo:evolution-qr-styx-
 
 
 \subsection{Quantum demandé vs. quantum accordé}
-La méthode de prédiction du quantum résultat doit définir un modèle dont la forme s'accorde avec celle du nuage de points correspondant. Le quantum demandé ne semble pas suffisant seul pour déterminer le quantum accordé\footnote{Différentes valeurs de quantum résultat observées pour la même valeur de quantum demandé.}. Il sera ainsi nécessaire de tenir compte des circonstances factuelles et autres spécificités du cas traité qui permettront de filtrer les décisions sur lesquelles se basera la modélisation. On remarque néanmoins une ressemblance de forme entre les nuages de points des différentes villes. 
+La méthode de prédiction du quantum résultat doit définir un modèle dont la forme s'accorde avec celle du nuage de points ($x=$ quantum demandé, $y=$ quantum accordé) correspondant. D'après les nuages de points observés pour Paris, Bastia, Angers et Lyon (Figure \ref{fig:demo:qr-vs-qd-styx-compare-ville}), le quantum demandé ne semble pas suffisant seul pour déterminer le quantum accordé\footnote{Différentes valeurs de quantum résultat sont observées pour la même valeur de quantum demandé.}. Il sera ainsi nécessaire de tenir compte des circonstances factuelles et autres spécificités du cas traité qui permettront de filtrer les décisions sur lesquelles se basera la modélisation. On remarque néanmoins une ressemblance de forme entre les nuages de points des différentes villes. 
 
 \begin{figure}[!htb]
 	\centering 
@@ -89,7 +89,7 @@ La méthode de prédiction du quantum résultat doit définir un modèle dont la
 	\includegraphics[width=0.47\textwidth]{qr-vs-qd_STYX_Lyon.png}
 	\includegraphics[width=0.47\textwidth]{qr-vs-qd_STYX_Paris.png}
 	\includegraphics[width=0.47\textwidth]{qr-vs-qd_STYX_Angers.png}
-	\caption{Nuages des points (quantum accordé, quantum demandé) pour les demandes STYX entre 2000 et 2019 à Bastia et à Lyon (quantum demandé < 10000) .}\label{fig:demo:qr-vs-qd-styx-compare-ville}
+	\caption{Nuages des points (quantum accordé, quantum demandé) pour les demandes STYX entre 2000 et 2019 à Paris, Bastia, Angers et Lyon (quantum demandé < 10000) .}\label{fig:demo:qr-vs-qd-styx-compare-ville}
 \end{figure}
 
 \section{Conclusion}
