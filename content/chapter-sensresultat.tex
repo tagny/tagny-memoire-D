@@ -78,6 +78,7 @@ Si l'ensemble des termes de $d$ est $\lbrace t_{1}, \dots, t_{K} \rbrace$, alors
 $\p(d \vert c) = \p(t_{1}, \dots, t_{K}\vert c) = \prod_{k=1}^K \p(t_{k} \vert c)$, et pour un terme $t_k$, la probabilité conditionnelle $\p(t_k \vert c)$ est la proportion d'exemples de $c$ qui contiennent $t_k$:  $\p(t_k \vert c) = \frac{N_{t_k,c}}{\vert D_c \vert }, \forall k \in \lbrace 1, \dots, K \rbrace$.
 
 \subsubsection{Machine à vecteurs de support (SVM)}
+\label{sec:sens-resultat:svm}
 La classification binaire par une machine à vecteurs de support (SVM) \citep{vapnik1995statlearning} affecte à tout objet entré $x$ la classe $y$ qui correspond au coté d'un hyperplan, séparant les exemples d'entraînement des classes candidates, où $x$ se trouve. La phase d'apprentissage consiste à déterminer l'hyperplan optimal $w^T x + b = 0$ i.e. dont la marge\footnote{La plus petite distance entre les échantillons d'apprentissage et l'hyperplan séparateur} est maximale (Figure \ref{fig:sensresultat:svm}\footnote{\url{http://web.mit.edu/6.034/wwwbob/svm-notes-long-08.pdf}}).
 
 \begin{figure}[!htb]
