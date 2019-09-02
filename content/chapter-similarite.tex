@@ -260,6 +260,9 @@ ARI a des valeurs dans $[-1;1]$. Une valeur négative indique que le regroupemen
 
  La cohésion et la séparation des clusters sont les principaux indices internes. La cohésion mesure le degré de proximité entre objets d'un cluster à partir du carré de la somme des erreurs\footnote{Erreur: distance entre un point et le centre du cluster dont il est membre.} dans les clusters: $WCSS(C) = \sum\limits_{j=1}^K\sum\limits_{x \in C_j} (Dis(x, m_j))^2$, où $C = \lbrace C_1, C_1, \cdots, C_K \rbrace$ est l'ensemble des clusters du regroupement, $m_j$ le centre de $C_j$, et $Dis(x,m_j)$ la distance (généralement euclidienne) entre un point $x$ et $m_j$. En général, une valeur faible de la cohésion indique que les clusters sont plus compactes, et donc de meilleur qualité. Tandis qu'une valeur élevée révèle une grande variabilité entre les objets à l'intérieur les clusters. La séparation quant à elle mesure l'éloignement de chaque cluster des autres à partir du carré de la somme des distances entre clusters: $BCSS(C) = \sum\limits_{j = 1}^{K} \vert C_j \vert (m - m_j)$, 
   $m$ étant le centre l'ensemble des objets (la moyenne des vecteurs de tous les documents, où le document qui se trouve à une distance moyenne minimale de tous les autres). Une grande valeur de séparation indique que les clusters sont isolés les uns des autres, et par conséquent elle doit être maximisée pendant le regroupement. Le coefficient de silhouette de \citet{rousseeuw1987silhouetteclusternumber} (cf. \ref{sec:similarite:k-optimal})  combine les idées de cohésion et séparation mais pour chaque objet.
+  
+\section{Méthode}
+modèle vectoriel optimal > clustering par kmeans
 
 \section{Apprentissage d'une distance basée sur la transformation de document}
 Nous définissons la métrique suivante qui est fonction des transformations permettant de passer d'un document $d$ à un autre $d'$ :
@@ -459,12 +462,21 @@ Les terminologies des différents cas se distinguent bien (Tableau \ref{tab:simi
 Pour l'évaluation non supervisée, les corpus des catégories de demande des chapitres \ref{chap:quanta} et \ref{chap:sensresultat} sont employés en plus pour l'évaluation non-supervisée. Nous les appelons respectivement $\mathcal{D}_{acpa}$, $\mathcal{D}_{concdel}$, $\mathcal{D}_{danais}$,$\mathcal{D}_{dcppc}$, $\mathcal{D}_{doris}$, $\mathcal{D}_{styx}$.
 
 \subsection{Protocole et outils logiciels}
-Pour analyser la validité et l'adéquation de la métrique apprise, nous l'entraînons sur la base générée puis nous l'évaluons sur le corpus annoté $\mathcal{D}_{arcpa}$ restreint aux 74 documents n'appartenant qu'à l'un des cas $L = \lbrace a, b, c \rbrace$. Quant à l'efficacité de la métrique apprise, nous l'entraînons sur toutes les données annotées générées. Les documents sont pré-traités avant leur représentation sous forme vectorielle. Ce prétraitement consiste à sectionner les documents (chapitre \ref{chap:structuration}), à n'utiliser que le contenu principal des documents (Litige + Motifs + Dispositif), à mettre en minuscule et lemmatiser ce contenu, puis à éliminer la ponctuation et des mots inutiles (\textit{stop words})  car ils sont généralement indépendants de toute catégorie. Après pré-traitement, les documents ont une taille allant de 208 à 3812 mots dont une moyenne de 1381 mots. Le vocabulaire $W$ utilisé est restreint au mots du corpus original $D$ sur lequel il faut appliquer les regroupements. La représentation vectorielle emploie les modèles de types TF-IDF avec des n-grammes de 1 à 3 mots (pour prendre en compte l'ordre entre les mots) avec des valeurs de poids globaux supervisés ($\chi_2, gss, ig, mar, ngl, rf$) comprises entre 0.95 et 0.15. Les poids globaux ne sont appris sur la discrimination entre les cas $a,b,c$ mais plutôt entre deux corpus $\mathcal{D}_{arcpa}$ (84 documents) et $\mathcal{D}_{\overline{arcpa}}$ (427) i.e. la terminologie de $\mathcal{D}_{arcpa}$.
+Pour analyser la validité et l'adéquation de la métrique apprise, nous l'entraînons sur la base générée puis nous l'évaluons sur le corpus annoté $\mathcal{D}_{arcpa}$ restreint aux 74 documents n'appartenant qu'à l'un des cas $L = \lbrace a, b, c \rbrace$. Quant à l'efficacité de la métrique apprise, nous l'entraînons sur toutes les données annotées générées. Les documents sont pré-traités avant leur représentation sous forme vectorielle. Ce prétraitement consiste à sectionner les documents (chapitre \ref{chap:structuration}), à n'utiliser que le contenu principal des documents (Litige + Motifs + Dispositif), à mettre en minuscule et lemmatiser ce contenu, puis à éliminer la ponctuation et des mots inutiles (\textit{stop words})  car ils sont généralement indépendants de toute catégorie. Après pré-traitement, les documents ont une taille allant de 208 à 3812 mots dont une moyenne de 1381 mots. Le vocabulaire $W$ utilisé est restreint au mots du corpus original $D$ sur lequel il faut appliquer les regroupements. La représentation vectorielle emploie les modèles de types TF-IDF avec des n-grammes de 1 à 3 mots (pour prendre en compte l'ordre entre les mots). Chaque poids global $g(t)$ d'un terme $t$ est multiplié par le logarithme du nombre de mots de $t$ donnant ainsi une nouvelle pondération globale $\hat{g}(t) = \log_2{\vert t \vert} \times g(t)$. Les poids globaux sont appris sur la discrimination entre deux corpus $\mathcal{D}_{arcpa}$ (84 documents) et $\mathcal{D}_{\overline{arcpa}}$ (427) i.e. la terminologie de $\mathcal{D}_{arcpa}$.
 
- La librairie Python Scikit-Learn \citep{bibid} a été utilisée pour les implémentations des algorithmes de réduction de dimension. Le modèle de vecteurs de mots un modèle GLoVE entraîné à l'aide de
+ La librairie Python Scikit-Learn \citep{Pedregosa2011scikit-learn} a été utilisée pour les implémentations des algorithmes de réduction de dimension. La distance WMD est celle implémentée dans la librairie Gensim de \citet{rehurek2010gensim}. Le modèle de vecteurs de mots est un modèle GLoVE \citet{pennington2014glove} entraîné sur un corpus de +800k décisions de justice lémmatisées, à l'aide de vecteurs de dimension 300 obtenu sur une taille de fenêtre de contexte égale à 15 mots.
 
 \subsection{Validité de la distance apprise}
-La base d'entraînement $B$ comprend 10 documents synthétiques générés pour chacun des 74 documents n'ayant qu'un seul label (circonstance factuelle). Nous vérifions ici que la métrique respecte les propriétés des distances, et aussi si elle reste normale après l'entraînement. D'après la matrice des distances entre toutes les paires de document de la base annotées $\mathcal{D_{\text{arcpa}}}$ (Figure \ref{fig:similarite:distance_matrix}),  la "non-négativité", l'identité discernable, et la symétrie sont respectée car toutes les valeurs sont non-négative, seule la diagonale est nulle, et la matrice est symétrique. De plus, toutes les distances sont comprises entre 0 et 1, et par conséquent la métrique est normée (donc la similarité est déduite par $Sim_\mathcal{M} = 1 - Dis_\mathcal{M}$).
+La base d'entraînement $B$ comprend 935 documents dont 10 documents synthétiques générés pour chacun des 74 documents n'ayant qu'un seul label (circonstance factuelle). Sur un modèle TF-IDF, la régression par un réseau de neurone (200 neurones par couches, 2 couches internes) donne un taux d'erreur inférieur à celui d'une régression linéaire (Figure \ref{fig:similarite:eval-regression}) c'est pourquoi nous avons choisi la régression par réseau de neurone.
+
+\begin{figure}[!htb]
+	\centering \includegraphics[width=0.49\textwidth]{eval-lr.png} \hfil
+	\includegraphics[width=0.49\textwidth]{eval-mlp.png}
+	
+	\caption{}\label{fig:similarite:eval-regression}
+\end{figure}
+
+Nous vérifions ici que la métrique respecte les propriétés des distances, et aussi si elle reste normale après l'entraînement. D'après la matrice des distances entre toutes les paires de document de la base annotées $\mathcal{D_{\text{arcpa}}}$ (Figure \ref{fig:similarite:distance_matrix}),  la "non-négativité", l'identité discernable, et la symétrie sont respectée car toutes les valeurs sont non-négative, seule la diagonale est nulle, et la matrice est symétrique. De plus, toutes les distances sont comprises entre 0 et 1, et par conséquent la métrique est normée (donc la similarité est déduite par $Sim_\mathcal{M} = 1 - Dis_\mathcal{M}$).
 
 \begin{figure}[!htb]
 	\centering \includegraphics[scale=0.7]{distance_matrix.png}
@@ -486,18 +498,114 @@ d,d,d') \in \mathcal{D_{\text{arcpa}}} \times \mathcal{D_{\text{arcpa}}} \times 
 Le clustering par l'algorithme des K-moyennes dépend fortement de la représentation vectorielle choisie car la facilité à reconnaître les clusters n'est qu'une conséquence de leur séparation et cohésion dans l'espace. Disposant de données annotées manuellement, nous proposons d'explorer différents modèles vectoriels, zones du documents, et méthodes réduction de dimension pour déterminer ceux qui séparent ces données aussi bien que le clustering manuel. La représentation optimale maximise la largeur moyenne de la silhouette du clustering manuel. L'idée étant d'avoir une représentation qui optimise à la fois les métriques supervisées et non supervisées de validation. Le modèle vectoriel ainsi déterminé est utilisé ensuite pour le clustering de corpus non annoté. Le Tableau \ref{tab:similarite:silhouette-vecteur-manuel} présente le modèle vectoriel de largeur moyenne de silhouette optimal sur les données annotées pour chaque distance.
 
 \begin{table}[!htb]
-	\centering
-	\begin{tabular}[pos]{|l|c|c|}
+	\begin{center}
+	\begin{tabular}[pos]{|l|c|c|l|}
 		\hline
-		\textbf{Distance}&\textbf{TF-IDF}&\textbf{Silhouette (Modèle vectoriel optimal)} \\ \hline
-		$Dis_M$ & &  \\ \hline
-	\end{tabular}
-    \caption{Valeur optimale de la largeur moyenne de la silhouette pour chaque distance et modèle vectoriel correspondant sur la catégorisation manuel.} \label{tab:similarite:silhouette-vecteur-manuel}
+		\textbf{Distance}&\textbf{Base$^a$}&\textbf{Silhouette} & \textbf{(lw-gw, reduction, dim, n-gram)} \\ \hline
+		$Dis_{jaccard}$ & 0.002 & 0.217 &(TP-NGL, NMF, 4, 1-4) \\ \hline
+		$Dis_{cos}$ & 0.003& 0.205 & (LOGAVE-NGL, NMF, 5, 1-6) \\ \hline
+		$Dis_{M}$ & & 0.203 &(LOGAVE-NGL, NMF, 5, 1-6) \\ \hline
+		$Dis_{braycurtis}$ & 0.002& 0.191 &(LOGAVE-NGL, NMF, 5, 1-6) \\ \hline
+		$Dis_{euclidienne}$ & 0.002& 0.175 & (TP-NGL, NMF, 4, 1-4) \\ \hline
+		$Dis_{manhattan}$ & -0.01& 0.173  & (TP-NGL, NMF, 4, 1-4) \\ \hline
+		$Dis_{pearson}$ & 0.009&0.112 &(TP-IG, NMF, 10, 1-6) \\ \hline
+		$Dis_{wmd}$ & -0.096 & - & - \\ \hline
+	\end{tabular}		
+\end{center}
+	
+	$^a$ occurrence de mots pour $Diw_{wmd}$, et TF-IDF pour les autres 
+
+    \caption{Comparaison des modèles vectoriels sur le clustering manuel.} \label{tab:similarite:silhouette-vecteur-manuel}
 \end{table}
 
-\subsection{Catégorisation non supervisée du corpus annotées manuellement}
+\subsection{Clustering du corpus annotées manuellement}
+La représentation vectorielle qui donne la meilleure silhouette pour le clustering manuel est celle qui permet une meilleure séparation entre les clusters et cohésion dans chaque cluster, donc par conséquent une meilleur distribution des points dans l'espace pour reconnaître des cluster donc la sémantique est de même nature que celle de l'annotation manuelle. Pour chaque distance, le modèle vectoriel optimal sur le clustering manuel devrait être optimale pour un clustering selon les métriques d'évaluation supervisée. Le Tableau \ref{tab:similarite:validation-supervisee} présente les mesures ARI, NMI et F1-mesure du clustering par k-means et k-medoids sur $\mathcal{D}_{arcpa}$.
 
-\subsection{Catégorisation non supervisée des corpus sans annotation manuelle}
+\begin{table}[!htb]
+	\centering
+	\begin{tabular}[pos]{|l|c|c|c|c|c|}
+		\hline
+		\textbf{Distance}& \textbf{ARI} & \textbf{NMI} & \textbf{Rappel} & \textbf{Précision} & \textbf{F1-mesure} \\ \hline
+		 $Dis_{braycurtis}$& & & & & \\ \hline
+		$Dis_{cos}$  &  & & & &  \\ \hline
+		$Dis_{euclidienne}$& & & & &  \\ \hline
+		 $Dis_{jaccard}$ & & & &  & \\ \hline
+		 $Dis_{manhattan}$& & & &  & \\ \hline
+	 $Dis_{pearson}$ & & & &  & \\ \hline
+		 $Dis_{wmd}$ & & & & & \\ \hline
+		 $Dis_{M}$ & & & & & \\ \hline
+	\end{tabular}
+	\caption{Validation supervisée sur $\mathcal{D}_{arcpa}$.} \label{tab:similarite:validation-supervisee}
+\end{table}
+
+\subsection{Clustering des corpus sans annotation manuelle}
+
+\begin{table}[!htb]
+	\centering
+	\begin{subfigure}[ht]{0.45\textwidth}
+		\centering
+	\begin{tabular}[pos]{|l|l|c|}
+		\hline
+		\textbf{Corpus}& \textbf{Distance}& \textbf{S}  \\ \hline
+	\multirow{7}{*}{$\mathcal{D}_{acpa}$ (21)} & $Dis_{braycurtis}$&  \\ \cline{2-3}
+		 & $Dis_{cos}$  &   \\ \cline{2-3}
+		 & $Dis_{euclidienne}$&   \\ \cline{2-3}
+		 & $Dis_{jaccard}$ &   \\ \cline{2-3}
+		 & $Dis_{manhattan}$&   \\ \cline{2-3}
+		 & $Dis_{pearson}$ &   \\ \cline{2-3}
+		 & $Dis_{M}$ & \\ \cline{2-3}
+		 & $Dis_{wmd}$ & \\ \hline
+	\multirow{7}{*}{$\mathcal{D}_{concdel}$ (30)} & $Dis_{braycurtis}$&  \\ \cline{2-3}
+	& $Dis_{cos}$  &   \\ \cline{2-3}
+	& $Dis_{euclidienne}$&   \\ \cline{2-3}
+	& $Dis_{jaccard}$ &   \\ \cline{2-3}
+	& $Dis_{manhattan}$&   \\ \cline{2-3}
+	& $Dis_{pearson}$ &   \\ \cline{2-3}
+	& $Dis_{M}$ & \\ \cline{2-3}
+	& $Dis_{wmd}$ & \\ \hline
+	\multirow{7}{*}{$\mathcal{D}_{danais}$ (198)} & $Dis_{braycurtis}$&  \\ \cline{2-3}
+	& $Dis_{cos}$  &   \\ \cline{2-3}
+	& $Dis_{euclidienne}$&   \\ \cline{2-3}
+	& $Dis_{jaccard}$ &   \\ \cline{2-3}
+	& $Dis_{manhattan}$&   \\ \cline{2-3}
+	& $Dis_{pearson}$ &   \\ \cline{2-3}
+	& $Dis_{M}$ & \\ \cline{2-3}
+	& $Dis_{wmd}$ & \\ \hline
+	\end{tabular}
+\end{subfigure} 
+\begin{subfigure}[ht]{0.45\textwidth}
+	\centering
+	\begin{tabular}[pos]{|l|l|c|}
+		\hline
+		\textbf{Corpus}& \textbf{Distance}& \textbf{S}  \\ \hline
+		\multirow{7}{*}{$\mathcal{D}_{dcppc}$ (91)} & $Dis_{braycurtis}$&  \\ \cline{2-3}
+		& $Dis_{cos}$  &   \\ \cline{2-3}
+		& $Dis_{euclidienne}$&   \\ \cline{2-3}
+		& $Dis_{jaccard}$ &   \\ \cline{2-3}
+		& $Dis_{manhattan}$&   \\ \cline{2-3}
+		& $Dis_{pearson}$ &   \\ \cline{2-3}
+		& $Dis_{M}$ & \\ \cline{2-3}
+		& $Dis_{wmd}$ & \\ \hline
+		\multirow{7}{*}{$\mathcal{D}_{doris}$ (59)} & $Dis_{braycurtis}$&  \\ \cline{2-3}
+		& $Dis_{cos}$  &   \\ \cline{2-3}
+		& $Dis_{euclidienne}$&   \\ \cline{2-3}
+		& $Dis_{jaccard}$ &   \\ \cline{2-3}
+		& $Dis_{manhattan}$&   \\ \cline{2-3}
+		& $Dis_{pearson}$ &   \\ \cline{2-3}
+		& $Dis_{M}$ & \\ \cline{2-3}
+		& $Dis_{wmd}$ & \\ \hline
+		\multirow{7}{*}{$\mathcal{D}_{styx}$ (50)} & $Dis_{braycurtis}$&  \\ \cline{2-3}
+		& $Dis_{cos}$  &   \\ \cline{2-3}
+		& $Dis_{euclidienne}$&   \\ \cline{2-3}
+		& $Dis_{jaccard}$ &   \\ \cline{2-3}
+		& $Dis_{manhattan}$&   \\ \cline{2-3}
+		& $Dis_{pearson}$ &   \\ \cline{2-3}
+		& $Dis_{M}$ & \\ \cline{2-3}
+		& $Dis_{wmd}$ & \\ \hline
+	\end{tabular}
+\end{subfigure} 
+	\caption{Validation non-supervisée sur $\mathcal{D}_{acpa}, \mathcal{D}_{concdel}, \mathcal{D}_{danais}, \mathcal{D}_{dcppc}, \mathcal{D}_{doris}, \mathcal{D}_{styx}$.} \label{tab:similarite:validation-nonsupervisee}
+\end{table}
 
 \section{Conclusion}
 \label{sec:similarite:conclusion}
