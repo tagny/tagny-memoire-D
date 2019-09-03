@@ -198,7 +198,7 @@ où $a(d) = \frac{1}{\vert C_t \vert} \sum\limits_{d' \in C_t} Dis(d, d')$, et $
 
 $K$ est optimal lorsque la largeur moyenne $\overline{s_K}(C)$ est maximale. Les valeurs de ce dernier varient entre -1 (pire valeur) et +1 (meilleure valeur). Les valeurs proches de zéro indiquent que les clusters se chevauchent en $x$, et il est difficile de savoir à quel cluster $x$ doit être affecté. Une valeur négative indique que $x$ a été affecté à cluster inapproprié.
 
-Plus récemment, \citet{tibshirani2001gap_statistic} proposent la méthode de "statistique d'écart" (\textit{gap statistic}) dont le principe est de sélectionner le $K$ dont l'erreur sur le clustering de $\mathcal{D}$ est le plus éloignée possible de l'erreur moyenne obtenu sur les clusterings de $M$ ensembles $\mathcal{V}_q, 1\leq q \leq M$ de $N$ vecteurs aléatoirement générés. L'erreur sur le clustering de l'ensemble $\mathcal{A}$ est  $W_K(\mathcal{A})=\sum\limits^K_{r=1}\frac{1}{n_r}\sum\limits_{i,i' \in C_r} Dis(i,i')$, $C_r$ étant le $r^\text{ième}$ cluster de taille $n_r$ de $\mathcal{A}$. Le nombre optimal de clusters est la valeur de $K$ qui maximise $Gap_M(K) = \frac{1}{M}\sum\limits_{q=1}^M \log{W_K(\mathcal{V}_q)} - \log{W_K(\mathcal{A})}$ parmi un ensemble de candidats données.
+%Plus récemment, \citet{tibshirani2001gap_statistic} proposent la méthode de "statistique d'écart" (\textit{gap statistic}) dont le principe est de sélectionner le $K$ dont l'erreur sur le clustering de $\mathcal{D}$ est le plus éloignée possible de l'erreur moyenne obtenu sur les clusterings de $M$ ensembles $\mathcal{V}_q, 1\leq q \leq M$ de $N$ vecteurs aléatoirement générés. L'erreur sur le clustering de l'ensemble $\mathcal{A}$ est  $W_K(\mathcal{A})=\sum\limits^K_{r=1}\frac{1}{2n_r}\sum\limits_{i,i' \in C_r} (Dis(i,i'))^2$, $C_r$ étant le $r^\text{ième}$ cluster de taille $n_r$ de $\mathcal{A}$. Le nombre optimal de clusters est la valeur de $K$ qui maximise $Gap_M(K) = \frac{1}{M}\sum\limits_{q=1}^M \log{W_K(\mathcal{V}_q)} - \log{W_K(\mathcal{A})}$ parmi un ensemble de candidats données.
 
 %Etant donné le grand nombre de méthodes existantes \citep{liu2010interclustvalidation, Amorim2015recoveringnumclust}, la majorité des votes peut être appliquée pour choisir le bon $K$ \footnote{\url{https://www.datanovia.com/en/lessons/determining-the-optimal-number-of-clusters-3-must-know-methods/}}.
 
@@ -290,6 +290,7 @@ La génération de la base synthétique nécessite de définir une formulation d
 $d_i$ est un document du corpus original $\mathcal{D}$, et $d'$ est le document synthétique obtenu par modifications contrôlées de $d_i$. $\vec{d_k}$ désigne le plongement lexical du mot $d_k$. Pour garantir la symétrie et la réflexivité de la métrique, nous imposons respectivement ${Dis_\mathcal{M}}(d,d') = {Dis_\mathcal{M}}(d', d_i)$ et ${Dis_\mathcal{M}}(d_i, d_i) = {Dis_\mathcal{M}}(d', d') = 0, \forall d_i \in \mathcal{D}$ sur le jeu d'entraînement généré. L'algorithme de génération de document synthétique utilise une valeur seuil de probabilité $0<p<1$ contrôlant le taux de modifications à effectuer sur le document original (Algorithme \ref{algo:similarite:modifierdoc}). 
 
 \begin{algorithm}[!htb] % Version française avec : https://pierre.chachatelier.fr/latex/index.php
+	\footnotesize
  \KwData{document $d_i \in \mathcal{D}$, valeur seuil $p$, ensemble $W$ des mots}
  \KwResult{$d'$, $\mathcal{M}_{(d,d')}$}
  ${d'} = [] $\; 
@@ -322,7 +323,7 @@ Sur $B_\mathcal{M}$, on entraîne un modèle régressif $m$ pour prédire la dis
 %\item ne faudrait il pas intégré une métrique proche de la tâche: la ressemblance n'est pas forcément globale à tous le corps du document mais plus à certaines régions; donc un document auquel on rajoute quelques phrases ne devrait pas voir  son sens trop changer:  \textcolor{blue}{peut-être agréger les distances minimales entre les paires de phrases}
 %\end{itemize}
 
-\section{Interprétation des résultats expérimentaux}
+\section{Expérimentations et résultats}
 \label{sec:similarite:experimentations}
 Cette section discute la validité, l'adéquation, et l'efficacité de la métrique apprise en comparaison avec d'autres métriques d'estimation de la similarité sémantique entre documents. La validité de la métrique est établie si cette dernière respecte les propriétés d'une distance. L'adéquation de la métrique avec le problème à résoudre mesure la capacité de la métrique à estimer une distance très faible entre documents du même label (regroupement manuel), en même temps qu'une similarité quasi nulle entre documents de labels différents, indépendamment de l'algorithme de regroupement appliqué. Enfin, l'efficacité de la métrique est liée à la qualité de regroupement  résultant de l'application d'un algorithme de regroupement  combiné avec la métrique apprise.
 
@@ -499,7 +500,7 @@ d,d,d') \in \mathcal{D_{\text{arcpa}}} \times \mathcal{D_{\text{arcpa}}} \times 
 Le clustering par l'algorithme des K-moyennes dépend fortement de la représentation vectorielle choisie car la facilité à reconnaître les clusters n'est qu'une conséquence de leur séparation et cohésion dans l'espace. Disposant de données annotées manuellement, nous proposons d'explorer différents modèles vectoriels, zones du documents, et méthodes réduction de dimension pour déterminer ceux qui séparent ces données aussi bien que le clustering manuel. La représentation optimale maximise la largeur moyenne de la silhouette du clustering manuel. L'idée étant d'avoir une représentation qui optimise à la fois les métriques supervisées et non supervisées de validation. Le modèle vectoriel ainsi déterminé est utilisé ensuite pour le clustering de corpus non annoté. Le Tableau \ref{tab:similarite:silhouette-vecteur-manuel} présente le modèle vectoriel de largeur moyenne de silhouette optimal sur les données annotées pour chaque distance.
 
 \begin{table}[!htb]
-	\small
+	\footnotesize
 	\begin{center}
 	\begin{tabular}[pos]{|l|c|c|l|}
 		\hline
@@ -522,10 +523,10 @@ Le clustering par l'algorithme des K-moyennes dépend fortement de la représent
 
 \subsection{Clustering du corpus annotées manuellement}
 \subsubsection{Nombre de clusters prédéfini}
-La représentation vectorielle qui donne la meilleure silhouette pour le clustering manuel est celle qui permet une meilleure séparation entre les clusters et cohésion dans chaque cluster, donc par conséquent une meilleur distribution des points dans l'espace pour reconnaître des cluster donc la sémantique est de même nature que celle de l'annotation manuelle. Pour chaque distance, le modèle vectoriel optimal sur le clustering manuel devrait être optimale pour un clustering selon les métriques d'évaluation supervisée. Le Tableau \ref{tab:similarite:validation-supervisee} présente les mesures ARI, NMI et F1-mesure du clustering par k-means et k-medoids sur $\mathcal{D}_{arcpa}$, avec $K=3$.
+La représentation vectorielle qui donne la meilleure silhouette pour le clustering manuel est celle qui permet une meilleure séparation entre les clusters et cohésion dans chaque cluster, donc par conséquent une meilleur distribution des points dans l'espace pour reconnaître des cluster donc la sémantique est de même nature que celle de l'annotation manuelle. Pour chaque distance, le modèle vectoriel optimal sur le clustering manuel devrait être optimale pour un clustering selon les métriques d'évaluation supervisée. Le Tableau \ref{tab:similarite:validation-supervisee-k3} présente les mesures ARI, NMI et F1-mesure du clustering par k-means et k-medoids sur $\mathcal{D}_{arcpa}$, avec $K=3$.
 
 \begin{table}[!htb]
-	\centering \small
+	\centering \footnotesize
 	\begin{tabular}[pos]{|l|l|c|c|c|c|c|c|}
 		\hline
 		\textbf{Distance}& \textbf{Algorithme}& \textbf{Silhouette}& \textbf{ARI} & \textbf{NMI} & \textbf{R} & \textbf{P} & \textbf{F1} \\ \hline
@@ -543,79 +544,59 @@ La représentation vectorielle qui donne la meilleure silhouette pour le cluster
 		 dis\_manhattan  & kmedoids  & -0.059     & 0.097 & 0.127 & 0.479  & 0.422     & 0.448 \\ \hline
 		 dis\_pearson    & kmeans    & 0.434      & 0.088 & 0.117 & 0.585  & 0.487     & 0.530 \\ \hline
 		 dis\_pearson    & kmedoids  & -0.019     & 0.111 & 0.136 & 0.421  & 0.476     & 0.447 \\ \hline
+		 dis\_wmd    & kmedoids  & 0.105 & -0.004&	0.024&	0.333&	0.401&	0.364 \\ \hline
 	\end{tabular}
-	\caption{Validation supervisée sur $\mathcal{D}_{arcpa}$.} \label{tab:similarite:validation-supervisee}
+	\caption{Evaluation supervisée du K-means et du K-medoids sur $\mathcal{D}_{arcpa}$ avec le nombre de clusters prédéfini à $K=3$.} \label{tab:similarite:validation-supervisee-k3}
 \end{table}
 
 \subsubsection{Nombre de clusters déterminé automatiquement}
 Nous comparons ici l'emploie de la statistique d'écart et de la silhouette pour la détermination du nombre de cluster pour chaque distance.
 
-\subsection{Clustering des corpus sans annotation manuelle}
+\begin{table}[!htb]
+	\centering \footnotesize
+	\begin{tabular}[pos]{|l|l|c|c|c|c|c|c|c|}
+		\hline
+		\textbf{Distance}& \textbf{Algorithme}& \textbf{K}& \textbf{Silhouette}& \textbf{ARI} & \textbf{NMI} & \textbf{R} & \textbf{P} & \textbf{F1} \\ \hline
+		dis\_m          & kmeans    & 3 & 0.442      & 0.390  & 0.413 & 0.478  & 0.653     & 0.536 \\ \hline
+		dis\_m          & kmedoids  & 6 & 0.453      & 0.359  & 0.395 & 0.298  & 0.669     & 0.413 \\ \hline
+		dis\_braycurtis & kmeans    & 4 & 0.473      & 0.371  & 0.396 & 0.428  & 0.658     & 0.517 \\ \hline
+		dis\_braycurtis & kmedoids  & 5 & 0.452      & 0.395  & 0.423 & 0.356  & 0.694     & 0.471 \\ \hline
+		dis\_cosine     & kmeans    & 4 & 0.522      & 0.368  & 0.395 & 0.421  & 0.655     & 0.509 \\ \hline
+		dis\_cosine     & kmedoids  & 4 & 0.526      & 0.398  & 0.421 & 0.464  & 0.680     & 0.551 \\ \hline
+		dis\_euclidean  & kmeans    & 4 & 0.484      & 0.383  & 0.408 & 0.434  & 0.658     & 0.522 \\ \hline
+		dis\_euclidean  & kmedoids  & 5 & 0.456      & 0.313  & 0.346 & 0.335  & 0.619     & 0.434 \\ \hline
+		dis\_jaccard    & kmeans    & 4 & 0.567      & 0.376  & 0.400 & 0.434  & 0.654     & 0.521 \\ \hline
+		dis\_jaccard    & kmedoids  & 4 & 0.560      & 0.389  & 0.412 & 0.451  & 0.666     & 0.538 \\ \hline
+		dis\_manhattan  & kmeans    & 4 & 0.476      & 0.379  & 0.404 & 0.437  & 0.657     & 0.524 \\ \hline
+		dis\_manhattan  & kmedoids  & 5 & 0.452      & 0.368  & 0.397 & 0.345  & 0.675     & 0.456 \\ \hline
+		dis\_pearson    & kmeans    & 2 & 0.634      & 0.046  & 0.063 & 0.653  & 0.452     & 0.534 \\ \hline
+		dis\_pearson    & kmedoids  & 2 & 0.171      & 0.152  & 0.166 & 0.598  & 0.482     & 0.534 \\ \hline
+		wmdistance      & kmedoids  & 2 & 0.332      & -0.016 & 0.002 & 0.545  & 0.397     & 0.459 \\ \hline
+	\end{tabular}
+	\caption{Validation supervisée sur $\mathcal{D}_{arcpa}$ avec détermination du nombre de clusters avec la silhouette.} \label{tab:similarite:validation-supervisee-optKbySilhouette}
+\end{table}
+
+\subsection{Clustering des corpus non annotés manuellement}
 Les matrices document-terme des autres catégories sont construites à base des mêmes représentations sélectionnées sur le clustering manuel (cf. \ref{sec:similarite:select-repr-optimal}). Le tableau \ref{tab:similarite:validation-nonsupervisee} présente les valeurs de silhouette obtenues par le kmeans et le kmedoid sur ces matrices.
 \begin{table}[!htb]
 	\centering
-	\begin{subfigure}[ht]{0.45\textwidth}
-		\centering
-	\begin{tabular}[pos]{|l|l|c|}
+	\begin{tabular}[pos]{|l|l|c|c|}
 		\hline
-		\textbf{Corpus}& \textbf{Distance}& \textbf{S}  \\ \hline
-	\multirow{7}{*}{$\mathcal{D}_{acpa}$ (21)} & $Dis_{braycurtis}$&  \\ \cline{2-3}
-		 & $Dis_{cos}$  &   \\ \cline{2-3}
-		 & $Dis_{euclidienne}$&   \\ \cline{2-3}
-		 & $Dis_{jaccard}$ &   \\ \cline{2-3}
-		 & $Dis_{manhattan}$&   \\ \cline{2-3}
-		 & $Dis_{pearson}$ &   \\ \cline{2-3}
-		 & $Dis_{M}$ & \\ \cline{2-3}
-		 & $Dis_{wmd}$ & \\ \hline
-	\multirow{7}{*}{$\mathcal{D}_{concdel}$ (30)} & $Dis_{braycurtis}$&  \\ \cline{2-3}
-	& $Dis_{cos}$  &   \\ \cline{2-3}
-	& $Dis_{euclidienne}$&   \\ \cline{2-3}
-	& $Dis_{jaccard}$ &   \\ \cline{2-3}
-	& $Dis_{manhattan}$&   \\ \cline{2-3}
-	& $Dis_{pearson}$ &   \\ \cline{2-3}
-	& $Dis_{M}$ & \\ \cline{2-3}
-	& $Dis_{wmd}$ & \\ \hline
-	\multirow{7}{*}{$\mathcal{D}_{danais}$ (198)} & $Dis_{braycurtis}$&  \\ \cline{2-3}
-	& $Dis_{cos}$  &   \\ \cline{2-3}
-	& $Dis_{euclidienne}$&   \\ \cline{2-3}
-	& $Dis_{jaccard}$ &   \\ \cline{2-3}
-	& $Dis_{manhattan}$&   \\ \cline{2-3}
-	& $Dis_{pearson}$ &   \\ \cline{2-3}
-	& $Dis_{M}$ & \\ \cline{2-3}
-	& $Dis_{wmd}$ & \\ \hline
+		\textbf{Corpus}& \textbf{Distance}& \textbf{K} & \textbf{S}  \\ \hline
+	\multirow{2}{*}{$\mathcal{D}_{acpa}$ (21)} & $Dis_{cos}$  & 3 & 0.525 \\ \cline{2-4}
+	& $Dis_{M}$ & 2 & 0.770\\ \hline
+	\multirow{2}{*}{$\mathcal{D}_{concdel}$ (30)}  & $Dis_{cos}$  & 4 & 0.697  \\ \cline{2-4}
+	& $Dis_{M}$ & 4 & 0.652\\ \hline
+	\multirow{2}{*}{$\mathcal{D}_{danais}$ (198)}  & $Dis_{cos}$  & 5 & 0.426 \\ \cline{2-4}
+	& $Dis_{M}$ & 4 & 0.403\\ \hline
+	\multirow{2}{*}{$\mathcal{D}_{dcppc}$ (91)}  & $Dis_{cos}$  &  2 & 0.549 \\ \cline{2-4}
+	& $Dis_{M}$ &2 & 0.451\\ \hline
+	\multirow{2}{*}{$\mathcal{D}_{doris}$ (59)}  & $Dis_{cos}$  & 5 & 0.549 \\ \cline{2-4}
+	& $Dis_{M}$ & 2 & 0.509\\ \hline
+	\multirow{2}{*}{$\mathcal{D}_{styx}$ (50)}  & $Dis_{cos}$  & 4 & 0.572 \\ \cline{2-4}
+	& $Dis_{M}$ &2 & 0.694\\ \hline
 	\end{tabular}
-\end{subfigure} 
-\begin{subfigure}[ht]{0.45\textwidth}
-	\centering
-	\begin{tabular}[pos]{|l|l|c|}
-		\hline
-		\textbf{Corpus}& \textbf{Distance}& \textbf{S}  \\ \hline
-		\multirow{7}{*}{$\mathcal{D}_{dcppc}$ (91)} & $Dis_{braycurtis}$&  \\ \cline{2-3}
-		& $Dis_{cos}$  &   \\ \cline{2-3}
-		& $Dis_{euclidienne}$&   \\ \cline{2-3}
-		& $Dis_{jaccard}$ &   \\ \cline{2-3}
-		& $Dis_{manhattan}$&   \\ \cline{2-3}
-		& $Dis_{pearson}$ &   \\ \cline{2-3}
-		& $Dis_{M}$ & \\ \cline{2-3}
-		& $Dis_{wmd}$ & \\ \hline
-		\multirow{7}{*}{$\mathcal{D}_{doris}$ (59)} & $Dis_{braycurtis}$&  \\ \cline{2-3}
-		& $Dis_{cos}$  &   \\ \cline{2-3}
-		& $Dis_{euclidienne}$&   \\ \cline{2-3}
-		& $Dis_{jaccard}$ &   \\ \cline{2-3}
-		& $Dis_{manhattan}$&   \\ \cline{2-3}
-		& $Dis_{pearson}$ &   \\ \cline{2-3}
-		& $Dis_{M}$ & \\ \cline{2-3}
-		& $Dis_{wmd}$ & \\ \hline
-		\multirow{7}{*}{$\mathcal{D}_{styx}$ (50)} & $Dis_{braycurtis}$&  \\ \cline{2-3}
-		& $Dis_{cos}$  &   \\ \cline{2-3}
-		& $Dis_{euclidienne}$&   \\ \cline{2-3}
-		& $Dis_{jaccard}$ &   \\ \cline{2-3}
-		& $Dis_{manhattan}$&   \\ \cline{2-3}
-		& $Dis_{pearson}$ &   \\ \cline{2-3}
-		& $Dis_{M}$ & \\ \cline{2-3}
-		& $Dis_{wmd}$ & \\ \hline
-	\end{tabular}
-\end{subfigure} 
+
 	\caption{Validation non-supervisée sur $\mathcal{D}_{acpa}, \mathcal{D}_{concdel}, \mathcal{D}_{danais}, \mathcal{D}_{dcppc}, \mathcal{D}_{doris}, \mathcal{D}_{styx}$.} \label{tab:similarite:validation-nonsupervisee}
 \end{table}
 
