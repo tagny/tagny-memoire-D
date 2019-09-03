@@ -124,7 +124,7 @@ Nous avons par conséquent opter pour une extraction par catégorie. L'idée est
 \label{sec:quanta:biblio}
 Chacune des tâches précédentes se rapproche d'une tâche couramment traitée en fouille de texte. En effet, la détection de catégories dans les décisions peut être modélisée comme un problème de classification de document. La tâche d'extraction se rapproche plus quant à elle des problématiques comme l'extraction d'évènements, le remplissage de champs, ou encore l'extraction de relations et la résolution de référencement.
 
-\subsection{Problèmes analogues: extraction d'éléments structurés}% avec des problématiques d'extraction d'information}
+\subsection{Extraction d'éléments structurés}% avec des problématiques d'extraction d'information}
 
 Les demandes ressemblent aux structures telles que les relations ou les évènements. En effet, les champs définis par \citet{ace2005relation}, pour les relations, et \citet{ace2005event} pour les évènements, se rapprochent de ceux visés lors de l'extraction des demandes comme l'illustre le Tableau \ref{tab:quanta:analogie-relation-evt}. Plus précisément, une catégorie de demandes correspond à un type d'évènement ou de relation entre deux entités. Les arguments qui participent à l'évènement \og demande \fg{} ou à la relation \og demande-résultat \fg{} sont le quantum demandé et le quantum résultat. Le sens du résultat représente la classe de la structure \og demande \fg{}.
 
@@ -261,7 +261,7 @@ A l'exception de la $\text{C-value}$, ces métriques ne tiennent pas expliciteme
 
 \section{Méthode}
 
-\subsection{Détection des catégories par classification des documents}
+\subsection{Détection des catégories par classification}
 \label{sec:quanta:classification}
 Étant donné l'ensemble $D_{\overline{c}}$ des documents ne comprenant aucune demande de la catégorie d'intérêt $c$, nous proposons de modéliser la tâche de détection des catégories en une tâche de classification de documents. Pour chaque catégorie $c$, un modèle de classification binaire est entraîné pour déterminer si un document $d$ contient une demande de la catégorie $c$. Nous avons particulièrement expérimenté quatre algorithmes traditionnellement utilisés comme approches de base. Il s'agit du Bayésien Naïf , de l'arbre de décision C4.5, des $k$-plus-proches-voisins \citep{cover1967knn}, de la machine à vecteurs de support (SVM). Ces algorithmes sont décrits en détail dans le chapitre \ref{chap:sensresultat} qui est axé sur la classification des documents. Les labels utilisés correspondent aux catégories d'intérêt. Par exemple, un document sera labellisé $danais$ s'il contient des demandes de dommages-intérêts pour abus de procédure, et $nodanais$ sinon. Chaque document $d$ est représenté sous une forme vectorielle du type TF-IDF (\textit{term frequency - inverse document frequency}) proposé par \cite{salton1988term-weighting} dont chaque dimension $k$ est identifiée par un terme $t_k$. Le poids $w(t_k, d)$ affecté à ce dernier est le produit normalisé d'un poids global $g(t_k)$ au corpus du mot et d'un poids local $l(t_k,d)$ de $t_k$ dans le document $d$: $w(t_k, d) = l(t,d) \times g(t) \times nf(d)$, où $nf$ est un facteur de normalisation tel que la norme cosinus $cos(d) = \sqrt{\sum\limits_k (w(t_k,d))^2}$ qui est généralement utilisée. 
 

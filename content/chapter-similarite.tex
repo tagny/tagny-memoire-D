@@ -462,16 +462,16 @@ Les terminologies des différents cas se distinguent bien (Tableau \ref{tab:simi
 Pour l'évaluation non supervisée, les corpus des catégories de demande des chapitres \ref{chap:quanta} et \ref{chap:sensresultat} sont employés en plus pour l'évaluation non-supervisée. Nous les appelons respectivement $\mathcal{D}_{acpa}$, $\mathcal{D}_{concdel}$, $\mathcal{D}_{danais}$,$\mathcal{D}_{dcppc}$, $\mathcal{D}_{doris}$, $\mathcal{D}_{styx}$.
 
 \subsection{Protocole et outils logiciels}
-Pour analyser la validité et l'adéquation de la métrique apprise, nous l'entraînons sur la base générée puis nous l'évaluons sur le corpus annoté $\mathcal{D}_{arcpa}$ restreint aux 74 documents n'appartenant qu'à l'un des cas $L = \lbrace a, b, c \rbrace$. Quant à l'efficacité de la métrique apprise, nous l'entraînons sur toutes les données annotées générées. Les documents sont pré-traités avant leur représentation sous forme vectorielle. Ce prétraitement consiste à sectionner les documents (chapitre \ref{chap:structuration}), à n'utiliser que le contenu principal des documents (Litige + Motifs + Dispositif), à mettre en minuscule et lemmatiser ce contenu, puis à éliminer la ponctuation et des mots inutiles (\textit{stop words})  car ils sont généralement indépendants de toute catégorie. Après pré-traitement, les documents ont une taille allant de 208 à 3812 mots dont une moyenne de 1381 mots. Le vocabulaire $W$ utilisé est restreint au mots du corpus original $D$ sur lequel il faut appliquer les regroupements. La représentation vectorielle emploie les modèles de types TF-IDF avec des n-grammes de 1 à 3 mots (pour prendre en compte l'ordre entre les mots). Chaque poids global $g(t)$ d'un terme $t$ est multiplié par le logarithme du nombre de mots de $t$ donnant ainsi une nouvelle pondération globale $\hat{g}(t) = \log_2{\vert t \vert} \times g(t)$. Les poids globaux sont appris sur la discrimination entre deux corpus $\mathcal{D}_{arcpa}$ (84 documents) et $\mathcal{D}_{\overline{arcpa}}$ (427) i.e. la terminologie de $\mathcal{D}_{arcpa}$.
+Pour analyser la validité et l'adéquation de la métrique apprise, nous l'entraînons sur la base générée puis nous l'évaluons sur le corpus annoté $\mathcal{D}_{arcpa}$ restreint aux 74 documents n'appartenant qu'à l'un des cas $L = \lbrace a, b, c \rbrace$. Quant à l'efficacité de la métrique apprise, nous l'entraînons sur toutes les données annotées générées. Les documents sont pré-traités avant leur représentation sous forme vectorielle. Ce prétraitement consiste à sectionner les documents (chapitre \ref{chap:structuration}), à n'utiliser que la section Motifs, à mettre en minuscule et lemmatiser ce contenu, puis à éliminer la ponctuation et des mots inutiles (\textit{stop words})  car ils sont généralement indépendants de toute catégorie. Après pré-traitement, les documents ont une taille allant de 208 à 3812 mots dont une moyenne de 1381 mots. Le vocabulaire $W$ utilisé est restreint au mots du corpus original $D$ sur lequel il faut appliquer les regroupements. La représentation vectorielle emploie les modèles de types TF-IDF avec des n-grammes de 1 à 3 mots (pour prendre en compte l'ordre entre les mots). Chaque poids global $g(t)$ d'un terme $t$ est multiplié par le logarithme du nombre de mots de $t$ donnant ainsi une nouvelle pondération globale $\hat{g}(t) = \log_2{\vert t \vert} \times g(t)$. Les poids globaux sont appris sur la discrimination entre deux corpus $\mathcal{D}_{arcpa}$ (84 documents) et $\mathcal{D}_{\overline{arcpa}}$ (427) i.e. la terminologie de $\mathcal{D}_{arcpa}$.
 
- La librairie Python Scikit-Learn \citep{Pedregosa2011scikit-learn} a été utilisée pour les implémentations des algorithmes de réduction de dimension. La distance WMD est celle implémentée dans la librairie Gensim de \citet{rehurek2010gensim}. Le modèle de vecteurs de mots est un modèle GLoVE \citet{pennington2014glove} entraîné sur un corpus de +800k décisions de justice lémmatisées, à l'aide de vecteurs de dimension 300 obtenu sur une taille de fenêtre de contexte égale à 15 mots.
+ La librairie Python Scikit-Learn \citep{Pedregosa2011scikit-learn} a été utilisée pour les implémentations des algorithmes de réduction de dimension. La distance WMD est celle implémentée dans la librairie Gensim de \citet{rehurek2010gensim}. Le modèle de vecteurs de mots est un modèle GLoVE de \citet{pennington2014glove} entraîné sur un corpus de +800k décisions de justice lémmatisées, à l'aide de vecteurs de dimension 300 obtenu sur une taille de fenêtre de contexte égale à 15 mots.
 
 \subsection{Validité de la distance apprise}
-La base d'entraînement $B$ comprend 935 documents dont 10 documents synthétiques générés pour chacun des 74 documents n'ayant qu'un seul label (circonstance factuelle). Sur un modèle TF-IDF, la régression par un réseau de neurone (200 neurones par couches, 2 couches internes) donne un taux d'erreur inférieur à celui d'une régression linéaire (Figure \ref{fig:similarite:eval-regression}) c'est pourquoi nous avons choisi la régression par réseau de neurone.
+La base d'entraînement $B$ comprend 935 documents dont 10 documents synthétiques générés pour chacun des 74 documents n'ayant qu'un seul label (circonstance factuelle). Sur un modèle TF-IDF, la régression linéaire donne un taux d'erreur faible (Figure \ref{fig:similarite:eval-regression}).
 
 \begin{figure}[!htb]
-	\centering \includegraphics[width=0.49\textwidth]{eval-lr.png} \hfil
-	\includegraphics[width=0.49\textwidth]{eval-mlp.png}
+	\centering %\includegraphics[width=0.49\textwidth]{eval-lr.png} \hfil
+	%\includegraphics[width=0.49\textwidth]{eval-mlp.png}
 	
 	\caption{}\label{fig:similarite:eval-regression}
 \end{figure}
@@ -494,52 +494,64 @@ d,d,d') \in \mathcal{D_{\text{arcpa}}} \times \mathcal{D_{\text{arcpa}}} \times 
 \end{figure}
  
 
-\subsection{Détermination du modèle vectoriel adéquat}
+\subsection{Sélection de la représentation optimale des textes}
+\label{sec:similarite:select-repr-optimal}
 Le clustering par l'algorithme des K-moyennes dépend fortement de la représentation vectorielle choisie car la facilité à reconnaître les clusters n'est qu'une conséquence de leur séparation et cohésion dans l'espace. Disposant de données annotées manuellement, nous proposons d'explorer différents modèles vectoriels, zones du documents, et méthodes réduction de dimension pour déterminer ceux qui séparent ces données aussi bien que le clustering manuel. La représentation optimale maximise la largeur moyenne de la silhouette du clustering manuel. L'idée étant d'avoir une représentation qui optimise à la fois les métriques supervisées et non supervisées de validation. Le modèle vectoriel ainsi déterminé est utilisé ensuite pour le clustering de corpus non annoté. Le Tableau \ref{tab:similarite:silhouette-vecteur-manuel} présente le modèle vectoriel de largeur moyenne de silhouette optimal sur les données annotées pour chaque distance.
 
 \begin{table}[!htb]
+	\small
 	\begin{center}
 	\begin{tabular}[pos]{|l|c|c|l|}
 		\hline
-		\textbf{Distance}&\textbf{Base$^a$}&\textbf{Silhouette} & \textbf{(lw-gw, reduction, dim, n-gram)} \\ \hline
-		$Dis_{jaccard}$ & 0.002 & 0.217 &(TP-NGL, NMF, 4, 1-4) \\ \hline
-		$Dis_{cos}$ & 0.003& 0.205 & (LOGAVE-NGL, NMF, 5, 1-6) \\ \hline
-		$Dis_{M}$ & & 0.203 &(LOGAVE-NGL, NMF, 5, 1-6) \\ \hline
-		$Dis_{braycurtis}$ & 0.002& 0.191 &(LOGAVE-NGL, NMF, 5, 1-6) \\ \hline
-		$Dis_{euclidienne}$ & 0.002& 0.175 & (TP-NGL, NMF, 4, 1-4) \\ \hline
-		$Dis_{manhattan}$ & -0.01& 0.173  & (TP-NGL, NMF, 4, 1-4) \\ \hline
-		$Dis_{pearson}$ & 0.009&0.112 &(TP-IG, NMF, 10, 1-6) \\ \hline
+		\textbf{Distance}&\textbf{Base$^a$}&\textbf{Silhouette} & \textbf{(pondération, reduction, dim)} \\ \hline
+		$Dis_{jaccard}$ & 0.001 & 0.212 &(TP-NGL, NMF, 4) \\ \hline
+		$Dis_{cos}$ & 0.002 & 0.202 & (TP-NGL, NMF, 4) \\ \hline
+		$Dis_{M}$ & -0.049 & 0.195 &(TP-NGL, NMF, 4) \\ \hline
+		$Dis_{braycurtis}$ & 0.002& 0.182 &(TP-NGL, NMF, 4) \\ \hline
+		$Dis_{euclidienne}$ & 0.001& 0.168 & (TP-NGL, NMF, 4) \\ \hline
+		$Dis_{manhattan}$ & -0.019& 0.17  & (TP-NGL, NMF, 4) \\ \hline
+		$Dis_{pearson}$ & 0.014 & 0.057 &(TP-CHI2, aucun, 19763) \\ \hline
 		$Dis_{wmd}$ & -0.096 & - & - \\ \hline
 	\end{tabular}		
 \end{center}
 	
-	$^a$ occurrence de mots pour $Diw_{wmd}$, et TF-IDF pour les autres 
+	$^a$ occurrence de mots pour $Dis_{wmd}$, et TF-IDF pour les autres 
 
-    \caption{Comparaison des modèles vectoriels sur le clustering manuel.} \label{tab:similarite:silhouette-vecteur-manuel}
+    \caption{Meilleure représentation vectorielle pour chaque distance sur le clustering manuel.} \label{tab:similarite:silhouette-vecteur-manuel}
 \end{table}
 
 \subsection{Clustering du corpus annotées manuellement}
-La représentation vectorielle qui donne la meilleure silhouette pour le clustering manuel est celle qui permet une meilleure séparation entre les clusters et cohésion dans chaque cluster, donc par conséquent une meilleur distribution des points dans l'espace pour reconnaître des cluster donc la sémantique est de même nature que celle de l'annotation manuelle. Pour chaque distance, le modèle vectoriel optimal sur le clustering manuel devrait être optimale pour un clustering selon les métriques d'évaluation supervisée. Le Tableau \ref{tab:similarite:validation-supervisee} présente les mesures ARI, NMI et F1-mesure du clustering par k-means et k-medoids sur $\mathcal{D}_{arcpa}$.
+\subsubsection{Nombre de clusters prédéfini}
+La représentation vectorielle qui donne la meilleure silhouette pour le clustering manuel est celle qui permet une meilleure séparation entre les clusters et cohésion dans chaque cluster, donc par conséquent une meilleur distribution des points dans l'espace pour reconnaître des cluster donc la sémantique est de même nature que celle de l'annotation manuelle. Pour chaque distance, le modèle vectoriel optimal sur le clustering manuel devrait être optimale pour un clustering selon les métriques d'évaluation supervisée. Le Tableau \ref{tab:similarite:validation-supervisee} présente les mesures ARI, NMI et F1-mesure du clustering par k-means et k-medoids sur $\mathcal{D}_{arcpa}$, avec $K=3$.
 
 \begin{table}[!htb]
-	\centering
-	\begin{tabular}[pos]{|l|c|c|c|c|c|}
+	\centering \small
+	\begin{tabular}[pos]{|l|l|c|c|c|c|c|c|}
 		\hline
-		\textbf{Distance}& \textbf{ARI} & \textbf{NMI} & \textbf{Rappel} & \textbf{Précision} & \textbf{F1-mesure} \\ \hline
-		 $Dis_{braycurtis}$& & & & & \\ \hline
-		$Dis_{cos}$  &  & & & &  \\ \hline
-		$Dis_{euclidienne}$& & & & &  \\ \hline
-		 $Dis_{jaccard}$ & & & &  & \\ \hline
-		 $Dis_{manhattan}$& & & &  & \\ \hline
-	 $Dis_{pearson}$ & & & &  & \\ \hline
-		 $Dis_{wmd}$ & & & & & \\ \hline
-		 $Dis_{M}$ & & & & & \\ \hline
+		\textbf{Distance}& \textbf{Algorithme}& \textbf{Silhouette}& \textbf{ARI} & \textbf{NMI} & \textbf{R} & \textbf{P} & \textbf{F1} \\ \hline
+		 dis\_m          & kmeans    & 0.403      & 0.411 & 0.427 & 0.574  & 0.648     & \textbf{0.607} \\ \hline
+		 dis\_m          & kmedoids  & 0.398      & 0.321 & 0.340 & 0.483  & 0.591     & 0.532 \\ \hline
+		 dis\_braycurtis & kmeans    & 0.370      & 0.364 & 0.382 & 0.545  & 0.603     & 0.570 \\ \hline
+		 dis\_braycurtis & kmedoids  & 0.358      & 0.272 & 0.292 & 0.444  & 0.540     & 0.487 \\ \hline
+		 dis\_cosine     & kmeans    & \textbf{0.422}      & 0.389 & 0.406 & 0.556  & 0.616     & 0.583 \\ \hline
+		 dis\_cosine     & kmedoids  & \textbf{0.448}      & 0.437 & 0.455 & 0.656  & 0.598     & \textbf{0.626} \\ \hline
+		 dis\_euclidean  & kmeans    & 0.372      & \textbf{0.417} & \textbf{0.434} & 0.591  & 0.603     & 0.592 \\ \hline
+		 dis\_euclidean  & kmedoids  & 0.369      & 0.392 & 0.409 & 0.566  & 0.672     & 0.615 \\ \hline
+		 dis\_jaccard    & kmeans    & 0.442      & 0.371 & 0.389 & 0.554  & 0.600     & 0.574 \\ \hline
+		 dis\_jaccard    & kmedoids  & 0.431      & \textbf{0.440} & \textbf{0.455} & 0.529  & 0.645     & 0.581 \\ \hline
+		 dis\_manhattan  & kmeans    & 0.390      & 0.376 & 0.394 & 0.567  & 0.582     & 0.571 \\ \hline
+		 dis\_manhattan  & kmedoids  & -0.059     & 0.097 & 0.127 & 0.479  & 0.422     & 0.448 \\ \hline
+		 dis\_pearson    & kmeans    & 0.434      & 0.088 & 0.117 & 0.585  & 0.487     & 0.530 \\ \hline
+		 dis\_pearson    & kmedoids  & -0.019     & 0.111 & 0.136 & 0.421  & 0.476     & 0.447 \\ \hline
 	\end{tabular}
 	\caption{Validation supervisée sur $\mathcal{D}_{arcpa}$.} \label{tab:similarite:validation-supervisee}
 \end{table}
 
-\subsection{Clustering des corpus sans annotation manuelle}
+\subsubsection{Nombre de clusters déterminé automatiquement}
+Nous comparons ici l'emploie de la statistique d'écart et de la silhouette pour la détermination du nombre de cluster pour chaque distance.
 
+\subsection{Clustering des corpus sans annotation manuelle}
+Les matrices document-terme des autres catégories sont construites à base des mêmes représentations sélectionnées sur le clustering manuel (cf. \ref{sec:similarite:select-repr-optimal}). Le tableau \ref{tab:similarite:validation-nonsupervisee} présente les valeurs de silhouette obtenues par le kmeans et le kmedoid sur ces matrices.
 \begin{table}[!htb]
 	\centering
 	\begin{subfigure}[ht]{0.45\textwidth}
