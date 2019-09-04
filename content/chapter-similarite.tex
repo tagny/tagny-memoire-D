@@ -27,6 +27,9 @@ En outre, la catégorisation spectrale est une autre méthode efficace de catég
 
 Il est aussi possible d'utiliser les arbres de décision pour améliorer les résultats des K-moyennes. En effet, les forêts aléatoires \citep{breiman2001randomforest} permettent d'estimer la similarité entre deux points. Le principe consiste à générer un ensemble de $n$ points synthétiques, et d'entraîner une forêt aléatoire à une classification binaire supervisée avec les points originaux considérés dans la classe des "originaux" et les données synthétiques dans la seconde classe des "synthétiques" \citep{afanador2016unsupervisedrandomforest}. Une forêt aléatoire étant un ensemble d'arbres de décision (classification) construit sur des parties de l'ensemble d'apprentissage duquel on a retiré une ou plusieurs variables prédictives, la similarité entre 2 points est la proportion d'arbres dans lesquels ces points se trouvent dans le même nœud feuille. Cette métrique "apprise" peut-être par la suite utilisée dans un algorithme de catégorisation classique comme les K-moyennes.
 
+\subsubsection{Catégorisation hiérarchique}
+La catégorisation hiérarchique consiste à construire une hiérarchie de clusters. Le regroupement hiérarchique ascendant est une technique de catégorisation hiérarchique qui part d'autant de clusters que de documents, chacun des groupe comprenant un élément. Ensuite, l'algorithme détecte et fusionne successivement des sous groupes dont la distance est la plus petite et/ou proche d'une valeur seuil donnée, jusqu'à ce que tous les documents soit dans un unique groupe (racine). Pour déterminer le partitionnement optimal, Le nombre de clusters doit être déterminé. \textcolor{red}{Une technique pour y arriver est de ...\footnote{\url{http://eric.univ-lyon2.fr/~ricco/cours/slides/en/cah.pdf}}}.
+
 %\textcolor{red}{Random Forest - processus de construction: \url{https://onlinelibrary.wiley.com/doi/pdf/10.1002/cem.2790}}
 
 %L'application de ces différents algorithmes aux documents n'est généralement basé que sur les statistiques d'occurrence des termes, et par conséquent les thématiques abordées dans les documents ne sont pas bien prise en compte, surtout que l'élimination des \og mots vides \fg{} (\textit{stop words}) peut laisser les deux documents sans sinon très peu de mots en commun \cite{kusner2015wordmoverdist}. \citet{xie2013MGCTM} démontrent empiriquement que l'intégration de la  modélisation thématique (\textit{topic modeling}) au clustering de documents améliore significativement les résultats. Cette intégration des modèles thématiques dans le clustering de documents peut être réalisée de multiples façons, mais deux méthodes semblent être les plus efficaces:
@@ -49,6 +52,8 @@ Lorsque des chevauchements sont observables entre clusters (un document peut fai
  \item la détermination des nouveaux centres de clusters qui s'effectue toujours par la moyenne des membres du cluster chez le fuzzy c-means, mais par le choix de l'objet $x_q$ qui optimise la somme des distances de cet objet aux autres membres pondérée chacune par le degré d'appartenance de ces autres membres: \[\forall j \in  \left[1\twodots k \right], q = \argmin\limits_{1 \leq l < s_j} \sum\limits_{l=1}^{s_j} \left[u_{lj}r(x_l,z_j)\right]\] $s_j$ étant le nombre de membres du cluster $j$.
 \end{enumerate}
  Ainsi l'objectif de l'entraînement des algorithmes de catégorisation floue est double: déterminer les valeurs optimales de la matrice $U$ des degrés d'appartenance et l'ensemble $Z$ des centroïdes. 
+ 
+ \citet{nefti2004probabilisticFuzzyCMeans} proposent les C-moyennes floues probabilistes qui sont une variante du FCM pour laquelle la somme des degrés d'appartenance  d'un document aux clusters est de 1.
  
  Les catégorisations avec chevauchement sont intéressants parce qu'il est possible qu'une décision traite de plusieurs circonstances factuelles.
 %\textcolor{red}{A COMPLETER!!!!!!!!!!}
@@ -531,7 +536,7 @@ Les représentations sélectionnées sont utilisées dans les sections suivantes
  Le Tableau \ref{tab:similarite:validation-supervisee-k3} présente les mesures ARI, NMI et F1-mesure de la catégorisation par k-means et k-medoids sur $\mathcal{D}_{arcpa}$, avec $K=3$. 
 
 \begin{table}[!htb]
-	\centering \footnotesize
+	\centering \scriptsize
 	\begin{tabular}[pos]{|l|l|c|c|c|c|c|c|}
 		\hline
 		\textbf{Distance}& \textbf{Algorithme}& \textbf{Silhouette}& \textbf{ARI} & \textbf{NMI} & \textbf{R} & \textbf{P} & \textbf{F1} \\ \hline
@@ -561,7 +566,7 @@ Les valeurs de silhouette se reflètent plus sur les indices ARI et NMI, mais mo
 Nous comparons ici l'emploie de la statistique d'écart et de la silhouette pour la détermination du nombre de cluster pour chaque distance. La sélection est effectué pour les valeurs 2 et 30. Même si $Dis_m$ retrouve le nombre attendu avec le k-means, $4$ est la plus valeur la plus choisie par les distances, et elle semble meilleure avec une F1-mesure maximale à 0.551 et un ARI de 0.398 avec $Dis_{cosine}$. Les valeurs déterminées (entre 2 et 6) sont très proches de la valeur attendue 3 pour toutes les distance.  Notons aussi que l'efficacité de $Dis_M$ et $Dis_{cos}$ reste presque aussi élevée qu'avec un $K$ prédéfini (Tableau \ref{tab:similarite:validation-supervisee-k3}). $Dis_M$ et $Dis_{cos}$ semblent ainsi former de bonnes combinaison avec respectivement les k-means et les k-medoids. Par ailleurs, seules $Dis_{manhattan}$ et $Dis_{wmd}$ obtiennent de très faibles valeurs des indices supervisés ARI et NMI. Même si ces valeurs sont inférieures pour les autres distances, ces dernières, en particulier $Dis_M$, $Dis_{jaccard}$ et $Dis_\textbf{cos}$, parviennent quand même à un bon compromis entre les 3 critères ARI, NMI et F1. $Dis_{jaccard}$ et $Dis_{cos}$ sont efficaces autant avec les k-means qu'avec les k-medoids, et elles parviennent à associer une bonne validation non-supervisée (silhouette) à une bonne validation non-supervisée.
 
 \begin{table}[!htb]
-	\centering \footnotesize
+	\centering \scriptsize
 	\begin{tabular}[pos]{|l|l|c|c|c|c|c|c|c|}
 		\hline
 		\textbf{Distance}& \textbf{Algorithme}& \textbf{K}& \textbf{Silhouette}& \textbf{ARI} & \textbf{NMI} & \textbf{R} & \textbf{P} & \textbf{F1} \\ \hline
@@ -587,17 +592,41 @@ Nous comparons ici l'emploie de la statistique d'écart et de la silhouette pour
 La Figure \ref{fig:similarite:optimalK_with_silhouette_kmeans_dis_m_K2-30} montre l'évolution de la valeur de la silhouette en fonction du nombre de clusters pour $Dis_M$ utilisé dans le k-means. 
 
 \begin{figure}[!htb]
-	\centering \includegraphics[width=0.9\textwidth]{optimalK_with_silhouette_kmeans_dis_m_K2-30.png} \hfil
+	\centering \includegraphics[width=0.6\textwidth]{optimalK_with_silhouette_kmeans_dis_m_K2-30.png} \hfil
 	%\includegraphics[width=0.49\textwidth]{eval-mlp.png}
 	
-	\caption{Evolution de la largeur moyenne de la silhouette pour le k-means et la distance apprise $Dis_M$}\label{fig:similarite:optimalK_with_silhouette_kmeans_dis_m_K2-30}
+	\caption{Evolution de la silhouette pour le k-means et la distance apprise}\label{fig:similarite:optimalK_with_silhouette_kmeans_dis_m_K2-30}
 \end{figure}
  
 
-\subsubsection{Comparaison avec d'autres algorithmes de catégorisation}
+\subsubsection{Autres algorithmes de catégorisation}
+Avec la représentation sélectionnée TP-NGL, nous appliquons d'autres algorithmes de catégorisation sur $\mathcal{D}_{arcpa}$ (Tableau \ref{tab:similarite:validation-supervisee-optKbySilhouette-autres_algos}). Seules le regroupement hiérarchique et les C-moyennes floues probabilistes parviennent à trouver un nombre de clusters (4) assez proche de ce celui attendu (3). Les forêts aléatoires ont une très basse F1-mesure du fait du grand nombre de clusters déterminé. Par ailleurs, la tâche ne semble pas correspondre pour de la catégorisation par densité qui tend toujours à mettre tous les documents dans un même cluster.
+\begin{table}[!htb]
+	\centering \scriptsize
+	\begin{tabular}[pos]{|l|c|c|c|c|c|c|c|}
+		\hline
+		\textbf{Algorithme}& \textbf{K}& \textbf{Silhouette}& \textbf{ARI} & \textbf{NMI} & \textbf{R} & \textbf{P} & \textbf{F1} \\ \hline
+		Spectral Clustering & 19 & 0.352 & 0.193 & 0.317 & 0.069 & 0.632 & 0.124 \\ \hline 
+		DBSCAN & 2 & -1.000 & 0.000 & 0.000 & 1.000 & 0.398 & 0.570 \\ \hline 
+		%Kmeans & 4 & 0.524 & 0.383 & 0.407 & 0.446 & 0.658 & 0.532 \\ \hline 
+		Agglomerative Clustering & 4 & 0.475 & 0.355 & 0.381 & 0.428 & 0.567 & 0.487 \\ \hline 
+		Probabilistic Fuzzy-CMeans & 4 & 0.521 & 0.394 & 0.417 & 0.444 & 0.657 & 0.530 \\ \hline 
+		Random Forest & 11 & 0.272 & 0.228 & 0.303 & 0.127 & 0.598 & 0.210 \\ \hline 
+	\end{tabular}
+	\caption{Evaluation de la catégorisation par d'autres algorithmes de $\mathcal{D}_{arcpa}$ avec détermination du nombre de clusters avec la silhouette.} \label{tab:similarite:validation-supervisee-optKbySilhouette-autres_algos}
+\end{table}
+
+La silhouette des C-moyennes floues probabilistes a une décroissance plus rapide et plus monotone que notre implémentation des k-means (Tableaux \ref{fig:similarite:optimalK_with_silhouette_kmeans_dis_m_K2-30} et )
+
+\begin{figure}[!htb]
+	\centering \includegraphics[width=0.6\textwidth]{optimalK_with_silhouette_ProbabilisticFuzzyCMeans_K2-30.png} \hfil
+	%\includegraphics[width=0.49\textwidth]{eval-mlp.png}
+	
+	\caption{Évolution de la silhouette pour les C-moyennes floues probabilistes}\label{fig:similarite:optimalK_with_silhouette_ProbabilisticFuzzyCMeans_K2-30}
+\end{figure}
 
 \subsection{Catégorisation des corpus non annotés manuellement}
-Les matrices document-terme des autres catégories sont construites à base des mêmes représentations sélectionnées sur la catégorisation manuel (cf. \ref{sec:similarite:select-repr-optimal}). Le tableau \ref{tab:similarite:validation-nonsupervisee} présente les valeurs de silhouette obtenues par le k-means et le k-medoid sur ces matrices.
+Les matrices document-terme des autres catégories sont construites à base des mêmes représentations sélectionnées sur la catégorisation manuel (cf. \ref{sec:similarite:select-repr-optimal}). Le tableau \ref{tab:similarite:validation-nonsupervisee} présente les valeurs de silhouette obtenues par le k-means et le k-medoid sur ces matrices. Les nombres de clusters reste faible
 \begin{table}[!htb]
 	\footnotesize
 	\begin{center}
