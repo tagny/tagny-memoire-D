@@ -14,7 +14,7 @@ Les circonstances factuelles définissent les contextes possibles dans lesquels 
 
 Cette section fait une synthèse bibliographique des différents aspects rentrant dans la conception d'un système de regroupement de documents. Elle aborde principalement le choix de l'algorithme, la définition d'une mesure de similarité adéquate, la représentation des documents, la détermination du nombre de {clusters}, et l'évaluation du regroupement généré.
 
-L'ensemble des $N$ documents est noté $\mathcal{D}$. Tout document $d \in \mathcal{D}$ est une séquence de mots $d=(d_1, d_2, \dots, d_{\setsize{d}})$, où $d_i$ est le mot à la position $i$ dans $d$. Sa représentation vectorielle est notée $\vec{d}=(\vec{d}_1, \vec{d}_2, \dots, \vec{d}_m)$. Pour un modèle vectoriel TF-IDF de vocabulaire $T = (t_1, t_2, \dots, t_m)$, $\vec{d}_i = w(t_i,d)$ est le poids du terme $t_i \in T$ dans le texte $d$ ({cf. \ref{sec:quanta:classification}}). Le regroupement obtenu est un ensemble de clusters $C = \lbrace C_1, C_2, \cdots, C_K \rbrace$, $K$ étant le nombre de clusters formés.
+L'ensemble des $N$ documents est noté $\mathcal{D}$. Tout document $d \in \mathcal{D}$ est une séquence de mots $d=(d[1], d[2], \dots, d[\setsize{d}])$, où $d_i$ est le mot à la position $i$ dans $d$. Sa représentation vectorielle est notée $\vec{d}=(\vec{d}[1], \vec{d}[2], \dots, \vec{d}[m])$. Pour un modèle vectoriel TF-IDF de vocabulaire $T = \lbrace t_1, t_2, \dots, t_m \rbrace$, $\vec{d}_i = w(t_i,d)$ est le poids du terme $t_i \in T$ dans le texte $d$ ({cf. \ref{sec:quanta:classification}}). Le regroupement obtenu est un ensemble de clusters $C = \lbrace C_1, C_2, \cdots, C_K \rbrace$, $K$ étant le nombre de clusters formés.
 
 \subsection{Algorithmes de regroupement non-supervisé}
 
@@ -163,20 +163,23 @@ La formulation des distances exploite très souvent une représentation vectorie
 La réduction de dimension a généralement pour but de réduire la représentation de documents i.e. transformer leur vecteur de dimension originel $m$ en un nouveau vecteur de dimension $q << m$. Les méthodes de réduction explorées ici sont toutes non supervisées\footnote{Elles ne prennent en compte aucune classification prédéfinie des documents.} et réalisent une extraction de caractéristiques\footnote{Par opposition aux algorithmes de sélection de caractéristiques comme le BDS et le SFFS expérimentées au Chapitre \ref{chap:structuration}.}. %L'intérêt de la réduction de dimension est multiples: construire des dimensions plus discriminantes, limiter le sur-apprentissage, et obtenir une représentation sémantique plus concise. 
 
 \paragraph[PCA]{Analyse en composantes principales (ACP)}
-L'analyse en composantes principales \citep{burrows1992PCA} est une technique de transformation de l'espace originel en un espace de dimension réduite ($q < m$)  préservant au mieux l'inertie du nuage originel\footnote{Distance entre les individus pris 2 à 2, ou dispersion autour du barycentre}. L'intérêt de l'ACP se traduit par une meilleur interprétation des données dans le nouvel espace. Son principe consiste à construire successivement les composantes principales qui sont des combinaisons linéaires des observations, chaque composantes étant orthogonales à la suivante. Le nombre de composante peut-être obtenue par la règle de Kaiser qui juge que seules les valeurs propres supérieures ou égales à la moyenne des valeurs propres sont plus informatives que les variables initiales. La réduction de dimension par l'ACP consiste à ... . Avantage et limite
+L'analyse en composantes principales \citep{burrows1992PCA} est une technique de transformation de l'espace originel en un espace de dimension réduite ($q < m$)  préservant au mieux l'inertie du nuage originel\footnote{Distance entre les individus pris 2 à 2, ou dispersion autour du barycentre}. L'intérêt de l'ACP se traduit par une meilleur interprétation des données dans le nouvel espace. Son principe consiste à construire successivement les composantes principales qui sont des combinaisons linéaires des observations, chaque composantes étant orthogonales à la suivante. Plus précisément, les colonnes de la matrice document-terme $A$ sont préalablement transformée en des variables centrées réduites\footnote{Centrer-réduire une variable $X$ d'espérance $\mu$ et d'écart-type $\sigma$ revien à obtenir une variable  $\hat{X}$ d'espérance nulle et variance à 1 en calculant pour chaque valeur $X_i$ de $X$, $\hat{X_i} = \frac{X_i-\mu}{\sigma}$.} résultant en une matrice $\hat{A}$. Ensuite, l'ACP décompose $\hat{A}$ la matrice $N\times m$ en un produit de trois matrices: $U$ la matrice $N \times N$  des vecteurs propres de $\hat{A}\hat{A}^T$, $S$ la matrice diagonale $m\times m$  des valeurs propres de la plus grande à la plus petite, et $V$ la matrice $m\times m$  des vecteurs propres de $\hat{A}^T\hat{A}$. Un nombre $q$ de composantes (vecteurs propres $U_q = U[1,m;1,q]$) peut être sélectionné pour la réduction de dimension suivant la variance totale qu'on souhaite conserver. Ainsi, tout vecteur $\vec{d}$ est réduit à dimension en le multipliant par $U_q$: $\vec{d}_q = U_q\vec{d}$.
+Le nombre $q$ de composantes peut-être sélectionné par la règle de Kaiser qui juge que seules les valeurs propres supérieures ou égales à la moyenne des valeurs propres sont plus informatives que les variables initiales. %La réduction de dimension par l'ACP consiste à ... . Avantage et limite
 
 \paragraph[LDA]{Allocation latente de Dirichlet}
-L'allocation latente de Dirichlet (ALD) \citep{blei2003lda} est une technique qui extrait un nombre $k$ de thématiques qui transparaissent dans un corpus. Elle introduit les "variables latentes" comme pont pour modéliser les relations entre les textes et les termes. Chaque document est caractérisé comme une distribution de Dirichlet sur les variables latentes (thématiques), et chaque thématique est caractérisée par une autre distribution de Dirichlet sur tous les termes. La réduction de dimension est déduite de la première distribution en obtenant pour chaque document, un vecteur de taille $k$ représentant la distribution de probabilité des thématiques dans le document. Un des défi de la modélisation thématiques est la détermination d'une valeur optimale du nombre de thèmes $k$. Parmi plusieurs valeurs candidates, celle qui maximise la cohérence du modèle peut être choisie. La cohérence do modèle est la moyenne des  cohérences des thèmes. La cohérence de chaque thème peut être considérée comme étant la moyenne de la similarité entre les paires de termes de la description du thème \footnote{les premiers termes les plus fréquents du thème}. \citet{fang2016w2v_for_topiccoherence} démontrent que la cohérence est mieux estimée avec la similarité cosinus des plongements lexicaux des termes, qu'avec les métriques basées sur l'information mutuelle ponctuelle et sur l'analyse latente sémantique.  La réduction de dimension par l'ALD consiste à ... . Avantage et limite
+L'allocation latente de Dirichlet (ALD) \citep{blei2003lda} est une technique qui extrait un nombre $q$ de thématiques qui transparaissent dans un corpus. Elle introduit les "variables latentes" comme pont pour modéliser les relations entre les textes et les termes. Chaque document est caractérisé comme une distribution de Dirichlet sur les variables latentes (thématiques), et chaque thématique est caractérisée par une autre distribution de Dirichlet sur tous les termes. La réduction de dimension est déduite de la première distribution en obtenant pour chaque document, un vecteur de taille $q$ représentant la distribution de probabilité des thématiques dans le document. Un des défi de la modélisation thématiques est la détermination d'une valeur optimale du nombre de thèmes $q$. Parmi plusieurs valeurs candidates, celle qui maximise la cohérence du modèle peut être choisie. La cohérence do modèle est la moyenne des  cohérences des thèmes. La cohérence de chaque thème peut être considérée comme étant la moyenne de la similarité entre les paires de termes de la description du thème \footnote{les premiers termes les plus fréquents du thème}. \citet{fang2016w2v_for_topiccoherence} démontrent que la cohérence est mieux estimée avec la similarité cosinus des plongements lexicaux des termes, qu'avec les métriques basées sur l'information mutuelle ponctuelle et sur l'analyse latente sémantique. % La réduction de dimension par l'ALD consiste à ... . Avantage et limite
 
 \paragraph[LSA]{Analyse latente sémantique}
-L'analyse latente sémantique (ALS) \citep{dumais1988LSI, deerwester1990indexingbyLSA} réalise une décomposition en valeurs singulières de la matrice de scores de co-occurrence document-terme où chaque cellule contient le poids du terme dans le document correspondant (par exemple TF-IDF). L'ALS permet ainsi de réduire la grande dimension lexicale des documents à un espace de thématiques défini par le nombre de valeurs propres choisies. Comme pour l'ALD, le nombre de composantes (ou thématiques) peut être sélectionné comme étant celui qui  maximise la cohérence.
- La réduction de dimension par l'ALS consiste à ... . Avantage et limite
+L'analyse latente sémantique (ALS) \citep{dumais1988LSI, deerwester1990indexingbyLSA} réalise une décomposition en valeurs singulières (SVD) de la matrice $A$ des scores de co-occurrence document-terme où chaque cellule contient le poids du terme dans le document correspondant (par exemple TF-IDF). Plus précisément, l'ALS applique la décomposition SVD directement sur $A$, contrairement à l'ACP qui centre-réduit cette dernière au préalable. L'ALS permet ainsi de réduire la grande dimension lexicale des documents à un espace de thématiques défini par le nombre de valeurs propres choisies. Comme pour l'ALD, le nombre $q$ de composantes (ou thématiques) peut être sélectionné comme étant celui qui  maximise la cohérence. 
+% La réduction de dimension par l'ALS consiste à ... . Avantage et limite
 
-\paragraph[NMF]{Factorisation de matrice non-négative} Un algorithme de factorisation de matrice non-négative (FMN) \citep{paatero1994nmf} factorise la matrice $X$ des scores non-négatifs de co-occurrence document-terme, en deux matrices $W$ et $H$ sans élément négatif, dont le produit est une approximation de $X$. Il s'agit en effet d'une méthode de modélisation de thématiques dans laquelle $W$ est décrite comme la matrice $N\times q$ terme-thème i.e. la matrice de la relation entre les termes et les thèmes découverts dans les documents de $X$, et $H$ est la matrice $q\times m$ thème-document i.e. les poids d'appartenance des documents aux thèmes. Le calcul de $W$ et $H$ consiste à optimiser (minimiser) la fonction objective: \[\frac{1}{2}\norm{X - WH}^2_F = \sum\limits_{i=1}^N\sum\limits_{i=1}^m (X_{ij} - (WH)_{ij})^2,\] où $\norm{\cdot}_F$ désigne la norme matricielle de Frobenius\footnote{$\norm{X}_F = \sqrt{\sum\limits_{i=1}^N\sum\limits_{i=1}^m \vert X_{ij}\vert^2}$}, et $X_{ij} = w(t_j, d^i)$, $d^i \in \mathcal{D}$.  La réduction de dimension par la FMN consiste à ... . Avantage et limite
+\paragraph[NMF]{Factorisation de matrice non-négative} Un algorithme de factorisation de matrice non-négative (FMN) \citep{paatero1994nmf} factorise la matrice $X$ des scores non-négatifs de co-occurrence document-terme, en deux matrices $W$ et $H$ sans élément négatif, dont le produit est une approximation de $X$. Il s'agit en effet d'une méthode de modélisation de thématiques dans laquelle $W$ est décrite comme la matrice $N\times q$ terme-thème i.e. la matrice de la relation entre les termes et les thèmes découverts dans les documents de $X$, et $H$ est la matrice $q\times m$ thème-document i.e. les poids d'appartenance des documents aux thèmes. Le calcul de $W$ et $H$ consiste à optimiser (minimiser) la fonction objective: \[\frac{1}{2}\norm{X - WH}^2_F = \sum\limits_{i=1}^N\sum\limits_{i=1}^m (X_{ij} - (WH)_{ij})^2,\] où $\norm{\cdot}_F$ désigne la norme matricielle de Frobenius\footnote{$\norm{X}_F = \sqrt{\sum\limits_{i=1}^N\sum\limits_{i=1}^m \vert X_{ij}\vert^2}$}, et $X_{ij} = w(t_j, d_i)$, $d_i \in \mathcal{D}$.  %La réduction de dimension par la FMN consiste à ... . Avantage et limite
+Comme pour l'ALD, le nombre $q$ de composantes (ou thématiques) peut être sélectionné comme étant celui qui  maximise la cohérence. 
 
 
 \paragraph[w2v*TF-IDF]{Barycentre des termes}
-A partir de vecteurs de mots apprise d'entraînement à l'aide de méthodes comme Word2Vec \citep{mikolov2013word2vec} ou GloVe \citep{pennington2014glove}, il est souvent proposé de considérer le document comme le barycentre des mots qu'il contient, et de le représenter comme la moyenne des vecteurs de termes pondérés par leur poids dans le document (par exemple TF-IDF) \citep{lemikolov2014word2vec, charlet2017simbow_tal,arora2017wordAvgSentEmbedd}. Pour de longs documents comme les décisions de justice, la moyenne des vecteurs court le risque devenir inintéressante. 
+A partir de vecteurs de mots apprise d'entraînement à l'aide de méthodes comme Word2Vec \citep{mikolov2013word2vec} ou GloVe \citep{pennington2014glove}, il est souvent proposé de considérer le document comme le barycentre des mots qu'il contient, et de le représenter comme la moyenne des vecteurs de termes pondérés par leur poids dans le document (par exemple TF-IDF) \citep{lemikolov2014word2vec, charlet2017simbow_tal,arora2017wordAvgSentEmbedd}. En effet, tout vecteur $\vec{d}$ est réduit en un vecteur $\vec{d}_q$ de $q$ dimensions, ce dernier étant le nombre de dimensions des vecteurs de termes:\[\vec{d}_q[k] = \frac{1}{\sum\limits_{i=1}^m \vec{d}[i]} \sum\limits_{i=1}^{m}\vec{d}[i]*\vec{t_i}[k].\]
+%Pour de longs documents comme les décisions de justice, la moyenne des vecteurs court le risque de ne pas être pertinente. 
 
 \subsection{Sélection du nombre optimal de clusters}
 \label{sec:similarite:k-optimal}
@@ -260,9 +263,6 @@ ARI a des valeurs dans $[-1;1]$. Une valeur négative indique que le regroupemen
 
  La cohésion et la séparation des clusters sont les principaux indices internes. La cohésion mesure le degré de proximité entre objets d'un cluster à partir du carré de la somme des erreurs\footnote{Erreur: distance entre un point et le centre du cluster dont il est membre.} dans les clusters: $WCSS(C) = \sum\limits_{j=1}^K\sum\limits_{x \in C_j} (Dis(x, m_j))^2$, où $C = \lbrace C_1, C_1, \cdots, C_K \rbrace$ est l'ensemble des clusters du regroupement, $m_j$ le centre de $C_j$, et $Dis(x,m_j)$ la distance (généralement euclidienne) entre un point $x$ et $m_j$. En général, une valeur faible de la cohésion indique que les clusters sont plus compactes, et donc de meilleur qualité. Tandis qu'une valeur élevée révèle une grande variabilité entre les objets à l'intérieur les clusters. La séparation quant à elle mesure l'éloignement de chaque cluster des autres à partir du carré de la somme des distances entre clusters: $BCSS(C) = \sum\limits_{j = 1}^{K} \vert C_j \vert (m - m_j)$, 
   $m$ étant le centre l'ensemble des objets (la moyenne des vecteurs de tous les documents, où le document qui se trouve à une distance moyenne minimale de tous les autres). Une grande valeur de séparation indique que les clusters sont isolés les uns des autres, et par conséquent elle doit être maximisée pendant le regroupement. Le coefficient de silhouette de \citet{rousseeuw1987silhouetteclusternumber} (cf. \ref{sec:similarite:k-optimal})  combine les idées de cohésion et séparation mais pour chaque objet.
-  
-\section{Méthode}
-modèle vectoriel optimal > clustering par kmeans
 
 \section{Apprentissage d'une distance basée sur la transformation de document}
 Nous définissons la métrique suivante qui est fonction des transformations permettant de passer d'un document $d$ à un autre $d'$ :
@@ -313,6 +313,9 @@ Pour une même valeur ou des valeurs différentes de $p$, plusieurs documents so
 \subsection{Entraînement de la métrique}
 
 Sur $B_\mathcal{M}$, on entraîne un modèle régressif $m$ pour prédire la distance entre deux documents quelconques en fonction de leur représentation vectorielle. Ce modèle de régression $Reg_\mathcal{M}$ peut être utilisé comme distance dans un algorithme de regroupement comme l'algorithme des K-moyennes. Cependant, les modèles de régression ne supportent généralement qu'un seul vecteur en entrée, et pas deux comme en dispose la base $B$. Les vecteurs $d_i$ et $d'$ doivent donc être agrégés en un seul. L'agrégation qui fonctionne le mieux est la soustraction avec laquelle les documents similaires auront une agrégation avec un grand nombre de composantes tendant vers 0. La fonction d'estimation automatique de la distance sémantique entre $x$ et $y$ s'écrit: $Dis_\mathcal{M}(d, d') = Reg_\mathcal{M}(\vec{d_{i}} - \vec{d_{j}})$. 
+
+\subsection{Utilisation pour la catégorisation non supervisée des documents}
+ Nous proposons dans un premier temps de sélectionner la représentation vectorielle pour laquelle la distance sépare au mieux les groupes manuellement annotées et rapproche au mieux les éléments à l'intérieur de ces groupes. Ensuite, La distance apprise peut être utilisée dans des algorithmes comme les k-moyennes sur des documents représentés sous la forme optimale sélectionnée.
 
 %\textcolor{red}{Issues:}
 %\begin{itemize}
@@ -463,18 +466,18 @@ Les terminologies des différents cas se distinguent bien (Tableau \ref{tab:simi
 Pour l'évaluation non supervisée, les corpus des catégories de demande des chapitres \ref{chap:quanta} et \ref{chap:sensresultat} sont employés en plus pour l'évaluation non-supervisée. Nous les appelons respectivement $\mathcal{D}_{acpa}$, $\mathcal{D}_{concdel}$, $\mathcal{D}_{danais}$,$\mathcal{D}_{dcppc}$, $\mathcal{D}_{doris}$, $\mathcal{D}_{styx}$.
 
 \subsection{Protocole et outils logiciels}
-Pour analyser la validité et l'adéquation de la métrique apprise, nous l'entraînons sur la base générée puis nous l'évaluons sur le corpus annoté $\mathcal{D}_{arcpa}$ restreint aux 74 documents n'appartenant qu'à l'un des cas $L = \lbrace a, b, c \rbrace$. Quant à l'efficacité de la métrique apprise, nous l'entraînons sur toutes les données annotées générées. Les documents sont pré-traités avant leur représentation sous forme vectorielle. Ce prétraitement consiste à sectionner les documents (chapitre \ref{chap:structuration}), à n'utiliser que la section Motifs, à mettre en minuscule et lemmatiser ce contenu, puis à éliminer la ponctuation et des mots inutiles (\textit{stop words})  car ils sont généralement indépendants de toute catégorie. Après pré-traitement, les documents ont une taille allant de 208 à 3812 mots dont une moyenne de 1381 mots. Le vocabulaire $W$ utilisé est restreint au mots du corpus original $D$ sur lequel il faut appliquer les regroupements. La représentation vectorielle emploie les modèles de types TF-IDF avec des n-grammes de 1 à 3 mots (pour prendre en compte l'ordre entre les mots). Chaque poids global $g(t)$ d'un terme $t$ est multiplié par le logarithme du nombre de mots de $t$ donnant ainsi une nouvelle pondération globale $\hat{g}(t) = \log_2{\vert t \vert} \times g(t)$. Les poids globaux sont appris sur la discrimination entre deux corpus $\mathcal{D}_{arcpa}$ (84 documents) et $\mathcal{D}_{\overline{arcpa}}$ (427) i.e. la terminologie de $\mathcal{D}_{arcpa}$.
+Pour analyser la validité et l'adéquation de la métrique apprise, nous l'entraînons sur la base générée puis nous l'évaluons sur le corpus annoté $\mathcal{D}_{arcpa}$ restreint aux 74 documents n'appartenant qu'à l'un des cas $L = \lbrace a, b, c \rbrace$. Quant à l'efficacité de la métrique apprise, nous l'entraînons sur toutes les données annotées générées. Les documents sont pré-traités avant leur représentation sous forme vectorielle. Ce pré-traitement consiste à sectionner les documents (chapitre \ref{chap:structuration}), à n'utiliser que la section Motifs, à mettre en minuscule et lemmatiser ce contenu, puis à éliminer la ponctuation et des mots inutiles (\textit{stop words})  car ils sont généralement indépendants de toute catégorie. Après pré-traitement, les documents ont une taille allant de 208 à 3812 mots dont une moyenne de 1381 mots. Le vocabulaire $W$ utilisé est restreint au mots du corpus original $D$ sur lequel il faut appliquer les regroupements. La représentation vectorielle emploie les modèles de types TF-IDF avec des n-grammes de 1 à 3 mots (pour prendre en compte l'ordre entre les mots). Chaque poids global $g(t)$ d'un terme $t$ est multiplié par le logarithme du nombre de mots de $t$ donnant ainsi une nouvelle formulation $\hat{g}(t) = \log_2{\vert t \vert} \times g(t)$ qui, par conséquent, augmente le poids des longs termes qui sont rares mais parfois plus discriminants. Les poids globaux sont appris sur la discrimination entre deux corpus $\mathcal{D}_{C}$ (84 documents) et $\mathcal{D}_{\overline{C}}$ (427) i.e. la terminologie d'une catégorie de demande $C$. 427 documents forment $\mathcal{D}_{\overline{arcpa}}$.
 
- La librairie Python Scikit-Learn \citep{Pedregosa2011scikit-learn} a été utilisée pour les implémentations des algorithmes de réduction de dimension. La distance WMD est celle implémentée dans la librairie Gensim de \citet{rehurek2010gensim}. Le modèle de vecteurs de mots est un modèle GLoVE de \citet{pennington2014glove} entraîné sur un corpus de +800k décisions de justice lémmatisées, à l'aide de vecteurs de dimension 300 obtenu sur une taille de fenêtre de contexte égale à 15 mots.
+ La librairie Python Scikit-Learn \citep{Pedregosa2011scikit-learn} a été utilisée pour les implémentations des algorithmes de réduction de dimension. La distance WMD est celle implémentée dans la librairie Gensim de \citet{rehurek2010gensim}. Le modèle de vecteurs de mots est un modèle GLoVE de \citet{pennington2014glove} entraîné sur un corpus de +800k décisions de justice lémmatisées, à l'aide de vecteurs de dimension 300 obtenu sur une taille de fenêtre de contexte égale à 15 mots. Le vecteur $\vec{t}$ d'un terme $t$ de $n$ mots $(w_1, w_2, \cdots, w_n)$ est obtenu en concaténant leur vecteur respectif de la droite vers la gauche: $\vec{t}=[\vec{w_1}\vec{w_2}\cdots \vec{w_n}]$.
 
 \subsection{Validité de la distance apprise}
-La base d'entraînement $B$ comprend 935 documents dont 10 documents synthétiques générés pour chacun des 74 documents n'ayant qu'un seul label (circonstance factuelle). Sur un modèle TF-IDF, la régression linéaire donne un taux d'erreur faible (Figure \ref{fig:similarite:eval-regression}).
+La base d'entraînement $B$ comprend 935 documents dont 10 documents synthétiques générés pour chacun des 74 documents n'ayant qu'un seul label (circonstance factuelle). Sur un modèle TF-IDF, la régression linéaire donne un faible taux d'erreur (Figure \ref{fig:similarite:eval-regression}).
 
 \begin{figure}[!htb]
-	\centering %\includegraphics[width=0.49\textwidth]{eval-lr.png} \hfil
+	\centering \includegraphics[width=0.8\textwidth]{eval-lr.png} \hfil
 	%\includegraphics[width=0.49\textwidth]{eval-mlp.png}
 	
-	\caption{}\label{fig:similarite:eval-regression}
+	\caption{Evaluation de la distance apprise: Différence entre valeurs prédites et  valeurs attendues}\label{fig:similarite:eval-regression}
 \end{figure}
 
 Nous vérifions ici que la métrique respecte les propriétés des distances, et aussi si elle reste normale après l'entraînement. D'après la matrice des distances entre toutes les paires de document de la base annotées $\mathcal{D_{\text{arcpa}}}$ (Figure \ref{fig:similarite:distance_matrix}),  la "non-négativité", l'identité discernable, et la symétrie sont respectée car toutes les valeurs sont non-négative, seule la diagonale est nulle, et la matrice est symétrique. De plus, toutes les distances sont comprises entre 0 et 1, et par conséquent la métrique est normée (donc la similarité est déduite par $Sim_\mathcal{M} = 1 - Dis_\mathcal{M}$).
@@ -502,17 +505,17 @@ Le clustering par l'algorithme des K-moyennes dépend fortement de la représent
 \begin{table}[!htb]
 	\footnotesize
 	\begin{center}
-	\begin{tabular}[pos]{|l|c|c|l|}
+	\begin{tabular}[pos]{|l|c|l|}
 		\hline
-		\textbf{Distance}&\textbf{Base$^a$}&\textbf{Silhouette} & \textbf{(pondération, reduction, dim)} \\ \hline
-		$Dis_{jaccard}$ & 0.001 & 0.212 &(TP-NGL, NMF, 4) \\ \hline
-		$Dis_{cos}$ & 0.002 & 0.202 & (TP-NGL, NMF, 4) \\ \hline
-		$Dis_{M}$ & -0.049 & 0.195 &(TP-NGL, NMF, 4) \\ \hline
-		$Dis_{braycurtis}$ & 0.002& 0.182 &(TP-NGL, NMF, 4) \\ \hline
-		$Dis_{euclidienne}$ & 0.001& 0.168 & (TP-NGL, NMF, 4) \\ \hline
-		$Dis_{manhattan}$ & -0.019& 0.17  & (TP-NGL, NMF, 4) \\ \hline
-		$Dis_{pearson}$ & 0.014 & 0.057 &(TP-CHI2, aucun, 19763) \\ \hline
-		$Dis_{wmd}$ & -0.096 & - & - \\ \hline
+		\textbf{Distance}&\textbf{Base$^a$}&\textbf{Silhouette optimale   (pondération, reduction, dim)} \\ \hline
+		$Dis_{jaccard}$ & 0.001 & 0.212 (TP-NGL, FNM, 4) \\ \hline
+		$Dis_{cos}$ & 0.002 & 0.202 (TP-NGL, FNM, 4) \\ \hline
+		$Dis_{M}$ & -0.049 & 0.195 (TP-NGL, FNM, 4) \\ \hline
+		$Dis_{braycurtis}$ & 0.002& 0.182 (TP-NGL, FNM, 4) \\ \hline
+		$Dis_{euclidienne}$ & 0.001& 0.168  (TP-NGL, FNM, 4) \\ \hline
+		$Dis_{manhattan}$ & -0.019& 0.17   (TP-NGL, FNM, 4) \\ \hline
+		$Dis_{pearson}$ & 0.014 & 0.057 (TP-CHI2, aucun, 19763) \\ \hline
+		$Dis_{wmd}$ & -0.096 &  - \\ \hline
 	\end{tabular}		
 \end{center}
 	
@@ -521,6 +524,8 @@ Le clustering par l'algorithme des K-moyennes dépend fortement de la représent
     \caption{Meilleure représentation vectorielle pour chaque distance sur le clustering manuel.} \label{tab:similarite:silhouette-vecteur-manuel}
 \end{table}
 
+
+Le modèle vectoriel TP-NGL réduit à 4 dimension par la factorisation de matrice non négative est préférée par la majorité des distances. L
 \subsection{Clustering du corpus annotées manuellement}
 \subsubsection{Nombre de clusters prédéfini}
 La représentation vectorielle qui donne la meilleure silhouette pour le clustering manuel est celle qui permet une meilleure séparation entre les clusters et cohésion dans chaque cluster, donc par conséquent une meilleur distribution des points dans l'espace pour reconnaître des cluster donc la sémantique est de même nature que celle de l'annotation manuelle. Pour chaque distance, le modèle vectoriel optimal sur le clustering manuel devrait être optimale pour un clustering selon les métriques d'évaluation supervisée. Le Tableau \ref{tab:similarite:validation-supervisee-k3} présente les mesures ARI, NMI et F1-mesure du clustering par k-means et k-medoids sur $\mathcal{D}_{arcpa}$, avec $K=3$.
@@ -550,7 +555,7 @@ La représentation vectorielle qui donne la meilleure silhouette pour le cluster
 \end{table}
 
 \subsubsection{Nombre de clusters déterminé automatiquement}
-Nous comparons ici l'emploie de la statistique d'écart et de la silhouette pour la détermination du nombre de cluster pour chaque distance.
+Nous comparons ici l'emploie de la statistique d'écart et de la silhouette pour la détermination du nombre de cluster pour chaque distance. La sélection est effectué pour les valeurs 2 et 10. Même si $Dis_m$ retrouve le nombre attendu avec le k-means, $4$ est la plus valeur la plus choisie par les distances, et elle semble meilleure avec une F1-mesure maximale à 0.551 et un ARI de 0.398 avec $Dis_{cosine}$. Les valeurs déterminées sont assez proche de la valeur attendue 3.   
 
 \begin{table}[!htb]
 	\centering \footnotesize
@@ -579,11 +584,11 @@ Nous comparons ici l'emploie de la statistique d'écart et de la silhouette pour
 \subsection{Clustering des corpus non annotés manuellement}
 Les matrices document-terme des autres catégories sont construites à base des mêmes représentations sélectionnées sur le clustering manuel (cf. \ref{sec:similarite:select-repr-optimal}). Le tableau \ref{tab:similarite:validation-nonsupervisee} présente les valeurs de silhouette obtenues par le kmeans et le kmedoid sur ces matrices.
 \begin{table}[!htb]
-	\centering
+	\begin{center}
 	\begin{tabular}[pos]{|l|l|c|c|}
 		\hline
 		\textbf{Corpus}& \textbf{Distance}& \textbf{K} & \textbf{S}  \\ \hline
-	\multirow{2}{*}{$\mathcal{D}_{acpa}$ (21)} & $Dis_{cos}$  & 3 & 0.525 \\ \cline{2-4}
+	\multirow{2}{*}{$\mathcal{D}_{acpa}$ (21$^*$)} & $Dis_{cos}$  & 3 & 0.525 \\ \cline{2-4}
 	& $Dis_{M}$ & 2 & 0.770\\ \hline
 	\multirow{2}{*}{$\mathcal{D}_{concdel}$ (30)}  & $Dis_{cos}$  & 4 & 0.697  \\ \cline{2-4}
 	& $Dis_{M}$ & 4 & 0.652\\ \hline
@@ -596,12 +601,17 @@ Les matrices document-terme des autres catégories sont construites à base des 
 	\multirow{2}{*}{$\mathcal{D}_{styx}$ (50)}  & $Dis_{cos}$  & 4 & 0.572 \\ \cline{2-4}
 	& $Dis_{M}$ &2 & 0.694\\ \hline
 	\end{tabular}
+\end{center}
 
-	\caption{Validation non-supervisée sur $\mathcal{D}_{acpa}, \mathcal{D}_{concdel}, \mathcal{D}_{danais}, \mathcal{D}_{dcppc}, \mathcal{D}_{doris}, \mathcal{D}_{styx}$.} \label{tab:similarite:validation-nonsupervisee}
+	$^*$ Nombre de documents
+
+	\caption{Evaluation non-supervisée des k-medoids sur $\mathcal{D}_{acpa}, \mathcal{D}_{concdel}, \mathcal{D}_{danais}, \mathcal{D}_{dcppc}, \mathcal{D}_{doris}, \mathcal{D}_{styx}$.} \label{tab:similarite:validation-nonsupervisee}
 \end{table}
 
-\subsection{Terminologie des clusters générés}
+%\subsection{Terminologie des clusters générés}
 
 \section{Conclusion}
 \label{sec:similarite:conclusion}
-Il aurait été judicieux d'augmenter au préalable le volume des corpus par la détection de la présence de catégorie par classification de documents, étant donnée qu'elle est triviale pour les algorithmes traditionnels.
+Les circonstances où est faite une catégorie de demande doivent être découvertes afin de rapprocher les litiges non décidés des cas similaires de la jurisprudence. Les circonstances factuelles catégorisent les décisions mais sont illimités car ils correspondent aux faits courants de la vie. Ce problème ne pouvant pas être traité par classification supervisée (difficulté d'annotation), ce chapitre l'aborde comme une tâche de catégorisation non supervisée de document en explorant l'usage des algorithmes k-means et k-medoids, ainsi que diverses représentations de texte, et métriques de similarité. L'objectif étant de construire des groupes de documents qui partagent des circonstances factuelles similaires, à partir d'un corpus de décisions comprenant toutes une catégorie donnée de demande. La proposition faite ici est d'exploiter la faible quantité de catégorisation manuelle qui peut être faite afin de sélectionner, par la silhouette moyenne, la représentation de texte qui correspond au mieux à la sémantique des circonstances factuelles. Le schéma sélectionné permet de transformer de nouveaux corpus non annotés afin d'y découvrir les circonstances factuelles par catégorisation non supervisée. Les expérimentations montre une amélioration considérable par rapport au modèle de base TF-IDF. La silhouette reste néanmoins faible. Ce qui signifie que la factorisation de matrice non négative est efficace mais il faudrait la combiner avec de meilleurs modèles vectoriels. Néanmoins cette sélection de représentation permet d'obtenir une assez bonne efficacité de catégorisation sur le corpus annoté (0.626 et 0.551 de F1-mesure, et 0.44 et 0.39 de ARI avec le kmedoids pour un nombre de clusters respectivement prédéfini et automatiquement déterminé). Ces résultats se traduisent aussi sur la largeur moyenne de la silhouette autant pour le le corpus annoté (0.448 et 0.456 respectivement) que pour les six corpus non annotés utilisés (entre 0.403 et 0.770 pour toutes les catégorie).
+
+Les algorithmes k-means et k-medoids ne sont pas toujours les plus efficaces pour la catégorisation de documents. L'expérimentation de meilleurs algorithmes devrait améliorer les résultats obtenus, comme par exemple l'intégration de la modélisation thématique FNM dans la catégorisation comme par exemple \citet{xie2013MGCTM} le fait avec l'allocation latente de Dirichlet. Par ailleurs, la représentation vectorielle n'est sélectionnée que sur un seule corpus pour les expérimentations de ce chapitre. Il serait intéressant d'annoter plusieurs corpus, pour améliorer la sélection en considérant la représentation vectorielle qui correspond en moyenne aux circonstances factuelles sur l'ensemble de ces catégorisations manuelles.
