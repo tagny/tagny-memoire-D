@@ -155,8 +155,9 @@ L'avantage de l'utilisation des réseaux de neurones vient de leur capacité à 
 
 
 \subsection{Extraction de la terminologie d'un domaine}
+\label{sec:quanta:extract-terminologie-domaine}
 L'identification des attributs peut être facilitée grâce à leur proximité avec des termes-clés caractéristiques des catégories de demandes au même titre que les \og déclencheurs \fg{} aident à identifier les évènements.
-Ne disposant pas au préalable de la liste des termes pertinents pour l'extraction des demandes, il est possible de les apprendre. Il existe à cet effet plusieurs métriques statistiques de pondération de termes généralement employées en recherche d'information et en classification de texte comme méthodes de sélection de caractéristiques. Ces métriques sont qualifiées de poids globaux car calculées à partir des occurrences dans un corpus, à la différence des poids locaux (Tableau \ref{quanta:tab:metriq_locales}) calculés à partir des occurrences dans un document. Quelques métriques sont formulées ici en utilisant les notations du Tableau \ref{quanta:tab:notations_metriques} définies pour une base d'apprentissage.
+Ne disposant pas au préalable de la liste des termes pertinents pour l'extraction des demandes, il est possible de les apprendre. Il existe à cet effet plusieurs métriques statistiques de pondération de termes généralement employées en recherche d'information et en classification de texte comme méthodes de sélection de caractéristiques. Ces métriques sont qualifiées de poids globaux car calculées à partir des occurrences dans un corpus, à la différence des poids locaux (Tableau \ref{tab:quanta:metriq_locales}) calculés à partir des occurrences dans un document. Quelques métriques sont formulées ici en utilisant les notations du Tableau \ref{tab:quanta:notations_metriques} définies pour une base d'apprentissage.
 
 
 %Les approches d'extraction de terminologie peuvent être organisés dans les principaux groupes suivants \citet{gomez2004overviewontologielearning,lossio2014biotexcvalue}: 
@@ -196,7 +197,7 @@ $DF_{t \vert c}$ & proportion de documents contenant $t$ dans le corpus de $c$ (
 $DF_{c \vert t}$ & proportion de documents appartenant à $c$ dans l'ensemble de ceux qui contiennent $t$  \\
 \hline
 \end{tabular}
-\caption{Notation utilisée pour formuler les métriques} \label{quanta:tab:notations_metriques}
+\caption{Notation utilisée pour formuler les métriques} \label{tab:quanta:notations_metriques}
 \end{table}
 
 % Lorsque la fonction n'utilise que le corpus représentatif du domaine d'intérêt, elle mesure ainsi le degré d'importance du terme dans le langage d'un domaine particulier ou une classe particulière de documents. Par exemple, la fonction \og fréquence de document \fg{} (\textit{DF - Document Frequency}) mesure l'importance d'un terme en lui affectant la proportion de documents qui le contiennent dans un corpus global considéré. De telles fonctions sont qualifiées de non-supervisées contrairement à celles qui se calculent entre différents corpus  et par conséquent utilisent les labels des données d'entraînement \citep{lan2009termweighting, wu2017balancingtermweight}. Ces dernières mesurent l'importance du terme dans la discrimination (ou la différence) entre le domaine d'intérêt et les autres corpus. Un exemple simple s'obtient en faisant la différence de \og fréquence de document \fg{} d'un terme entre un corpus $c$ et sont complémentaire $\overline{c}$. 
@@ -285,7 +286,7 @@ A l'exception de la $\text{C-value}$, ces métriques ne tiennent pas expliciteme
 		\hline
 	\end{tabular}
 
-	\caption{Métriques locales}\label{quanta:tab:metriq_locales}
+	\caption{Métriques locales}\label{tab:quanta:metriq_locales}
 \end{table}
 
 Etant donné le grand nombre de métriques de pondération existantes, la métrique choisie est celle qui fournit la meilleure performance sur les données d'apprentissage.
@@ -390,12 +391,12 @@ L'annotation manuelle d'exemples s'effectue pour une catégorie à la fois afin 
 \begin{enumerate}
 	\item définir une catégorie $c$ par son objet et sa norme juridique;
 	\item former un corpus $D_c$ de documents contenant des demandes de $c$, et un autre $D_{\overline{c}}$ de documents n'en contenant pas; 
-	\item extraire toutes les demandes de catégories $c$ mentionnées dans $D_c$, pour annoter les données des paires demande-résultat dans un tableau comme celui illustré par le  Tableau \ref{tab:quanta:tab-annotations};
+	\item extraire toutes les demandes de catégories $c$ mentionnées dans $D_c$, pour annoter les données des paires demande-résultat dans un tableau comme celui illustré par le  Tableau \ref{tab:tab:quanta-annotations};
 	
 	\begin{table}[!htb]
 		\includegraphics[width=\textwidth]{tab-annotations.png}
 		\scriptsize{Les noms des champs sont sur les 2 premières lignes et les demandes sont données en exemple pour la catégorie \textit{dommages-intérêts sur le fondement de l'article 700 du code de procédure civile} (décision 14/06911 de la cour d'appel de Lyon).}
-		\caption{Extrait du tableau d'annotations manuelles des demandes.} \label{tab:quanta:tab-annotations}
+		\caption{Extrait du tableau d'annotations manuelles des demandes.} \label{tab:tab:quanta-annotations}
 	\end{table}
 \end{enumerate}
 
