@@ -1,4 +1,4 @@
- \chapter{Modélisation des circonstances factuelles par catégorisation non supervisé de documents}
+ \chapter{Découverte des circonstances factuelles par regroupement non supervisé de documents}
 \label{chap:similarite}
 
 \section{Introduction}
@@ -26,9 +26,6 @@ Pour réaliser des partitions distinctes\footnote{Chaque document n'appartient q
 En outre, la catégorisation spectrale est une autre méthode efficace de catégorisation qui effectue préalablement une réduction de dimensions à l'aide du spectre de la matrice de similarité $M \in \mathbb{R}^{N \times N}$ \footnote{$M_{ij}$ est la mesure de la similarité entre les points (documents) $d_i$ et $d_j$ du corpus $D$.} des données  avant d'appliquer un algorithme traditionnel comme celui des K-moyennes. Les dimensions du nouvel espace sont définies par les vecteurs propres de la matrice Laplacienne $L$ de $M$ \citep{shi2000spectralClustering, von2007tutorialSpectralClustering} qui peut être normalisée ($L = T^{-1/2}(T-S)T{-1/2}$) ou pas ($L = T - M$), $T$ étant la matrice diagonale déduite de $M$ i.e. $T_{ii} = \sum\limits_j M_{ij}$. 
 
 Il est aussi possible d'utiliser les arbres de décision pour améliorer les résultats des K-moyennes. En effet, les forêts aléatoires \citep{breiman2001randomforest} permettent d'estimer la similarité entre deux points. Le principe consiste à générer un ensemble de $n$ points synthétiques, et d'entraîner une forêt aléatoire à une classification binaire supervisée avec les points originaux considérés dans la classe des "originaux" et les données synthétiques dans la seconde classe des "synthétiques" \citep{afanador2016unsupervisedrandomforest}. Une forêt aléatoire étant un ensemble d'arbres de décision (classification) construit sur des parties de l'ensemble d'apprentissage duquel on a retiré une ou plusieurs variables prédictives, la similarité entre 2 points est la proportion d'arbres dans lesquels ces points se trouvent dans le même nœud feuille. Cette métrique "apprise" peut-être par la suite utilisée dans un algorithme de catégorisation classique comme les K-moyennes.
-
-\subsubsection{Catégorisation hiérarchique}
-La catégorisation hiérarchique consiste à construire une hiérarchie de clusters. Le regroupement hiérarchique ascendant est une technique de catégorisation hiérarchique qui part d'autant de clusters que de documents, chacun des groupe comprenant un élément. Ensuite, l'algorithme détecte et fusionne successivement des sous groupes dont la distance est la plus petite et/ou proche d'une valeur seuil donnée, jusqu'à ce que tous les documents soit dans un unique groupe (racine). Pour déterminer le partitionnement optimal, Le nombre de clusters doit être déterminé. \textcolor{red}{Une technique pour y arriver est de ...\footnote{\url{http://eric.univ-lyon2.fr/~ricco/cours/slides/en/cah.pdf}}}.
 
 %\textcolor{red}{Random Forest - processus de construction: \url{https://onlinelibrary.wiley.com/doi/pdf/10.1002/cem.2790}}
 
@@ -64,6 +61,9 @@ Lorsque des chevauchements sont observables entre clusters (un document peut fai
 %nombre prédéfini de clusters, initialisation aléatoire des centroïdes menant à des clusters différents entre plusieurs exécution \citep{sabzi2011fuzzykmedoids}. Nous noterons aussi la dépendance à la métrique de similarité.
 %Algorithme kmeans + kmédoids pour les documents: https://pdfs.semanticscholar.org/a46f/efdb64a01d1e6390c8212d881b9c4414ffbf.pdf
 
+\subsubsection{Catégorisation hiérarchique}
+La catégorisation hiérarchique consiste à construire une hiérarchie de clusters. Le regroupement hiérarchique ascendant est une technique de catégorisation hiérarchique qui commence par autant de clusters que de documents (chacun des groupes comprenant un document). Ensuite, l'algorithme détecte et fusionne successivement les paires de groupes dont la fusion vérifie un critère (par exemple la paire minimise une distance dont la distance est la plus petite et/ou proche d'une valeur seuil donnée, ou bien la fusion forme un groupe à inertie\footnote{L'inertie d'un cluster est la variance de ses points c'est-à-dire la somme des erreurs au carré (distance d'un membre au centre) minimale}),
+jusqu'à ce que tous les documents soient dans un unique groupe (racine). Pour déterminer le partitionnement optimal, le nombre de clusters doit être déterminé par l'une des diverses techniques existantes \citep{thorndike1953HAC_nb_clusters, salvador2004Hierarchical_clustering_number_of_clusters}.
 
 \subsection{Métriques de dis-similarité (distances)}
 \label{sec:similarite:distances}
@@ -179,7 +179,7 @@ L'allocation latente de Dirichlet (ALD) \citep{blei2003lda} est une technique qu
 L'analyse latente sémantique (ALS) \citep{dumais1988LSI, deerwester1990indexingbyLSA} réalise une décomposition en valeurs singulières (SVD) de la matrice $A$ des scores de co-occurrence document-terme où chaque cellule contient le poids du terme dans le document correspondant (par exemple TF-IDF). Plus précisément, l'ALS applique la décomposition SVD directement sur $A$, contrairement à l'ACP qui centre-réduit cette dernière au préalable. L'ALS permet ainsi de réduire la grande dimension lexicale des documents à un espace de thématiques défini par le nombre de valeurs propres choisies. Comme pour l'ALD, le nombre $q$ de composantes (ou thématiques) peut être sélectionné comme étant celui qui  maximise la cohérence. 
 % La réduction de dimension par l'ALS consiste à ... . Avantage et limite
 
-\paragraph[NMF]{Factorisation de matrice non-négative} Un algorithme de factorisation de matrice non-négative (FMN) \citep{paatero1994nmf} factorise la matrice $X$ des scores non-négatifs de co-occurrence document-terme, en deux matrices $W$ et $H$ sans élément négatif, dont le produit est une approximation de $X$. Il s'agit en effet d'une méthode de modélisation de thématiques dans laquelle $W$ est décrite comme la matrice $N\times q$ terme-thème i.e. la matrice de la relation entre les termes et les thèmes découverts dans les documents de $X$, et $H$ est la matrice $q\times m$ thème-document i.e. les poids d'appartenance des documents aux thèmes. Le calcul de $W$ et $H$ consiste à optimiser (minimiser) la fonction objective: \[\frac{1}{2}\norm{X - WH}^2_F = \sum\limits_{i=1}^N\sum\limits_{i=1}^m (X_{ij} - (WH)_{ij})^2,\] où $\norm{\cdot}_F$ désigne la norme matricielle de Frobenius\footnote{$\norm{X}_F = \sqrt{\sum\limits_{i=1}^N\sum\limits_{i=1}^m \vert X_{ij}\vert^2}$}, et $X_{ij} = w(t_j, d_i)$, $d_i \in \mathcal{D}$.  %La réduction de dimension par la FMN consiste à ... . Avantage et limite
+\paragraph[NMF]{Factorisation de matrice non-négative} Un algorithme de factorisation de matrice non-négative (FMN) \citep{paatero1994nmf} factorise la matrice $A$ des scores non-négatifs de co-occurrence document-terme, en deux matrices $W$ et $H$ sans élément négatif, dont le produit est une approximation de $A$. Il s'agit en effet d'une méthode de modélisation de thématiques dans laquelle $W$ est décrite comme la matrice $N\times q$ terme-thème i.e. la matrice de la relation entre les termes et les thèmes découverts dans les documents de $A$, et $H$ est la matrice $q\times m$ thème-document i.e. les poids d'appartenance des documents aux thèmes. Le calcul de $W$ et $H$ consiste à optimiser (minimiser) la fonction objective: \[\frac{1}{2}\norm{A - WH}^2_F = \sum\limits_{i=1}^N\sum\limits_{i=1}^m (A_{ij} - (WH)_{ij})^2,\] où $\norm{\cdot}_F$ désigne la norme matricielle de Frobenius\footnote{$\norm{X}_F = \sqrt{\sum\limits_{i=1}^N\sum\limits_{i=1}^m \vert X_{ij}\vert^2}$}, et $A_{ij} = w(t_j, d_i)$, $d_i \in \mathcal{D}$.  %La réduction de dimension par la FMN consiste à ... . Avantage et limite
 Comme pour l'ALD, le nombre $q$ de composantes (ou thématiques) peut être sélectionné comme étant celui qui  maximise la cohérence. 
 
 
@@ -191,12 +191,12 @@ A partir de vecteurs de mots apprise d'entraînement à l'aide de méthodes comm
 \label{sec:similarite:k-optimal}
 %\textcolor{red}{faire un tableau des indices comme dans l'article, et comparer les combinaison indices-algo-distance}
 
- Au delà de l’algorithme à utiliser, le nombre $K$ approprié de clusters doit être déterminé mais pas prédéfini, puisqu'il est difficile de savoir à l'avance le nombre de groupes. Une méthode très connue est celle du \og coude \fg{}  (ou \og genou \fg{}) \citep{halkidi2001clustvalidation}, qui est basé sur le principe de base des algorithmes de partitionnement (e.g. K-moyennes) i.e. minimiser le critère d'inertie\footnote{la variance intra-cluster qui est la somme au carré des erreurs (distance d'un membre au centre).}:
+ Au delà de l’algorithme à utiliser, le nombre $K$ approprié de clusters doit être déterminé mais pas prédéfini, puisqu'il est difficile de savoir à l'avance le nombre de groupes. Une méthode très connue est celle du \og coude \fg{}  (ou \og genou \fg{}) \citep{halkidi2001clustvalidation}, qui est basé sur le principe de base des algorithmes de partitionnement (e.g. K-moyennes) i.e. minimiser le critère d'inertie:
 \[J(K) = \sum\limits_{j=1}^K\sum\limits_{d_i \in C_j}\norm{\vec{d}_i-\overline{\vec{d}_j}}^2\]
 
 $C_j$: ensemble des objets du cluster $j$
 
-$\overline{\vec{d}_j}$: échantillons moyens du cluster $j$ (centre)
+$\overline{\vec{d}_j}$: moyenne des membres du cluster $j$ (centre)
 
 La méthode du coude consiste à essayer différentes valeurs consécutive de $K$ (de $K_{min}$ à $K_{max}$) puis de choisir celle qui correspond au coude de la courbe du critère d'inertie $J(K)$. Le choix de ce coude est visuel et peut être ambigu (plusieurs valeurs de $K$ sur le coude par exemple). 
 
@@ -379,10 +379,10 @@ Les terminologies des différents cas se distinguent bien (Tableau \ref{tab:simi
 %		perdu une chance, 
 %		fait perdre une chance, 		
 		\\ \hline
-		\textit{cas a} & obtenir gain
-		obtenir gain de cause
-		perte de chance
-		perdu une chance
+		\textit{cas a} & obtenir gain,
+		obtenir gain de cause,
+		perte de chance,
+		perdu une chance,
 		chances
 %		nécessairement rejet
 %		chance
@@ -400,10 +400,10 @@ Les terminologies des différents cas se distinguent bien (Tableau \ref{tab:simi
 %		projet d' assignation
 %		toute chance		
 		\\ \hline
-		\textit{cas b} & avocat au barreau de dijon
-		412 du code de procédure
-		barreau de dijon
-		412 du code
+		\textit{cas b} & avocat au barreau de dijon,
+		412 du code de procédure,
+		barreau de dijon,
+		412 du code,
 		devoir de compétence
 %		régularité et d' autre part
 %		obliger qu' en l' espèce
@@ -421,10 +421,10 @@ Les terminologies des différents cas se distinguent bien (Tableau \ref{tab:simi
 %		tous les actes nécessités
 %		appel et le jugement entrepris		 
 		\\ \hline
-		\textit{cas c} &avocat rédacteur d' un acte
-		qualité de rédacteur d' acte
-		rédacteur d' acte
-		rédacteur d' un acte
+		\textit{cas c} &avocat rédacteur d' un acte,
+		qualité de rédacteur d' acte,
+		rédacteur d' acte,
+		rédacteur d' un acte,
 		avocat rédacteur
 %		7.2 du règlement intérieur
 %		7.2 du règlement
@@ -442,10 +442,10 @@ Les terminologies des différents cas se distinguent bien (Tableau \ref{tab:simi
 %		conseiller les deux
 %		convention sur la portée
 		\\ \hline
-		\textit{cas d} & instances introduites
-		chaque mois sous
-		référé du 5 mai
-		réunies car
+		\textit{cas d} & instances introduites,
+		chaque mois sous,
+		référé du 5 mai,
+		réunies car,
 		référé renvoyons
 %		réception du 20 avril 2009
 %		référés compte
@@ -466,13 +466,14 @@ Les terminologies des différents cas se distinguent bien (Tableau \ref{tab:simi
 	\end{tabular}
 
 	\textit{5 premiers termes de 1 à 5 mots sélectionnés à l'aide du coefficient de corrélation $ngl$ (cf. \ref{sec:quanta:poids-globaux-superv})}
-	\caption{Terminologies  de la catégorie \textit{arcpa}, et de ses circonstances factuelles annotées.}\label{tab:similarite:terminologie-resp_avocat}
+	\caption{Terminologies  de la catégorie \textit{arcpa}, et de ses circonstances factuelles manuellement annotées.}\label{tab:similarite:terminologie-resp_avocat}
 \end{table}
 
 Pour l'évaluation non supervisée, les corpus des catégories de demande des chapitres \ref{chap:quanta} et \ref{chap:sensresultat} sont employés en plus pour l'évaluation non-supervisée. Nous les appelons respectivement $\mathcal{D}_{acpa}$, $\mathcal{D}_{concdel}$, $\mathcal{D}_{danais}$,$\mathcal{D}_{dcppc}$, $\mathcal{D}_{doris}$, $\mathcal{D}_{styx}$.
 
 \subsection{Protocole et outils logiciels}
-Pour analyser la validité et l'adéquation de la métrique apprise, nous l'entraînons sur la base générée puis nous l'évaluons sur le corpus annoté $\mathcal{D}_{arcpa}$ restreint aux 74 documents n'appartenant qu'à l'un des cas $L = \lbrace a, b, c \rbrace$. Quant à l'efficacité de la métrique apprise, nous l'entraînons sur toutes les données annotées générées. Les documents sont pré-traités avant leur représentation sous forme vectorielle. Ce pré-traitement consiste à sectionner les documents (chapitre \ref{chap:structuration}), à n'utiliser que la section Motifs, à mettre en minuscule et lemmatiser ce contenu, puis à éliminer la ponctuation et des mots inutiles (\textit{stop words})  car ils sont généralement indépendants de toute catégorie. Après pré-traitement, les documents ont une taille allant de 208 à 3812 mots dont une moyenne de 1381 mots. Pour générer les données  d'entrainement de $Dis_M$, le vocabulaire $W$ utilisé est restreint au mots du corpus original $D$ sur lequel il faut appliquer les catégorisations. La représentation vectorielle emploie les modèles de types TF-IDF (poids local $\times$ poids global) avec des n-grammes de 1 à 3 mots. Chaque poids global $g(t)$ d'un terme $t$ est multiplié par le logarithme du nombre de mots de $t$ donnant ainsi une nouvelle formulation $\hat{g}(t) = \log_2{\vert t \vert} \times g(t)$ qui, par conséquent, augmente le poids des longs termes qui sont rares mais parfois plus discriminants. Les poids globaux sont appris sur la discrimination entre deux corpus $\mathcal{D}_{C}$ (85 documents) et $\mathcal{D}_{\overline{C}}$ (427) i.e. la terminologie d'une catégorie de demande $C$. 427 documents forment $\mathcal{D}_{\overline{arcpa}}$.
+Pour analyser la validité et l'adéquation de la métrique apprise, nous l'entraînons sur la base générée puis nous l'évaluons sur le corpus annoté $\mathcal{D}_{arcpa}$ restreint aux 74 documents n'appartenant qu'à l'un des cas $L = \lbrace a, b, c \rbrace$. Quant à l'efficacité de la métrique apprise, nous l'entraînons sur toutes les données annotées générées. Les documents sont pré-traités avant leur représentation sous forme vectorielle. Ce pré-traitement consiste à sectionner les documents (chapitre \ref{chap:structuration}), à n'utiliser que la section Motifs, à mettre en minuscule et lemmatiser ce contenu, puis à éliminer la ponctuation et des mots inutiles (\textit{stop words})  car ils sont généralement indépendants de toute catégorie. Après pré-traitement, les documents ont une taille allant de 208 à 3812 mots dont une moyenne de 1381 mots. Pour générer les données  d'entrainement de $Dis_M$, le vocabulaire $W$ utilisé est restreint au mots du corpus original $D$ sur lequel il faut appliquer les catégorisations. La représentation vectorielle emploie les modèles de types TF-IDF (poids local $\times$ poids global) avec des n-grammes de 1 à 3 mots. %Chaque poids global $g(t)$ d'un terme $t$ est multiplié par le logarithme du nombre de mots de $t$ donnant ainsi une nouvelle formulation $\hat{g}(t) = \log_2{\vert t \vert} \times g(t)$ qui, par conséquent, augmente le poids des longs termes qui sont rares mais parfois plus discriminants. 
+Les poids globaux sont appris sur la discrimination entre deux corpus $\mathcal{D}_{C}$ (85 documents) et $\mathcal{D}_{\overline{C}}$ (427) i.e. la terminologie d'une catégorie de demande $C$. 427 documents forment $\mathcal{D}_{\overline{arcpa}}$.
 
  La librairie Python Scikit-Learn \citep{Pedregosa2011scikit-learn} a été utilisée pour les implémentations des algorithmes de réduction de dimension. La distance WMD est celle implémentée dans la librairie Gensim de \citet{rehurek2010gensim}. Le modèle de vecteurs de mots est un modèle GLoVE de \citet{pennington2014glove} entraîné sur un corpus de +800k décisions de justice lémmatisées, à l'aide de vecteurs de dimension 300 obtenu sur une taille de fenêtre de contexte égale à 15 mots. Le vecteur $\vec{t}$ d'un terme $t$ de $n$ mots $(w_1, w_2, \cdots, w_n)$ est obtenu en concaténant leur vecteur respectif de la droite vers la gauche: $\vec{t}=[\vec{w_1}\vec{w_2}\cdots \vec{w_n}]$.
 
@@ -556,7 +557,7 @@ Les représentations sélectionnées sont utilisées dans les sections suivantes
 		 dis\_pearson    & kmedoids  & -0.019     & 0.111 & 0.136 & 0.421  & 0.476     & 0.447 \\ \hline
 		 dis\_wmd    & kmedoids  & 0.105 & -0.004&	0.024&	0.333&	0.401&	0.364 \\ \hline
 	\end{tabular}
-	\caption{Evaluation de la catégorisation par k-means et k-medoids de $\mathcal{D}_{arcpa}$ avec le nombre de clusters prédéfini à $K=3$.} \label{tab:similarite:validation-supervisee-k3}
+	\caption{Evaluation de la catégorisation par k-means et k-medoids sur $\mathcal{D}_{arcpa}$ avec le nombre de clusters prédéfini à $K=3$.} \label{tab:similarite:validation-supervisee-k3}
 \end{table}
 
 Les valeurs de silhouette se reflètent plus sur les indices ARI et NMI, mais moins sur la F1-mesure. $Dis_M$ et $Dis_{cos}$ semblent les mieux adaptées pour le k-means, et $Dis_{cos}$ et $Dis_{jaccard}$ pour les k-medoids. Suivant les métriques ARI et NMI, 
@@ -586,7 +587,7 @@ Nous comparons ici l'emploie de la statistique d'écart et de la silhouette pour
 		dis\_pearson    & kmedoids  & 2 & 0.171      & 0.152 & 0.166 & 0.598  & 0.482     & 0.534 \\ \hline
 		wmdistance      & kmedoids  & 2 & 0.332      & -0.016 & 0.002 & 0.545  & 0.397     & 0.459 \\ \hline
 	\end{tabular}
-	\caption{Evaluation de la catégorisation par k-means et k-medoids de $\mathcal{D}_{arcpa}$ avec détermination du nombre de clusters avec la silhouette.} \label{tab:similarite:validation-supervisee-optKbySilhouette}
+	\caption{Evaluation de la catégorisation par k-means et k-medoids sur $\mathcal{D}_{arcpa}$ avec détermination du nombre de clusters avec la silhouette.} \label{tab:similarite:validation-supervisee-optKbySilhouette}
 \end{table}
 
 La Figure \ref{fig:similarite:optimalK_with_silhouette_kmeans_dis_m_K2-30} montre l'évolution de la valeur de la silhouette en fonction du nombre de clusters pour $Dis_M$ utilisé dans le k-means. 
@@ -600,7 +601,7 @@ La Figure \ref{fig:similarite:optimalK_with_silhouette_kmeans_dis_m_K2-30} montr
  
 
 \subsubsection{Autres algorithmes de catégorisation}
-Avec la représentation sélectionnée TP-NGL, nous appliquons d'autres algorithmes de catégorisation sur $\mathcal{D}_{arcpa}$ (Tableau \ref{tab:similarite:validation-supervisee-optKbySilhouette-autres_algos}). Seules le regroupement hiérarchique et les C-moyennes floues probabilistes parviennent à trouver un nombre de clusters (4) assez proche de ce celui attendu (3). Les forêts aléatoires ont une très basse F1-mesure du fait du grand nombre de clusters déterminé. Par ailleurs, la tâche ne semble pas correspondre pour de la catégorisation par densité qui tend toujours à mettre tous les documents dans un même cluster.
+Avec la représentation sélectionnée TP-NGL, nous appliquons d'autres algorithmes de catégorisation sur $\mathcal{D}_{arcpa}$ (Tableau \ref{tab:similarite:validation-supervisee-optKbySilhouette-autres_algos}). Seules le regroupement hiérarchique et les C-moyennes floues probabilistes parviennent à trouver un nombre de clusters (4) assez proche de ce celui attendu (3). Les forêts aléatoires ont une très basse F1-mesure du fait du grand nombre de clusters déterminé. Par ailleurs, la tâche ne semble pas correspondre pour la catégorisation par densité qui tend toujours à mettre tous les documents dans un même cluster.
 \begin{table}[!htb]
 	\centering \scriptsize
 	\begin{tabular}[pos]{|l|c|c|c|c|c|c|c|}
@@ -613,7 +614,7 @@ Avec la représentation sélectionnée TP-NGL, nous appliquons d'autres algorith
 		Probabilistic Fuzzy-CMeans & 4 & 0.521 & 0.394 & 0.417 & 0.444 & 0.657 & 0.530 \\ \hline 
 		Random Forest & 11 & 0.272 & 0.228 & 0.303 & 0.127 & 0.598 & 0.210 \\ \hline 
 	\end{tabular}
-	\caption{Evaluation de la catégorisation par d'autres algorithmes de $\mathcal{D}_{arcpa}$ avec détermination du nombre de clusters avec la silhouette.} \label{tab:similarite:validation-supervisee-optKbySilhouette-autres_algos}
+	\caption{Evaluation de la catégorisation par d'autres algorithmes sur $\mathcal{D}_{arcpa}$ avec détermination du nombre de clusters avec la silhouette.} \label{tab:similarite:validation-supervisee-optKbySilhouette-autres_algos}
 \end{table}
 
 La silhouette des C-moyennes floues probabilistes a une décroissance plus rapide et plus monotone que notre implémentation des k-means (Tableaux \ref{fig:similarite:optimalK_with_silhouette_kmeans_dis_m_K2-30} et )
@@ -626,37 +627,135 @@ La silhouette des C-moyennes floues probabilistes a une décroissance plus rapid
 \end{figure}
 
 \subsection{Catégorisation des corpus non annotés manuellement}
-Les matrices document-terme des autres catégories sont construites à base des mêmes représentations sélectionnées sur la catégorisation manuel (cf. \ref{sec:similarite:select-repr-optimal}). Le tableau \ref{tab:similarite:validation-nonsupervisee} présente les valeurs de silhouette obtenues par le k-means et le k-medoid sur ces matrices. Les nombres de clusters reste faible
+Les matrices document-terme des autres catégories sont construites à base des mêmes représentations sélectionnées sur la catégorisation manuel (cf. \ref{sec:similarite:select-repr-optimal}). Le tableau \ref{tab:similarite:validation-nonsupervisee} présente les valeurs de silhouette (\textbf{s}) obtenues par le k-means et le k-medoid sur ces matrices. Les nombres déterminés de clusters restent bas (entre 2 et 6) malgré le fait qu'ils soient sélectionnés entre 2 et 30. 
+\newlength{\mrcell}
+\setlength{\mrcell}{0.8cm}
 \begin{table}[!htb]
-	\footnotesize
-	\begin{center}
-	\begin{tabular}[pos]{|l|l|c|c|}
+	\scriptsize
+	\begin{subfigure}[ht]{0.49\textwidth}
+	\begin{tabular}[pos]{|l|l|l|c|c|}
 		\hline
-		\textbf{Corpus}& \textbf{Distance}& \textbf{K} & \textbf{S}  \\ \hline
-	\multirow{2}{*}{$\mathcal{D}_{acpa}$ (21$^*$)} & $Dis_{cos}$  & 3 & 0.525 \\ \cline{2-4}
-	& $Dis_{M}$ & 2 & 0.770\\ \hline
-	\multirow{2}{*}{$\mathcal{D}_{concdel}$ (30)}  & $Dis_{cos}$  & 4 & 0.697  \\ \cline{2-4}
-	& $Dis_{M}$ & 4 & 0.652\\ \hline
-	\multirow{2}{*}{$\mathcal{D}_{danais}$ (198)}  & $Dis_{cos}$  & 5 & 0.426 \\ \cline{2-4}
-	& $Dis_{M}$ & 4 & 0.403\\ \hline
-	\multirow{2}{*}{$\mathcal{D}_{dcppc}$ (91)}  & $Dis_{cos}$  &  2 & 0.549 \\ \cline{2-4}
-	& $Dis_{M}$ &2 & 0.451\\ \hline
-	\multirow{2}{*}{$\mathcal{D}_{doris}$ (59)}  & $Dis_{cos}$  & 5 & 0.549 \\ \cline{2-4}
-	& $Dis_{M}$ & 2 & 0.509\\ \hline
-	\multirow{2}{*}{$\mathcal{D}_{styx}$ (50)}  & $Dis_{cos}$  & 4 & 0.572 \\ \cline{2-4}
-	& $Dis_{M}$ &2 & 0.694\\ \hline
+		$\mathcal{D}$& \textbf{Distance} & \textbf{Algorithme}& \textbf{K}  & \textbf{s}  \\ \hline
+	\multirow{6}{\mrcell}{$\mathcal{D}_{acpa}$ (21$^*$)} & dis\_m & kmedoids & 2 & 0.769  \\ \cline{2-5}
+	& dis\_m & kmeans & 2 & 0.769 \\ \cline{2-5}
+	& dis\_cosine & kmedoids & 5 & 0.694 \\ \cline{2-5}
+	& dis\_cosine & kmeans & 3 & 0.762  \\ \cline{2-5}
+	& dis\_jaccard & kmedoids & 2 & 0.499  \\ \cline{2-5}
+	& dis\_jaccard & kmeans & 3 & 0.769 \\ \hline
+	\multirow{6}{\mrcell}{$\mathcal{D}_{concdel}$ (30)}  & dis\_m & kmedoids & 4 & 0.639  \\ \cline{2-5}
+	& dis\_m & kmeans & 4 & 0.624  \\ \cline{2-5}
+	& dis\_cosine & kmedoids & 4 & 0.675  \\ \cline{2-5}
+	& dis\_cosine & kmeans & 4 & 0.632  \\ \cline{2-5}
+	& dis\_jaccard & kmedoids & 5 & 0.719  \\ \cline{2-5}
+	& dis\_jaccard & kmeans & 5 & 0.702\\ \hline
+	\multirow{6}{\mrcell}{$\mathcal{D}_{danais}$ (198)} 
+	& dis\_m & kmedoids & 4 & 0.403  \\ \cline{2-5}
+	& dis\_m & kmeans & 2 & 0.442  \\ \cline{2-5}
+	& dis\_cosine & kmedoids & 4 & 0.475 \\ \cline{2-5}
+	& dis\_cosine & kmeans & 4 & 0.471  \\ \cline{2-5}
+	& dis\_jaccard & kmedoids & 3 & 0.483 \\ \cline{2-5}
+	& dis\_jaccard & kmeans & 3 & 0.482 \\ \hline
+\end{tabular}
+	\end{subfigure}
+	\begin{subfigure}[ht]{0.49\textwidth}
+		\begin{tabular}[pos]{|l|l|l|c|c|}
+			\hline
+			$\mathcal{D}$& \textbf{Distance} & \textbf{Algorithme}& \textbf{K}  & \textbf{s}  \\ \hline
+	\multirow{6}{\mrcell}{$\mathcal{D}_{dcppc}$ (91)} & dis\_m & kmedoids & 2 & 0.451  \\ \cline{2-5}
+	& dis\_m  & kmeans & 2 & 0.781  \\ \cline{2-5}
+	& dis\_cosine & kmedoids & 2 & 0.549 \\ \cline{2-5}
+	& dis\_cosine & kmeans & 2 & 0.925 \\ \cline{2-5}
+	& dis\_jaccard & kmedoids & 2 & -0.016  \\ \cline{2-5}
+	& dis\_jaccard & kmeans & 3 & 0.820 \\ \hline
+	\multirow{6}{\mrcell}{$\mathcal{D}_{doris}$ (59)}  & dis\_m & kmedoids & 2 & 0.509  \\ \cline{2-5}
+	& dis\_m & kmeans & 3 & 0.527  \\ \cline{2-5}
+	& dis\_cosine & kmedoids & 5 & 0.549 \\ \cline{2-5}
+	& dis\_cosine & kmeans & 4 & 0.586 \\ \cline{2-5}
+	& dis\_jaccard & kmedoids & 3 & 0.600 \\ \cline{2-5}
+	& dis\_jaccard & kmeans & 4 & 0.645 
+	\\ \hline
+	\multirow{6}{\mrcell}{$\mathcal{D}_{styx}$ (50)}  & dis\_m & kmedoids & 2 & 0.669 \\ \cline{2-5}
+	& dis\_m & kmeans & 2 & 0.669 \\ \cline{2-5}
+	& dis\_cosine & kmedoids & 5 & 0.695 \\ \cline{2-5}
+	& dis\_cosine & kmeans & 4 & 0.705 \\ \cline{2-5}
+	& dis\_jaccard & kmedoids & 6 & 0.635 \\ \cline{2-5}
+	& dis\_jaccard  & kmeans & 4 & 0.690 \\ \hline
 	\end{tabular}
-\end{center}
+	\end{subfigure}
 
 	$^*$ Nombre de documents
+	
+	\textbf{s}: largeur moyenne de la silhouette
 
-	\caption{Evaluation non-supervisée des k-medoids sur $\mathcal{D}_{acpa}, \mathcal{D}_{concdel}, \mathcal{D}_{danais}, \mathcal{D}_{dcppc}, \mathcal{D}_{doris}, \mathcal{D}_{styx}$.} \label{tab:similarite:validation-nonsupervisee}
+	\caption{Evaluation non-supervisée des k-means et k-medoids sur $\mathcal{D}_{acpa}, \mathcal{D}_{concdel}, \mathcal{D}_{danais}, \mathcal{D}_{dcppc}, \mathcal{D}_{doris}, \mathcal{D}_{styx}$.} \label{tab:similarite:validation-nonsupervisee}
 \end{table}
+
+La silhouette étant bonne en générale, on s'attend à ce que les groupes soit en majorité formés de décisions partageant les mêmes circonstances factuelles. Il est possible de se faire une idée des circonstances factuelles découverts en observant leur terminologie qu'on peut extraire à l'aide d'une pondération globale supervisée comme le coefficient NGL. Considérons par exemple le regroupement avec les k-medoids combinés à la distance cosinus qui marche assez bien sur $\mathcal{D}_{arcpa}$. Pour la catégorie CONCDEL\footnote{CONDEL: dommages-intérêts pour concurrence déloyale}, on obtient 4 circonstances factuelles dont les champs lexicaux (Tableau \ref{tab:similarite:terminologie-clusters-concdel}) semblent définir les cas de contrefaçon pour le cluster 0, de publicité déloyale pour le cluster 1, de recrutement d'un salarié par un concurrent pour le cluster 2, et de contrats avec des partenaires pour le dernier cluster.
+
 
 %\subsection{Terminologie des clusters générés}
 
+\begin{table}[ht]
+	\centering \scriptsize
+	\begin{tabular}{|l|p{.85\textwidth}|}
+		\hline
+		\textbf{Cluster} & \textbf{Terminologie} \\ \hline
+		\textit{0} & distinctif, reproduire, code propriété intellectuel, contrefaçon, attaque, dépôt marque, circonstance intervenir, intervenir jugement, intervenir jugement déférer, caractère distinctif
+		\\ \hline
+		\textit{1} & publicitaire, action concurrence, défaut qualité agir, action concurrence déloyal, qualité agir, fichier client, force chose juger, fonder demande titre, date transfert, celui -ci fonder
+		\\ \hline
+		\textit{2} & acte concurrence, acte concurrence déloyal, clause non concurrence, non concurrence, clause non, entreprise concurrent, démarchage, démarcher, salarié, massif
+		\\ \hline
+		\textit{3} & non concurrencer, clause non concurrencer, tout droit, résilier contrat, marcher, préjudice invoquer, détournement, compte entre partie, contrat @card@ juillet, compte entre
+		\\ \hline
+	\end{tabular}
+	
+	\textit{10 premiers termes de 1 à 3 mots sélectionnés à l'aide du coefficient de corrélation $ngl$ (cf. \ref{sec:quanta:poids-globaux-superv})}
+	\caption{Terminologies des circonstances factuelles découvertes en combinant les k-medoids et la distance cosinus sur $\mathcal{D}_{concdel}$.}\label{tab:similarite:terminologie-clusters-concdel}
+\end{table}
+
+Pour la catégorie DORIS\footnote{DORIS: dommages-intérêts pour trouble anormal de voisinage},  on obtient 5 circonstances factuelles dont les champs lexicaux (Tableau \ref{tab:similarite:terminologie-clusters-doris}) semblent définir les cas d'excès de trouble pour le cluster 0, de différents entre copropriétaires d'un immeuble pour le cluster 1, de toit dépassant la limite entre deux habitations pour le cluster 2, et d'ouvrage dépassant la hauteur limite autorisée. 
+
+\begin{table}[ht]
+	\centering \scriptsize
+	\begin{tabular}{|l|p{.85\textwidth}|}
+		\hline
+		\textbf{Cluster} & \textbf{Terminologie} \\ \hline
+		\textit{0} & excéder inconvénient, inconvénient normal, excéder inconvénient normal, normal voisinage, inconvénient normal voisinage, inconvénient, trouble excéder inconvénient, trouble excéder, excéder, normal
+		\\ \hline
+		\textit{1} & copropriétaire, syndicat copropriétaire, syndicat, condamner in, anormal voisinage, trouble anormal voisinage, in, trouble anormal, syndic, jouissance subir
+		\\ \hline
+		\textit{2} & deux fond|fonds, séparatif deux fond|fonds, limite séparatif deux, ordonner démolition, séparatif deux, implanter, condamner démolir, devoir établir toit, devoir établir, toit manière
+		\\ \hline
+		\textit{3} & manière plus, chose manière plus, chose manière, usage prohiber loi, prohiber loi règlement, prohiber loi, absolu, usage prohiber, manière plus absolu, plus absolu, 
+		\\ \hline
+		\textit{4} & situer zone, hauteur @card@ mètre, hauteur dépasser, appel contester, vitrer, dont hauteur dépasser, urbaniser, recevabilité <unknown> appel, cahier charge lotissement, charge lotissement, 
+		\\ \hline
+	\end{tabular}
+	
+	\textit{10 premiers termes de 1 à 3 mots sélectionnés à l'aide du coefficient de corrélation $ngl$ (cf. \ref{sec:quanta:poids-globaux-superv})}
+	\caption{Terminologies des circonstances factuelles découvertes en combinant les k-medoids et la distance cosinus sur $\mathcal{D}_{doris}$.}\label{tab:similarite:terminologie-clusters-doris}
+\end{table}
+
+
+%\begin{tabular}[pos]{|l|l|c|c|}
+%	\hline
+%	\textbf{Corpus}& \textbf{Distance}& \textbf{K} & \textbf{S}  \\ \hline
+%	\multirow{2}{*}{$\mathcal{D}_{acpa}$ (21$^*$)} & $Dis_{cos}$  & 3 & 0.525 \\ \cline{2-4}
+%	& $Dis_{M}$ & 2 & 0.770\\ \hline
+%	\multirow{2}{*}{$\mathcal{D}_{concdel}$ (30)}  & $Dis_{cos}$  & 4 & 0.697  \\ \cline{2-4}
+%	& $Dis_{M}$ & 4 & 0.652\\ \hline
+%	\multirow{2}{*}{$\mathcal{D}_{danais}$ (198)}  & $Dis_{cos}$  & 5 & 0.426 \\ \cline{2-4}
+%	& $Dis_{M}$ & 4 & 0.403\\ \hline
+%	\multirow{2}{*}{$\mathcal{D}_{dcppc}$ (91)}  & $Dis_{cos}$  &  2 & 0.549 \\ \cline{2-4}
+%	& $Dis_{M}$ &2 & 0.451\\ \hline
+%	\multirow{2}{*}{$\mathcal{D}_{doris}$ (59)}  & $Dis_{cos}$  & 5 & 0.549 \\ \cline{2-4}
+%	& $Dis_{M}$ & 2 & 0.509\\ \hline
+%	\multirow{2}{*}{$\mathcal{D}_{styx}$ (50)}  & $Dis_{cos}$  & 4 & 0.572 \\ \cline{2-4}
+%	& $Dis_{M}$ &2 & 0.694\\ \hline
+%\end{tabular}
 \section{Conclusion}
 \label{sec:similarite:conclusion}
-Les circonstances où est faite une catégorie de demande doivent être découvertes afin de rapprocher les litiges non décidés des cas similaires de la jurisprudence. Les circonstances factuelles catégorisent les décisions mais sont illimités car ils correspondent aux faits courants de la vie. Ce problème ne pouvant pas être traité par classification supervisée (difficulté d'annotation), ce chapitre l'aborde comme une tâche de catégorisation non supervisée de document en explorant l'usage des algorithmes k-means et k-medoids, ainsi que diverses représentations de texte, et métriques de similarité. L'objectif étant de construire des groupes de documents qui partagent des circonstances factuelles similaires, à partir d'un corpus de décisions comprenant toutes une catégorie donnée de demande. La proposition faite ici est double: (i) l'apprentissage d'une distance sur le corpus donné en considérant qu'un document peut être obtenu par la transformation de tout autre document, (ii) l'exploitation de la faible quantité de catégorisation manuelle  pour sélectionner, par la silhouette moyenne, la représentation de texte qui correspond au mieux à la sémantique des circonstances factuelles. Le schéma sélectionné permet de transformer de nouveaux corpus non annotés afin d'y découvrir les circonstances factuelles par catégorisation non supervisée. Les expérimentations montre une amélioration considérable par rapport au modèle de base TF-IDF. La silhouette reste néanmoins faible. Ce qui signifie que la factorisation de matrice non négative est efficace mais il faudrait la combiner avec de meilleurs modèles vectoriels. Néanmoins cette sélection de représentation permet d'obtenir une assez bonne efficacité de catégorisation sur le corpus annoté (0.626 et 0.551 de F1-mesure, et 0.44 et 0.39 de ARI avec le kmedoids pour un nombre de clusters respectivement prédéfini et automatiquement déterminé). Ces résultats se traduisent aussi sur la largeur moyenne de la silhouette autant pour le le corpus annoté (0.448 et 0.456 respectivement) que pour les six corpus non annotés utilisés (entre 0.403 et 0.770 pour toutes les catégorie). Par ailleurs, la métrique apprise s'accorde mieux avec les k-means que les autres distances selon les différents indices de validation, et même pour la détermination du nombre de clusters.
+Les circonstances où est faite une catégorie de demande doivent être découvertes afin de rapprocher les litiges non décidés des cas similaires de la jurisprudence. Les circonstances factuelles catégorisent les décisions mais sont illimités car ils correspondent aux faits courants de la vie. Ce problème ne pouvant pas être traité par classification supervisée, ce chapitre l'aborde comme une tâche de catégorisation non supervisée de document en explorant l'usage des algorithmes k-means et k-medoids, ainsi que diverses représentations de texte, et métriques de similarité. L'objectif étant de construire des groupes de documents qui partagent des circonstances factuelles similaires, à partir d'un corpus de décisions comprenant toutes une catégorie donnée de demande. La proposition faite ici est double: (i) l'apprentissage d'une distance sur le corpus donné en considérant qu'un document peut être obtenu par la transformation de tout autre document, (ii) l'exploitation de la faible quantité de catégorisations manuelles  pour sélectionner, par la silhouette moyenne, la représentation de texte qui correspond au mieux à la sémantique des circonstances factuelles. Le schéma sélectionné permet de transformer de nouveaux corpus non annotés afin d'y découvrir les circonstances factuelles par catégorisation non supervisée. Les expérimentations montre une amélioration considérable par rapport au modèle de base TF-IDF. La silhouette reste néanmoins faible. Ce qui signifie que la factorisation de matrice non négative est efficace mais il faudrait la combiner avec de meilleurs modèles vectoriels. Néanmoins cette sélection de représentation permet d'obtenir une assez bonne efficacité de catégorisation sur le corpus annoté (0.626 et 0.551 de F1-mesure, et 0.44 et 0.39 de ARI avec le kmedoids pour un nombre de clusters respectivement prédéfini et automatiquement déterminé). Ces résultats se traduisent aussi sur la largeur moyenne de la silhouette autant pour le le corpus annoté (0.448 et 0.456 respectivement) que pour les six corpus non annotés utilisés (entre 0.403 et 0.770 pour toutes les catégorie). Par ailleurs, la métrique apprise s'accorde mieux avec les k-means que les autres distances selon les différents indices de validation, et même pour la détermination du nombre de clusters.
 
-Les algorithmes k-means et k-medoids ne sont pas toujours les plus efficaces pour la catégorisation de documents. L'expérimentation de meilleurs algorithmes devrait améliorer les résultats obtenus, comme par exemple l'intégration de la modélisation thématique FNM dans la catégorisation comme par exemple \citet{xie2013MGCTM} le fait avec l'allocation latente de Dirichlet. Par ailleurs, la représentation vectorielle n'est sélectionnée que sur un seule corpus pour les expérimentations de ce chapitre. Il serait intéressant d'annoter plusieurs corpus, pour améliorer la sélection en considérant la représentation vectorielle qui correspond en moyenne aux circonstances factuelles sur l'ensemble de ces catégorisations manuelles.
+Les algorithmes k-means et k-medoids ne sont pas toujours les plus efficaces pour la catégorisation de documents. L'expérimentation de meilleurs algorithmes devrait améliorer les résultats obtenus, comme par exemple l'intégration de la modélisation thématique FNM dans la catégorisation comme par exemple \citet{xie2013MGCTM} le fait avec l'allocation latente de Dirichlet. Par ailleurs, la représentation vectorielle n'est sélectionnée que sur un seul corpus pour les expérimentations de ce chapitre. Il serait intéressant d'annoter plusieurs corpus pour sélectionner la représentation qui correspond le mieux en moyenne aux circonstances factuelles sur l'ensemble de ces catégorisations manuelles. De plus, les expérimentations doivent être étendues au regroupement à chevauchement pour les affaires  concernant plus d'une circonstance factuelle.
