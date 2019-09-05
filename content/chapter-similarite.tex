@@ -64,8 +64,8 @@ jusqu'à ce que tous les documents soient dans un unique groupe (racine). Pour d
 
 \subsection{Métriques de dis-similarité (distances)}
 \label{sec:similarite:distances}
-Les algorithmes de catégorisation dépendent de la distance utilisée qui doit être bien choisie pour que les catégorisations révèlent au mieux la sémantique visée.
- Une métrique de dis-similarité $Dis$ est une fonction réelle d'une paire $(d,d')$ qui mesure le degré de dis-similarité entre $d$ et $d'$  en satisfaisant aux propriétés suivantes $\forall d,d',d'' \in \mathcal{D}$ \citep{wang2015distancemetriclearningsurvey}:
+Les algorithmes de catégorisation dépendent de la distance utilisée qui doit être bien choisie pour que le résultat révèlent au mieux la sémantique visée.
+ Une métrique de dis-similarité $Dis$ est une fonction réelle d'une paire de documents $(d,d')$ qui mesure le degré de dis-similarité entre $d$ et $d'$  en satisfaisant aux propriétés suivantes $\forall d,d',d'' \in \mathcal{D}$ \citep{wang2015distancemetriclearningsurvey}:
 \begin{enumerate}
 \item $Dis(d,d') \geq 0$ ("non-négativité")
 \item $Dis(d,d') = 0  \Leftrightarrow d = d'$ (identité discernable)
@@ -74,36 +74,34 @@ Les algorithmes de catégorisation dépendent de la distance utilisée qui doit 
 \end{enumerate}
 
 
-La métrique peut être normalisée ($\forall (d,d') \in \mathcal{D} \times \mathcal{D};  0 \leq Dis(d,d') \leq 1$), à l'instar de la distance basée sur la similarité cosinus normalisée et celle de Jaccard. Dans ce cas, la relation entre la similarité $Sim$ et la dis-similarité $Dis$ est définie par $Sim(d,d') = 1 - Dis(d,d')$.
+La métrique peut être normée ($\forall (d,d') \in \mathcal{D} \times \mathcal{D};  0 \leq Dis(d,d') \leq 1$), à l'instar de la distance de Jaccard. Dans ce cas, la relation entre la similarité $Sim$ et la dis-similarité $Dis$ est définie par $Sim(d,d') = 1 - Dis(d,d')$.
 %On parle de \textbf{pseudo-métrique} lorsque la condition \ref{enum:sim:ineq-tri} n'est pas satisfaite.
 
- Il existe de nombreuses métriques de similarité généralement expérimentées pour la catégorisation de textes \citep{huang2008similarityTextClustering, vijaymeena2016surveySim, afzali2018SimKmeans}. Voici les quelques métriques de similarité syntaxique explorées dans ce chapitre:
+ Parmi les nombreuses métriques généralement utilisées  sur les textes \citep{huang2008similarityTextClustering, vijaymeena2016surveySim, afzali2018SimKmeans}, on retrouve par exemple:
 \begin{itemize}
-	\item Les distances de Minkowski de forme générale $Dis(d,d') = \norm{\vec{d} - \vec{d'}}_{Lp} = \sqrt[p]{\sum\limits_{i=1}^m \vert \vec{d}_i - \vec{d}_i \vert ^p}$, dont font partie la distance euclidienne $Dis_{euclidienne}$ ($p=2$) et la distance de Manhattan $Dis_{manhattan}$ ($p=1$).
+	\item Les distances de Minkowski {\footnotesize $Dis(d,d') = \norm{\vec{d} - \vec{d'}}_{Lp} = \sqrt[p]{\sum\limits_{i=1}^m \vert \vec{d}[i] - \vec{d}[i] \vert ^p}$}, dont font partie la distance euclidienne $Dis_{euclidienne}$ ($p=2$) et la distance de Manhattan $Dis_{manhattan}$ ($p=1$).
 	%\item L'indice de Dice définit la similarité entre $d$ et $d'$ comme étant la proportion de termes qui leur sont communs: $Sim_{dice}(d,d') = \frac{2 \setsize{d \cap d'}}{\setsize{d} + \setsize{d'}}$.
-	\item La distance de \citet{bray1957distance-braycurtis}: $Dis_{braycurtis}(d,d') = \frac{\sum\limits_{i=1}^m \vert \vec{d}_i - \vec{d'}_i \vert}{\sum\limits_{i=1}^m \vert \vec{d}_i + \vec{d'}_i \vert}$ \citep{huang2008similarityTextClustering}.
-	\item La similarité cosinus est basée sur la mesure de l'angle entre $\vec{d}$ et $\vec{d'}$ par la formule: $Sim_{cos}(d,d') = \frac{\vec{d}^t\vec{d'}}{\norm{\vec{d}}\norm{\vec{d'}}}$.
-	Pour un modèle vectoriel du type TF-IDF, cette formulation considère que tous les termes du vocabulaire $T$ définissant le modèle vectoriel, sont différents et ne partagent aucune relation. \citet{sidorov2014softcosine} la corrigent en proposant la fonction \textit{soft-cosine} en introduisant une matrice $S = {S_{ij}}_{1\leq i,j \leq m}$ de similarité entre  termes: 
+	\item La distance de \citet{bray1957distance-braycurtis}: $Dis_{braycurtis}(d,d') = \frac{\sum\limits_{i=1}^m \vert \vec{d}[i] - \vec{d'}[i] \vert}{\sum\limits_{i=1}^m \vert \vec{d}[i] + \vec{d'}[i] \vert}$ \citep{huang2008similarityTextClustering}.
+	\item La similarité cosinus est basée sur le cosinus de l'angle entre $\vec{d}$ et $\vec{d'}$ par la formule: $Sim_{cos}(d,d') = \frac{\vec{d}^t\vec{d'}}{\norm{\vec{d}}\norm{\vec{d'}}}$.
+	Pour un modèle vectoriel du type TF-IDF, cette formulation considère que tous les termes du vocabulaire $T$ sont différents et ne partagent aucune relation. \citet{sidorov2014softcosine} la corrigent en proposant la fonction \textit{soft-cosine} utilisant la matrice de similarité entre  termes $S=\lbrace s_{ij}\rbrace_{1\leq i,j \leq m}$: 
 	
-	$Sim_{soft-cos}(d,d')= \frac{{\vec{d}}^T\cdot S\cdot \vec{d'}}{\sqrt{{\vec{d}}^T\cdot S\cdot \vec{d'}}\cdot \sqrt{\vec{d'}^T\cdot S\cdot \vec{d'}}} = \frac{\sum\limits_{1\leq i,j \leq m}s_{ij}\vec{d}_i\vec{d'}_j}{\sqrt{\sum\limits_{1\leq i,j \leq m}s_{ij}\vec{d}_i\vec{d}_j}\sqrt{\sum\limits_{1\leq i,j \leq m}s_{ij}\vec{d'}_i\vec{d'}_j}}$,
+	$Sim_{soft-cos}(d,d')= \frac{{\vec{d}}^T\cdot S\cdot \vec{d'}}{\sqrt{{\vec{d}}^T\cdot S\cdot \vec{d'}}\cdot \sqrt{\vec{d'}^T\cdot S\cdot \vec{d'}}} = \frac{\sum\limits_{1\leq i,j \leq m}s_{ij}\vec{d}[i]\vec{d'}[j]}{\sqrt{\sum\limits_{1\leq i,j \leq m}s_{ij}\vec{d}[i]\vec{d}[j]}\sqrt{\sum\limits_{1\leq i,j \leq m}s_{ij}\vec{d'}[i]\vec{d'}[j]}}$.
 	
-	où $S$, la matrice de similarité entre les termes, peut être calculée à partir de n'importe quelle métrique comme la distance d'édition de Levenshtein (similarité lexicale) \citep{sidorov2014softcosine},  la similarité cosinus entre  plongements lexicaux \citep{charlet2017simbow_acl, charlet2017simbow_tal}, ou la similarité WordNet.
+	$S$ peut être calculée à partir de n'importe quelle métrique comme la distance d'édition de Levenshtein (similarité lexicale) \citep{sidorov2014softcosine},  la similarité cosinus entre  plongements lexicaux \citep{charlet2017simbow_acl, charlet2017simbow_tal}, ou la similarité WordNet. La fonction cosinus  étant comprise entre -1 et +1, la distance déduite $Dis_{cos}(d,d') = 1 - Sim_{cos}(d,d')$ est comprise entre 1 et 2.
 	
-	La fonction cosinus  étant comprise entre -1 et +1, la distance déduite $Dis_{cos}(d,d') = 1 - Sim_{cos}(d,d')$ est comprise entre 1 et 2.
-	
-	\item Le coefficient similarité de \cite{jaccard1901similarite-jaccard}: $Sim_{Jaccard}(d,d') = \frac{\vec{d}^T\vec{d'}}{\norm{\vec{d}}^2+\norm{\vec{d'}}^2 - \vec{d}^T\vec{d'}}$ \citep{huang2008similarityTextClustering} qui, étant normée, donne la distance $Dis_{jaccard}(d,d') = 1-Sim(d,d')$.
+	\item Le coefficient similarité de \cite{jaccard1901similarite-jaccard}: {\footnotesize$Sim_{Jaccard}(d,d') = \frac{\vec{d}^T\vec{d'}}{\norm{\vec{d}}^2+\norm{\vec{d'}}^2 - \vec{d}^T\vec{d'}}$} \citep{huang2008similarityTextClustering} qui donne la distance {\footnotesize$Dis_{jaccard}(d,d') = 1-Sim(d,d')$}.
 	%\item Le coefficient similarité de Dice: $Sim_{Dice}(x,x') = \frac{2\cdot \vert tok(x) \cap tok(x') \vert}{\vert tok(x) \vert + \vert tok(x')} $
-	\item La similarité basée sur le coefficient de corrélation de Pearson est calculée par \citep{huang2008similarityTextClustering}:
+	\item La similarité basée sur le coefficient de corrélation de Pearson est calculée comme suit \citep{huang2008similarityTextClustering}:
 	
-	\[Sim_{pearson}(d,d') = \frac{ \sum\limits^m_{i=1} \vec{d}_i \cdot \vec{d'}_i - TF_d\cdot TF_{d'}}{\sqrt{[m \sum\limits^m_{i=1} \vec{d'}_i^2 - TF^2_d][m \sum\limits^m_{i=1} \vec{d'}_i^2 - TF^2_{d'}]}}\]
-avec $TF_d = \sum\limits^m_{i=1} \vec{d}_i$. Sa distance est déduite par:
+	{\footnotesize $Sim_{pearson}(d,d') = \frac{ \sum\limits^m_{i=1} \vec{d}[i] \cdot \vec{d'}[i] - TF_d\cdot TF_{d'}}{\sqrt{[m \sum\limits^m_{i=1} \vec{d}[i]^2 - TF^2_d][m \sum\limits^m_{i=1} \vec{d'}[i]^2 - TF^2_{d'}]}}$}, 
+avec $TF_d = \sum\limits^m_{i=1} \vec{d}[i]$. Sa distance est déduite par la formule:
 
-$Dis_{pearson}(d,d') =
+{\footnotesize $Dis_{pearson}(d,d') =
 \left\{ \begin{array}{ll}
 1 - Sim_{pearson}(d,d') & \text{si } Sim_{pearson}(d,d') \geq 0 \\
 \vert Sim_{pearson}(d,d') \vert & \text{si } Sim_{pearson}(d,d') < 0.
 \end{array}
-\right.$
+\right.$}
 %	\item Distance de la divergence moyenne de Kullback-Leibler considère un document comme une distribution de probabilité de termes, et mesure donc la similarité entre deux distributions: 
 %	\[Dis_{avgKL}(x,x') = \sum\limits_{i=1}^m\big(\pi_1 \cdot D(w(t_i,x) \vert\vert w_t) + \pi_2 \cdot D(w(t_i,x') \vert\vert w_t) \big)\]
 %	avec $\pi_1 = \frac{w(t_i,x)}{w(t_i,x) + w(t_i,x')}$, $\pi_2 = \frac{w(t_i,x')}{w(t_i,x) + w(t_i,x')}$, $D(a \vert\vert b) = a\cdot  \log_2(\frac{a}{b})$, et $w_t = \pi_1 \cdot w(t_i,x) + \pi_2 \cdot w(t_i,x')$
@@ -118,20 +116,18 @@ $Dis_{pearson}(d,d') =
 %	\end{array}
 %	\right.
 %	\]
-	\item \og La distance du déménageur de mot \fg{} (\textit{word mover's distance - WMD}) \citep{kusner2015wordmoverdist} est une méthode dont l'objectif est similaire au notre, i.e. inclure la similarité sémantique entre les paires de mots de deux documents dans l'estimation de la distance entre ces derniers. En effet, elle est la solution optimale du problème de transport suivant \footnote{Valeur minimale du cout cumulatif pondéré nécessaire pour déplacer  tous les mots de $d$ à $d'$ i.e. transformer $d$ en $d'$.}:
+	\item \og La distance du déménageur de mot \fg{} (\textit{word mover's distance - WMD}) \citep{kusner2015wordmoverdist} est inclut la similarité sémantique entre les mots dans l'estimation de la distance entre documents. En effet, elle est la solution optimale du problème de transport suivant \footnote{Valeur minimale du cout cumulatif pondéré nécessaire pour déplacer  tous les mots de $d$ à $d'$ i.e. transformer $d$ en $d'$.}:
 	
-	\begin{equation*}
+	\begin{equation*}\small
 	\begin{aligned}
 Dis_{wmd}(d, d') = 	& \min\limits_{T>0}
 	& & \sum\limits_{i,j=1}^m T_{ij} c(i,j) \\
 	& \text{s.c.}
-	& & \sum\limits_{j=1}^m T_{ij} = \vec{d}_i, \forall i \in {1, \dots, m} \\
-	& 
-	& & \sum\limits_{i=1}^m T_{ij} = \vec{d'}_j, \forall j \in {1, \dots, m}	
+	& & \sum\limits_{j=1}^m T_{ij} = \vec{d}[i], \forall i \in [1\twodots m];  \sum\limits_{i=1}^m T_{ij} = \vec{d'}[j], \forall j \in [1\twodots m]
 	\end{aligned}
 	\end{equation*} 
 	
-	$m$ est le nombre de mots considérés; $T$ est une matrice dont $T_{ij}$ est interprété comme étant la quantité du mot $i$ de $d$ qui est va au mot $j$ dans $d'$ ("voyage"). $c(i,j)$ est la distance euclidienne entre les vecteurs des mots $i$ et $j$; $\vec{d}_i$ et $\vec{d'}_j$ sont les composantes aux mots $i$ et $j$ resp. des vecteurs normalisés sac-de-mots de $d$ et $d'$ reesp. i.e. $\vec{d}_i = \frac{compte(i, d)}{\sum\limits_{k=1}^m compte(k, d)}$, où $compte(i, d)$ est le nombre d'occurrences du mot $i$ dans $d$.
+	$m$ est le nombre de mots considérés; $T$ est une matrice dont $T_{ij}$ est interprété comme étant la quantité du mot $i$ de $d$ qui est va au mot $j$ dans $d'$ ("voyage"). $c(i,j)$ est la distance euclidienne entre les vecteurs des mots $i$ et $j$; $\vec{d}[i] = \frac{compte(i, d)}{\sum\limits_{k=1}^m compte(k, d)}$, $compte(i, d)$ étant le nombre d'occurrences du mot $i$ dans $d$.
 	
 \end{itemize}
 
@@ -159,45 +155,43 @@ Dis_{wmd}(d, d') = 	& \min\limits_{T>0}
 \subsection{Représentation des textes}
 \label{sec:similarite:representation}
 \subsubsection{Modèle vectoriel}
-La formulation des distances exploite très souvent une représentation vectorielle des textes (cf.  \ref{sec:similarite:distances}). Le Chapitre \ref{chap:quanta} décrit différentes métriques de pondération des termes qui permettent de définir des variantes du modèle TF-IDF. Ces dernières sont explorées dans les expérimentations de ce chapitre. Cependant, il s'agit de modèles basés uniquement sur le lexique des textes, et par conséquence, les distances appliquées sur ces représentations sont correspondent à une similarité plus lexicale que sémantique. Il existe quelques techniques permettant de définir des dimensions par des thématiques transparaissant dans le corpus, et apportant par conséquent plus de sémantique à la représentation vectorielle.
+La formulation des distances (cf.  \ref{sec:similarite:distances}) s'applique généralement à une représentation vectorielle des textes. Le Chapitre \ref{chap:quanta} décrit différentes métriques de pondération des termes qui permettent de définir des variantes du modèle TF-IDF. Cependant, il s'agit de modèles basés uniquement sur le lexique des textes, et par conséquent, les distances appliquées sur ces représentations  correspondent à une similarité plus lexicale que sémantique. Il existe quelques techniques permettant de définir des dimensions par des thématiques qui transparaissent dans le corpus, et apportant par conséquent plus de sémantique à la représentation vectorielle.
 
 \subsubsection{Réduction de dimension}
 \label{sec:similarite:reduction-dimension}
-La réduction de dimension a généralement pour but de réduire la représentation de documents i.e. transformer leur vecteur de dimension originel $m$ en un nouveau vecteur de dimension $q << m$. Les méthodes de réduction explorées ici sont toutes non supervisées\footnote{Elles ne prennent en compte aucune classification prédéfinie des documents.} et réalisent une extraction de caractéristiques\footnote{Par opposition aux algorithmes de sélection de caractéristiques comme le BDS et le SFFS expérimentées au Chapitre \ref{chap:structuration}.}. %L'intérêt de la réduction de dimension est multiples: construire des dimensions plus discriminantes, limiter le sur-apprentissage, et obtenir une représentation sémantique plus concise. 
+La réduction de dimension a généralement pour but de réduire la taille de la représentation de documents i.e. transformer leur vecteur de dimension $m$ en un nouveau de dimension $q << m$. Les méthodes expérimentées ici sont non supervisées\footnote{Elles ne prennent en compte aucune classification prédéfinie des documents.} et extraient de nouvelles dimensions \footnote{Par opposition aux algorithmes de sélection de caractéristiques comme le BDS et le SFFS expérimentées au Chapitre \ref{chap:structuration}.}. %L'intérêt de la réduction de dimension est multiples: construire des dimensions plus discriminantes, limiter le sur-apprentissage, et obtenir une représentation sémantique plus concise. 
 
-\paragraph[PCA]{Analyse en composantes principales (ACP)}
-L'analyse en composantes principales \citep{burrows1992PCA} est une technique de transformation de l'espace originel en un espace de dimension réduite ($q < m$)  préservant au mieux l'inertie du nuage originel\footnote{Distance entre les individus pris 2 à 2, ou dispersion autour du barycentre}. L'intérêt de l'ACP se traduit par une meilleur interprétation des données dans le nouvel espace. Son principe consiste à construire successivement les composantes principales qui sont des combinaisons linéaires des observations, chaque composantes étant orthogonales à la suivante. Plus précisément, les colonnes de la matrice document-terme $A$ sont préalablement transformée en des variables centrées réduites\footnote{Centrer-réduire une variable $X$ d'espérance $\mu$ et d'écart-type $\sigma$ revien à obtenir une variable  $\hat{X}$ d'espérance nulle et variance à 1 en calculant pour chaque valeur $X_i$ de $X$, $\hat{X_i} = \frac{X_i-\mu}{\sigma}$.} résultant en une matrice $\hat{A}$. Ensuite, l'ACP décompose $\hat{A}$ la matrice $N\times m$ en un produit de trois matrices: $U$ la matrice $N \times N$  des vecteurs propres de $\hat{A}\hat{A}^T$, $S$ la matrice diagonale $m\times m$  des valeurs propres de la plus grande à la plus petite, et $V$ la matrice $m\times m$  des vecteurs propres de $\hat{A}^T\hat{A}$. Un nombre $q$ de composantes (vecteurs propres $U_q = U[1,m;1,q]$) peut être sélectionné pour la réduction de dimension suivant la variance totale qu'on souhaite conserver. Ainsi, tout vecteur $\vec{d}$ est réduit à dimension en le multipliant par $U_q$: $\vec{d}_q = U_q\vec{d}$.
-Le nombre $q$ de composantes peut-être sélectionné par la règle de Kaiser qui juge que seules les valeurs propres supérieures ou égales à la moyenne des valeurs propres sont plus informatives que les variables initiales. %La réduction de dimension par l'ACP consiste à ... . Avantage et limite
+\paragraph[PCA]{L'analyse en composantes principales (ACP)}
+ \citep{burrows1992PCA} est une technique de transformation de l'espace originel en un espace de dimension réduite préservant au mieux l'inertie du nuage originel\footnote{Distance entre les individus pris 2 à 2, ou dispersion autour du barycentre.}. L'intérêt de l'ACP se traduit par une meilleur interprétation des données dans le nouvel espace. Son principe consiste à construire successivement les composantes principales qui sont des combinaisons linéaires des observations; chaque composante étant orthogonale à la suivante. Plus précisément, les colonnes de la matrice document-terme $A$ de dimensions $N\times m$ sont préalablement transformée en des variables centrées réduites\footnote{Centrer-réduire une variable $X$ d'espérance $\mu$ et d'écart-type $\sigma$ revient à obtenir une variable  $\hat{X}$ d'espérance nulle et variance à 1 en calculant pour chaque valeur $X_i$ de $X$, $\hat{X_i} = \frac{X_i-\mu}{\sigma}$.} résultant en une matrice $\hat{A}$. Ensuite, l'ACP décompose $\hat{A}$  en un produit de trois matrices: $U$ la matrice $N \times N$  des vecteurs propres de $\hat{A}\hat{A}^T$, $S$ la matrice diagonale $m\times m$  des valeurs propres de la plus grande à la plus petite, et $V$ la matrice $m\times N$  des vecteurs propres de $\hat{A}^T\hat{A}$. Un nombre $q$ de composantes (vecteurs propres $\hat{U}_q = U[1,N;1,q]$) peut être sélectionné pour la réduction de dimension suivant la variance totale qu'on souhaite conserver. Ainsi, tout vecteur $\vec{d}$ est réduit à $q$ dimensions en le multipliant par $\hat{U}_q$: $\hat{\vec{d}}_q = \hat{U}_q\vec{d}$.
+La méthode la plus simple et populaire pour déterminer $q$ est la règle dite de  "Kaiser" ou de "Kaiser-Guttman" \citep{guttman1954factoranalysisconditions, kaiser1960computers4factoranalysis} même si elle tend à extraire beaucoup plus de composantes que nécessaire \citep{bandalos2010factoranalysismisconceptions}. Le critère de Kaiser juge que seules les valeurs propres supérieures ou égales à la moyenne des valeurs propres sont plus informatives que les variables initiales. %La réduction de dimension par l'ACP consiste à ... . Avantage et limite
 
-\paragraph[LDA]{Allocation latente de Dirichlet}
-L'allocation latente de Dirichlet (ALD) \citep{blei2003lda} est une technique qui extrait un nombre $q$ de thématiques qui transparaissent dans un corpus. Elle introduit les "variables latentes" comme pont pour modéliser les relations entre les textes et les termes. Chaque document est caractérisé comme une distribution de Dirichlet sur les variables latentes (thématiques), et chaque thématique est caractérisée par une autre distribution de Dirichlet sur tous les termes. La réduction de dimension est déduite de la première distribution en obtenant pour chaque document, un vecteur de taille $q$ représentant la distribution de probabilité des thématiques dans le document. Un des défi de la modélisation thématiques est la détermination d'une valeur optimale du nombre de thèmes $q$. Parmi plusieurs valeurs candidates, celle qui maximise la cohérence du modèle peut être choisie. La cohérence do modèle est la moyenne des  cohérences des thèmes. La cohérence de chaque thème peut être considérée comme étant la moyenne de la similarité entre les paires de termes de la description du thème \footnote{les premiers termes les plus fréquents du thème}. \citet{fang2016w2v_for_topiccoherence} démontrent que la cohérence est mieux estimée avec la similarité cosinus des plongements lexicaux des termes, qu'avec les métriques basées sur l'information mutuelle ponctuelle et sur l'analyse latente sémantique. % La réduction de dimension par l'ALD consiste à ... . Avantage et limite
+\paragraph[LDA]{L'allocation latente de Dirichlet}
+(ALD) \citep{blei2003lda} est une technique qui extrait un nombre $q$ de thématiques à partir du corpus $\mathcal{D}$. Elle introduit les "variables latentes" comme pont pour modéliser les relations entre les textes et les termes. Chaque document est caractérisé comme une distribution de Dirichlet sur les variables latentes (thématiques), et chaque thématique est caractérisée par une autre distribution de Dirichlet sur tous les termes. La réduction de dimension est déduite de la première distribution en obtenant pour chaque document, un vecteur de taille $q$ représentant la distribution de probabilité des thématiques dans le document. Un des défi de la modélisation thématique est la détermination d'une valeur optimale du nombre de thèmes $q$. Parmi plusieurs valeurs candidates, celle qui maximise la cohérence du modèle peut être choisie. La cohérence du modèle est la moyenne des  cohérences des thèmes. La cohérence de chaque thème peut être considérée comme étant la moyenne de la similarité entre les paires de termes de la description du thème \footnote{Les $n$ premiers termes les plus fréquents du thème.}. \citet{fang2016w2v_for_topiccoherence} démontrent que la cohérence est bien estimée avec la similarité cosinus des plongements lexicaux des termes.%, qu'avec les métriques basées sur l'information mutuelle ponctuelle et sur l'analyse latente sémantique. % La réduction de dimension par l'ALD consiste à ... . Avantage et limite
 
-\paragraph[LSA]{Analyse latente sémantique}
-L'analyse latente sémantique (ALS) \citep{dumais1988LSI, deerwester1990indexingbyLSA} réalise une décomposition en valeurs singulières (SVD) de la matrice $A$ des scores de co-occurrence document-terme où chaque cellule contient le poids du terme dans le document correspondant (par exemple TF-IDF). Plus précisément, l'ALS applique la décomposition SVD directement sur $A$, contrairement à l'ACP qui centre-réduit cette dernière au préalable. L'ALS permet ainsi de réduire la grande dimension lexicale des documents à un espace de thématiques défini par le nombre de valeurs propres choisies. Comme pour l'ALD, le nombre $q$ de composantes (ou thématiques) peut être sélectionné comme étant celui qui  maximise la cohérence. 
+\paragraph[LSA]{L'analyse latente sémantique}
+(ALS) \citep{dumais1988LSI, deerwester1990indexingbyLSA} réalise une décomposition en valeurs singulières (SVD) de la matrice $A$ des scores de co-occurrence document-terme. Plus précisément, l'ALS applique la décomposition SVD directement sur $A$, contrairement à l'ACP qui centre-réduit cette dernière au préalable. L'ALS permet ainsi de réduire la grande dimension lexicale des documents à un espace de thématiques de dimensions définies par le nombre de valeurs propres choisies. Comme pour l'ALD, le nombre $q$ de thématiques peut être sélectionné comme étant celui qui  maximise la cohérence. 
 % La réduction de dimension par l'ALS consiste à ... . Avantage et limite
 
-\paragraph[NMF]{Factorisation de matrice non-négative} Un algorithme de factorisation de matrice non-négative (FMN) \citep{paatero1994nmf} factorise la matrice $A$ des scores non-négatifs de co-occurrence document-terme, en deux matrices $W$ et $H$ sans élément négatif, dont le produit est une approximation de $A$. Il s'agit en effet d'une méthode de modélisation de thématiques dans laquelle $W$ est décrite comme la matrice $N\times q$ terme-thème i.e. la matrice de la relation entre les termes et les thèmes découverts dans les documents de $A$, et $H$ est la matrice $q\times m$ thème-document i.e. les poids d'appartenance des documents aux thèmes. Le calcul de $W$ et $H$ consiste à minimiser la fonction objective: $\frac{1}{2}\norm{A - WH}^2_F = \sum\limits_{i=1}^N\sum\limits_{i=1}^m (A_{ij} - (WH)_{ij})^2,$ où $\norm{\cdot}_F$ désigne la norme matricielle de Frobenius\footnote{$\norm{X}_F = \sqrt{\sum\limits_{i=1}^N\sum\limits_{i=1}^m \vert X_{ij}\vert^2}$}, et $A_{ij} = w(t_j, d_i)$, $d_i \in \mathcal{D}$.  %La réduction de dimension par la FMN consiste à ... . Avantage et limite
+\paragraph[NMF]{La factorisation de matrice non-négative} (FMN) \citep{paatero1994nmf} factorise la matrice $A$ des scores non-négatifs de co-occurrence document-terme, en deux matrices $W$ et $H$ sans élément négatif, dont le produit est une approximation de $A$. Il s'agit en effet d'une méthode de modélisation de thématiques dans laquelle $W$ est décrite comme la matrice $N\times q$ de relation entre les termes et les thèmes découverts dans les documents, et $H$ est la matrice $q\times m$ des poids d'appartenance des documents aux thèmes. Le calcul de $W$ et $H$ consiste à minimiser la fonction objective: $\frac{1}{2}\norm{A - WH}^2_F = \sum\limits_{i=1}^N\sum\limits_{i=1}^m (A_{ij} - (WH)_{ij})^2,$ où $\norm{\cdot}_F$ désigne la norme matricielle de Frobenius\footnote{$\norm{X}_F = \sqrt{\sum\limits_{i=1}^N\sum\limits_{i=1}^m \vert X_{ij}\vert^2}$}, et $A_{ij} = w(t_j, d_i)$, $d_i \in \mathcal{D}$.  %La réduction de dimension par la FMN consiste à ... . Avantage et limite
 Comme pour l'ALD, le nombre $q$ de composantes (ou thématiques) peut être sélectionné comme étant celui qui  maximise la cohérence. 
 
 
 \paragraph[w2v*TF-IDF]{Barycentre des termes}
-A partir de vecteurs de mots apprise d'entraînement à l'aide de méthodes comme Word2Vec \citep{mikolov2013word2vec} ou GloVe \citep{pennington2014glove}, il est souvent proposé de considérer le document comme le barycentre des mots qu'il contient, et de le représenter comme la moyenne des vecteurs de termes pondérés par leur poids dans le document (par exemple TF-IDF) \citep{lemikolov2014word2vec, charlet2017simbow_tal,arora2017wordAvgSentEmbedd}. En effet, tout vecteur $\vec{d}$ est réduit en un vecteur $\vec{d}_q$ de $q$ dimensions, ce dernier étant le nombre de dimensions des vecteurs de termes:$\vec{d}_q[k] = \frac{1}{\sum\limits_{i=1}^m \vec{d}[i]} \sum\limits_{i=1}^{m}\vec{d}[i]*\vec{t_i}[k]$.
+A partir de vecteurs de mots appris à l'aide de méthodes comme Word2Vec \citep{mikolov2013word2vec} ou GloVe \citep{pennington2014glove}, il est souvent proposé de considérer le document comme le barycentre des mots qu'il contient, et de le représenter comme la moyenne des vecteurs de termes pondérés par leur poids dans le document (par exemple TF-IDF) \citep{lemikolov2014word2vec, charlet2017simbow_tal,arora2017wordAvgSentEmbedd}. Tout vecteur $\vec{d}$ est réduit en un vecteur $\hat{\vec{d}}_q$ de $q$ dimensions, ce dernier étant la taille des vecteurs de termes: $\hat{\vec{d}}_q[k] = \frac{1}{\sum\limits_{i=1}^m \vec{d}[i]} \sum\limits_{i=1}^{m}\vec{d}[i]*\vec{t_i}[k]$.
 %Pour de longs documents comme les décisions de justice, la moyenne des vecteurs court le risque de ne pas être pertinente. 
 
 \subsection{Sélection du nombre optimal de clusters}
 \label{sec:similarite:k-optimal}
 %\textcolor{red}{faire un tableau des indices comme dans l'article, et comparer les combinaison indices-algo-distance}
 
- Au delà de l’algorithme à utiliser, le nombre $K$ approprié de clusters doit être déterminé mais pas prédéfini, puisqu'il est difficile de savoir à l'avance le nombre de groupes. Une méthode très connue est celle du \og coude \fg{}  (ou \og genou \fg{}) \citep{halkidi2001clustvalidation}, qui est basé sur le principe de base des algorithmes de partitionnement (e.g. K-moyennes) i.e. minimiser le critère d'inertie:
-$J(K) = \sum\limits_{j=1}^K\sum\limits_{d_i \in C_j}\norm{\vec{d}_i-\overline{\vec{d}_j}}^2$, 
-$C_j$ étant ensemble des objets du cluster $j$, et  $\overline{\vec{d}_j}$ le centre du cluster $j$. La méthode du coude consiste à essayer différentes valeurs consécutive de $K$ (de $K_{min}$ à $K_{max}$) puis de choisir celle qui correspond au coude de la courbe du critère d'inertie $J(K)$. Le choix de ce coude est visuel et peut être ambigu (plusieurs valeurs de $K$ sur le coude par exemple). 
+ Au delà de l’algorithme à utiliser, le nombre $K$ approprié de clusters ne doit pas être prédéfini mais déterminé automatiquement, puisqu'il est difficile de savoir à l'avance le nombre de groupes. Une méthode très connue est celle du \og coude \fg{}  (ou \og genou \fg{}) \citep{halkidi2001clustvalidation}, qui est basée sur le principe de base des algorithmes de partitionnement (e.g. K-moyennes) i.e. minimiser le critère d'inertie:
+{\footnotesize$J(K) = \sum\limits_{j=1}^K\sum\limits_{d_i \in C_j}\norm{\vec{d}_i-\overline{\vec{d}_j}}^2$}, 
+$C_j$ étant ensemble des objets du cluster $j$, et  $\overline{\vec{d}_j}$ le centre du cluster $j$. La méthode du coude consiste à essayer différentes valeurs consécutives de $K$, puis à choisir celle qui correspond au coude de la courbe du critère d'inertie $J(K)$ c'est-à-dire le point à partir duquel la décroissance de la courbe commence à être très faible. Le choix de ce coude est visuel et peut être ambigu (plusieurs valeurs de $K$ sur le coude par exemple). 
 
-La méthode de la silhouette moyenne \citep{rousseeuw1987silhouetteclusternumber} est une alternative moins ambigüe qui consiste à choisir comme valeur optimale de $K$, celle qui maximise le critère de la largeur moyenne de la silhouette: $\overline{s_K}(C) = \frac{1}{K}\sum\limits_{i=1}^N s(d)$. La largeur $s(d)$ de la silhouette est un indice qui compare la ressemblance d'un document $d$ aux autres membres de son cluster $C_t$ par rapport à ceux d'autres clusters $C_l, l \neq t$:
-\[s(d) = \frac{b(d) - a(d)}{\max\lbrace a(d),b(d)\rbrace}\]
-
+La méthode de la silhouette moyenne \citep{rousseeuw1987silhouetteclusternumber} est une alternative moins ambigüe qui consiste à choisir comme valeur optimale de $K$, celle qui maximise le critère de la largeur moyenne de la silhouette: $\overline{s_K}(C) = \frac{1}{K}\sum\limits_{i=1}^N s(d)$. La largeur $s(d)$ de la silhouette est un indice qui compare la ressemblance d'un document $d$ aux autres membres de son cluster $C_t$ par rapport à sa ressemblance aux autres clusters $C_l, l \neq t$:
+$s(d) = \frac{b(d) - a(d)}{\max\lbrace a(d),b(d)\rbrace}$
 où $a(d) = \frac{1}{\vert C_t \vert} \sum\limits_{d' \in C_t} Dis(d, d')$, et $b(d) = \min\limits_{l \neq t} \frac{1}{\vert C_l \vert} \sum\limits_{d' \in C_t} Dis(d, d')$, pour $d \in C_l$.
-
-$K$ est optimal lorsque la largeur moyenne $\overline{s_K}(C)$ est maximale. Les valeurs de ce dernier varient entre -1 (pire valeur) et +1 (meilleure valeur). Les valeurs proches de zéro indiquent que les clusters se chevauchent en $x$, et il est difficile de savoir à quel cluster $x$ doit être affecté. Une valeur négative indique que $x$ a été affecté à cluster inapproprié.
+$K$ est optimal lorsque $\overline{s_K}(C)$ est maximale. Les valeurs de ce dernier varient entre -1 (pire valeur) et +1 (meilleure valeur). Les valeurs proches de zéro indiquent que les clusters se chevauchent en $x$, et il est difficile de savoir à quel cluster $x$ doit être affecté. Une valeur négative indique que $x$ a été affecté à cluster inapproprié.
 
 %Plus récemment, \citet{tibshirani2001gap_statistic} proposent la méthode de "statistique d'écart" (\textit{gap statistic}) dont le principe est de sélectionner le $K$ dont l'erreur sur le clustering de $\mathcal{D}$ est le plus éloignée possible de l'erreur moyenne obtenu sur les clusterings de $M$ ensembles $\mathcal{V}_q, 1\leq q \leq M$ de $N$ vecteurs aléatoirement générés. L'erreur sur le clustering de l'ensemble $\mathcal{A}$ est  $W_K(\mathcal{A})=\sum\limits^K_{r=1}\frac{1}{2n_r}\sum\limits_{i,i' \in C_r} (Dis(i,i'))^2$, $C_r$ étant le $r^\text{ième}$ cluster de taille $n_r$ de $\mathcal{A}$. Le nombre optimal de clusters est la valeur de $K$ qui maximise $Gap_M(K) = \frac{1}{M}\sum\limits_{q=1}^M \log{W_K(\mathcal{V}_q)} - \log{W_K(\mathcal{A})}$ parmi un ensemble de candidats données.
 
@@ -214,14 +208,14 @@ $K$ est optimal lorsque la largeur moyenne $\overline{s_K}(C)$ est maximale. Les
 %\subsection{Labeliser les clusters}
 
 \subsection{Validation de la catégorisation}
-La validation d'une catégorisation peut être supervisée ou non selon que des documents labellisés dans les groupes attendus (données externes) sont employées.
+La validation peut être supervisée ou non suivant l'emploie ou pas des affectations manuelles de documents à des groupes attendus.
 
-\subsubsection{Métriques supervisées ou mesures externes}
+\subsubsection{Métriques supervisées ou indices externes}
 \label{sec:similarite:biblio:supeval}
-Les métriques couramment employées mesurent la ressemblance entre deux catégorisations $X = \lbrace X_1, X_2,..., X_r \rbrace$ et $Y = \lbrace Y_1,Y_2,..., Y_s \rbrace$:
+Les métriques couramment utilisées mesurent la ressemblance entre deux catégorisations $X = \lbrace X_1, X_2,..., X_r \rbrace$ et $Y = \lbrace Y_1,Y_2,..., Y_s \rbrace$:
 \begin{itemize}
-	\item l'indice ajusté par chance de Rand (\textit{ajusted Rand index} - ARI) \citep{hubert1985adjustedrandidx} corrigent l'indice de Rand (RI) \citep{rand1971randidx} pour obtenir une valeur très proche de 0.0 pour les catégorisations aléatoires et exactement 1.0 lorsque les clusters sont identiques aux classes attendues. En effet, l'indice de Rand prend ses valeurs en pratique dans l'intervalle $[0.5;1]$, et a par conséquent une valeur de base très élevée. ARI est calculé à l'aide du tableau de contingence résumant les chevauchements que partagent $X$ et $Y$ (Tableau \ref{tab:similarite:tab-contingence}) par la formule: %\[ARI(Y,C) = \frac{RI(Y,C) - E_{perm}\left[RI(Y,C)\right]}{1.0 - E_{perm}\left[RI(Y,C)\right]} \]
-	\[ARI(X,Y) = \frac{\sum\limits_{i,j}\binom{n_{ij}}{2} - \frac{\sum\limits_{i}\binom{a_{i}}{2}\sum\limits_{j}\binom{b_{j}}{2}}{\binom{N}{2}}}{\frac{1}{2}\big[\sum\limits_{i}\binom{a_{i}}{2}+\sum\limits_{j}\binom{b_{j}}{2}\big] - \frac{\sum\limits_{i}\binom{a_{i}}{2}\sum\limits_{j}\binom{b_{j}}{2}}{\binom{N}{2}}}, \text{ avec } \binom{n}{2} = \frac{n(n-1)}{2}.\]
+	\item l'indice ajusté par chance de Rand (\textit{ajusted Rand index} - ARI) \citep{hubert1985adjustedrandidx} corrigent l'indice de Rand (RI) \citep{rand1971randidx} pour obtenir une valeur très proche de 0 pour les catégorisations aléatoires et exactement 1 lorsque les clusters sont identiques aux classes attendues. En effet, l'indice de Rand prend ses valeurs en pratique dans l'intervalle $[0.5;1]$, et par conséquent une valeur de base très élevée. ARI est calculé à l'aide du tableau de contingence résumant les chevauchements que partagent $X$ et $Y$ (Tableau \ref{tab:similarite:tab-contingence}) par la formule: %\[ARI(Y,C) = \frac{RI(Y,C) - E_{perm}\left[RI(Y,C)\right]}{1.0 - E_{perm}\left[RI(Y,C)\right]} \]
+	{\footnotesize\[ARI(X,Y) = \frac{\sum\limits_{i,j}\binom{n_{ij}}{2} - \frac{\sum\limits_{i}\binom{a_{i}}{2}\sum\limits_{j}\binom{b_{j}}{2}}{\binom{N}{2}}}{\frac{1}{2}\big[\sum\limits_{i}\binom{a_{i}}{2}+\sum\limits_{j}\binom{b_{j}}{2}\big] - \frac{\sum\limits_{i}\binom{a_{i}}{2}\sum\limits_{j}\binom{b_{j}}{2}}{\binom{N}{2}}}\]} avec  $n_{i,j} = \vert X_i \cap Y_j\vert$ et $\binom{n}{2} = \frac{n(n-1)}{2}.$
 	
 	\begin{table}[!htb]
 		\centering \scriptsize
@@ -234,20 +228,20 @@ Les métriques couramment employées mesurent la ressemblance entre deux catégo
 			$X_r$    & $n_{r1}$ & $n_{r1}$ & $\cdots$ & $n_{r1}$ & $a_r$    \\ \hline
 			$\sum$   & $b_1$    & $b_2$    & $\cdots$ & $b_s$    &          \\ \hline
 		\end{tabular}
-		\caption{Tableau de contingence des chevauchement entre les catégorisations $X = \lbrace X_1, X_2, ..., X_r \rbrace$ et $Y = \lbrace Y_1, Y_2, ..., Y_s \rbrace$, $n_{i,j} = \vert X_i \cap Y_j\vert$} \label{tab:similarite:tab-contingence}
+		\caption{Tableau de contingence des chevauchement entre les catégorisations $X = \lbrace X_1, X_2, ..., X_r \rbrace$ et $Y = \lbrace Y_1, Y_2, ..., Y_s \rbrace$}  \label{tab:similarite:tab-contingence}
 	\end{table}
-ARI a des valeurs dans $[-1;1]$. Une valeur négative indique que le catégorisation obtenu s'accorde moins bien avec l'attendu qu'une catégorisation aléatoire. 
+ARI a des valeurs dans $[-1;1]$. Une valeur négative indique que la catégorisation obtenue s'accorde moins bien avec l'attendu qu'une catégorisation aléatoire. 
 	% \item la précision du clustering (ACC) \citep{}.   \textcolor{red}{pas utilisé car nécessite de trouver le meilleur mapping entre les classes et les clusters}
-	\item L'information mutuelle normalisée (NMI) \citep{kvalseth1987entropy_NMI,strehl2000nmi, vinh2010clusteringComparison} normalise l'information mutuelle entre les catégorisations $X$ et $Y$ par une agrégation de leur entropie respective. Par exemple, l'incertitude symétrique \citep{kvalseth1987entropy_NMI} utilise la moyenne comme agrégateur:  $NMI(X,Y) = \frac{2 \cdot I(X,Y)}{H(Y) + H(Y)} $, 
+	\item L'information mutuelle normalisée (NMI) \citep{kvalseth1987entropy_NMI,strehl2000nmi, vinh2010clusteringComparison} normalise l'information mutuelle entre $X$ et $Y$ par une agrégation de leur entropie respective. Par exemple, l'incertitude symétrique \citep{kvalseth1987entropy_NMI} est une variante qui utilise la moyenne comme fonction d'agrégation:  $NMI(X,Y) = \frac{2 \cdot I(X,Y)}{H(Y) + H(Y)} $, 
 	avec $I(X,Y) = H(X) - H(X \vert Y) = \sum\limits_{i=1}^{r}\sum\limits_{j=1}^{s} \frac{n_{ij}}{N} \log_2\frac{{n_{ij}}/{N}}{{a_ib_j}/{N}}$ et $H(X) = \sum\limits_{X_i \in X}\left(- p(X_i)\log_2 p(X_i)\right)$,  $p(X_i) = \frac{a_i}{N}$ et $p(Y_j) = \frac{b_j}{N}$; $n_{ij}, a_i$ et $b_j$ provenant du tableau de contingence (Tableau \ref{tab:similarite:tab-contingence}). La meilleure catégorisation est celui qui a la plus grande valeur.
 	
-	\item Au regard de leur formulation, les métriques ARI et NMI vérifie la différence des proportions entre les clusters de deux catégorisations indépendamment des affectations des documents. D'autres méthodes appelées mesures de comptage de pair (\textit{pair counting measures}) mesurent la capacité du modèle à mettre deux documents similaires (de labels identiques dans les données annotées) dans le même groupe, et des documents dis-similaires (de labels différents dans les données annotées) dans des clusters différents. Par exemple, des mesures de précision, rappel, et F1-mesure sont définies par les formules suivantes \citep{manning2009irbook-flatclustering}:
-	\[P = \frac{{TP}}{{TP} + {FP}}, R = \frac{{TP}}{{TP} + {FN}}, F1 = \frac{2 \times P \times R}{P + R}.\]
-	Ces scores prennent leurs valeurs dans $[0;1]$. Les métriques de bases vrais/faux positifs/négatifs qui servent à les calculer, sont définies comme suit:
+	\item Au regard de leur formulation, les métriques ARI et NMI sont plus focalisées sur la différence de volume entre les clusters de deux catégorisations. D'autres méthodes appelées  \og mesures de comptage de pairs \fg{} (\textit{pair counting measures}) mesurent la capacité du modèle à mettre deux documents similaires (de labels identiques dans les données annotées) dans le même groupe, et des documents dis-similaires (de labels différents dans les données annotées) dans des clusters différents. Parmi ces mesures, on retrouve par exemple, la précision, le rappel, et la F1-mesure qui sont définies par les formules suivantes \citep{manning2009irbook-flatclustering}:
+	{\footnotesize\[P = \frac{{TP}}{{TP} + {FP}}, R = \frac{{TP}}{{TP} + {FN}}, F1 = \frac{2 \times P \times R}{P + R}.\]}
+	Ces scores prennent leurs valeurs dans $[0;1]$. Les métriques de bases, qui servent à les calculer, sont:
 	\begin{itemize}
 		\item un vrai positif (TP) survient si le modèle place deux documents similaires dans le même cluster (groupe généré par le modèle);
 		\item un faux négatif (FN) survient si deux documents similaires sont dans des clusters différents;
-		\item un vrai négatif (TN) est une décision qui place deux documents dissemblables dans deux clusters différents;
+		\item un vrai négatif (TN) survient si deux documents dissemblables se retrouve dans deux clusters différents;
 		\item un faux positif (FP) survient si deux documents dissemblables sont dans le même cluster.
 	\end{itemize}
 		
@@ -259,11 +253,13 @@ ARI a des valeurs dans $[-1;1]$. Une valeur négative indique que le catégorisa
 \subsubsection{Métriques non-supervisées ou indices internes}
 \label{sec:similarite:biblio:unsupeval}
 
- La cohésion et la séparation des clusters sont les principaux indices internes. La cohésion mesure le degré de proximité entre objets d'un cluster à partir du carré de la somme des erreurs\footnote{Erreur: distance entre un point et le centre du cluster dont il est membre.} dans les clusters: $WCSS(C) = \sum\limits_{j=1}^K\sum\limits_{x \in C_j} (Dis(x, m_j))^2$, où $C = \lbrace C_1, C_1, \cdots, C_K \rbrace$ est l'ensemble des clusters de la catégorisation, $m_j$ le centre de $C_j$, et $Dis(x,m_j)$ la distance (généralement euclidienne) entre un point $x$ et $m_j$. En général, une valeur faible de la cohésion indique que les clusters sont plus compactes, et donc de meilleur qualité. Tandis qu'une valeur élevée révèle une grande variabilité entre les objets à l'intérieur les clusters. La séparation quant à elle mesure l'éloignement de chaque cluster des autres à partir du carré de la somme des distances entre clusters: $BCSS(C) = \sum\limits_{j = 1}^{K} \vert C_j \vert (m - m_j)$, 
-  $m$ étant le centre l'ensemble des objets (la moyenne des vecteurs de tous les documents, où le document qui se trouve à une distance moyenne minimale de tous les autres). Une grande valeur de séparation indique que les clusters sont isolés les uns des autres, et par conséquent elle doit être maximisée pendant la catégorisation. Le coefficient de silhouette de \citet{rousseeuw1987silhouetteclusternumber} (cf. \ref{sec:similarite:k-optimal})  combine les idées de cohésion et séparation mais pour chaque objet.
+ La cohésion et la séparation des clusters sont les principaux indices internes. La cohésion mesure le degré de proximité entre objets d'un cluster à partir du carré de la somme des erreurs\footnote{Erreur: distance entre un point et le centre du cluster dont il est membre.} dans les clusters: $WCSS(C) = \sum\limits_{j=1}^K\sum\limits_{d \in C_j} (Dis(d, z_j))^2$, où $C = \lbrace C_1, C_1, \cdots, C_K \rbrace$ est l'ensemble des clusters de la catégorisation, $z_j$ le centre de $C_j$, et $Dis(d,z_j)$ la distance (généralement euclidienne) entre un point $d$ et $z_j$. En général, une valeur faible de la cohésion indique que les clusters sont plus compactes, et donc de meilleur qualité. Tandis qu'une valeur élevée révèle une grande variabilité entre les objets à l'intérieur les clusters. La séparation quant à elle mesure l'éloignement de chaque cluster des autres à partir du carré de la somme des distances entre clusters: $BCSS(C) = \sum\limits_{j = 1}^{K} \vert C_j \vert (\overline{z} - z_j)$, 
+  $\overline{z}$ étant le centre de tous les documents.
+  %l'ensemble des objets (la moyenne des vecteurs de tous les documents, où le document qui se trouve à une distance moyenne minimale de tous les autres). 
+  Une grande valeur de séparation indique que les clusters sont isolés les uns des autres. Par conséquent, elle doit être maximisée. Le coefficient de silhouette de \citet{rousseeuw1987silhouetteclusternumber} (cf. \ref{sec:similarite:k-optimal})  combine les idées de cohésion et séparation mais individuellement pour chaque document.
 
 \section{Apprentissage d'une distance basée sur la transformation de document}
-Nous définissons la métrique suivante qui est fonction des transformations permettant de passer d'un document $d$ à un autre $d'$ :
+Nous définissons une métrique $Dis_\mathcal{M}$ qui est fonction des transformations permettant de passer d'un document $d$ à un autre $d'$ :
 \begin{equation}
 \begin{array}{cccccc}
 Dis_\mathcal{M} & : & \mathcal{D} \times \mathcal{D} & \to & \mathbb{R} & \\
@@ -271,21 +267,21 @@ Dis_\mathcal{M} & : & \mathcal{D} \times \mathcal{D} & \to & \mathbb{R} & \\
 \end{array} \label{eq:similarite:distance-modif}
 \end{equation}
 
-$\mathcal{D}$ est le corpus. $\mathcal{M}_{d, d'}$ est l'ensemble des modifications de $d$ permettant pour obtenir $d'$ i.e. les paires de mots différents $(d_{k}, d'_{k})$ telles que le mot $d_{k}$ à la position $k$ dans $d$ a été remplacé par $d_{k}$ à la position $k$ dans $d'$. $f$ est une fonction qui croît avec le nombre de modifications. Après une légère modification, le sens d'un texte reste assez similaire à celui de l'original. Tandis qu'après un grand nombre de modifications, le sens du texte sera très différent de l'original. 
+$\mathcal{D}$ est le corpus. $\mathcal{M}_{d, d'}$ est l'ensemble des modifications de $d$ permettant pour obtenir $d'$ i.e. les paires de mots différents $(d[k], d'[k])$ telles que le mot $d[k]$ a été remplacé par $d'[k]$. $f$ est une fonction qui croît avec le nombre de modifications. Après une légère modification, le sens d'un texte reste assez similaire à celui de l'original. Tandis qu'après un grand nombre de modifications, le sens du texte est très différent de l'original. 
 
-Pour des textes de même taille, toute formulation mathématique permettrait de calculer $Dis_\mathcal{M}$ car il est facile de faire correspondre les mots par leur position. Par exemple, cette distance peut donc se formuler comme étant la proportion de mots modifiés:
+Pour des document de même taille,  cette distance peut, par exemple, se formuler comme étant la proportion de mots modifiés:
 \begin{equation}
-{Dis_\mathcal{M}}(d,d') = {f}(\mathcal{M}_{(d,d')}) = \frac{\vert \mathcal{M}_{(d,d')} \vert}{\vert d_i \vert } \label{eq:similarite:taux-modif}
+{Dis_\mathcal{M}}(d,d') = {f}(\mathcal{M}_{(d,d')}) = \frac{\vert \mathcal{M}_{(d,d')} \vert}{\vert d \vert } \label{eq:similarite:taux-modif}
 %  $\vert d_i \vert$ étant le nombre de mots de $d_i$.
 \end{equation}
- Par contre, pour des textes de tailles différentes, il est impossible de savoir les positions où des mots ont été supprimés ou ajoutés, et par conséquent, il devient impossible d'estimer leur distance par une formule. La distance étant une valeur continue, en entraînant un modèle de régression sur un ensemble de paires de documents pour lesquelles on connaît la distance, il est possible de la prédire pour des paires de textes de tailles quelconques. Nous proposons de générer une base synthétique de paires de documents dont l'un est un document du corpus original mais l'autre est le résultat de substitutions et suppression de mots du premier. En contrôlant ces modifications, il est facile de calculer une valeur de $Dis_\mathcal{M}$ pour chaque paire générée de documents, même s'ils sont de tailles différentes (en considérant la suppression d'un mot comme son remplacement par le \og mot vide \fg{} considéré comme faisant partie de l'ensemble $W$ de mots).
+ Par contre, pour des textes de tailles différentes, il est impossible de savoir les positions où des mots ont été supprimés ou ajoutés, et par conséquent, il devient impossible de calculer leur distance. La distance étant une valeur continue, en entraînant un modèle de régression sur un ensemble de paires de documents pour lesquelles la distance est connue, il est possible de la prédire pour des paires de documents de tailles quelconques. Nous proposons de générer une base synthétique de paires de documents dont l'un est un document du corpus original mais l'autre est le résultat de substitutions et suppressions de mots du premier. En contrôlant ces modifications, il est facile de calculer une valeur de $Dis_\mathcal{M}$ pour chaque paire générée de documents, même s'ils sont de tailles différentes (en considérant la suppression d'un mot comme son remplacement par le \og mot vide \fg{}).
 
 \subsection{Génération d'une base d'apprentissage}
-La génération de la base synthétique nécessite de définir une formulation de la fonction $f(\mathcal{M}_{d, d'})$ pour les documents de taille égale, comme par exemple celle de l'Equation \ref{eq:similarite:taux-modif}. Cette formulation ne considérant pas la similarité entre les mots substituants et les remplacés, nous proposons de pondérer chaque modification par la distance entre les mots substitués (le vecteur du  \og mot vide \fg{} étant nul):
+La génération de la base synthétique nécessite de définir une formulation de la fonction $f(\mathcal{M}_{d, d'})$ pour les documents de taille égale, comme par exemple celle de l'Equation \ref{eq:similarite:taux-modif}. Cette formulation considère que toutes les modifications ont la même importance c'est-à-dire qu'une substitution de mots contraires est équivalente à une substitution de mots similaires. Pour corriger cette limite, chaque modification peut être pondérée par la distance entre les mots substitués (le vecteur du  \og mot vide \fg{} étant nul):
 \begin{equation}
-{Dis_\mathcal{M}}(d,d') = {f}(\mathcal{M}_{(d,d')}) = \frac{\sum\limits_{(d_k, d'_k) \in \mathcal{M}_{(d,d')}} Dis_{cos}(\vec{d_k}, \vec{d_{ik}})}{\vert d_i \vert} \label{eq:similarite:somme-dist-mots}
+{Dis_\mathcal{M}}(d,d') = {f}(\mathcal{M}_{(d,d')}) = \frac{\sum\limits_{(d[k], d'[k]) \in \mathcal{M}_{(d,d')}} Dis_{cos}(\overrightarrow{d[k]}, \overrightarrow{d'[k]})}{\vert d_i \vert} \label{eq:similarite:somme-dist-mots}
 \end{equation}
-$d_i$ est un document du corpus original $\mathcal{D}$, et $d'$ est le document synthétique obtenu par modifications contrôlées de $d_i$. $\vec{d_k}$ désigne le plongement lexical du mot $d_k$. Pour garantir la symétrie et la réflexivité de la métrique, nous imposons respectivement ${Dis_\mathcal{M}}(d,d') = {Dis_\mathcal{M}}(d', d_i)$ et ${Dis_\mathcal{M}}(d_i, d_i) = {Dis_\mathcal{M}}(d', d') = 0, \forall d_i \in \mathcal{D}$ sur le jeu d'entraînement généré. L'algorithme de génération de document synthétique utilise une valeur seuil de probabilité $0<p<1$ contrôlant le taux de modifications à effectuer sur le document original (Algorithme \ref{algo:similarite:modifierdoc}). 
+$d$ est un document du corpus original $\mathcal{D}$, et $d'$ est le résultat d'une transformation contrôlée de $d$. $\overrightarrow{d[k]}$ désigne le plongement lexical du mot $d[k]$. Pour garantir la symétrie et la réflexivité de la métrique, nous imposons respectivement ${Dis_\mathcal{M}}(d,d') = {Dis_\mathcal{M}}(d', d)$ et ${Dis_\mathcal{M}}(d, d) = {Dis_\mathcal{M}}(d', d') = 0, \forall d \in \mathcal{D}$ sur le jeu d'entraînement généré. L'Algorithme \ref{algo:similarite:modifierdoc} de génération de document synthétique contrôle le taux de modifications à effectuer sur le document original grâce à un seuil donnée $0\leq p\leq1$. En variant $p$, plusieurs documents $d'$ sont générés pour chaque $d \in \mathcal{D}$ pour former un jeu d'apprentissage $B_\mathcal{M} = \lbrace (d_1, d_2, {Dis}(d_1, d_2))_i\rbrace_{1 \leq i \leq \setsize{B_\mathcal{M}}}$.
 
 \begin{algorithm}[!htb] % Version française avec : https://pierre.chachatelier.fr/latex/index.php
 	\footnotesize
@@ -306,14 +302,14 @@ $d_i$ est un document du corpus original $\mathcal{D}$, et $d'$ est le document 
  \caption{\textit{modifier\_document($d_i, p, W$)}} \label{algo:similarite:modifierdoc}
 \end{algorithm}
 
-Pour une même valeur ou des valeurs différentes de $p$, plusieurs documents sont ainsi générés pour chaque $d^i \in \mathcal{D}$ pour former un ensemble de données d'entraînement $B_\mathcal{M} = \lbrace (d^i, {d^i}', {Dis}(d^i, {d^i}'))\rbrace_{1 \leq i \leq \setsize{B_\mathcal{M}}}$.
+
 
 \subsection{Entraînement de la métrique}
 
-Sur $B_\mathcal{M}$, on entraîne un modèle régressif $m$ pour prédire la distance entre deux documents quelconques en fonction de leur représentation vectorielle. Ce modèle de régression $Reg_\mathcal{M}$ peut être utilisé comme distance dans un algorithme de catégorisation comme celui des K-moyennes. Cependant, les modèles de régression ne supportent généralement qu'un seul vecteur en entrée, et pas deux comme en dispose la base $B$. Les vecteurs $d_i$ et $d'$ doivent donc être agrégés en un seul. L'agrégation qui fonctionne le mieux est la soustraction avec laquelle les documents similaires auront une agrégation avec un grand nombre de composantes tendant vers 0. La fonction d'estimation automatique de la distance sémantique entre $x$ et $y$ s'écrit: $Dis_\mathcal{M}(d, d') = Reg_\mathcal{M}(\vec{d_{i}} - \vec{d_{j}})$. 
+Sur $B_\mathcal{M}$, un modèle de régression peut être entrainé pour prédire la distance entre deux documents quelconques $d_i$ et $d_j$ en fonction de leur représentation vectorielle. Ce modèle de régression $Reg_\mathcal{M}$ peut être utilisé comme distance dans un algorithme de catégorisation comme celui des K-moyennes. Cependant, les modèles de régression ne supportent généralement qu'un seul vecteur en entrée, et pas deux comme en dispose la base $B_\mathcal{M}$. Les vecteurs $\vec{d}_i$ et $\vec{d}_j$ doivent donc être agrégés en un seul. Une bonne agrégation est la soustraction car l'agrégation de documents similaires est un vecteur proche du nul. La fonction d'estimation automatique de la distance entre $x$ et $y$ s'écrit: $Dis_\mathcal{M}(d_i, d_j) = Reg_\mathcal{M}(\vec{d_{i}} - \vec{d_{j}})$. 
 
 \subsection{Utilisation pour le regroupement des documents}
- Nous proposons dans un premier temps de sélectionner la représentation vectorielle pour laquelle la distance sépare au mieux les groupes manuellement annotées et rapproche au mieux les éléments à l'intérieur de ces groupes. La représentation\footnote{Combinaison modèle vectoriel et méthode de réduction} optimale maximise la largeur moyenne de la silhouette de la catégorisation manuelle. L'idée étant d'avoir une représentation qui optimise à la fois les métriques supervisées et non supervisées de validation. La représentation vectoriel ainsi déterminée est utilisée ensuite pour la catégorisation des corpus non annotés. % Ensuite, La distance apprise peut être utilisée dans des algorithmes comme les k-moyennes sur des documents représentés sous la forme optimale sélectionnée.
+ Nous proposons dans un premier temps de sélectionner la représentation vectorielle pour laquelle la distance sépare au mieux les groupes manuellement annotées et rapproche au mieux les éléments à l'intérieur de ces groupes. La représentation\footnote{Combinaison modèle vectoriel et méthode de réduction.} optimale maximise la largeur moyenne de la silhouette de la catégorisation manuelle. L'idée étant d'avoir une représentation qui optimise à la fois les métriques supervisées et non supervisées de validation. La représentation ainsi déterminée est utilisée ensuite pour la catégorisation sur les corpus non annotés. % Ensuite, La distance apprise peut être utilisée dans des algorithmes comme les k-moyennes sur des documents représentés sous la forme optimale sélectionnée.
 
 %\textcolor{red}{Issues:}
 %\begin{itemize}
@@ -326,12 +322,12 @@ Sur $B_\mathcal{M}$, on entraîne un modèle régressif $m$ pour prédire la dis
 
 \section{Expérimentations et résultats}
 \label{sec:similarite:experimentations}
-%Cette section discute la validité, l'adéquation, et l'efficacité de la métrique apprise en comparaison avec d'autres métriques d'estimation de la similarité sémantique entre documents. La validité de la métrique est établie si cette dernière respecte les propriétés d'une distance. L'adéquation de la métrique avec le problème à résoudre mesure la capacité de la métrique à estimer une distance très faible entre documents du même label (catégorisation manuelle), en même temps qu'une similarité quasi nulle entre documents de labels différents, indépendamment de l'algorithme de catégorisation appliqué. Enfin, l'efficacité de la métrique est liée à la qualité de catégorisation  résultant de l'application d'un algorithme de catégorisation  combiné avec la métrique apprise.
+Cette section discute de la validité, l'adéquation, et l'efficacité de la métrique apprise en comparaison avec d'autres distances. La validité de la métrique est établie si cette dernière respecte les propriétés d'une distance. L'adéquation de la métrique avec le problème à résoudre mesure la capacité de la métrique à estimer une distance très faible entre documents du même circonstances factuelles, et une similarité très faible entre documents de circonstances différentes, indépendamment de tout algorithme de catégorisation. Enfin, l'efficacité de la métrique est liée à la qualité de la catégorisation résultant de l'application d'un algorithme de regroupement  utilisant cette distance.
 
 
 \subsection{Données}
 \label{sec:similarite:données}
-Pour l'évaluation supervisée, nous disposons d'une base annotée sur la catégorie de demande "dommage-intérêts / action en responsabilité civile professionnelle contre les avocats" (\textit{arcpa}) qui concerne les contentieux impliquant des avocats.  L'expert annotateur a annoté 81 documents\footnote{Sur 85 documents disponibles de catégorie \textit{arcpa}} avec 6 documents appartenant chacun à 2 circonstances factuelles (chevauchements) parmi les 4 identifiées :
+Pour l'évaluation supervisée, nous disposons d'une base annotée sur la catégorie de demande "dommage-intérêts / action en responsabilité civile professionnelle contre les avocats" (\textit{arcpa}) qui concerne les contentieux impliquant des avocats.  L'annotateur (juriste) a organisé 81 documents\footnote{Sur 85 documents disponibles de catégorie \textit{arcpa}.} en 4 circonstances factuelles, avec 6 documents appartenant simultanément chacun à 2 groupes (chevauchements) :
 \begin{itemize}
 \item cas $a$ (46 documents): il s'agit d'un avocat qui est négligent et envoie son assignation de manière tardive; %(champ sémantique: retard/délai/prescription)
 \item cas $b$ (20 documents): il s'agit d'un avocat qui n'a pas donné un conseil opportun, qui n'a pas soulevé le bon argument;
@@ -345,147 +341,67 @@ Pour l'évaluation supervisée, nous disposons d'une base annotée sur la catég
 %	\caption{Répartition des documents annotés par circonstances factuelles (\textit{arcpa}).}\label{fig:similarite:arcpa-data-distrib}
 %\end{figure}
 
-Les terminologies des différents cas se distinguent bien (Tableau \ref{tab:similarite:terminologie-resp_avocat}), et par conséquent, une représentation des documents qui mettrait en évidence ces différents termes permettrait de retrouver les circonstances factuelles associées. 
+Les terminologies des cas se distinguent bien (Tableau \ref{tab:similarite:terminologie-resp_avocat}). Par conséquent, une représentation des documents qui mettrait en évidence de tels termes permettrait de retrouver les circonstances factuelles. 
 \begin{table}[ht]
 	\centering \scriptsize
 	\begin{tabular}{|l|p{.85\textwidth}|}
 		\hline
 		\textbf{Corpus} & \textbf{Terminologie} \\ \hline
-		\textit{arcpa} & perte de chance, 
-		responsabilité civile professionnelle, 
-		civile professionnelle, 
-		chance d' obtenir, 
-		faute de l' avocat, 
-%		chance, 
-%		contradictoirement après débats en audience, 
-%		nécessairement rejet, 
-%		avocat est tenu, 
-%		obtenir gain, 
-%		obtenir gain de cause, 
-%		responsabilité professionnelle, 
-%		audience publique et après, 
-%		publique et après, 
-%		chances, 
-%		aucune chance, 
-%		perte de chance d' obtenir, 
-%		délibéré statuant publiquement, 
-%		perdu une chance, 
-%		fait perdre une chance, 		
+		\textit{arcpa} & chance, perte chance, avocat, perte, diligence, chance obtenir, perdre, client, devoir conseil, manquement
 		\\ \hline
-		\textit{cas a} & obtenir gain,
-		obtenir gain de cause,
-		perte de chance,
-		perdu une chance,
-		chances
-%		nécessairement rejet
-%		chance
-%		confié la défense
-%		conseil' attendu
-%		chances d' aboutir
-%		appel que ces condamnations
-%		nécessairement rejet de la demande
-%		appel que ces condamnations emportent
-%		emportent nécessairement
-%		condamnations emportent
-%		condamnations emportent nécessairement rejet
-%		condamnations emportent nécessairement
-%		emportent nécessairement rejet
-%		projet d' assignation
-%		toute chance		
+		\textit{cas a} & chance, perte chance, chance succès, perte, client, préjudice indemnisable, article code commerce, indemnisable, condamnation emporter, emporter nécessairement rejet
 		\\ \hline
-		\textit{cas b} & avocat au barreau de dijon,
-		412 du code de procédure,
-		barreau de dijon,
-		412 du code,
-		devoir de compétence
-%		régularité et d' autre part
-%		obliger qu' en l' espèce
-%		emportant pouvoir
-%		régime de la responsabilité professionnelle
-%		régularité et d' autre
-%		représentation en justice lui imposant
-%		relève de la responsabilité contractuelle
-%		imposant d' accomplir
-%		dispositions combinées des articles 411
-%		avocat est investi
-%		avocats relève
-%		responsabilité professionnelle des avocats
-%		devoir de conseiller la partie
-%		tous les actes nécessités
-%		appel et le jugement entrepris		 
+		\textit{cas b} & défense intérêt, intérêt client, avocat, contractuel égard, responsabilité contractuel droit, responsabilité professionnel avocat, contractuel droit commun, assurer défense intérêt, civil avocat, grief articuler
+				\\ \hline
+		\textit{cas c} & rédacteur acte, rédacteur, avocat rédacteur acte, avocat rédacteur, qualité rédacteur acte, rédaction acte, qualité rédacteur, projet acte, prendre initiative conseiller, initiative conseiller
 		\\ \hline
-		\textit{cas c} &avocat rédacteur d' un acte,
-		qualité de rédacteur d' acte,
-		rédacteur d' acte,
-		rédacteur d' un acte,
-		avocat rédacteur
-%		7.2 du règlement intérieur
-%		7.2 du règlement
-%		article 7.2 du règlement
-%		article 7.2 du règlement intérieur
-%		deux parties à la convention
-%		validité et la pleine
-%		portée et les incidences
-%		initiative de conseiller les deux
-%		initiative de conseiller
-%		prévisions des parties
-%		prendre l' initiative de conseiller
-%		présence et de prendre
-%		conseiller les deux parties
-%		conseiller les deux
-%		convention sur la portée
-		\\ \hline
-		\textit{cas d} & instances introduites,
-		chaque mois sous,
-		référé du 5 mai,
-		réunies car,
-		référé renvoyons
-%		réception du 20 avril 2009
-%		référés compte
-%		référé du 22 novembre
-%		référé du 27 novembre
-%		obtenir une décision différente
-%		référés compte tenu
-%		l. doivent être condamnés
-%		appartenait aux appelants
-%		appelant il n' en demeure
-%		appel relativement à la juridiction
-%		appel que les dépens
-%		apparaît constituer
-%		valoir tous
-%		66-879 du 29
-%		66-879 du 29 novembre 1966				 
+		\textit{cas d} & revêtir aucun, revêtir aucun caractère, article code, article code procédure, faire référence aucun, fautif madame, civil profit autre, civil depuis, mention expresse, moyen dont
 		\\ \hline
 	\end{tabular}
 
-	\textit{5 premiers termes de 1 à 5 mots sélectionnés à l'aide du coefficient de corrélation $ngl$ (cf. \ref{sec:quanta:poids-globaux-superv})}
-	\caption{Terminologies  de la catégorie \textit{arcpa}, et de ses circonstances factuelles manuellement annotées.}\label{tab:similarite:terminologie-resp_avocat}
+	\textit{10 premiers termes lémmatisés de 1 à 3 mots sélectionnés à l'aide du coefficient de corrélation $ngl$ (cf. \ref{sec:quanta:poids-globaux-superv})}
+	\caption{Terminologies de  la catégorie  $arcpa$ et de ses circonstances factuelles manuellement annotées.}\label{tab:similarite:terminologie-resp_avocat}
 \end{table}
 
-Pour l'évaluation non supervisée, les corpus des catégories de demande des chapitres \ref{chap:quanta} et \ref{chap:sensresultat} sont employés en plus pour l'évaluation non-supervisée. Nous les appelons respectivement $\mathcal{D}_{acpa}$, $\mathcal{D}_{concdel}$, $\mathcal{D}_{danais}$,$\mathcal{D}_{dcppc}$, $\mathcal{D}_{doris}$, $\mathcal{D}_{styx}$.
+Pour l'évaluation non supervisée, les corpus des chapitres \ref{chap:quanta} et \ref{chap:sensresultat} sont aussi employés. Ils sont notés $\mathcal{D}_{acpa}$, $\mathcal{D}_{concdel}$, $\mathcal{D}_{danais}$,$\mathcal{D}_{dcppc}$, $\mathcal{D}_{doris}$, $\mathcal{D}_{styx}$.
 
 \subsection{Protocole et outils logiciels}
-Pour analyser la validité et l'adéquation de la métrique apprise, nous l'entraînons sur la base générée puis nous l'évaluons sur le corpus annoté $\mathcal{D}_{arcpa}$ restreint aux 74 documents n'appartenant qu'à l'un des cas $L = \lbrace a, b, c \rbrace$. Quant à l'efficacité de la métrique apprise, nous l'entraînons sur toutes les données annotées générées. Les documents sont pré-traités avant leur représentation sous forme vectorielle. Ce pré-traitement consiste à sectionner les documents (chapitre \ref{chap:structuration}), à n'utiliser que la section Motifs, à mettre en minuscule et lemmatiser ce contenu, puis à éliminer la ponctuation et des mots inutiles (\textit{stop words})  car ils sont généralement indépendants de toute catégorie. Après pré-traitement, les documents ont une taille allant de 208 à 3812 mots dont une moyenne de 1381 mots. Pour générer les données  d'entrainement de $Dis_M$, le vocabulaire $W$ utilisé est restreint au mots du corpus original $D$ sur lequel il faut appliquer les catégorisations. La représentation vectorielle emploie les modèles de types TF-IDF (poids local $\times$ poids global) avec des n-grammes de 1 à 3 mots. %Chaque poids global $g(t)$ d'un terme $t$ est multiplié par le logarithme du nombre de mots de $t$ donnant ainsi une nouvelle formulation $\hat{g}(t) = \log_2{\vert t \vert} \times g(t)$ qui, par conséquent, augmente le poids des longs termes qui sont rares mais parfois plus discriminants. 
-Les poids globaux sont appris sur la discrimination entre deux corpus $\mathcal{D}_{C}$ (85 documents) et $\mathcal{D}_{\overline{C}}$ (427) i.e. la terminologie d'une catégorie de demande $C$. 427 documents forment $\mathcal{D}_{\overline{arcpa}}$.
+La métrique apprise est entraînée sur une base générée, puis nous l'évaluons sur le corpus annoté $\mathcal{D}_{arcpa}$ restreint aux 74 documents n'appartenant qu'à l'un des cas $L = \lbrace a, b, c \rbrace$ (les chevauchements ne sont pas traités).  Les documents sont pré-traités avant leur représentation vectorielle. Ce pré-traitement consiste à les  sectionner (chapitre \ref{chap:structuration}), à les restreindre à la section Motifs, à mettre en minuscule et lemmatiser leur contenu, puis à y éliminer la ponctuation et des mots inutiles (\textit{stop words})  car ils sont généralement indépendants de toute catégorie. Après pré-traitement, les documents ont une taille allant de 208 à 3812 mots dont une moyenne de 1381 mots. Pour générer les données  d'entrainement de $Dis_M$, le vocabulaire $W$ utilisé est restreint aux mots du corpus original $D$ sur lequel il faut appliquer les catégorisations. La représentation vectorielle emploie des modèles de type TF-IDF (poids local $\times$ poids global $\times$ facteur de normalisation, cf. \ref{sec:quanta:classification}) avec des n-grammes de 1 à 3 mots. %Chaque poids global $g(t)$ d'un terme $t$ est multiplié par le logarithme du nombre de mots de $t$ donnant ainsi une nouvelle formulation $\hat{g}(t) = \log_2{\vert t \vert} \times g(t)$ qui, par conséquent, augmente le poids des longs termes qui sont rares mais parfois plus discriminants. 
+Les poids globaux sont appris sur la discrimination entre deux corpus $\mathcal{D}_{c}$ et $\mathcal{D}_{\overline{c}}$ ($\setsize{\mathcal{D}_{\overline{arcpa}}} = 427$ documents) c'est-à-dire la terminologie d'une catégorie $c$ de demandes.
 
- La librairie Python Scikit-Learn \citep{Pedregosa2011scikit-learn} a été utilisée pour les implémentations des algorithmes de réduction de dimension. La distance WMD est celle implémentée dans la librairie Gensim de \citet{rehurek2010gensim}. Le modèle de vecteurs de mots est un modèle GLoVE de \citet{pennington2014glove} entraîné sur un corpus de +800k décisions de justice lémmatisées, à l'aide de vecteurs de dimension 300 obtenu sur une taille de fenêtre de contexte égale à 15 mots. Le vecteur $\vec{t}$ d'un terme $t$ de $n$ mots $(w_1, w_2, \cdots, w_n)$ est obtenu en concaténant leur vecteur respectif de la droite vers la gauche: $\vec{t}=[\vec{w_1}\vec{w_2}\cdots \vec{w_n}]$.
+ La librairie Python Scikit-Learn \citep{Pedregosa2011scikit-learn} a été utilisée pour les implémentations des algorithmes de réduction de dimension, et ceux du DBSCAN, de la catégorisation spectrale (\textit{Spectral Clustering}), et du regroupement hiérarchique (IAgglomerative Clustering). Les implémentations des C-moyennes floues probabilistes (\textit{Probabilistic FCM}) et des arbres aléatoires (\textit{Random Forest}) proviennent respectivement des librairies \textit{scikit-cmeans 0.1}\footnote{\url{https://bm424.github.io/scikit-cmeans/index.html}} et RandomForestClustering\footnote{\url{https://github.com/joshloyal/RandomForestClustering/}}. La distance WMD est celle implémentée dans la librairie Gensim de \citet{rehurek2010gensim}. Les expérimentations utilisent un modèle de plongement lexical de type GLoVE  \citep{pennington2014glove} entraîné sur un corpus de +800k décisions de justice lémmatisées avec des fenêtres de contexte de 15 mots. Ce modèle dispose de 32445 mots représentés par des vecteurs de 300 dimensions. Le vecteur $\vec{t}$ d'un terme $t$ de $n$ mots $(w_1, w_2, \cdots, w_n)$ est obtenu en concaténant leur vecteur respectif de la droite vers la gauche: $\vec{t}=[\vec{w_1}\vec{w_2}\cdots \vec{w_n}]$.
 
 \subsection{Validité de la distance apprise}
-La base d'entraînement $B$ comprend 935 documents dont 10 documents synthétiques générés pour chacun des 85 documents. Sur un modèle TF-IDF, la régression linéaire approxime bien la distance proposée $Dis_M$ car elle a un faible taux d'erreur (Figure \ref{fig:similarite:eval-regression}).
+Pour la catégorie ARCPA, la base d'entraînement $B_\mathcal{M}$ comprend 935 documents dont 10 documents synthétiques générés pour chacun des 85 documents. Sur un modèle TF-IDF, la régression linéaire approxime bien la distance proposée $Dis_M$ car elle a un faible taux d'erreur (Figure \ref{fig:similarite:eval-regression}).
 
+%\begin{figure}[!htb]
+% 	\centering \includegraphics[width=0.5\textwidth]{eval-lr.png} \hfil
+%	%\includegraphics[width=0.49\textwidth]{eval-mlp.png}
+%	
+%	\caption{Différence entre valeurs prédites et  attendues par la distance apprise}\label{fig:similarite:eval-regression}
+%\end{figure}
+%
+%\begin{figure}[!htb]
+%	\centering \includegraphics[scale=0.4]{distance_matrix.png}
+%	\caption{Matrice des distances de la métrique apprise sur $\mathcal{D_{\text{arcpa}}}$}\label{fig:similarite:distance_matrix}
+%\end{figure}
 \begin{figure}[!htb]
- 	\centering \includegraphics[width=0.5\textwidth]{eval-lr.png} \hfil
+\begin{subfigure}[ht]{0.49\textwidth}
+	\centering \includegraphics[width=\textwidth]{eval-lr.png} \hfil
 	%\includegraphics[width=0.49\textwidth]{eval-mlp.png}
 	
-	\caption{Différence entre valeurs prédites et  attendues par la distance apprise}\label{fig:similarite:eval-regression}
+	\caption{Différence entre valeurs prédites et valeurs attendues}\label{fig:similarite:eval-regression}
+\end{subfigure}
+\begin{subfigure}[ht]{0.49\textwidth}
+	\centering \includegraphics[scale=0.66]{distance_matrix.png}
+	\caption{Matrice des distances entre documents}\label{fig:similarite:distance_matrix}
+\end{subfigure}
+\caption{Validité de la distance apprise.}
 \end{figure}
 
-Nous vérifions ici que la métrique respecte les propriétés des distances, et aussi si elle reste normale après l'entraînement. D'après la matrice des distances entre toutes les paires de document de la base annotées $\mathcal{D_{\text{arcpa}}}$ (Figure \ref{fig:similarite:distance_matrix}),  la "non-négativité", l'identité discernable, et la symétrie sont respectée car toutes les valeurs sont non-négative, seule la diagonale est nulle, et la matrice est symétrique. De plus, toutes les distances sont comprises entre 0 et 1, et par conséquent la métrique est normée (donc la similarité est déduite par $Sim_\mathcal{M} = 1 - Dis_\mathcal{M}$).
+D'après la matrice des distances entre les 74 documents de $\mathcal{D_{\text{arcpa}}}$ (Figure \ref{fig:similarite:distance_matrix}),  la "non-négativité", l'identité discernable, et la symétrie sont respectée car toutes les valeurs sont non-négative, seule la diagonale est nulle, et la matrice est symétrique. De plus, toutes les distances sont comprises entre 0 et 1, et par conséquent la métrique est normée.
 
-\begin{figure}[!htb]
-	\centering \includegraphics[scale=0.4]{distance_matrix.png}
-	\caption{Matrice des distances de la métrique apprise sur $\mathcal{D_{\text{arcpa}}}$}\label{fig:similarite:distance_matrix}
-\end{figure}
+
 
 L'inégalité triangulaire est vérifiée car $Dis_\mathcal{M}(d,d'') - (Dis_\mathcal{M}(d,d') + Dis_\mathcal{M}(d',d'')) \leq 0, \forall (
 d,d,d') \in \mathcal{D_{\text{arcpa}}} \times \mathcal{D_{\text{arcpa}}} \times \mathcal{D_{\text{arcpa}}}$ (Figure \ref{fig:similarite:matrice_inegalite_triangulaire}).
@@ -524,9 +440,11 @@ Le Tableau \ref{tab:similarite:silhouette-vecteur-manuel} présente la représen
 
  
 Le modèle vectoriel TP-NGL réduit à 4 dimensions par la factorisation de matrice non négative (FNM) est préférée par la majorité des distances. Nous remarquons que la pondération globale supervisée (NGL et CHI2) met en évidence non seulement la terminologie de la catégorie de demande mais aussi celle des circonstances factuelles associées. La FNM marche mieux en moyenne pour toutes les classes avec des silhouettes maximales comprises entre 0.052 et 0.212, suivie de l'ALS (0.048 -- 0.119) et de l'ACP (0.029 -- 0.079). Les performances maximales observées par l'ALD (-0.032 -- -0.001) sont moins bonnes la représentation sans réduction (0.001 -- 0.008). %La réduction par la méthode du barycentre des termes, ???
-Les représentations sélectionnées sont utilisées dans la suite.
+Les représentations sélectionnées sont utilisées dans la suite. 
+
+Le Tableau \ref{tab:similarite:silhouette-vecteur-manuel} classe aussi les distances en fonction de leur adaptabilité à la tâche, et la $Dis_\mathcal{M}$ se replace bien grâce à la représentation optimale. $Dis_{wmd}$ n'a pas été adaptée avec un modèle vectoriel plus adéquat que le sac-de-mots. Par conséquent, elle présente une silhouette légèrement moins bonne que celle d'un regroupement aléatoire (silhouette négative et proche de 0).
 \subsection{Catégorisation du corpus annotées manuellement}
-\subsubsection{Nombre de clusters prédéfini}
+\subsubsection{Nombre prédéfini de clusters}
  Le Tableau \ref{tab:similarite:validation-supervisee-k3} présente les mesures ARI, NMI et F1-mesure de la catégorisation par k-means et k-medoids sur $\mathcal{D}_{arcpa}$, avec $K=3$. 
 
 \begin{table}[!htb]
@@ -553,11 +471,11 @@ Les représentations sélectionnées sont utilisées dans la suite.
 	\caption{Evaluation de la catégorisation par k-means et k-medoids sur $\mathcal{D}_{arcpa}$ avec le nombre de clusters prédéfini à $K=3$.} \label{tab:similarite:validation-supervisee-k3}
 \end{table}
 
-Les valeurs de silhouette se reflètent plus sur les indices ARI et NMI, mais moins sur la F1-mesure. $Dis_M$, $Dis_{euclidienne}$ et $Dis_{cos}$ semblent les mieux adaptées pour le k-means, et $Dis_{cos}$, $Dis_{euclidienne}$ et $Dis_{jaccard}$ pour les k-medoids.
+Les valeurs de silhouette se reflètent plus sur les indices ARI et NMI, mais moins sur la F1-mesure. Suivant le score F1, $Dis_M$, semble le mieux adaptée pour le k-means, et $Dis_{cos}$ pour les k-medoids. Mais les distances, $Dis_{jaccard}$, $Dis_{cosinus}$, $Dis_{euclidienne}$ semblent faire le mieux le compromis entre les différents critères de validation.
 
 
 \subsubsection{Nombre de clusters déterminé automatiquement}
-Nous comparons ici l'emploie de la statistique d'écart et de la silhouette pour la détermination du nombre de cluster pour chaque distance. La sélection est effectué pour les valeurs 2 et 30. Même si $Dis_m$ retrouve le nombre attendu avec le k-means, $4$ est la plus valeur la plus choisie par les distances, et elle semble meilleure avec une F1-mesure maximale à 0.551 et un ARI de 0.398 avec $Dis_{cosine}$. Les valeurs déterminées (entre 2 et 6) sont très proches de la valeur attendue 3 pour toutes les distance.  Notons aussi que l'efficacité de $Dis_M$ et $Dis_{cos}$ reste presque aussi élevée qu'avec un $K$ prédéfini (Tableau \ref{tab:similarite:validation-supervisee-k3}). $Dis_M$ et $Dis_{cos}$ semblent ainsi former de bonnes combinaison avec respectivement les k-means et les k-medoids. Par ailleurs, seules $Dis_{manhattan}$ et $Dis_{wmd}$ obtiennent de très faibles valeurs des indices supervisés ARI et NMI. Même si ces valeurs sont inférieures pour les autres distances, ces dernières, en particulier $Dis_M$, $Dis_{jaccard}$ et $Dis_{cos}$, parviennent quand même à un bon compromis entre les 3 critères ARI, NMI et F1. $Dis_{jaccard}$ et $Dis_{cos}$ sont efficaces autant avec les k-means qu'avec les k-medoids, et elles parviennent à associer une bonne validation non-supervisée (silhouette) à une bonne validation non-supervisée.
+Nous analysons ici  la détermination du nombre de cluster par la méthode de la silhouette pour chaque distance (Tableau \ref{tab:similarite:validation-supervisee-optKbySilhouette}). La sélection de $K$ est effectué pour les valeurs entre 2 et 30. Même si $Dis_\mathcal{M}$ retrouve le nombre attendu avec le k-means, $4$ est la plus valeur la plus choisie par les distances, et 4 donne une F1-mesure au maximum de 0.551 et un ARI de 0.398 avec $Dis_{cosine}$. Les valeurs déterminées (entre 2 et 6) sont très proches de la valeur attendue 3 pour toutes les distances.  Notons aussi que l'efficacité de $Dis_M$ et $Dis_{cos}$ reste presque aussi élevée qu'avec un $K$ prédéfini (Tableau \ref{tab:similarite:validation-supervisee-k3}). $Dis_\mathcal{M}$ et $Dis_{cos}$ semblent ainsi former de bonnes combinaison avec respectivement les k-means et les k-medoids. Par ailleurs, seules $Dis_{manhattan}$ et $Dis_{wmd}$ obtiennent de très faibles valeurs pour les indices ARI et NMI. Même si ces valeurs sont inférieures pour les autres distances, ces dernières, en particulier $Dis_\mathcal{M}$, $Dis_{jaccard}$ et $Dis_{cos}$, parviennent quand même à un bon compromis entre les 3 critères ARI, NMI et F1. $Dis_{jaccard}$ et $Dis_{cos}$ sont efficaces autant avec les k-means qu'avec les k-medoids. Elles parviennent à associer une bonne validation non-supervisée (silhouette) à une bonne validation non-supervisée.
 
 \begin{table}[!htb]
 	\centering \scriptsize
@@ -583,18 +501,18 @@ Nous comparons ici l'emploie de la statistique d'écart et de la silhouette pour
 	\caption{Evaluation de la catégorisation par k-means et k-medoids sur $\mathcal{D}_{arcpa}$ avec détermination du nombre de clusters avec la silhouette.} \label{tab:similarite:validation-supervisee-optKbySilhouette}
 \end{table}
 
-La Figure \ref{fig:similarite:optimalK_with_silhouette_kmeans_dis_m_K2-30} montre l'évolution de la valeur de la silhouette en fonction du nombre de clusters pour $Dis_M$ utilisé dans le k-means. 
+La Figure \ref{fig:similarite:optimalK_with_silhouette_kmeans_dis_m_K2-30} montre l'évolution de la valeur de la silhouette en fonction du nombre de clusters pour $Dis_\mathcal{M}$ utilisé dans le k-means. 
 
 \begin{figure}[!htb]
 	\centering \includegraphics[width=0.6\textwidth]{optimalK_with_silhouette_kmeans_dis_m_K2-30.png} \hfil
 	%\includegraphics[width=0.49\textwidth]{eval-mlp.png}
 	
-	\caption{Evolution de la silhouette pour le k-means et la distance apprise}\label{fig:similarite:optimalK_with_silhouette_kmeans_dis_m_K2-30}
+	\caption{Evolution de la silhouette pour le k-means et la distance apprise.}\label{fig:similarite:optimalK_with_silhouette_kmeans_dis_m_K2-30}
 \end{figure}
  
 
 \subsubsection{Autres algorithmes de catégorisation}
-Avec la représentation sélectionnée TP-NGL, nous appliquons d'autres algorithmes de catégorisation sur $\mathcal{D}_{arcpa}$ (Tableau \ref{tab:similarite:validation-supervisee-optKbySilhouette-autres_algos}). Seules le regroupement hiérarchique et les C-moyennes floues probabilistes parviennent à trouver un nombre de clusters (4) assez proche de ce celui attendu (3). Les forêts aléatoires ont une très basse F1-mesure du fait du grand nombre de clusters déterminé. Par ailleurs, la tâche ne semble pas correspondre pour la catégorisation par densité qui tend toujours à mettre tous les documents dans un même cluster.
+Avec la représentation sélectionnée TP-NGL, nous appliquons d'autres algorithmes de catégorisation sur $\mathcal{D}_{arcpa}$ (Tableau \ref{tab:similarite:validation-supervisee-optKbySilhouette-autres_algos}). L'algorithme de regroupement à chevauchements des C-moyennes floues probabilistes (\textit{Probabilistic FCM}) est utilisé pour partitionner le corpus en choisissant un seul cluster pour chaque document (celui pour qui le degré d'appartenance est maximal). Seules le regroupement hiérarchique et les C-moyennes floues probabilistes parviennent à trouver un nombre de clusters (4) assez proche de ce celui attendu (3). Les forêts aléatoires ont une très basse F1-mesure du fait du grand nombre de clusters déterminé. Par ailleurs, la tâche ne semble pas correspondre ni à  la catégorisation par densité qui tend toujours à mettre tous les documents dans un même cluster, ni à la catégorisation spectrale qui sélectionne un très grands nombre de clusters. 
 \begin{table}[!htb]
 	\centering \scriptsize
 	\begin{tabular}[pos]{|l|c|c|c|c|c|c|c|}
@@ -604,7 +522,7 @@ Avec la représentation sélectionnée TP-NGL, nous appliquons d'autres algorith
 		DBSCAN & 2 & -1.000 & 0.000 & 0.000 & 1.000 & 0.398 & 0.570 \\ \hline 
 		%Kmeans & 4 & 0.524 & 0.383 & 0.407 & 0.446 & 0.658 & 0.532 \\ \hline 
 		Agglomerative Clustering & 4 & 0.475 & 0.355 & 0.381 & 0.428 & 0.567 & 0.487 \\ \hline 
-		Probabilistic Fuzzy-CMeans & 4 & 0.521 & 0.394 & 0.417 & 0.444 & 0.657 & 0.530 \\ \hline 
+		Probabilistic FCM & 4 & 0.521 & 0.394 & 0.417 & 0.444 & 0.657 & 0.530 \\ \hline 
 		Random Forest & 11 & 0.272 & 0.228 & 0.303 & 0.127 & 0.598 & 0.210 \\ \hline 
 	\end{tabular}
 	\caption{Evaluation de la catégorisation par d'autres algorithmes sur $\mathcal{D}_{arcpa}$ avec détermination du nombre de clusters avec la silhouette.} \label{tab:similarite:validation-supervisee-optKbySilhouette-autres_algos}
@@ -620,7 +538,7 @@ La silhouette des C-moyennes floues probabilistes a une décroissance plus rapid
 \end{figure}
 
 \subsection{Catégorisation des corpus non annotés manuellement}
-Les matrices document-terme des autres catégories sont construites à base des mêmes représentations sélectionnées sur la catégorisation manuel (cf. \ref{sec:similarite:select-repr-optimal}). Le tableau \ref{tab:similarite:validation-nonsupervisee} présente les valeurs de silhouette (\textbf{s}) obtenues par le k-means et le k-medoid sur ces matrices. Les nombres déterminés de clusters restent bas (entre 2 et 6) malgré le fait qu'ils soient sélectionnés entre 2 et 30. 
+Les matrices document-terme des autres catégories sont construites à base la  représentation (TP-NGL, FMN,  4 thématiques) sélectionnée sur la catégorisation manuel (cf. \ref{sec:similarite:select-repr-optimal}). Le tableau \ref{tab:similarite:validation-nonsupervisee} présente les valeurs de silhouette ($\bar{s}_K$) obtenues par le k-means et le k-medoid sur ces matrices. Les nombres déterminés de clusters restent bas (entre 2 et 6) malgré le fait qu'ils soient sélectionnés entre 2 et 30. 
 \newlength{\mrcell}
 \setlength{\mrcell}{0.8cm}
 \begin{table}[!htb]
@@ -628,7 +546,7 @@ Les matrices document-terme des autres catégories sont construites à base des 
 	\begin{subfigure}[ht]{0.49\textwidth}
 	\begin{tabular}[pos]{|l|l|l|c|c|}
 		\hline
-		$\mathcal{D}$& \textbf{Distance} & \textbf{Algorithme}& \textbf{K}  & \textbf{s}  \\ \hline
+		$\mathcal{D}$& \textbf{Distance} & \textbf{Algorithme}& \textbf{K}  & $\bar{s}_K$  \\ \hline
 	\multirow{6}{\mrcell}{$\mathcal{D}_{acpa}$ (21$^*$)} & dis\_m & kmedoids & 2 & 0.769  \\ \cline{2-5}
 	& dis\_m & kmeans & 2 & 0.769 \\ \cline{2-5}
 	& dis\_cosine & kmedoids & 5 & 0.694 \\ \cline{2-5}
@@ -653,7 +571,7 @@ Les matrices document-terme des autres catégories sont construites à base des 
 	\begin{subfigure}[ht]{0.49\textwidth}
 		\begin{tabular}[pos]{|l|l|l|c|c|}
 			\hline
-			$\mathcal{D}$& \textbf{Distance} & \textbf{Algorithme}& \textbf{K}  & \textbf{s}  \\ \hline
+			$\mathcal{D}$& \textbf{Distance} & \textbf{Algorithme}& \textbf{K}  & $\bar{s}_K$ \\ \hline
 	\multirow{6}{\mrcell}{$\mathcal{D}_{dcppc}$ (91)} & dis\_m & kmedoids & 2 & 0.451  \\ \cline{2-5}
 	& dis\_m  & kmeans & 2 & 0.781  \\ \cline{2-5}
 	& dis\_cosine & kmedoids & 2 & 0.549 \\ \cline{2-5}
@@ -678,12 +596,12 @@ Les matrices document-terme des autres catégories sont construites à base des 
 
 	$^*$ Nombre de documents
 	
-	\textbf{s}: largeur moyenne de la silhouette
+$\bar{s}_K$: largeur moyenne de la silhouette
 
 	\caption{Evaluation non-supervisée des k-means et k-medoids sur $\mathcal{D}_{acpa}, \mathcal{D}_{concdel}, \mathcal{D}_{danais}, \mathcal{D}_{dcppc}, \mathcal{D}_{doris}, \mathcal{D}_{styx}$.} \label{tab:similarite:validation-nonsupervisee}
 \end{table}
 
-La silhouette étant bonne en générale, on s'attend à ce que les groupes soit en majorité formés de décisions partageant les mêmes circonstances factuelles. Il est possible de se faire une idée des circonstances factuelles découverts en observant leur terminologie qu'on peut extraire à l'aide d'une pondération globale supervisée comme le coefficient NGL. Considérons par exemple le regroupement avec les k-medoids combinés à la distance cosinus qui marche assez bien sur $\mathcal{D}_{arcpa}$. Pour la catégorie CONCDEL\footnote{CONDEL: dommages-intérêts pour concurrence déloyale}, on obtient 4 circonstances factuelles dont les champs lexicaux (Tableau \ref{tab:similarite:terminologie-clusters-concdel}) semblent définir les cas de contrefaçon pour le cluster 0, de publicité déloyale pour le cluster 1, de recrutement d'un salarié par un concurrent pour le cluster 2, et de contrats avec des partenaires pour le dernier cluster.
+La silhouette étant bonne en générale, on s'attend à ce que les groupes soient en majorité formés effectivement de décisions partageant les mêmes circonstances factuelles. Il est possible de se faire une idée des circonstances factuelles découvertes en observant leur terminologie qu'on peut extraire à l'aide d'une pondération globale supervisée comme le coefficient NGL. Considérons par exemple le regroupement avec les k-medoids combinés à la distance cosinus qui marche assez bien sur $\mathcal{D}_{arcpa}$. Pour la catégorie CONCDEL\footnote{CONDEL: dommages-intérêts pour concurrence déloyale}, on obtient 4 circonstances factuelles dont les champs lexicaux (Tableau \ref{tab:similarite:terminologie-clusters-concdel}) semblent définir les cas de contrefaçon pour le cluster 0, de publicité déloyale pour le cluster 1, de recrutement d'un salarié par un concurrent pour le cluster 2, et de contrats avec des partenaires pour le dernier cluster.
 
 
 %\subsection{Terminologie des clusters générés}
@@ -749,6 +667,6 @@ Pour la catégorie DORIS\footnote{DORIS: dommages-intérêts pour trouble anorma
 %\end{tabular}
 \section{Conclusion}
 \label{sec:similarite:conclusion}
-Les circonstances factuelles catégorisent les décisions d'une même catégorie de demande mais sont illimités car ils correspondent aux faits courants de la vie. Leur découverte est indispensable afin de rapprocher les litiges non décidés des cas similaires de la jurisprudence.  Ce chapitre aborde ce problème comme une tâche de catégorisation non supervisée de documents. La proposition faite ici est double: (i) l'apprentissage d'une métrique de dis-similarité en considérant qu'un document est obtenu par transformation de tout autre document, (ii) l'exploitation de la faible quantité de catégorisations manuelles  pour sélectionner la représentation de texte qui correspond au mieux à la sémantique des circonstances factuelles. Le schéma sélectionné permet de transformer de nouveaux corpus non annotés afin d'y découvrir les circonstances factuelles par catégorisation non supervisée. Les expérimentations montrent une amélioration considérable par rapport au modèle de base TF-IDF. La silhouette reste néanmoins faible. Ce qui signifie que la réduction de dimension par FNM est efficace mais il faudrait la combiner avec de meilleurs modèles vectoriels ou mieux l'intégrer au processus de catégorisation comme le fait \citet{xie2013MGCTM} avec l'allocation latente de Dirichlet. Néanmoins cette sélection de représentation permet d'obtenir une assez bonne efficacité de catégorisation sur le corpus annoté (0.626 et 0.551 de F1-mesure, et 0.44 et 0.39 de ARI avec le kmedoids pour un nombre de clusters respectivement prédéfini et automatiquement déterminé). Ces résultats se traduisent aussi sur la largeur moyenne de la silhouette autant pour le le corpus annoté (0.448 et 0.456 respectivement) que pour les six corpus non annotés utilisés (entre 0.403 et 0.770 pour toutes les catégorie). Par ailleurs, la métrique apprise s'accorde mieux avec les k-means que les autres distances selon différents indices de validation, et même pour la détermination du nombre de clusters.
+Les circonstances factuelles organisent les décisions d'une même catégorie de demande mais sont illimités car ils correspondent aux faits courants de la vie. Leur découverte est indispensable afin de rapprocher les litiges non décidés des cas similaires de la jurisprudence.  Ce chapitre aborde ce problème comme une tâche de catégorisation non supervisée de documents. La proposition faite ici est double: (i) l'apprentissage d'une métrique de dis-similarité en considérant qu'un document est obtenu par transformation de tout autre document, (ii) l'exploitation de la faible quantité de catégorisations manuelles  pour sélectionner la représentation de texte qui correspond au mieux à la sémantique des circonstances factuelles. Le schéma sélectionné permet de transformer de nouveaux corpus non annotés afin d'y découvrir les circonstances factuelles par catégorisation non supervisée. Les expérimentations montrent une amélioration considérable par rapport au modèle de base TF-IDF. La silhouette reste néanmoins faible. Ce qui signifie que la réduction de dimension par FNM est efficace mais il faudrait la combiner avec de meilleurs modèles vectoriels ou mieux l'intégrer au processus de catégorisation comme le fait \citet{xie2013MGCTM} avec l'allocation latente de Dirichlet. Néanmoins cette sélection de représentation permet d'obtenir une assez bonne efficacité de catégorisation sur le corpus annoté. En effet, nous obtenons, avec respectivement les k-means et les k-medoids, 0.599 et 0.551 de F1-mesure, correspondant à 0.407 et 0.398 de ARI, et 0.423 et 0.421 de NMI pour un nombre de clusters déterminé automatiquement. Ces résultats se traduisent aussi sur la largeur moyenne de la silhouette autant pour le corpus annoté (0.438 et 0.526 respectivement) que pour les six corpus non annotés utilisés (entre 0.403 et 0.770 au max pour toutes les catégories). Par ailleurs, la métrique apprise s'accorde mieux avec les k-means que les autres distances selon différents indices de validation, et même pour la détermination du nombre de clusters.
 
 Dans ce chapitre, la représentation vectorielle n'est sélectionnée que sur un seul corpus. Il serait intéressant à l'avenir d'annoter plusieurs corpus pour sélectionner la représentation qui correspond le mieux en moyenne aux circonstances factuelles sur l'ensemble de ces catégorisations manuelles. De plus, les expérimentations doivent être étendues au regroupement à chevauchement pour les affaires  concernant plus d'une circonstance factuelle.
