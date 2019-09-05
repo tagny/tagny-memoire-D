@@ -87,7 +87,7 @@ $q_r$ est évidemment nul même si cela n'est pas explicitement mentionné dans 
 Les demandes sont, en général, décrites à la fin de la section d'exposé des faits, procédures, moyens et prétentions des parties (section Litige). Elles rentrent donc dans les "moyens et prétentions des parties" qui regroupent les demandes et les arguments des parties. Quant aux résultats, ils sont décrits dans la section Dispositif et dans la section Motifs (raisonnement des juges). Les demandes sont exprimées en paragraphe où chaque paragraphe correspond soit à une partie, soit à un groupe de partie partageant les mêmes demandes (par ex. des époux). Le paragraphe est parfois organisé en liste dont chaque élément exprime une ou plusieurs demandes, ou fait référence à un jugement antérieur. Les résultats ont aussi la forme de liste dans la section Dispositif. Par contre, dans les motifs de la décision, les raisonnements sont organisés en paragraphes, et ordonnés catégorie après catégorie. Le résultat est donné à la fin du groupe de paragraphes associé à la catégorie.
 
 
- Cette pseudo-structure n'est pas standard et impose de nombreux défis à relever. En effet, une décision jurisprudentielle porte sur plusieurs demandes de catégories différentes ou similaires. Il est important de faire correspondre un quantum demandé extrait au sens et quantum du résultat qui font référence à la même demande. La séparation des demandes et des résultats rend difficile cette mise en correspondance. Ce problème peut aussi être causé par la redondance des quanta ; par exemple, les résultats exprimés dans les Motifs sont résumés dans le Dispositif. D'autre part, les références aux jugements antérieurs exigent de résoudre des références aux résultats de jugements antérieurs qui sont, généralement, rappelés dans le même document. Notons aussi que les difficultés liées aux agrégations (par ex. "\textit{infirmer ... en toutes ces dispositions}") et aux restrictions/sélections (par ex. "\textit{infirme le jugement ... sauf en ce qu'il a condamné M. A. ...}") devraient être résolues. Par ailleurs, les catégories de demandes sont nombreuses\footnote{plus de 500 selon la nomenclature des affaires civiles NAC+} mais ne sont pas toutes présentes à la fois dans les décisions. Tous ces aspects rendent difficile l'annotation manuelle des données de référence et la modélisation d'une approche d'extraction adéquate. Cependant, nous avons remarqué quelques indicateurs qui pourraient être utiles.
+ Cette pseudo-structure n'est pas standard et impose de nombreux défis à relever. En effet, une décision jurisprudentielle porte sur plusieurs demandes de catégories différentes ou similaires. Il est important de faire correspondre un quantum demandé extrait au sens et quantum du résultat qui font référence à la même demande. La séparation des demandes et des résultats rend difficile cette mise en correspondance. Ce problème peut aussi être causé par la redondance des quanta ; par exemple, les résultats exprimés dans les Motifs sont résumés dans le Dispositif. D'autre part, les références aux jugements antérieurs exigent de résoudre des références aux résultats de jugements antérieurs qui sont, généralement, rappelés dans le même document. Notons aussi que les difficultés liées aux agrégations (par ex. "\textit{infirmer ... en toutes ces dispositions}") et aux restrictions/sélections (par ex. "\textit{infirme le jugement ... sauf en ce qu'il a condamné M. A. ...}") devraient être résolues. Par ailleurs, les catégories de demandes sont nombreuses\footnote{plus de 500 selon la nomenclature des affaires civiles NAC+} mais ne sont pas toutes présentes à la fois dans les décisions. Tous ces aspects rendent difficile l'annotation manuelle des données de référence et la modélisation d'une approche d'extraction adéquate. Cependant, nous avons remarqué des indicateurs qui pourraient être utiles.
 
 On pourrait au préalable annoter les candidats potentiels de quanta. Nous nous sommes intéressés aux demandes dont les quanta sont des sommes d'argent. Les mentions de somme d'argent sont généralement de la forme \og \texttt{[valeur] [monnaie]} \fg{} (par ex. \texttt{3000 \euro}, \texttt{15 503 676 francs}, \texttt{un euro}, \texttt{339.000 XPF}). Des centimes apparaissent parfois (par ex. \texttt{dix huit euros et soixante quatorze centimes}, \texttt{26'977 \euro{}  19}).  Ainsi, il est possible d'annoter les sommes d'argent à l'aide d'une expression régulière. Même s'il est difficile de reconnaître des sommes d'argent écrites en lettre, il faut remarquer que l'équivalent en chiffre est généralement mentionné tout près (par ex. \texttt{neuf mille cinq cent soixante six euros et quatre vingt sept centimes (9566,87 \euro{}  )}). 
 
@@ -105,16 +105,16 @@ La terminologie utilisée est aussi un bon indicateur pour reconnaître des dema
 Nous avons tenu compte de deux principaux aspects du problème:
 \begin{enumerate}
 	\item Une décision comprend plusieurs demandes de catégories similaires ou différentes;
-	\item  Il existe un grand nombre de catégories (500+) ; ce qui rend difficile l'annotation d'exemples de référence pour couvrir toutes ces catégories.
+	\item  Il existe un grand nombre de catégories (500+) ; ce qui rend difficile l'annotation d'exemples de référence pour couvrir ces catégories.
 \end{enumerate}
 
-Nous avons par conséquent opter pour une extraction par catégorie. L'idée est de pouvoir ajouter progressivement de nouvelles catégories. Une exécution du système d'extraction permet ainsi d'extraire les demandes d'une seule catégorie. Le problème est décomposé en deux principales tâches :
+Nous avons par conséquent opter pour une extraction par catégorie. L'idée est de pouvoir ajouter progressivement de nouvelles catégories. Une exécution du système d'extraction permet ainsi d'extraire les demandes d'une seule catégorie. Le problème est décomposé en deux tâches :
 \begin{description}
 	\item[Tâche 1:] Détecter les catégories présentes dans le document pour appliquer l'extraction  uniquement à ces catégories;
 	\item[Tâche 2:] Pour chaque catégorie $c$ identifiée, extraire les demandes:
 	\begin{enumerate}
 		\item identification des valeurs d'attributs : quanta demandés ($q_d$), quanta obtenus ($q_r$), et sens du résultat ($s_r$);
-		\item mise en correspondance des attributs pour former les triplets ($q_d, s_r, q_r$) correspondants aux paires demande-résultat d'une catégorie $c$.
+		\item mise en correspondance des attributs pour former les triplets ($q_d, s_r, q_r$) correspondants aux paires demande-résultat.
 	\end{enumerate}
 \end{description}
 
@@ -264,7 +264,7 @@ A l'exception de la $\text{C-value}$, ces métriques ne tiennent pas expliciteme
 
 \subsection{Détection des catégories par classification}
 \label{sec:quanta:classification}
-Étant donné l'ensemble $D_{\overline{c}}$ des documents ne comprenant aucune demande de la catégorie d'intérêt $c$, nous proposons de modéliser la tâche de détection des catégories en une tâche de classification de documents. Pour chaque catégorie $c$, un modèle de classification binaire est entraîné pour déterminer si un document $d$ contient une demande de la catégorie $c$. Nous avons particulièrement expérimenté quatre algorithmes traditionnellement utilisés comme approches de base. Il s'agit du Bayésien Naïf , de l'arbre de décision C4.5, des $k$-plus-proches-voisins \citep{cover1967knn}, de la machine à vecteurs de support (SVM). Ces algorithmes sont décrits en détail dans le chapitre \ref{chap:sensresultat} qui est axé sur la classification des documents. Les labels utilisés correspondent aux catégories d'intérêt. Par exemple, un document sera labellisé $danais$ s'il contient des demandes de dommages-intérêts pour abus de procédure, et $nodanais$ sinon. Chaque document $d$ est représenté sous une forme vectorielle du type TF-IDF (\textit{term frequency - inverse document frequency}) proposé par \cite{salton1988term-weighting} dont chaque dimension $k$ est identifiée par un terme $t_k$. Le poids $w(t_k, d)$ affecté à ce dernier est le produit normalisé d'un poids global $g(t_k)$ au corpus du mot et d'un poids local $l(t_k,d)$ de $t_k$ dans le document $d$: $w(t_k, d) = l(t,d) \times g(t) \times nf(d)$, où $nf$ est un facteur de normalisation tel que la norme cosinus $cos(d) = \sqrt{\sum\limits_k (w(t_k,d))^2}$ qui est généralement utilisée. 
+Étant donné l'ensemble $D_{\overline{c}}$ des documents ne comprenant aucune demande de la catégorie d'intérêt $c$, nous proposons de modéliser la tâche de détection des catégories en une tâche de classification de documents. Pour chaque catégorie $c$, un modèle de classification binaire est entraîné pour déterminer si un document $d$ contient une demande de la catégorie $c$. Nous avons particulièrement expérimenté quatre algorithmes traditionnellement utilisés comme approches de base. Il s'agit du Bayésien Naïf , de l'arbre de décision C4.5, des $k$-plus-proches-voisins \citep{cover1967knn}, de la machine à vecteurs de support (SVM). Ces algorithmes sont décrits en détail dans le chapitre \ref{chap:sensresultat} qui est axé sur la classification des documents. Les labels utilisés correspondent aux catégories d'intérêt. Par exemple, un document sera labellisé $danais$ s'il contient des demandes de dommages-intérêts pour abus de procédure, et $nodanais$ sinon. Chaque document $d$ est représenté sous une forme vectorielle du type TF-IDF (\textit{term frequency - inverse document frequency}) proposé par \cite{salton1988term-weighting} dont chaque dimension $k$ est identifiée par un terme $t_k$. Le poids $w(t_k, d)$ affecté à ce dernier est le produit normalisé d'un poids global $g(t_k)$ au corpus du mot et d'un poids local $l(t_k,d)$ de $t_k$ dans le document $d$: $w(t_k, d) = l(t,d) \times g(t) \times nf(d)$, où $nf$ est un facteur de normalisation tel que la norme cosinus $cos(d) = \sqrt{\sum\limits_k (w(t_k,d))^2}$ généralement utilisée. 
 
 \begin{table}[!htb]
 	\scriptsize\centering
@@ -360,9 +360,8 @@ Les termes-clés sont identifiés à l'aide de méthodes statistiques d'extracti
  
  \begin{enumerate}
  	\item restreindre le contenu de chaque document de $D_c$ à la concaténation des énoncés de demande et résultats contenant des sommes d'argent de valeur égale à celle des quanta annotés.
- 	\item restreindre le contenu de chaque document de  $D_{\overline{c}}$ à la concaténation des énoncés  de demande et résultats contenant des sommes d'argent.
- 	%\item remplacer toutes les sommes d'argents dans les documents par un même et unique code (par exemple \verb|#argent#|)
- 	\item à l'aide d'une métrique global $g$, calculer le score des termes du corpus $D_c \cup D_{\overline{c}}$. Ce score est le produit $g'$ de $g$ avec le logarithme de la longueur du terme, pour booster les termes longs: $g'(t,c) = \log_2(\vert t \vert) \times g(t, c)$.
+ 	\item restreindre chaque document de  $D_{\overline{c}}$ à la concaténation des énoncés  de demande et résultats contenant des sommes d'argent.
+ 	\item à l'aide d'une métrique global $g$, calculer le score des termes du corpus $D_c \cup D_{\overline{c}}$. Ce score est multiplié par le logarithme de la longueur du terme pour booster les termes longs: $g'(t,c) = \log_2(\vert t \vert) \times g(t, c)$.
  	\item normaliser les scores en appliquant à chaque score original ($g'(t,c)$) la formule $g'_{norm}(t,c) = \frac{\max\limits_{t_k} (g'(t_k,c)) - g'(t,c)}{\max\limits_{t_k} (g'(t_k,c)) - \min\limits_{t_k} (g'(t_k,c))}$. 
  	\item trier par ordre décroissant des termes;
  	\item sélectionner les premiers termes qui obtiennent les performances optimales sur la base d'apprentissage .
@@ -375,7 +374,7 @@ A l'aide des termes-clés appris, l'extraction des données de couples demandes-
 	\item reconnaître et marquer les occurrences des termes dans le document;
 	\item extraire les quanta demandés ($q_d$) et résultats ($q_r$) à proximité des termes-clés respectivement dans les énoncés de demande et résultat qui contiennent des sommes d'argent et un terme-clé;
 	\item le mot introductif de l'énoncé résultat indique le sens du résultat ($s_r$) tel que catégorisé dans le Tableau \ref{tab:quanta:mots-introductifs};
-	\item relier les attributs ($q_d, s_r, q_r$) correspondant à une même pair demande-résultat:% longcommonsubsequence puis ordre des quanta 
+	\item relier les attributs ($q_d, s_r, q_r$) de chaque paire demande-résultat:% longcommonsubsequence puis ordre des quanta 
 	\begin{enumerate}
 		\item former les paires (énoncé de demande, énoncé de résultat) similaire (nous utilisons la métrique de \og la plus longue sous-séquence commune \fg{} \citep{bakkelund2009lcs}) 
 		\item pour chaque paire d'énoncés formée, relier les quanta demandés et quanta résultats par ordre d'occurrence similaire.
@@ -402,7 +401,7 @@ L'annotation manuelle d'exemples s'effectue pour une catégorie à la fois afin 
 
 %Le résultat d'une phase d'annotation comprend ainsi un tableau des demandes, deux corpus de décisions $D_{c}$ et $D_{\overline{c}}$.
 
- Toutes les demandes du corpus $D_{c} \cup D_{\overline{c}}$  annoté manuellement, sont considérées inscrites dans le tableau des annotations manuelles. La répartition des documents d'évaluation est donnée par l'histogramme de la Figure \ref{fig:quanta:hist-repartition-docs}.  
+ Toutes les demandes du corpus $D_{c} \cup D_{\overline{c}}$  annoté manuellement, sont considérées inscrites dans le tableau des annotations manuelles. La répartition des données d'évaluation est donnée par la Figure \ref{fig:quanta:hist-repartition-docs}.  
  
  \begin{figure}[!htb]
  	\includegraphics[width=\textwidth]{chartDataset.png}
@@ -443,9 +442,9 @@ F1_{c,x,D} =2 \times \frac{Precision_{c,x,D} \times Rappel_{c,x,D}}{Precision_{c
 
 Ces mesures sont définies à partir des nombres de vrais positifs ($TP$), faux positifs ($FP$) et faux négatifs ($FN$). Au niveau d'un document $d$:
 \begin{itemize}
-\item le nombre de vrais positifs $TP_{c, x, d}$ est le nombre de demandes extraites de $d$ par le système, qui sont effectivement de la catégorie $c$ ;
-\item le nombre de faux positifs $FP_{c, x, d}$ est le nombre de demandes extraites de $d$ par le système, mais qui ne sont pas des demandes de $c$ (demandes en trop);
-\item le nombre de faux négatifs $FP_{c, x, d}$ est le nombre de demandes annotées comme étant de $c$ mais qui n'ont pas pu être extraites par le système (demandes manquées).
+\item  $TP_{c, x, d}$ est le nombre de demandes extraites de $d$ par le système, qui sont effectivement de la catégorie $c$ ;
+\item  $FP_{c, x, d}$ est le nombre de demandes extraites de $d$ par le système, mais qui ne sont pas des demandes de $c$ (demandes en trop);
+\item  $FP_{c, x, d}$ est le nombre de demandes annotées comme étant de $c$ mais qui n'ont pas pu être extraites par le système (demandes manquées).
 \end{itemize}
 
 Au niveau d'un corpus d'évaluation $D$, ces métriques sont sommées: 
@@ -459,7 +458,7 @@ Une donnée observée (par exemple \og 3 000 \euro \fg) est bien extraite automa
 
 \subsection{Détection des catégories par classification}
 Les implémentations de la bibliothèque Weka \citep{frank2016weka} ont permis d'utiliser plusieurs modèles de classification: le modèle Bayésien naïf (NB), l'arbre de décision C4.5 (implémenté sous l'appelation J48), les k-plus-proches-voisins (KNN), et le SVM. 
- A chaque entraînement, s'exécute une sélection de modèle par validation croisée sur les données d'entraînement. Elle a pour but de sélectionner la métrique locale et la métrique globale appropriée. Les résultats obtenus par 5-\textit{folds} validation croisée sont présentés sur le tableau \ref{tab:quanta:resultat-detect-cat}.  
+ A chaque entraînement, s'exécute une sélection de modèle par validation croisée sur les données d'entraînement. Elle a pour but de sélectionner la métrique locale et la métrique globale appropriée. Les résultats obtenus par 5-\textit{folds} validation croisée sont présentés sur le Tableau \ref{tab:quanta:resultat-detect-cat}.  
  
 \begin{table}[!h]
 	\scriptsize
@@ -485,7 +484,7 @@ Les implémentations de la bibliothèque Weka \citep{frank2016weka} ont permis d
 	\end{tabular}
 
 P= Précision, R=Rappel, F1 = F1-mesure
-	\caption{Résultats d'une 5-\textit{fold} validation croisée pour la détection de catégories }\label{tab:quanta:resultat-detect-cat}
+	\caption{Evaluation de la détection de catégories.}\label{tab:quanta:resultat-detect-cat}
 \end{table}
 
 D'après les résultats, la tâche 1 est relativement aisée pour les algorithmes traditionnels qui détectent parfaitement la présence ou non d'une catégorie dans les documents. Par conséquent, pour toute catégorie $c$, les résultats de l'extraction, dans la suite, ne sont discutés que pour les documents de $c$, car, grâce à l'efficacité de la phase de classification, aucun document de $\overline{c}$ ne sera traité par la phase d'extraction.
@@ -511,10 +510,11 @@ Les scores des termes-clés candidats étant normalisés, si on sélectionne les
 		$pidf$ & 26.19 & \textbf{33.71} & 21.83 & 20.46 & 8.76 & 27.68 & 23.11 \\ \hline
 		$rf$ & 41.11 & 33.09 & 55.72 & 28.56 & 14.93 & 51.23 & 37.44 \\ \hline
 	\end{tabular}
-\caption{$F1_{c,(q_d, s_r, q_r), D_c}$ moyenne pour une 5-\textit{fold} validation croisée pour chaque métrique de sélection de termes pour un seuil égal à $0.5$} \label{tab:quanta:compareGW}
+%\caption{$F1_{c,(q_d, s_r, q_r), D_c}$ moyenne pour une 5-\textit{fold} validation croisée pour chaque métrique de sélection de termes pour un seuil égal à $0.5$}
+\caption{Comparaison des pondérations globales suivant la F1-mesure.} \label{tab:quanta:compareGW}
 \end{table}
 
-Par conséquent, la métrique et le seuil doivent être bien sélectionnés en fonction de la catégorie de demandes traitée. En choisissant, pour ces méta-paramètres, les valeurs qui donnent les meilleurs performances d'extraction sur la base d'apprentissage, les résultats suivants sont observés (Tableau \ref{tab:quanta:resultDetailExtraction}).
+Par conséquent, la métrique et le seuil doivent être bien sélectionnés en fonction de la catégorie de demandes traitée. En choisissant, pour ces méta-paramètres, les valeurs les plus efficaces pour l'extraction sur la base d'apprentissage, les résultats du Tableau \ref{tab:quanta:resultDetailExtraction} sont observés.
  
 
 \begin{table}[!htb]
@@ -588,7 +588,7 @@ Etant donné que la précision est en général supérieure au rappel, il est ce
 \caption{Types et taux d'erreurs (pourcentage en moyenne sur les 6 catégories de demandes)} \label{tab:quanta:types_erreurs}
 \end{table}
 
-Trois raisons peuvent expliquer le fait que  peu de données attendues soient extraites. Premièrement, certaines valeurs d'attributs ne sont pas mentionnées dans les sections Litige et Dispositif utilisées (pourcentage inférieurs à 100 dans les Tableaux \ref{tab:quanta:mentionQd} et \ref{tab:quanta:mentionQr} comme par exemple les quanta résultat de \textit{doris} plus présents dans la section Motifs que dans le Dispositif).
+Trois raisons peuvent expliquer le fait que  peu de données attendues soient extraites. Premièrement, certaines valeurs d'attributs ne sont pas mentionnées dans les sections Litige et Dispositif utilisées (pourcentages inférieurs à 100 dans les Tableaux \ref{tab:quanta:mentionQd} et \ref{tab:quanta:mentionQr}). Par exemple, les quanta résultat de \textit{doris} plus présents dans les Motifs que dans le Dispositif.
 
 \begin{table}[!htb]
 	\scriptsize  \centering
@@ -644,7 +644,7 @@ Les termes candidats sont des n-grammes de taille variant d'1 à 5 mots consécu
 \caption{Premiers termes sélectionnés lors de la première itération de la validation croisée} \label{tab:quanta:exemples_termes}
 \end{table}
 
-Troisièmement, les expérimentations ont été réalisées sur des décisions d'appel mais les énoncés, de demande et résultat renvoyant aux décisions de jugements antérieurs, ne sont pas encore traités dans l'approche. Ces références aux décisions antérieures représentent une part importante des demandes discutées dans les décisions d'appel. Il est donc nécessaire de les intégrer explicitement dans le processus d'extraction, pour compléter les données extraites.
+Troisièmement, les expérimentations ont été réalisées sur des décisions d'appel mais les énoncés, de demande et résultat renvoyant aux décisions de jugements antérieurs, ne sont pas encore traités. Ces références aux décisions antérieures représentent une part importante des demandes des décisions d'appel. Il est donc nécessaire de les intégrer explicitement dans le processus d'extraction, pour compléter les données extraites.
 
 \section{Conclusion}
 \label{sec:quanta:conclusion}
