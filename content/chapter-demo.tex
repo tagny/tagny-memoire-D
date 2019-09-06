@@ -13,7 +13,7 @@ Ce chapitre décrit des résultats d'analyses statistiques observés lors de l'a
 	\caption{Détails du module d'extraction d'information}\label{fig:demo:module-extraction}
 \end{figure}
 
-Après extraction, la base de données comprend environ 65k documents répartis dans l'espace (ville) comme sur la figure \ref{fig:demo:doc-per-city} et dans le temps comme sur la figure \ref{fig:demo:doc-per-year}. Les demandes extraites se répartissent par catégorie comme suit: 476 ACPA, 409 CONCDEL, 160 DANAIS, 0 DCPPC, 34 DORIS, et 45928 STYX.  
+Après extraction, les décisions de la base de données sont réparties dans l'espace (ville) comme sur la figure \ref{fig:demo:doc-per-city} et dans le temps comme sur la figure \ref{fig:demo:doc-per-year}. Les demandes extraites se répartissent comme suit: 476 ACPA, 409 CONCDEL, 160 DANAIS, 0 DCPPC, 34 DORIS, et 45928 STYX.  
 
 \begin{figure}[ht]
 	\centering
@@ -32,7 +32,7 @@ Après extraction, la base de données comprend environ 65k documents répartis 
 \end{figure}
 
 
-La structuration des données dans la base de données permet de mieux comprendre la jurisprudence à l'aide de graphiques appropriés. Une application de visualisation a notamment été développée suivant les besoins d'un expert juriste par \citet{PRYSIAZHNIUK2017jurisprudence-demo-web}.
+La structuration des données dans la base de données permet de mieux comprendre la jurisprudence à l'aide de graphiques appropriés. Une application de visualisation dédiée a notamment été développée  par \citet{PRYSIAZHNIUK2017jurisprudence-demo-web}.
 Les analyses des sections suivantes sont restreintes aux 5 villes ayant les plus grands nombres de décision: Paris, Lyon, Versailles, Angers, Bastia; sur la période 2000-2019
 
 \section{Analyse du sens du résultat}
@@ -62,15 +62,15 @@ De même l'évolution des quanta demandés et accordés peut être facilement vi
 
 \begin{figure}[!htb]
 	\centering 
-	\includegraphics[width=0.6\textwidth]{evolution_quanta_styx.png}
+	\includegraphics[width=0.8\textwidth]{evolution_quanta_styx.png}
 	\caption{Evolution des quanta moyens par année des demandes STYX entre  2000  et 2019.}\label{fig:demo:evolution-quanta-styx}
 \end{figure}
 
 
 \subsection{Différence dans l'espace}
 
-Pour avoir une idée du montant qu'on peut recevoir sur pour une catégorie de demande, l'évolution des valeurs généralement accordés peut être comparée entre deux villes en visualisant les diagrammes boîtes (\textit{boxplot}) 
-des quanta accordés dans ces villes. La Figure \ref{fig:demo:evolution-qr-styx-compare-ville} permet d'effectuer une comparaison entre Bastia et Lyon. 
+Pour avoir une idée du montant qu'on peut recevoir pour une catégorie de demande, l'évolution des valeurs généralement accordés peut être comparée entre deux villes en visualisant les diagrammes boîtes (\textit{boxplot}) 
+des quanta accordés dans ces villes. La Figure \ref{fig:demo:evolution-qr-styx-compare-ville} permet d'effectuer une comparaison entre Bastia et Lyon. On remarque, par exemple, qu'en cas d'acceptation de la demande, il faut s'attendre à recevoir au maximum une somme autour de 5k euros à Bastia contre 10k euros à Lyon.
 
 \begin{figure}[!htb]
 	\centering 
@@ -81,7 +81,7 @@ des quanta accordés dans ces villes. La Figure \ref{fig:demo:evolution-qr-styx-
 
 
 \subsection{Quantum demandé vs. quantum accordé}
-La méthode de prédiction du quantum résultat doit définir un modèle dont la forme s'accorde avec celle du nuage de points ($x=$ quantum demandé, $y=$ quantum accordé) correspondant. D'après les nuages de points observés pour Paris, Bastia, Angers et Lyon (Figure \ref{fig:demo:qr-vs-qd-styx-compare-ville}), le quantum demandé ne semble pas suffisant seul pour déterminer le quantum accordé\footnote{Différentes valeurs de quantum résultat sont observées pour la même valeur de quantum demandé.}. Il sera ainsi nécessaire de tenir compte des circonstances factuelles et autres spécificités du cas traité qui permettront de filtrer les décisions sur lesquelles se basera la modélisation. On remarque néanmoins une ressemblance de forme entre les nuages de points des différentes villes. 
+La prédiction du quantum résultat doit définir un modèle dont la forme s'accorde avec celle du nuage de points ($x=$ quantum demandé, $y=$ quantum accordé) correspondant. D'après les nuages de points observés pour Paris, Bastia, Angers et Lyon (Figure \ref{fig:demo:qr-vs-qd-styx-compare-ville}), le quantum demandé ne semble pas suffisant seul pour déterminer le quantum accordé\footnote{Différentes valeurs de quantum résultat sont observées pour la même valeur de quantum demandé.}. Il sera ainsi nécessaire de tenir compte des circonstances factuelles et autres spécificités du cas traité qui permettront de filtrer les décisions sur lesquelles se basera l'apprentissage. On remarque néanmoins une ressemblance de forme entre les nuages de points des différentes villes. 
 
 \begin{figure}[!htb]
 	\centering 
