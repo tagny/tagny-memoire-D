@@ -380,7 +380,7 @@ Tâche & Modèle & \multicolumn{3}{c}{Niveau atomique$^a$} & \multicolumn{3}{c}{
 &  & 32.92 & 32.92 & 32.92 & 17.73 & 16.09 & 16.87  &   7.827  & IEO2 \\
  &  & 32.39 & 32.39 & 32.39 & 31.93 & 26.65 & 29.05 & 8.391 & BIO2 \\
   &  & 33.06 & 33.06 & 33.06 & 32.47 & 27.53 & 29.80 & 8.7 & BIEO \\ \hline %
-\multirow{8}{*}{Entités d'entête}  & \multirow{4}{*}{CRF} & 86.86 & 78.96 & 82.73 & 80.84 & 65.17 & 72.17  & 70.525 & IO \\%\multirow{8}{=}{Entités d'entête}
+\multirow{8}{0.9cm}{Entités d'entête}  & \multirow{4}{*}{CRF} & 86.86 & 78.96 & 82.73 & 80.84 & 65.17 & 72.17  & 70.525 & IO \\%\multirow{8}{=}{Entités d'entête}
  &  & 87.77 & 79.65 & 83.51 & 82.46 & 65.19 & 72.82  & 228.751 & IEO2 \\
  &  & 87.41 & 78.14 & 82.51 & 81.66 & 66.80 & 73.49 & 230.865 & BIO2 \\
  &  & 87.72 & 79.55 & 83.44 & 84.38 & 68.35 & 75.53 &  475.249 & BIEO \\ \cline{2-10}
@@ -398,12 +398,13 @@ Tâche & Modèle & \multicolumn{3}{c}{Niveau atomique$^a$} & \multicolumn{3}{c}{
   &  & 87.39 & 88.10 & 87.74 & 77.76 & 82.35 & 79.99 & 45.52& BIEO \\ 
 \noalign{\smallskip}\hline\noalign{\smallskip}
 \end{tabular}
-\caption{Comparaison des schémas d'étiquetage.}\label{fig:structuration:select-segm-repr}
 \end{center}
 
 $^a$ Résultats sur une simple division du jeu de données en $25\%$ pour l'entraînement et  $75\%$ pour les tests (entraînement limité à 100 itérations au max)
 
 $^b$ Durée d'entraînement en secondes avant l'arrêt de l'entraînement
+
+\caption{Comparaison des schémas d'étiquetage.}\label{fig:structuration:select-segm-repr}
 \end{table}
 
 
@@ -425,7 +426,7 @@ Tâche & Modèle & \multicolumn{3}{c}{niveau atomique$^a$} & \multicolumn{3}{c}{
                  & \multirow{3}{*}{HMM} & 90.99 & 90.99 & {90.99}  & 4.18 & 3.63 & 3.89 & {absLength} \\ 
  & & 86.97 & 86.97 & 86.97 & 4.08 & 3.30 & 3.65 & relLength \\   
   &  & 37.59 & 37.59 & 37.59  & 18.81 & 18.81 & 18.81 & token \\ \hline
-\multirow{7}{*}{Entités d'entête}	& \multirow{4}{*}{CRF} & 94.00 & 91.42 & 92.69 & 92.26 & 88.76 & 90.47 & BDS$^{c1}$  \\
+\multirow{7}{0.9cm}{Entités d'entête}	& \multirow{4}{*}{CRF} & 94.00 & 91.42 & 92.69 & 92.26 & 88.76 & 90.47 & BDS$^{c1}$  \\
 				&  & 94.10 & 91.93 & {93.00} & 92.64 & 88.96 & 90.76 & {SFFS}$^{c2}$  \\ 
                 &  & 94.20 & 91.86 & 93.02 & 93.05 & 89.59 & 91.28 & TOUS$^{c0}$ \\
                 &  & 86.86 & 78.96 & 82.73 & 80.84 & 65.17 & 72.17 & token \\ \cline{2-9}

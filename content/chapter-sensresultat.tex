@@ -47,7 +47,7 @@ Cette étude porte sur l'analyse de l'impact de différents aspects techniques g
 La classification de texte permet d'organiser des documents dans des groupes prédéfinis. Elle reçoit depuis longtemps beaucoup d'attentions. Deux choix techniques influencent principalement les performances: la représentation des textes et l'algorithme de classification. Dans la suite, la variable à prédire est notée $y$, et la base d'apprentissage comprend les échantillons $S = \lbrace (x_i, y_i)_{i=1..n} \rbrace$.
 
 \subsection{Algorithmes traditionnels de classification de données}
-Bien que la classification de documents voit se développer récemment des algorithmes propres aux textes, un grand nombre de méthodes ont été développées précédemment autour. Ces méthodes sont généralement basée sur une représentation  des textes dans un espace vectoriel $\mathcal{X}$ d'entrée et délimitent une frontière entre les classes dans un espace multidimensionnel. Les notations du Tableau \ref{quanta:tab:notations_metriques} sont utilisés dans cette section. 
+Bien que la classification de documents voit se développer récemment des algorithmes propres aux textes, un grand nombre de méthodes ont été développées précédemment autour. Ces méthodes sont généralement basée sur une représentation  des textes dans un espace vectoriel $\mathcal{X}$ d'entrée et délimitent une frontière entre les classes dans un espace multidimensionnel. Les notations du Tableau \ref{tab:quanta:notations_metriques} sont utilisés dans cette section. 
 %NB et SVM : https://www.dropbox.com/home/Documents/to-read/term-weight?preview=Best+Terms+An+Efficient+Feature+Selection+Algorithm+for+Text+Categorization.pdf
 % C4.5, k-means, svm, apriori algo, em algo, page rank, ada boost, knn, NB, CART: http://www.cs.umd.edu/~samir/498/10Algorithms-08.pdf
 
@@ -470,7 +470,7 @@ L'efficacité des algorithmes dépend souvent des valeurs de méta-paramètres d
 En représentant l'ensemble du document à l'aide de diverses représentations vectorielles, les algorithmes sont comparés avec les représentations qui leurs sont optimales. On remarque d'après les résultats du Tableau \ref{tab:sensrst:global} que les arbres sont en moyenne meilleurs sur l'ensemble des catégories même si en moyenne la F1-mesure moyenne est limité à 0.668. Les résultats des extensions du PLS ne sont pas très éloignées de ceux des arbres avec des différences de F1 à moins de 0.1 (si on choisit le bon schéma de "vectorisation").
 
 \begin{table}[!htb]	
-	\tiny
+	\scriptsize
 	
 	\textcolor{red}{ajouter les F1 ou erreur de rejette et de accepte}
 	
@@ -494,7 +494,7 @@ En représentant l'ensemble du document à l'aide de diverses représentations v
  Les scores F1 moyens des algorithmes  NBSVM et FastText n'excédent en général pas 0.5 malgré qu'ils soient spécialement conçus pour les textes. On peut estimer qu'ils sont très sensibles au déséquilibre des données entre les catégories (plus de rejets que d'acceptations), soit il est plus difficile de détecter l'acceptation des demandes. En effet, ces algorithmes classent toutes les données test avec le label (sens) majoritaire i.e. le rejet, et par conséquent, ils ne détectent quasiment pas d'acceptation de demande. Le cas des catégories DORIS et DCPPC pour le NBSVM ($F1_{macro} = 0.834$) tend à démontrer la forte sensibilité aux cas négatifs de ces algorithmes puisque même avec presque autant de labels "accepte" que "rejette", la F1-mesure de "rejette" est toujours supérieure à celle de "accepte" (Tableau \ref{tab:sensrst:fasttextnbsvm}). 
  
  \begin{table}[htb]
- 	\scriptsize \centering
+ 	\footnotesize \centering
  	\begin{tabular}{|l|l|l|l|l|l|l|l|l|}
  		\hline
  	\textbf{Cat. Dmd.} & \textbf{Algo.} & \textbf{Préc.}   & \textbf{Préc. équi.} & \textbf{err-0} & \textbf{err-1} & \textbf{f1-0}  & \textbf{f1-1}  & \textbf{$F1_{macro}$} \\ \hline
@@ -520,12 +520,12 @@ En représentant l'ensemble du document à l'aide de diverses représentations v
 \subsection{Réduction du document aux régions comprenant le vocabulaire de la catégorie}
 Etant donné que les décisions portent sur plusieurs catégories de demande, nous avons expérimenté la restriction du document aux passages comprenant du vocabulaire de la catégorie d'intérêt: demande, résultat, résultat antérieur (resultat\_a), paragraphes dans les motifs (motifs). Les combinaisons passages-représentation vectorielle-algorithme sont comparées dans le Tableau \ref{tab:sensrst:zone}. Les résultats s'améliorent énormément avec les réductions, sauf pour la catégorie DORIS. La meilleure restriction combine les passages comprenant le vocabulaire de la catégorie dans la section Litige (demande et résultat antérieur),  dans la section Motifs (contexte), et dans la section Dispositif (résultat).
 \begin{table}[!htb]
-	\tiny
+	\scriptsize
 	\centering
 	
 	\begin{tabular}{|l|l|l|l|l|}
 		\hline
-		\textbf{Cat. Dmd} & \textbf{zone}                                    & \textbf{Vecteur (pondération)}      & \textbf{classifieur} & \textbf{F1}    \\ \hline
+		\textbf{Catégorie} & \textbf{zone}                                    & \textbf{Vecteur (pondération)}      & \textbf{classifieur} & \textbf{F1}    \\ \hline
 		\multirow{3}{*}{acpa}    & \textbf{demande\_resultat\_a\_resultat\_context} & \textbf{DBIDF*TF}           & \textbf{Tree}        & \textbf{0.846} \\ 
 		              & litige\_motifs\_dispositif                       & DELTADF*TF                  & StandardPLS       & 0.697          \\ 
 		              & litige\_motifs\_dispositif                       & AVERAGEGlobals*TF           & LogitPLS          & 0.683          \\ \hline
