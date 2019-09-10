@@ -37,10 +37,10 @@ une forêt aléatoire construit des arbres de décision sur des parties de l'ens
 
 \subsubsection{Catégorisation avec chevauchements}
 
-Lorsque des chevauchements sont observables entre clusters\footnote{Un chevauchement est l'appartenance d'un document à plusieurs groupes}, un degré d'appartenance (\textit{membership degree}) d'un document à un chaque groupe est estimé par une fonction $u_{ij}, \forall d_i \in \mathcal{D}, \forall j \in [1..K]$  \citep{baraldi1999surveyfuzzyclstering}. Ce degré d'appartenance est employé dans des algorithmes de partitionnement "mou" comme l'algorithme des c-moyennes flou (FCM) \citep{bezdek1984fcm, hathaway1989fuzzycmeans}, ou le fuzzy c-Medoids (FDMdd) \citep{krishnapuram2001fuzzycmedoids}, ou la version améliorée IFKM (\textit{improved fuzzy K-medoids})\citep{sabzi2011fuzzyK-medoïdes}.  Ces algorithmes consistent en deux étapes principales \citep{sabzi2011fuzzyK-medoïdes}: 
+Lorsque des chevauchements sont observables entre clusters\footnote{Un chevauchement est l'appartenance d'un document à plusieurs groupes}, un degré d'appartenance (\textit{membership degree}) d'un document à un chaque groupe est estimé par une fonction $u_{ij}, \forall d_i \in \mathcal{D}, \forall j \in [1..K]$  \citep{baraldi1999surveyfuzzyclstering}. Ce degré d'appartenance est employé dans des algorithmes de partitionnement "mou" comme l'algorithme des c-moyennes flou (FCM) \citep{bezdek1984fcm, hathaway1989fuzzycmeans}, ou le fuzzy c-Medoids (FDMdd) \citep{krishnapuram2001fuzzycmedoids}, ou la version améliorée IFKM (\textit{improved fuzzy K-medoids})\citep{sabzi2011fuzzykmedoids}.  Ces algorithmes consistent en deux étapes principales \citep{sabzi2011fuzzykmedoids}: 
 
 \begin{enumerate}
- \item l'estimation des degrés d'appartenance de chaque instance $d_i \in \mathcal{D}$ à chaque cluster $j \in [1..K]$ de centroïde $z_j$ est réalisée par la minimisation de la fonction objective $P(\mathcal{D},Z) = \sum\limits_{i=1}^{n}\sum\limits_{j=1}^{k} \left[u_{ij}r(d_i,z_j)\right]$ \citep{krishnapuram2001fuzzycmedoids}  améliorée par \citet{sabzi2011fuzzyK-medoïdes} en:
+ \item l'estimation des degrés d'appartenance de chaque instance $d_i \in \mathcal{D}$ à chaque cluster $j \in [1..K]$ de centroïde $z_j$ est réalisée par la minimisation de la fonction objective $P(\mathcal{D},Z) = \sum\limits_{i=1}^{n}\sum\limits_{j=1}^{k} \left[u_{ij}r(d_i,z_j)\right]$ \citep{krishnapuram2001fuzzycmedoids}  améliorée par \citet{sabzi2011fuzzykmedoids} en:
  \[P(\mathcal{D},Z) = \sum\limits_{i=1}^{N}\sum\limits_{j=1}^{K} \left[u_{ij}r(d_i,z_j)\right] + \lambda \sum\limits_{i=1}^{N}\sum\limits_{j=1}^{K} \left[ u_{ij}\log_2(u_{ij}) \right] \]
  \[s.c. \sum\limits_{j=1}^{k} u_{ij} = 1, 0 \leq u_{ij} < 1\]
  
@@ -77,7 +77,7 @@ Les algorithmes de catégorisation dépendent de la distance utilisée qui doit 
 La métrique peut être normée ($\forall (d,d') \in \mathcal{D} \times \mathcal{D};  0 \leq Dis(d,d') \leq 1$), à l'instar de la distance de Jaccard. Dans ce cas, la relation entre la similarité $Sim$ et la dis-similarité $Dis$ est définie par $Sim(d,d') = 1 - Dis(d,d')$.
 %On parle de \textbf{pseudo-métrique} lorsque la condition \ref{enum:sim:ineq-tri} n'est pas satisfaite.
 
- Parmi les nombreuses métriques généralement utilisées  sur les textes \citep{huang2008similarityTextClustering, vijaymeena2016surveySim, afzali2018SimK-moyennes}, on retrouve par exemple:
+ Parmi les nombreuses métriques généralement utilisées  sur les textes \citep{huang2008similarityTextClustering, vijaymeena2016surveySim, afzali2018Simkmeans}, on retrouve par exemple:
 \begin{itemize}
 	\item Les distances de Minkowski {\footnotesize $Dis(d,d') = \norm{\vec{d} - \vec{d'}}_{Lp} = \sqrt[p]{\sum\limits_{i=1}^m \vert \vec{d}[i] - \vec{d}[i] \vert ^p}$}, dont font partie la distance euclidienne $Dis_{euclidienne}$ ($p=2$) et la distance de Manhattan $Dis_{manhattan}$ ($p=1$).
 	%\item L'indice de Dice définit la similarité entre $d$ et $d'$ comme étant la proportion de termes qui leur sont communs: $Sim_{dice}(d,d') = \frac{2 \setsize{d \cap d'}}{\setsize{d} + \setsize{d'}}$.
