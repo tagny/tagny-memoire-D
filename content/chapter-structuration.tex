@@ -91,7 +91,7 @@ Trois principaux aspects doivent être traités lors de la conception des systè
 
 \subsection{Les modèles graphiques probabilistes HMM et CRF}
 
-Nous avons choisi d'analyser l'application des modèles CRF et HMM car les  comparaisons avec d'autres approches démontrent bien que les modèles probabilistes obtiennent les meilleurs résultats lors de l'extraction d'information dans les documents juridiques. Par exemple, dans \citet{Kriz2014nerinczechdecisions}, le modèle HMM a été comparé à l'Algorithme de Perceptron à Marges Inégales (PAUM) de \citet{li2002PAUM} pour reconnaître les institutions et références d'autres décisions de justice, ainsi que les citations d'actes juridiques (loi, contrat, etc.) dans les décisions judiciaires de la République Tchèque. Les deux modèles ont donné de bonnes performances avec des scores F1 de $ 89 \% $ et $ 97 \% $ pour le HMM utilisant les tri-grammes comme descripteurs de mots, et des scores F1 de $ 87 \% $ et $ 97 \% $ pour le PAUM en utilisant des 5-grammes de lemmes et les rôles grammaticaux (\textit{Part-Of-Speech tag}) comme descripteurs. 
+Nous avons choisi d'analyser l'application des modèles CRF et HMM car les  comparaisons avec d'autres approches démontrent bien que les modèles probabilistes obtiennent les meilleurs résultats lors de l'extraction d'information dans les documents juridiques. Par exemple, dans \citet{Kriz2014nerinczechdecisions}, le modèle HMM a été comparé à l'Algorithme de Perceptron à Marges Inégales (PAUM) de \citet{li2002PAUM} pour reconnaître les institutions et références d'autres décisions de justice, ainsi que les citations d'actes juridiques (loi, contrat, etc.) dans les décisions judiciaires de la République Tchèque. Les deux modèles ont donné de bonnes performances avec des scores $F_1$ de $ 89 \% $ et $ 97 \% $ pour le HMM utilisant les tri-grammes comme descripteurs de mots, et des scores $F_1$ de $ 87 \% $ et $ 97 \% $ pour le PAUM en utilisant des 5-grammes de lemmes et les rôles grammaticaux (\textit{Part-Of-Speech tag}) comme descripteurs. 
 
 Considérons un texte $T$ comme étant une séquence d'observations $t_{1:n}$, avec chaque $t_i$ étant un segment de texte (mot, ligne, phrase, etc.). En considérant une collection de labels, l'étiquetage de $T$ consiste à affecter les labels appropriés à chaque $t_i$. La segmentation de $T$ est un étiquetage particulier qui implique de découper $T$ en des groupes qui ne se chevauchent pas (des partitions). Les tâches de sectionnement et d'annotation des entités, prises séparément, sont des problèmes de segmentation.
 
@@ -145,7 +145,7 @@ $\sum\limits_ {k = 1} ^ M \log P (L_k \vert T_k) $ sur les données d'entraînem
 
 La représentation des segments à labelliser occupe une place importante pour l'obtention de bons résultats avec les modèles décrits précédemment. Elle consiste généralement à décrire la forme et le contexte de chaque segment en lui assignant des attributs \citep{nadeau2007nersurvey,sharnagat2014nersurvey}. Ils peuvent être booléens (\og le mot est il en majuscule? \fg{}), numériques (nombre de caractères du mot), nominaux (par ex. le rôle grammatical d'un mot), ou définis par des expressions régulières (par ex. pour les numéros R.G. on peut avoir \verb|dd/ddddd| où \verb|d| désigne un chiffre). Ces descripteurs mettent  en évidence des régularités relatives à l'occurrence des entités. Par exemple, préciser qu'un mot débute par une lettre majuscule permet d'indiquer les noms propres. La définition de tels descripteurs consiste ainsi à fournir au modèle des indices l'aidant à mieux distinguer les différents types d'entités. 
 
-Etant donné que les descripteurs dépendent généralement de l'intuition du concepteur du système d'étiquetage, il est difficile mais nécessaire d'identifier des descripteurs appropriés. Après avoir défini des candidats, il n'est pas sûr qu'en les combinant tous ensemble, on obtienne les meilleures performances. Une sélection de caractéristiques peut alors s'avérer nécessaire. Cette sélection peut améliorer les performances d'étiquetage, et accélérer l'extraction des descripteurs, l'entraînement du modèle ainsi que son application à de nouveaux textes \citep{kitoogo2007featureSelectNER}. Elle peut aussi fournir une meilleure compréhension du comportement des modèles entraînés \citep{klinger2009FeaturefilterCRF}. Deux principales approches se distinguent. D'une part, les méthodes \og filtrantes \fg{} (\textit{filters}), comme l'information mutuelle, comparent individuellement les descripteurs à l'aide de scores qui ne sont pas nécessairement basés sur la performance. D'autre part, les méthodes \og enveloppantes \fg{} (\textit{wrappers}) comparent des sous-ensembles de descripteurs sur la base des performances d'évaluation qu'elles permettent d'obtenir (par exemple la F1-mesure obtenue sur un ensemble d'exemples). Même si les méthodes filtrantes sont plus rapides, elles sont en général moins performantes car elles ne permettent pas d'éviter les redondances, et ne prennent pas en compte l'effet de la combinaison de caractéristiques.
+Etant donné que les descripteurs dépendent généralement de l'intuition du concepteur du système d'étiquetage, il est difficile mais nécessaire d'identifier des descripteurs appropriés. Après avoir défini des candidats, il n'est pas sûr qu'en les combinant tous ensemble, on obtienne les meilleures performances. Une sélection de caractéristiques peut alors s'avérer nécessaire. Cette sélection peut améliorer les performances d'étiquetage, et accélérer l'extraction des descripteurs, l'entraînement du modèle ainsi que son application à de nouveaux textes \citep{kitoogo2007featureSelectNER}. Elle peut aussi fournir une meilleure compréhension du comportement des modèles entraînés \citep{klinger2009FeaturefilterCRF}. Deux principales approches se distinguent. D'une part, les méthodes \og filtrantes \fg{} (\textit{filters}), comme l'information mutuelle, comparent individuellement les descripteurs à l'aide de scores qui ne sont pas nécessairement basés sur la performance. D'autre part, les méthodes \og enveloppantes \fg{} (\textit{wrappers}) comparent des sous-ensembles de descripteurs sur la base des performances d'évaluation qu'elles permettent d'obtenir (par exemple la $F_1$-mesure obtenue sur un ensemble d'exemples). Même si les méthodes filtrantes sont plus rapides, elles sont en général moins performantes car elles ne permettent pas d'éviter les redondances, et ne prennent pas en compte l'effet de la combinaison de caractéristiques.
 %. Au départ proposés et utilisés en classification multi-dimensionnelle, les algorithmes de sélections de caractéristiques ont été appliqués avec succès pour l'extraction d'entités. \citet{klinger2009FeaturefilterCRF} ont 
 
 La définition manuelle des caractéristiques suivie de la sélection est souvent qualifiée de méthode forcée car elle dépend fortement de la capacité du concepteur du système à identifier les descripteurs appropriés. Les réseaux de neurones permettent d'apprendre des caractéristiques  grâce à des méthodes de plongement sémantique telles que Word2Vec \citep{lemikolov2014word2vec} et Glove \citep{pennington2014glove}.  Deux architectures de réseaux de neurones réalisent actuellement les meilleures performances en matière de détection d'entités nommées. Il s'agit du modèle BiLSTM-CRF de  \citet{lample2016nnner} et du LSTM-CNN-CRF de \citet{ma2016lstm-cnns-crf}. On pourrait résumer ces architectures en trois phases. Dans un premier temps, les segments de textes (mots) ont une représentation vectorielle concaténant 2 vecteurs de plongement sémantique : l'un issu de l'apprentissage morphologique du mot à partir de ses caractères, et l'autre issu de l'apprentissage du contexte général d'occurrence du mot. Lors de la seconde phase, deux couches de cellules LSTM enchaînées permettent de modéliser le contexte à droite et à gauche de chaque mot du texte labellisé. La dernière phase détermine la séquence de labels la plus probable pour le texte à l'aide d'une implémentation neuronale du modèle CRF. Le CRF reçoit en entrée la concaténation des contextes à droite et à gauche des mots. \textcolor{red}{schémas du biLSTM}
@@ -249,20 +249,20 @@ Néanmoins, l'ordre des sujets ne changeant pas de manière significative, nous 
 \begin{algorithm}[ht] \small
 	\KwData{Données annotées, $X$ liste de tous les descripteurs candidats}
 	\KwResult{Sous-ensemble optimal de descripteurs}
-	Démarrer la SFS avec $Y_{F_0}= \emptyset $\; 
-	Démarrer la SBS avec $Y_{B_0}=X$\; $k=0$\;
-	\While{$Y_{F_k} \neq Y_{B_k}$}{
-		$x^+=\argmax_{\substack{x \in Y_{B_k} \setminus Y_{F_k}}} F1(Y_{F_k} + x)$; 
-		$Y_{F_{k+1}} = Y_{F_k} + x^+$ //SFS\;
-		$x^-=\argmax_{\substack{x \in Y_{B_k} \setminus Y_{F_{k+1}}}} F1(Y_{F_k} - x)$;
-		$Y_{B_{k+1}} = Y_{B_k} - x^-$ //SBS\; 
+	Démarrer la SFS avec $Y_{\mathcal{F}_0}= \emptyset $\; 
+	Démarrer la SBS avec $Y_{\mathcal{B}_0}=X$\; $k=0$\;
+	\While{$Y_{\mathcal{F}_k} \neq Y_{\mathcal{B}_k}$}{
+		$x^+=\argmax_{\substack{x \in Y_{\mathcal{B}_k} \setminus Y_{\mathcal{F}_k}}} F_1(Y_{\mathcal{F}_k} + x)$; 
+		$Y_{\mathcal{F}_{k+1}} = Y_{\mathcal{F}_k} + x^+$ //SFS\;
+		$x^-=\argmax_{\substack{x \in Y_{\mathcal{B}_k} \setminus Y_{\mathcal{F}_{k+1}}}} F_1(Y_{\mathcal{F}_k} - x)$;
+		$Y_{\mathcal{B}_{k+1}} = Y_{\mathcal{B}_k} - x^-$ //SBS\; 
 		$k = k+1$;
 	}
-	\Return $Y_{F_k}$\;
+	\Return $Y_{\mathcal{F}_k}$\;
 	\caption{Recherche bidirectionnelle BDS} \label{algo:structuration:bds}
 \end{algorithm}
 La première méthode, qui est la recherche bidirectionnelle (BDS) de \citet{liu2012featureSelection}, combine la sélection séquentielle en avant (SFS) et la sélection séquentielle en arrière (SBS) en parallèle (Algorithme \ref{algo:structuration:bds}). 
-La SFS recherche un sous-ensemble optimal, en commençant par un ensemble vide et en ajoutant le descripteur qui améliore le mieux l'efficacité du sous-ensemble sélectionné. Le critère d'efficacité dans notre cas est défini par la F1-mesure (Eq. \ref{eq:structuration:f1mesure}). Contrairement à la SFS, la SBS commence par l'ensemble des candidats et supprime successivement les plus mauvais descripteurs. Une caractéristique ne peut être ajoutée dans $Y_{F_{k+1}}$ que si elle est présente dans $Y_{B_{k}}$.
+La SFS recherche un sous-ensemble optimal, en commençant par un ensemble vide et en ajoutant le descripteur qui améliore le mieux l'efficacité du sous-ensemble sélectionné. Le critère d'efficacité dans notre cas est défini par la $F_1$-mesure (Eq. \ref{eq:structuration:f1mesure}). Contrairement à la SFS, la SBS commence par l'ensemble des candidats et supprime successivement les plus mauvais descripteurs. Une caractéristique ne peut être ajoutée dans $Y_{F_{k+1}}$ que si elle est présente dans $Y_{B_{k}}$.
 
 
 
@@ -272,10 +272,10 @@ La SFS recherche un sous-ensemble optimal, en commençant par un ensemble vide e
 	$Y_0= \emptyset $\; 
 	$k=0$\;
 	\Repeat{$X = \emptyset$ ou $X = Y_{k}$}{
-		$x^+=\argmax_{x \notin Y_k} F1(Y_k + x)$; \label{p4_forward_sffs}
+		$x^+=\argmax_{x \notin Y_k} F_1(Y_k + x)$; \label{p4_forward_sffs}
 		$Y_k = Y_k + x^+$\; 
-		$x^-=\argmax_{x \in Y_k} F1(Y_k - x)$\; \label{p4_back_sffs}
-		\eIf{F1($Y_k - x^-$) > F1($Y_k$)}{
+		$x^-=\argmax_{x \in Y_k} F_1(Y_k - x)$\; \label{p4_back_sffs}
+		\eIf{$F_1(Y_k - x^-) > F_1(Y_k)$}{
 			$Y_{k+1} = Y_k - x^-$\; 
 			$X = X - x^-$\;
 			$k = k+1$\;
@@ -304,10 +304,10 @@ Pour évaluer les méthodes de TAL, \citet{xiao2010corpuscreation} suggère de c
 Chaque document annoté comprend en moyenne 262,257 lignes et 3955,215 mots. Les deux dernières colonnes du Tableau \ref{tab:structuration:relevantinfo} présentent la distribution des entités labellisées dans le jeu de données. En se basant sur un sous-ensemble de 13 documents labellisés par 2 annotateurs différents, nous avons calculé des taux d'accord inter-annotateur en utilisant la statistique Kappa de \citet{cohen1960kappa}. Ces mesures d'accord inter-annotateur ont été calculées au niveau des caractères parce que certains mots peuvent être coupés par des annotations incorrectes (par ex. \textit{<juridiction> cour d'appe </juridiction> \underline{l}} contre \textit{<juridiction> cour d'appe\underline{l} </juridiction>}), ou bien les annotateurs pourraient ne pas être d'accord si une apostrophe doit être inclue ou pas dans l'annotation (par ex. \textit{ \underline{l'}<norme>article 700} contre \textit{ <norme >\underline{l'}article 700}). Les taux de Kappa de 0,705 et 0,974 ont été obtenus pour l'annotation des entités et des sections respectivement. D'après la catégorisation de \citet{viera2005kappa}, le niveau d'accord observé est \textit{substantiel} pour les entités (0,61 -- 0,80) et \textit{presque parfait} pour les sections (0,81 -- 0,99).
 
 \subsubsection{Mesures d'évaluation}
-Nous avons utilisé la précision, le rappel et la F1-mesure comme mesures d'évaluation car elles sont généralement utilisées comme références en extraction d'information. % Nous présentons aussi des performances au niveau micro c'est-à-dire en général sans distinction des classes. 
-La F1-mesure se calcule à l'aide de la formule suivante:  
+Nous avons utilisé la précision, le rappel et la $F_1$-mesure comme mesures d'évaluation car elles sont généralement utilisées comme références en extraction d'information. % Nous présentons aussi des performances au niveau micro c'est-à-dire en général sans distinction des classes. 
+La $F_1$-mesure se calcule à l'aide de la formule suivante:  
 \begin{equation}\label{eq:structuration:f1mesure}
-F1 = 2 \times \frac{Precision \times Rappel} {Precision + Rappel}.
+F_1 = 2 \times \frac{Precision \times Rappel} {Precision + Rappel}.
 \end{equation}
 %La précision et le rappel quant à eux se calculent suivant les formules
 % \begin{equation}\label{NER-precision}
@@ -360,7 +360,7 @@ Id thème & Mots représentatifs  \\ \hline
 \caption{Mots représentatifs des 10 premiers thèmes sur les 100 inférés}\label{p4_topics}
 \end{table}
 
-Les valeurs de précision, rappel, et F1-mesure ont été calculées à l'aide du script d'évaluation de la campagne CoNLL-2002 \footnote{\url{http://www.cnts.ua.ac.be/conll2002/ner/bin/conlleval.txt}}. Elles sont indiquées en pourcentage dans les tableaux de résultats d'évaluation des sections suivantes.
+Les valeurs de précision, rappel, et $F_1$-mesure ont été calculées à l'aide du script d'évaluation de la campagne CoNLL-2002 \footnote{\url{http://www.cnts.ua.ac.be/conll2002/ner/bin/conlleval.txt}}. Elles sont indiquées en pourcentage dans les tableaux de résultats d'évaluation des sections suivantes.
 
 \subsection{Sélection du schéma d'étiquetage}
 Dans le but d'évaluer comment la représentation de segment affecte les performances, nous avons implémenté quatre représentations (IO, IEO2, BIO2, BIEO).  Nous avons réalisé un simple découpage des données en deux ensembles: $25 \%$ pour l'entraînement et $75 \%$ pour les tests. Les performances reportées dans le Tableau \ref{fig:structuration:select-segm-repr} sont les performances globales sur la base de test. Seul l'élément (mot/ligne) est utilisé comme descripteur. La durée d'entraînement est très longue, particulièrement pour la détection d'entités dans l'entête avec le CRF. Il semble évident que cette durée croisse proportionnellement avec le nombre de labels candidats de la section et la complexité du schéma d'étiquetage. En effet, BIEO exige beaucoup plus de temps, et IO exige le temps d'entraînement le plus bas, et le schéma IOE semble être plus rapide que BIO même s'ils ont le même nombre de labels. Nous remarquons aussi que les représentations complexes n'améliorent pas significativement les résultats par rapport au simple IO qui demande pourtant beaucoup moins de temps.
@@ -371,7 +371,7 @@ Dans le but d'évaluer comment la représentation de segment affecte les perform
 \begin{tabular}{p{0.9cm}|c|cccccccc}
 \hline \noalign{\smallskip}
 Tâche & Modèle & \multicolumn{3}{c}{Niveau atomique$^a$} & \multicolumn{3}{c}{Niveau entité$^a$} & \multirow{2}{*}{Durée$^b$} & Schéma \\
- & & Précision & Rappel & F1 &  Précision & Recall & F1 &  & \\ \hline %\noalign{\smallskip}\svhline\noalign{\smallskip}
+ & & Précision & Rappel & $F_1$ &  Précision & Recall & $F_1$ &  & \\ \hline %\noalign{\smallskip}\svhline\noalign{\smallskip}
 \multirow{8}{*}{Sections}  & \multirow{4}{*}{CRF} & 91.75 & 91.75 & 91.75 & 64.49 & 56.55 & 60.26 &  4.685  & IO \\
 &  & 88.95 & 88.95 & 88.95 & 48.12 & 38.26 & 42.63  & 11.877 & IEO2 \\
 &  & 87.09 & 87.09 & 87.09 & 46.79 & 37.20 & 41.45 & 12.256 & BIO2 \\
@@ -409,7 +409,7 @@ $^b$ Durée d'entraînement en secondes avant l'arrêt de l'entraînement
 
 
 \subsection{Sélection des descripteurs}
-Pour comparer les méthodes BDS et SFFS, nous exploitons le schéma IO. Durant nos expérimentations, la méthode SFFS a exécuté 185 entraînements pour le modèle CRF d'identification des sections. La méthode BDS quant à elle a duré plus de 15h pour 600 itérations d'entraînement-test. Malgré la sauvegarde des scores F1 pour éviter d'exécuter plusieurs fois l'entraînement pour les mêmes sous-ensembles de descripteurs, le processus de sélection est toujours resté très long pour les deux algorithmes. Nous avons testé individuellement chacun des descripteurs candidats pour les modèles HMM. Les résultats sont reportés dans le Tableau \ref{fig:structuration:select-feats}.
+Pour comparer les méthodes BDS et SFFS, nous exploitons le schéma IO. Durant nos expérimentations, la méthode SFFS a exécuté 185 entraînements pour le modèle CRF d'identification des sections. La méthode BDS quant à elle a duré plus de 15h pour 600 itérations d'entraînement-test. Malgré la sauvegarde des scores $F_1$ pour éviter d'exécuter plusieurs fois l'entraînement pour les mêmes sous-ensembles de descripteurs, le processus de sélection est toujours resté très long pour les deux algorithmes. Nous avons testé individuellement chacun des descripteurs candidats pour les modèles HMM. Les résultats sont reportés dans le Tableau \ref{fig:structuration:select-feats}.
 
 \begin{table}[!htb]
 \scriptsize
@@ -417,7 +417,7 @@ Pour comparer les méthodes BDS et SFFS, nous exploitons le schéma IO. Durant n
 \begin{tabular}{p{1cm}|c|ccc|ccc|c}
 \hline\noalign{\smallskip}
 Tâche & Modèle & \multicolumn{3}{c}{niveau atomique$^a$} & \multicolumn{3}{c}{niveau entité$^a$}& Sous-ensemble \\
- & & Précision & Rappel & F1 &  Précision & Rappel & F1 & sélectionné\\
+ & & Précision & Rappel & $F_1$ &  Précision & Rappel & $F_1$ & sélectionné\\
 \noalign{\smallskip}\hline\noalign{\smallskip}
 \multirow{7}{*}{Sections} 		& \multirow{4}{*}{CRF} & 99.31 & 99.31 & 99.31 & 90.28 & 90.68 & 90.48 & BDS$^{b1}$  \\
   				&  & 99.55 & 99.55 & {99.55} & 85.69 & 85.84 & 85.76 & {SFFS}$^{b2}$ \\
@@ -483,7 +483,7 @@ Nous discutons ici la capacité des modèles à identifier individuellement chaq
 	\begin{tabular}{|l|l|l|l|l|l|l|}
 		\hline
 	\multirow{2}{*}{}	& \multicolumn{3}{c}{\textbf{HMM}}  &      \multicolumn{3}{|c|}{\textbf{CRF}}          \\ \cline{2-7}
-		& \textit{Precision} & \textit{Rappel} & \textit{F1} & \textit{Precision} & \textit{Rappel} & \textit{F1} \\ \hline
+		& \textit{Precision} & \textit{Rappel} & $F_1$ & \textit{Precision} & \textit{Rappel} & $F_1$ \\ \hline
 		\textbf{I-corps}       & 92.46              & 95.25           & 93.83       & 99.57              & 99.69           & 99.63       \\ 
 		\textbf{I-dispositif}  & 53.44              & 48.46           & 50.83       & 98.63              & 97.59           & 98.11       \\ 
 		\textbf{I-entete}      & 97.91              & 91.93           & 94.83       & 99.51              & 99.55           & 99.53       \\ \hline
@@ -504,7 +504,7 @@ Nous discutons ici la capacité des modèles à identifier individuellement chaq
 		\noalign{\smallskip}\hline\noalign{\smallskip}
 		\textbf{I-norme}       & 88.23              & 93.7            & 90.89       & 97.14              & 96.09           & 96.62       \\ \hline
 	\end{tabular}
-	\caption{Précision, Rappel, F1-mesures pour chaque type d'entité et section au niveau atomique.}\label{tab:structuration:perf-detail-token}
+	\caption{Précision, Rappel, $F_1$-mesures pour chaque type d'entité et section au niveau atomique.}\label{tab:structuration:perf-detail-token}
 \end{table}
 
 
@@ -516,7 +516,7 @@ D'un point de vue général (évaluation globale), les modèles HMM se comporten
 	\begin{tabular}{|l|l|l|l|l|l|l|}
 		\hline
 	\multirow{2}{*}{}	& \multicolumn{3}{c}{\textbf{HMM}}  &      \multicolumn{3}{|c|}{\textbf{CRF}}          \\ \cline{2-7}
-		& \textit{Precision} & \textit{Rappel} & \textit{F1} & \textit{Precision} & \textit{Rappel} & \textit{F1} \\ \hline
+		& \textit{Precision} & \textit{Rappel} & $F_1$ & \textit{Precision} & \textit{Rappel} & $F_1$ \\ \hline
 		\textbf{corps}         & 0.99               & 0.99            & 0.99        & 89.57              & 90.1            & 89.83       \\ 
 		\textbf{dispositif}    & 12.05              & 7.33            & 9.11        & 98.02              & 97.82           & 97.92       \\ 
 		\textbf{entete}        & 10.47              & 10.5            & 10.48       & 92.11              & 92.48           & 92.29       \\ \hline
@@ -537,7 +537,7 @@ D'un point de vue général (évaluation globale), les modèles HMM se comporten
 				\noalign{\smallskip}\hline\noalign{\smallskip}
 		\textbf{norme}         & 71.94              & 78.45           & 75.05       & 92.66              & 91.38           & 92.01       \\ \hline
 	\end{tabular}
-	\caption{Précision, Rappel, F1-mesures pour chaque type d'entité et section au niveau entité.}\label{tab:structuration:perf-detail-entity}
+	\caption{Précision, Rappel, $F_1$-mesures pour chaque type d'entité et section au niveau entité.}\label{tab:structuration:perf-detail-entity}
 \end{table}
 
 \subsection{Discussions}
@@ -589,7 +589,7 @@ Des expérimentations ont été menées pour évaluer la manière dont les modè
 
 
 
-Il est évident que les scores F1 croissent avec le nombre de données d'entraînement pour les CRF et HMM, mais cette amélioration devient très faible au-delà de 60\% de données d'entraînement quelle que soit la tâche. Il est possible que les exemples ajoutés à partir de là partagent la même structure que celle de ceux qui ont été ajoutés auparavant. Ainsi, cette étude doit être étendue à la sélection des exemples les plus utiles. \citet{raman2003exampleSelection} ont démontré les avantages des algorithmes de sélection d'exemples combinés à celle des caractéristiques pour la classification. Les mêmes méthodes sont probablement applicables à l'étiquetage de séquences.
+Il est évident que les scores $F_1$ croissent avec le nombre de données d'entraînement pour les CRF et HMM, mais cette amélioration devient très faible au-delà de 60\% de données d'entraînement quelle que soit la tâche. Il est possible que les exemples ajoutés à partir de là partagent la même structure que celle de ceux qui ont été ajoutés auparavant. Ainsi, cette étude doit être étendue à la sélection des exemples les plus utiles. \citet{raman2003exampleSelection} ont démontré les avantages des algorithmes de sélection d'exemples combinés à celle des caractéristiques pour la classification. Les mêmes méthodes sont probablement applicables à l'étiquetage de séquences.
 
 
 
@@ -601,7 +601,7 @@ Il est évident que les scores F1 croissent avec le nombre de données d'entraî
 	\begin{tabular}{|l|l|l|l|l|l|l|}
 		\hline
 		&               \multicolumn{3}{c}{\textbf{CRF + descripteurs manuels}} & \multicolumn{3}{|c|}{\textbf{BiLSTM-CRF}}   \\ \cline{2-7}
-		& \textit{Precision} & \textit{Rappel}                     & \textit{F1} & \textit{Precision} & \textit{Rappel}      & \textit{F1} \\ \hline
+		& \textit{Precision} & \textit{Rappel}                     & $F_1$ & \textit{Precision} & \textit{Rappel}      & $F_1$ \\ \hline
 		\textbf{appelant}      & 82.49              & 69.42                               & 74.72       & 80.26              & 71.53                & 75.04       \\ 
 		\textbf{avocat}        & 90.15              & 89.02                               & 89.56       & 84.93              & 87.88                & 86.36       \\ 
 		\textbf{date}          & 95.34              & 91.46                               & 93.12       & 95.04              & 90.79                & 92.63       \\ 
@@ -620,12 +620,12 @@ Il est évident que les scores F1 croissent avec le nombre de données d'entraî
 	\caption{Comparaison entre le CRF avec des descripteurs définis manuellement et le BiLSTM-CRF au niveau entité.}\label{tab:structuration:perf-bilstmcrf}
 \end{table}
 
-L'ingénierie manuelle des caractéristiques est difficile car arbitraire. Nous avons comparé les performances de nos descripteurs avec celles des réseaux de neurones qui apprennent une représentation des segments. Pour cela nous avons choisi le BiLSTM-CRF de \citet{lample2016nnner} qui fait partie des meilleures approches récentes. La comparaison a été effectuée pour la détection des entités avec le schéma d'étiquetage BIEO et une validation croisée à 9 itérations. Le BiLSTM-CRF prend en entrée les plongements sémantiques Word2Vec des mots. Pour cela, nous avons entraîné des vecteurs de mots à partir d'un corpus jurisprudentiel de plus de 800K documents provenant de \url{www.legifrance.gouv.fr} avec l'implémentation\footnote{\url{https://code.google.com/archive/p/word2vec/}} de \citet{lemikolov2014word2vec}. Les vecteurs obtenus ont une dimension de 300. Etant donné que les décisions sont des documents particulièrement longs, leur contenu a été découpé en des morceaux de texte dont la taille n'excède pas 300 mots. Les résultats obtenus par le BiLSTM-CRF sont assez proches de ceux que nous observons avec les descripteurs manuellement définis (Tableau \ref{tab:structuration:perf-bilstmcrf}) . Etant donné que ces derniers permettent de mieux détecter certaines entités comme les \textit{intervenants}, les \textit{avocats} ou les numéro \textit{R.G.}, et vice-versa pour les \textit{normes} ou les \textit{appelants} chez le BiLSTM-CRF, une combinaison des deux types de descripteurs pourrait améliorer les résultats actuels. %On peut par exemple exploiter des modèles thématiques déduits en partitionnant (\textit{clustering}) l'ensemble des vecteurs de mots  et les utiliser comme descripteurs définis manuellement. 
+L'ingénierie manuelle des caractéristiques est difficile car arbitraire. Nous avons comparé les performances de nos descripteurs avec celles des réseaux de neurones qui apprennent une représentation des segments. Pour cela nous avons choisi le BiLSTM-CRF de \citet{lample2016nnner} qui fait partie des meilleures approches récentes. La comparaison a été effectuée pour la détection des entités avec le schéma d'étiquetage BIEO et une validation croisée à 9 itérations. Le BiLSTM-CRF prend en entrée les plongements sémantiques Word2Vec \citep{mikolov2013word2vec} des mots. Pour cela, nous avons entraîné des vecteurs de mots à partir d'un corpus jurisprudentiel de plus de 800K documents provenant de \url{www.legifrance.gouv.fr} avec l'implémentation\footnote{\url{https://code.google.com/archive/p/word2vec/}} de \citet{lemikolov2014word2vec}. Les vecteurs obtenus ont une dimension de 300. Etant donné que les décisions sont des documents particulièrement longs, leur contenu a été découpé en des morceaux de texte dont la taille n'excède pas 300 mots. Les résultats obtenus par le BiLSTM-CRF sont assez proches de ceux que nous observons avec les descripteurs manuellement définis (Tableau \ref{tab:structuration:perf-bilstmcrf}) . Etant donné que ces derniers permettent de mieux détecter certaines entités comme les \textit{intervenants}, les \textit{avocats} ou les numéro \textit{R.G.}, et vice-versa pour les \textit{normes} ou les \textit{appelants} chez le BiLSTM-CRF, une combinaison des deux types de descripteurs pourrait améliorer les résultats actuels. %On peut par exemple exploiter des modèles thématiques déduits en partitionnant (\textit{clustering}) l'ensemble des vecteurs de mots  et les utiliser comme descripteurs définis manuellement. 
  
 
 \section{Conclusion}
 \label{sec:structuration:conclusion}
-L'application des modèles HMM et CRF dans le but de détecter des sections et des entités dans les décisions de justice est une tâche difficile. Ce chapitre a examiné les effets de divers aspects de la conception sur la qualité des résultats. En résumé, malgré une importante réduction du nombre de descripteurs, l'amélioration des résultats semble être insignifiante lorsque l'on sélectionne séparément la représentation du segment et le sous-ensemble de caractéristiques. Cependant, opter pour la bonne configuration en évaluant les approches de sélection combinées avec diverses représentations de segment pourrait peut-être offrir de meilleurs résultats. En raison de la longue durée de recherche du sous-ensemble optimal de descripteurs, il serait préférable d'utiliser un algorithme de sélection beaucoup plus rapide que les méthodes BDS et SFFS que nous avons expérimentées. De plus, même si les résultats s'améliorent avec la l'augmentation de la taille de l'échantillon d'apprentissage, la mesure globale F1 semble néanmoins atteindre une limite très rapidement. Étant donné que certaines entités ne sont pas très bien détectées, il peut être avantageux d'ajouter des exemples appropriés afin de traiter ces problèmes spécifiques.
+L'application des modèles HMM et CRF dans le but de détecter des sections et des entités dans les décisions de justice est une tâche difficile. Ce chapitre a examiné les effets de divers aspects de la conception sur la qualité des résultats. En résumé, malgré une importante réduction du nombre de descripteurs, l'amélioration des résultats semble être insignifiante lorsque l'on sélectionne séparément la représentation du segment et le sous-ensemble de caractéristiques. Cependant, opter pour la bonne configuration en évaluant les approches de sélection combinées avec diverses représentations de segment pourrait peut-être offrir de meilleurs résultats. En raison de la longue durée de recherche du sous-ensemble optimal de descripteurs, il serait préférable d'utiliser un algorithme de sélection beaucoup plus rapide que les méthodes BDS et SFFS que nous avons expérimentées. De plus, même si les résultats s'améliorent avec la l'augmentation de la taille de l'échantillon d'apprentissage, la mesure globale $F_1$ semble atteindre une limite très rapidement. Étant donné que certaines entités ne sont pas très bien détectées, il peut être avantageux d'ajouter des exemples appropriés afin de traiter ces problèmes spécifiques.
 
 L'application des modèles pose deux difficultés majeures : l'annotation d'un nombre suffisant d'exemples et la définition de caractéristiques discriminantes. Les efforts d'annotation peuvent être réduits avec un système automatique à faible performance d'étiquetage. Il suffirait alors de vérifier manuellement ces annotations afin de corriger les erreurs commises par le système sur de nouvelles décisions à l'aide d'un outil d'aide à l'annotation. En ce qui concerne la définition des caractéristiques, dans la mesure où notre approche actuelle est réalisée manuellement par l'analyse de quelques documents, il est possible que de tels descripteurs ne s'adaptent pas parfaitement à un nouvel ensemble de données (différents pays, différentes langues, différentes juridictions). Pour éviter les énormes efforts requis pour définir les fonctionnalités manuellement, il serait préférable d'utiliser des descripteurs appris automatiquement à partir de corpus étiquetés ou non, comme des mots incorporés.
 
