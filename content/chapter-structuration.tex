@@ -96,11 +96,11 @@ Considérons un texte $T$ comme étant une séquence d'observations $t_{1:n}$, a
 
 \subsubsection{Les modèles cachés de Markov (HMM)}
 \label{sec:structuration:litérature-HMM}
-\textcolor{red}{**** corrections *****}
 Un modèle HMM\footnote{\citet{rabiner1989tutorial} fournit plus de détails sur le modèle HMM} est une machine à états finis définie par un ensemble d'états $ \lbrace s_1, s_2, ..., s_m \rbrace $. Un modèle HMM a pour fonction d'affecter une probabilité jointe 
 $ P (T , L) = \prod\limits_i P(l_i \vert l_{i-1})P(T \vert l_i)$  à des paires de séquences d'observations $ T = t_{1: n} $ et de séquences de labels $ L = l_{1:n} $. Étant donné qu'un HMM est un modèle génératif, chaque label $l_i$ correspond à l'état $s_j$ dans lequel la machine a généré l'observation $t_i$. Il y a autant de labels candidats que d'états. Le processus d'étiquetage de $T$ consiste à déterminer la séquence de labels $ L^* $ qui maximise la probabilité jointe ($L^* = \arg \max\limits_L P(T, L)$). Une évaluation de toutes les séquences possibles de labels est nécessaire pour déterminer $L^*$. Pour éviter la complexité exponentielle $ O(m^n)$ d'une telle approche, $n$ étant la longueur de la séquence et $m$ le nombre de labels candidats, l'algorithme de décodage Viterbi \citep{viterbi1967viterbi}, basé sur de la  programmation dynamique, permet d'obtenir une estimation de $L^*$. Cet algorithme utilise des paramètres estimés par apprentissage sur un corpus de textes annotés manuellement:
 \begin{itemize}
-\item un ensemble d'états $ \lbrace s_1, s_2, ..., s_m \rbrace $ et un alphabet ou vocabulaire $ \lbrace o_1, o_2, ..., o_k \rbrace $;
+\item un alphabet ou vocabulaire $ \lbrace o_1, o_2, ..., o_k \rbrace $;
+\item un ensemble d'états $ \lbrace s_1, s_2, ..., s_m \rbrace $;
 \item la probabilité que $ s_j $ génère la première observation $ \pi(s_j), \forall j \in [1 .. m] $;
 \item la distribution de probabilité de transition $ P (s_i\vert s_j),  \forall i,j \in [1 .. m] $;
 \item la distribution de probabilité d'émission $ P(o_i\vert s_j), \forall i \in [1 .. k], \forall j \in [1 .. m]$.
