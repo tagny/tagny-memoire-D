@@ -20,12 +20,17 @@
 
 \section{Introduction}
 \label{sec:sensresultat:motivation}
-Comme le précédent, ce chapitre est relatif à l'extraction de données sur les demandes et résultats correspondants. Cependant, il est question ici d'extraire uniquement le sens du résultat d'une demande connaissant sa catégorie. Cette étude est intéressante parce que le problème devient plus simple. En se passant de la localisation précise de l'énoncé du résultat, l'extraction du sens du résultat peut être formulée comme une tâche de classification de documents. Nous modélisons la tâche comme un problème de classification binaire consistant à entrainer un algorithme à reconnaitre si la demande a été rejetée (sens = rejette) ou acceptée (sens = accepte). Cette modélisation est proposée sur une restriction du problème définie par les postulats \ref{postulat:sens:unedemande} et \ref{postulat:sens:sensbinaire} suivants.
+\textcolor{red}{quelle est l'entrée? la demande? comment elle est modélisée?}
+préciser l'importance de la tâche pour le métier: analyse descriptive du sens du résultat.
 
+
+Comme le précédent, ce chapitre est relatif à l'extraction de données sur les demandes et résultats correspondants. Cependant, il est question ici d'extraire uniquement le sens du résultat d'une demande connaissant sa catégorie. Cette étude est intéressante parce que le problème devient plus simple. En se passant de la localisation précise de l'énoncé du résultat, l'extraction du sens du résultat peut être formulée comme une tâche de classification de documents. Nous modélisons la tâche comme un problème de classification binaire consistant à entrainer un algorithme à reconnaitre si la demande a été rejetée (sens = rejette) ou acceptée (sens = accepte). Cette modélisation est proposée sur une restriction du problème définie par les postulats  (\textcolor{red}{observations})
+ \ref{postulat:sens:unedemande} et \ref{postulat:sens:sensbinaire} suivants.
+\textcolor{red}{commencer par le postulat: qui sont des observations! en précisant que le choix de motivation est motivé par l'expertise du métier.}
 \begin{postulat}\label{postulat:sens:unedemande}
-Pour toute catégorie de demande $C$, les documents ne contenant qu'une demande de catégorie $C$ sont majoritaires. %\textcolor{red}{COMMENT SAVOIR QU'UN DOCUMENT N'A QU'UNE SEULE DEMANDE? CLASSIFICATION POSSIBLE?}
-%Pour toute catégorie de demande $C$, on ne considère que les décisions dans lesquelles n'apparaît qu'une seule demande de catégorie $C$. 
+Pour toute catégorie de demande $C$, les documents ne contenant qu'une demande de catégorie $C$ sont majoritaires. 
 \end{postulat} 
+
 Ce postulat est légitime car les statistiques sur les données labellisées de la Figure \ref{fig:quanta:hist-repartition-docs} montrent bien que dans chaque catégorie, les décisions contiennent en majorité une demande. On remarque néanmoins l'exception de la catégorie STYX (dommage-intérêt sur l'article 700 CPC), où dans la majorité des documents, on a plutôt 2 demandes. Cette exception peut se justifier par le fait que chaque partie fait généralement ce type de demande car elle porte sur le remboursement des frais de justice. Ce postulat présente cependant un inconvénient dû au fait que la majorité des demandes se trouvent dans des décisions à plus d'une demande. Il est donc possible de manquer un grand nombre de demandes. %On pourrait peut-être porter la classification à un modèle multi-label qui déterminera plusieurs sens à partir d'un seul document. Par exemple <SENS1, SENS2, SENS3> avec des valeurs prédéfinies sur les SENS 2 et 3 par exemple NO-DMD pour indiquer que la décision ne comprend pas de seconde ou de troisième demande.
 
 \begin{postulat}\label{postulat:sens:sensbinaire}
@@ -38,7 +43,7 @@ Ce postulat est justifié car les sens de résultat ont majoritairement l'une de
 \caption{Répartition des sens de résultat dans les données annotées.}\label{stat-sensrst}
 \end{figure}
 
-Cette étude porte sur l'analyse de l'impact de différents aspects techniques généralement impliqués dans la classification de textes qui consistent en général à une combinaison de représentations des documents et d'algorithmes de classification. Cette analyse permettra de savoir s'il existe une certaine configuration permettant de déterminer le sens du résultat à une demande sans identifier précisément cette dernière dans le document. 
+Cette étude porte sur l'analyse de l'impact de différents aspects techniques en général impliqués dans la classification de textes qui consistent en général en une combinaison de représentations des documents et d'algorithmes de classification. Cette analyse permettra de savoir s'il existe une certaine configuration permettant de déterminer le sens du résultat à une demande sans identifier précisément cette dernière dans le document. 
 
 
 \section{Classification de documents}
@@ -111,7 +116,7 @@ L'algorithme des $k$-plus-proches-voisins est un algorithme très simple qui con
 	\item les données d'entrainement dont le nombre s'il est très grand peut rendre cher le processus de classification, car la distance du nouvel objet à chaque point annoté, est calculée;
 	\item le nombre de voisins (c'est-à-dire la valeur de $k$) qui ne doit être ni très petit (sensibilité aux bruits / \textit{outliers}), ni très grand (risque d'avoir dans le voisinage beaucoup de points d'une autre classe). La sensibilité au nombre de voisins peut être atténuée en pondérant les points par leur distance à l'objet à classer. Il a été proposé plusieurs variantes de cette stratégie de \og vote pondéré par la distance \fg{}, comme par exemple:
 	\begin{itemize}
-		\item $y' = \argmax\limits_c \sum\limits_{(x_i,y_i)} \frac{1}{Dis(x', x_i)^2} \times I(c = y_i)$  \citep{dudani1976originalwknn} \[\text{ où } I(c=y_i) = \left\lbrace \begin{array}{ll}
+		\item $y' = \argmax\limits_c \sum\limits_{(x_i,y_i)} \frac{1}{Dis(x, x_i)^2} \times I(c = y_i)$  \citep{dudani1976originalwknn} \[\text{ où } I(c=y_i) = \left\lbrace \begin{array}{ll}
 		1 & \text{si }c = y_i \\
 		0 & \text{sinon}
 		\end{array} \right.\]
@@ -203,7 +208,7 @@ Par ailleurs, la représentation vectorielle des textes résulte généralement 
 
 \section{Application du PLS  à la classification des textes}
 \label{sec:sensresultat:pls}
-%\textcolor{red}{Justification: Pourquoi le PLS?:}
+\textcolor{red}{Justification: Pourquoi le PLS? à quel problème cette méthode répond spécifiquement? Qu'est ce que moi j'ai fait/ajouté?: le modèle a été déjà publié en temps que méthode de régression. nous l'adaptons pour de la classification de textes pourquoi?: ça n'a jamais été appliqué en classif. de texte, orienté par l'expertise de l'encadrement sur cette technique déjà publiée.}
 %https://link.springer.com/content/pdf/10.1007\%2FBF02174528.pdf, 
 %https://www.stat4decision.com/fr/regression-pls/
 

@@ -222,10 +222,10 @@ Les métriques couramment utilisées mesurent la ressemblance entre deux catégo
 		\begin{tabular}{|c|c|c|c|c|c|}
 			\hline
 			& $Y_1$    & $Y_2$    & $\cdots$ & $Y_s$    & $\sum$   \\ \hline
-			$X_1$    & $n_{11}$ & $n_{11}$ & $\cdots$ & $n_{11}$ & $a_1$    \\ \hline
-			$X_2$    & $n_{21}$ & $n_{21}$ & $\cdots$ & $n_{21}$ & $a_2$    \\ \hline
+			$X_1$    & $n_{11}$ & $n_{12}$ & $\cdots$ & $n_{1s}$ & $a_1$    \\ \hline
+			$X_2$    & $n_{21}$ & $n_{22}$ & $\cdots$ & $n_{2s}$ & $a_2$    \\ \hline
 			$\cdots$ & $\cdots$ & $\cdots$ & $\ddots$ & $\cdots$ & $\cdots$ \\ \hline
-			$X_r$    & $n_{r1}$ & $n_{r1}$ & $\cdots$ & $n_{r1}$ & $a_r$    \\ \hline
+			$X_r$    & $n_{r1}$ & $n_{r2}$ & $\cdots$ & $n_{rs}$ & $a_r$    \\ \hline
 			$\sum$   & $b_1$    & $b_2$    & $\cdots$ & $b_s$    &          \\ \hline
 		\end{tabular}
 		\caption{Tableau de contingence des chevauchement entre les catégorisations $X = \lbrace X_1, X_2, ..., X_r \rbrace$ et $Y = \lbrace Y_1, Y_2, ..., Y_s \rbrace$}  \label{tab:similarite:tab-contingence}
@@ -237,6 +237,9 @@ ARI a des valeurs dans $[-1;1]$. Une valeur négative indique que la catégorisa
 	
 	\item Au regard de leur formulation, les métriques ARI et NMI sont plus focalisées sur la différence de volume entre les clusters de deux catégorisations. D'autres méthodes appelées  \og mesures de comptage de pairs \fg{} (\textit{pair counting measures}) mesurent la capacité du modèle à mettre deux documents similaires (de labels identiques dans les données annotées) dans le même groupe, et des documents dis-similaires (de labels différents dans les données annotées) dans des clusters différents. Parmi ces mesures, on retrouve par exemple, la précision, le rappel, et la $F_1$-mesure qui sont définies par les formules suivantes \citep{manning2009irbook-flatclustering}:
 	{\footnotesize\[P = \frac{{TP}}{{TP} + {FP}}, R = \frac{{TP}}{{TP} + {FN}}, F_1 = \frac{2 \times P \times R}{P + R}.\]}
+	
+	\textcolor{red}{Ne pas mentionner plusieurs fois les formules de rappel, précision, f1. Mais uniquement les définitions de TP, FP, TN, FN.}
+	
 	Ces scores prennent leurs valeurs dans $[0;1]$. Les métriques de bases, qui servent à les calculer, sont:
 	\begin{itemize}
 		\item un vrai positif (TP) survient si le modèle place deux documents similaires dans le même cluster (groupe généré par le modèle);
