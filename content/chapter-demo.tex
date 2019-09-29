@@ -1,4 +1,4 @@
-\chapter{Application à l'analyse descriptive d'un grand corpus}
+\chapter{Application à l'analyse descriptive d'un grand corpus de décisions jurisprudentielles}
 \label{chap:demo}
 Ce chapitre décrit des résultats d'analyses statistiques observés lors de l'application de la chaîne proposée (Figure \ref{fig:intro:pipeline-globale}) sur un corpus formé de la base CAPP de la \citet{dila2019capp} (+65k XML sur 1997-2019), et plus de 10k autres documents de cours d'appels. Le module d'extraction d'information (Figure \ref{fig:demo:module-extraction}) est un système qui comprend les modèles développés durant les expérimentations de cette thèse. 
 
@@ -33,11 +33,11 @@ Après extraction, les décisions de la base de données sont réparties dans l'
 
 
 La structuration des données dans la base de données permet de mieux comprendre la jurisprudence à l'aide de graphiques appropriés. Une application de visualisation dédiée a notamment été développée  par \citet{PRYSIAZHNIUK2017jurisprudence-demo-web}.
-Les analyses des sections suivantes sont restreintes aux 5 villes ayant les plus grands nombres de décision: Paris, Lyon, Versailles, Angers, Bastia; sur la période 2000-2019
+Les analyses des sections suivantes sont restreintes aux 5 villes ayant les plus grands nombres de décisions: Paris, Lyon, Versailles, Angers, Bastia; sur la période 2000-2019.
 
 \section{Analyse du sens du résultat}
-A partir de la base des données extraites, l'évolution du pourcentage de demandes acceptées  peut être observée sur une courbe. En traçant une telle courbe pour chaque ville il est possible de comparer les villes.
-Par exemple, pour les dommages intérêts sur l'article 700 du Code de Procédure Civile (STYX), la Figure \ref{fig:demo:analyse-sens-resultat-styx} compare l'évolution du sens du résultat entre les villes citées précédemment. On remarque que les demandes sont beaucoup plus rejetées qu'acceptées. La courbe du nombre total de demandes doit y être associée pour savoir si le pourcentage de succès est considérable\footnote{Pour une année où une seule demande est extraite et acceptée, le pourcentage est à 100\%, mais ce n'est pas considérable.}.
+A partir de la base des données extraites, l'évolution du pourcentage de demandes acceptées  peut être observée sur une courbe. En traçant une telle courbe pour chaque ville, il est possible de comparer les villes.
+Par exemple, pour les dommages intérêts sur l'article 700 du Code de Procédure Civile (STYX), la Figure \ref{fig:demo:analyse-sens-resultat-styx} compare l'évolution du sens du résultat entre les villes citées précédemment. On remarque que les demandes sont beaucoup plus rejetées qu'acceptées. La courbe du nombre total de demandes doit y être associée pour savoir si le pourcentage de succès est réellement interprétable \footnote{Pour une année où une seule demande est extraite et acceptée, le pourcentage est à 100\%, mais ce n'est pas réellement interprétable.}.
 
 \begin{figure}[!htb]
 	\centering 
@@ -58,7 +58,7 @@ La visualisation par l'application de \citet{PRYSIAZHNIUK2017jurisprudence-demo-
 
 \section{Analyse des quanta}
 \subsection{Evolution dans le temps}
-De même l'évolution des quanta demandés et accordés peut être facilement visualisée par un diagramme en barre comme celui de la Figure \ref{fig:demo:evolution-quanta-styx} qui correspond aux demandes STYX entre 2000  et 2019. Même si le nombre total de demandes est à prendre en compte, un tel diagramme donne un aperçu des sommes d'argent demandés et accordés chaque année. 
+De même l'évolution des quanta demandés et accordés peut être facilement visualisée par un diagramme en barre comme celui de la Figure \ref{fig:demo:evolution-quanta-styx} qui correspond aux demandes STYX entre 2000  et 2019. Même si le nombre total de demandes est à prendre en compte, un tel diagramme donne un aperçu des sommes d'argent demandées et accordées chaque année. 
 
 \begin{figure}[!htb]
 	\centering 
@@ -67,10 +67,10 @@ De même l'évolution des quanta demandés et accordés peut être facilement vi
 \end{figure}
 
 
-\subsection{Différence dans l'espace}
+\subsection{Variabilité dans les territoires}
 
-Pour avoir une idée du montant qu'on peut recevoir pour une catégorie de demande, l'évolution des valeurs généralement accordés peut être comparée entre deux villes en visualisant les diagrammes boîtes (\textit{boxplot}) 
-des quanta accordés dans ces villes. La Figure \ref{fig:demo:evolution-qr-styx-compare-ville} permet d'effectuer une comparaison entre Bastia et Lyon. On remarque, par exemple, qu'en cas d'acceptation de la demande, il faut s'attendre à recevoir au maximum une somme autour de 5k euros à Bastia contre 10k euros à Lyon.
+Pour avoir une idée du montant que l'on peut recevoir pour une catégorie de demande, l'évolution des valeurs généralement accordées peut être comparée entre deux villes en visualisant les diagrammes boîtes (\textit{boxplot}) 
+des quanta accordés dans ces villes. La Figure \ref{fig:demo:evolution-qr-styx-compare-ville} permet d'effectuer une comparaison entre Bastia et Lyon. On remarque, par exemple, qu'en cas d'acceptation de la demande, il faut s'attendre à recevoir au maximum la somme de 5k euros à Bastia contre 10k euros à Lyon.
 
 \begin{figure}[!htb]
 	\centering 
@@ -94,4 +94,4 @@ La prédiction du quantum résultat doit définir un modèle dont la forme s'acc
 
 \section{Conclusion}
 \label{sec:demo:conclusion}
-Les démonstrations de ce chapitre donnent quelques exemples de statistiques qui informent de l'état de la jurisprudence à partir d'informations extraites à l'aide des approches proposées dans cette thèse. Les analyses du sens du résultat et des quanta sont les principales applications directes de la chaîne de traitement développée. Ce chapitre se limite aux filtres sur l'année, la ville, et la catégorie de demande, mais les analyses peuvent déjà être affinées en associant d'autres filtres comme  des mot-clés,  les normes appliqués, ou le type de juridiction. Les analyses pourront être plus riches grâce l'extraction future de nouvelles informations comme les motivations des juges et de meilleurs modèles de circonstances factuelles.
+Les démonstrations de ce chapitre donnent quelques exemples de statistiques qui informent de l'état de la jurisprudence à partir d'informations extraites à l'aide des approches proposées dans cette thèse. Les analyses du sens du résultat et des quanta sont les principales applications directes de la chaîne de traitement développée. Ce chapitre se limite aux filtres sur l'année, la ville, et la catégorie de demande, mais les analyses peuvent déjà être affinées en associant d'autres filtres comme  des mot-clés, les normes appliquées, ou le type de juridiction. Les analyses pourront être enrichies grâce l'extraction future de nouvelles informations comme les motivations des juges et de meilleurs modèles d'identification de circonstances factuelles.
