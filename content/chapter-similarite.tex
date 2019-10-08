@@ -442,8 +442,8 @@ Les représentations sélectionnées sont utilisées dans la suite.
 
 Le Tableau \ref{tab:similarite:silhouette-vecteur-manuel} classe aussi les distances en fonction de leur adaptabilité à la tâche, et la $Dis_\mathcal{M}$ se replace bien grâce à la représentation optimale. $Dis_{wmd}$ n'a pas été adaptée avec un modèle vectoriel plus adéquat que le sac-de-mots. Par conséquent, elle présente un score légèrement moins bon que celui d'un regroupement aléatoire (négatif et proche de 0).
 
-\subsection{Catégorisation du corpus annoté manuellement}
-\subsubsection{Nombre prédéfini de groupes}
+\subsection{Catégorisation dans le corpus annoté manuellement}
+\subsubsection{Nombre prédéfini de \textit{clusters}}
  Le Tableau \ref{tab:similarite:validation-supervisee-k3} présente les mesures ARI, NMI et $F_1$-mesure de la catégorisation par K-moyennes et K-medoïdes sur $\mathcal{D}_{arcpa}$, avec $K=3$. 
 
 \begin{table}[!htb]
@@ -473,7 +473,7 @@ Le Tableau \ref{tab:similarite:silhouette-vecteur-manuel} classe aussi les dista
 Les valeurs de silhouette se reflètent plus sur les indices ARI et NMI, mais moins sur la $F_1$-mesure. Suivant le score $F_1$, $Dis_M$, semble le mieux adaptée pour les K-moyennes, et $Dis_{cos}$ pour les K-medoïdes. Mais les distances, $Dis_{jaccard}$, $Dis_{cos}$, $Dis_{euclidienne}$ semblent mieux faire le compromis entre les différents critères de validation.
 
 
-\subsubsection{Nombre de groupes déterminé automatiquement}
+\subsubsection{Nombre de \textit{clusters} déterminé automatiquement}
 Nous analysons ici  la détermination du nombre de clusters par la méthode de la silhouette pour chaque distance (Tableau \ref{tab:similarite:validation-supervisee-optKbySilhouette}). La sélection de $K$ est effectué pour les valeurs entre 2 et 30. $Dis_\mathcal{M}$ retrouve le nombre attendu avec les K-moyennes. $4$ est la plus choisie par les distances, et 4 donne une $F_1$-mesure au maximum à 0.551 et un ARI de 0.398 avec $Dis_{cos}$. Les valeurs déterminées (entre 2 et 6) sont très proches de la valeur attendue 3 pour toutes les distances.  Notons aussi que l'efficacité de $Dis_\mathcal{M}$ et $Dis_{cos}$ reste presque aussi élevée qu'avec un $K$ prédéfini (Tableau \ref{tab:similarite:validation-supervisee-k3}). $Dis_\mathcal{M}$ et $Dis_{cos}$ semblent ainsi former de bonnes combinaison avec respectivement les K-moyennes et les K-medoïdes. Par ailleurs, seules $Dis_{manhattan}$ et $Dis_{wmd}$ obtiennent de très faibles valeurs pour les indices ARI et NMI. Même si ces valeurs sont inférieures pour les autres distances, ces dernières, en particulier $Dis_\mathcal{M}$, $Dis_{jaccard}$ et $Dis_{cos}$, parviennent quand même à un bon compromis entre les 3 critères ARI, NMI et $F_1$. $Dis_{jaccard}$ et $Dis_{cos}$ sont efficaces à la fois avec les K-moyennes et les K-medoïdes. Elles parviennent à associer une bonne validation non-supervisée (silhouette) à une bonne validation non-supervisée.
 
 \begin{table}[!htb]

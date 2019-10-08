@@ -4,17 +4,10 @@
 %titre
 \textbf{Title:} \textsc{\titleen}
 
-A jurisprudence is a corpus of court decisions representing the way in which laws are interpreted to resolve a dispute. It is useful for lawyers who analyze it to understand and anticipate the decision-making process of judges. Its exhaustive analysis remains difficult manually because of its huge size and the non-structuring shape of documents. The estimation of the judicial risk by individuals thus becomes impossible because they are moreover confronted with the complexity of  the judicial system and language. An automation of such an analysis would enable the extraction of the knowledge relevant to structure the case law for the purpose of descriptive and predictive analyzes.
-%Method
-%Results
-In order to make the exhaustive insight of jurisprudence accessible to as many people as possible, this thesis proposes a automation of tasks of importance for the expert analysis of the jurisprudence. The first one, based on probabilistic graphical models, realizes the recognition of sections and legal named entities of references of decision. Then, are extracted the quanta requested and granted, as well as the polarity of the response of the judges to the different requests. The proposed approach is based on the classification of documents, and the proximity between money mentions and key-phrases extracted automatically. Finally, decisions related to a category of requests are clustered to discover the types of cases known as factual circumstances. For this purpose, a method for learning a similarity distance is proposed.
+A case law is a corpus of judicial decisions representing the way in which laws are interpreted to resolve a dispute. It is essential for lawyers who analyze it to understand and anticipate the decision-making of judges. Its exhaustive analysis is difficult manually because of its huge size and the non-structuring state of the documents. The estimation of the judicial risk by individuals is thus impossible because they are also confronted with the complexity of the judicial system and language. Automation can enable an exhaustive extraction of relevant knowledge for structuring case law for descriptive and predictive analysis.
+In order to make the comprehension of the case-law exhaustive and more accessible, this thesis deals with the automation of important tasks of business analysis of jurisprudence. First, the application of probabilistic graphical sequence labeling models for the detection of sections, legal named entities, and legal rules citations in decisions is investigated. Then, predefined categories of requests are identified by document classification. For each recognized category, the requests of the parties are extracted. The proposed approach to the recognition of claimed and granted quanta exploits the proximity between money mentions and automatically extracted key-phrases. We also show that the meaning of the judges' result is identifiable either from predefined key terms or by classification of documents. Lastly, situations or factual circumstances in which a category of claims is formulated are discovered by clustering decisions. For this purpose, a method of learning a similarity distance is proposed and compared with established distances.
 %Conclusion
-This thesis discusses the empirical results obtained on real data annotated manually by an expert. The thesis is closed with a demonstration of the application of the proposed pipeline concerning the descriptive analysis of a large corpus of French judicial decisions.
+This thesis discusses the empirical results obtained on real data annotated manually by an expert. The thesis is closed by a demonstration of some applications to the descriptive analysis of a large corpus of French judicial decisions.
 
 %keywords
-\textbf{Keywords:} textual data analysis, judicial decisions, information extraction, text classification, document clustering
-
-%legal descriptive analytics, legal textual data analytics, jurisprudencial decisions
-
-
-%\textbf{Keywords}: Automation of the analysis of court decisions, information extraction, sequence labeling, structured prediction, metric learning, clustering
+\textbf{Keywords:} textual data analysis, case law decisions, information extraction, text classification, document clustering

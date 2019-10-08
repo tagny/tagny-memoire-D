@@ -27,6 +27,7 @@
 \usepackage[font=footnotesize,singlelinecheck=off,justification=centering]{caption}
 \usepackage[font=footnotesize]{subcaption}
 \usepackage{framed}
+\usepackage{fancyvrb}
 %\usepackage[left=3cm,right=3cm,top=2.5cm,bottom=2.5cm]{geometry}%
 %\usepackage[margin=1.2in]{geometry}
 %\usepackage{geometry}
@@ -115,6 +116,8 @@
 \newcommand{\p}{\mathbb{P}}
 \newcommand{\bulle}{\textcolor[rgb]{0.00,0.00,1.00}{\bullet}}
 \newenvironment{proof}[1][Proof] {\noindent \textcolor[rgb]{0.00,0.00,1.00}{\textbf{#1:}} \\ } {\ \textcolor[rgb]{0.00,0.00,1.00}{\textbf{\rule{0.5em}{0.5em}}} \bigskip}
+\newcommand{\figureref}[1]{Figure \ref{#1} Page \pageref{#1}}
+\newcommand{\tableref}[1]{Tableau \ref{#1} Page \pageref{#1}}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\N}{\mathbb{N}}
 \newcommand{\E}{\mathbb{E}}
@@ -155,6 +158,7 @@
 
 \begin{document}
 \nocite{}
+\newsavebox\myv
 % http://www.sciencespo-lille.eu/sites/default/files/guide_preparer_et_rediger_un_memoire_de_recherche.pdf
 
 \frontmatter
@@ -183,12 +187,12 @@
 % changement du style des chapitres
 \include{config/style_chapitre2}
 
-\input{content/chapter-literature} % INCLUDE: related work
-\input{content/chapter-structuration}	% INCLUDE: structuration
-\input{content/chapter-quanta} % INCLUDE: quanta
-\input{content/chapter-sensresultat} % INCLUDE: sensresultat
-\input{content/chapter-similarite} % INCLUDE: similarite
-\input{content/chapter-demo} % INCLUDE: demo
+%\input{content/chapter-literature} % INCLUDE: related work
+%\input{content/chapter-structuration}	% INCLUDE: structuration
+%\input{content/chapter-quanta} % INCLUDE: quanta
+%\input{content/chapter-sensresultat} % INCLUDE: sensresultat
+%\input{content/chapter-similarite} % INCLUDE: similarite
+%\input{content/chapter-demo} % INCLUDE: demo
 
 
 \backmatter

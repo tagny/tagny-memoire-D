@@ -4,19 +4,19 @@
 
 \section{Contexte et motivations}
 \label{sec:intro:contexte}
-Une décision jurisprudentielle peut être définie soit comme  le résultat rendu par les juges à l'issue d'un procès, soit comme un document décrivant une affaire judiciaire. Un tel document rapporte, notamment,  les faits, les procédures judiciaires antérieures, le verdict des juges, et les explications associées. Dans cette thèse, nous désignons par \og décision \fg{} le document, et par  \og résultat\fg{} la conclusion (réponse finale) des juges. Une jurisprudence
+Une décision judiciaire peut être définie soit comme  le résultat rendu par les juges à l'issue d'un procès, soit comme un document décrivant une affaire judiciaire. Un tel document rapporte, notamment,  les faits, les procédures judiciaires antérieures, le verdict des juges, et les explications associées. Dans cette thèse, nous désignons par \og décision \fg{} le document, et par  \og résultat\fg{} une conclusion ou réponse des juges. Une jurisprudence
 %\footnote{\url{http://www.toupie.org/Dictionnaire/Jurisprudence.htm}} 
-est un ensemble de décisions rendues par les tribunaux ; elle représente la manière dont ces derniers interprètent les lois pour résoudre un problème juridique donné (type de contentieux). Les juristes doivent alors collecter ces documents, les sélectionner, et les analyser afin de mener, par exemple, des recherches empiriques en droit \citep{ancel2003expulsion, jeandidier2006pensions}. Les avocats exploitent aussi les décisions passées pour anticiper les résultats des juges. Ils peuvent ainsi mieux conseiller leurs clients sur le risque judiciaire que ces derniers encourent, et sur la stratégie à adopter pour un type de contentieux. Cette activité de collecte et d'analyse, centrale pour de nombreux métiers du droit, est généralement effectuée manuellement. Elles est par conséquent sujette à plusieurs difficultés liées à l'accès et à l'exhaustivité des documents traités même dans un contexte d'étude spécifique. Il faut ici notamment souligner que les documents sont dispersés dans les nombreux tribunaux, et que les procédures administratives ne facilitent pas toujours leur accès du fait de la nécessité de préserver la confidentialité des parties. En effet, les décisions n'étant la plupart du temps pas anonymisées, elles restent alors inaccessibles aux juristes qui en font la demande. Un certain nombre de documents sont néanmoins accessibles sur internet grâce à des sites de publication de données ouvertes gouvernementales\footnote{Données ouvertes gouvernementales: \hyperlink{http://data.gouv.fr}{data.gouv.fr} en France, \hyperlink{https://www.judiciary.uk}{judiciary.uk} en Grande-Bretagne, \hyperlink{http://www.scotusblog.com/}{scotusblog.com} aux Etats-Unis, et \hyperlink{https://www.scc-csc.ca/}{scc-csc.ca} au Canada.}. Ces sites publient régulièrement des décisions récemment prononcées.  Il existe aussi des moteurs de recherche juridiques qui permettent de retrouver des décisions intéressantes. Cependant, qu'ils soient payants (LexisNexis\footnote{\url{https://www.lexisnexis.fr/}}, Dalloz\footnote{\url{http://www.dalloz.fr}}, Lamyline\footnote{\url{http://lamyline.lamy.fr}},...) ou gratuits (CanLII\footnote{\url{https://www.canlii.org}}, Légifrance\footnote{\url{https://www.legifrance.gouv.fr}}, ...), les critères de recherche offerts par leurs moteurs de recherche limitent grandement la pertinence des résultats pouvant être obtenus. En effet, il ne s'agit en général que de combinaisons de mots-clés et autres méta-données (date, type de juridiction, ...), ou d'expressions régulières, comme l'illustre la Figure \ref{fig:intro:juriSearchForm}. Ces critères n'impliquent pas la sémantique juridique des documents, et il est difficile de les manipuler pour constituer des échantillons pertinents. 
+est un ensemble de décisions rendues par les tribunaux. Elle représente la manière dont ces derniers interprètent les lois pour résoudre un problème juridique donné (type de contentieux). Les juristes doivent alors collecter des décisions traitant de situations similaires, les sélectionner, et les analyser afin de mener, par exemple, des recherches empiriques en droit \citep{ancel2003expulsion, jeandidier2006pensions}. Les avocats exploitent aussi les décisions passées pour anticiper les résultats des juges. Ils peuvent ainsi mieux conseiller leurs clients sur le risque judiciaire que ces derniers encourent, et sur la stratégie à adopter pour faire accepter leurs demandes et faire rejeter celles de leurs adversaires. Cette activité de collecte et d'analyse, centrale pour de nombreux métiers du droit, est généralement effectuée manuellement. Elle est par conséquent sujette à plusieurs difficultés liées à l'accès et à l'exhaustivité des documents traités même lors de l'étude d'une question spécifique. Il faut notamment souligner ici que les documents sont dispersés dans les nombreux tribunaux, et que les procédures administratives ne facilitent pas toujours leur accès du fait de la nécessité de préserver la confidentialité des parties. En effet, les décisions n'étant pas \og anonymisées \fg{} la plupart du temps, elles restent alors inaccessibles aux juristes qui en font la demande. Un certain nombre de documents sont néanmoins accessibles sur internet grâce à des sites de publication de données ouvertes gouvernementales\footnote{Données ouvertes gouvernementales: \hyperlink{http://data.gouv.fr}{data.gouv.fr} en France, \hyperlink{https://www.judiciary.uk}{judiciary.uk} en Grande-Bretagne, \hyperlink{http://www.scotusblog.com/}{scotusblog.com} aux Etats-Unis, et \hyperlink{https://www.scc-csc.ca/}{scc-csc.ca} au Canada.}. Ces sites publient régulièrement des décisions récemment prononcées. 
 
 \begin{figure}[!htb]
 	\centering
-	\begin{subfigure}[t]{0.8\textwidth}
+	\begin{subfigure}[t]{\textwidth}
 		\centering
 		\fbox{\includegraphics[width=\textwidth]{legifrance.PNG}}
 		\caption{Formulaire de Légifrance}
 	\end{subfigure}%
 
-	\begin{subfigure}[t]{0.46\textwidth}
+	\begin{subfigure}[t]{0.75\textwidth}
 		\centering
 		\fbox{\includegraphics[width=\textwidth]{dalloz.png}}
 		\caption{Formulaire de Dalloz}
@@ -29,33 +29,76 @@ est un ensemble de décisions rendues par les tribunaux ; elle représente la ma
 	\caption{Exemples de critères des moteurs de recherche juridique}\label{fig:intro:juriSearchForm}
 \end{figure}
 
-Plus de 4 millions de décisions sont prononcées en France par an d'après les chiffres du ministère français de la justice (Tableau \ref{tab:intro:nbdecisionstats}). 
+Il existe aussi des moteurs de recherche juridiques qui permettent de retrouver des décisions intéressantes. Cependant, qu'ils soient payants (LexisNexis\footnote{\url{https://www.lexisnexis.fr/}}, Dalloz\footnote{\url{http://www.dalloz.fr}}, Lamyline\footnote{\url{http://lamyline.lamy.fr}},...) ou gratuits (CanLII\footnote{\url{https://www.canlii.org}}, Légifrance\footnote{\url{https://www.legifrance.gouv.fr}}, ...), les critères de recherche offerts par leurs moteurs de recherche limitent grandement la pertinence des résultats pouvant être obtenus. En effet, il ne s'agit en général que de combinaisons de mots-clés et autres méta-données (date, type de juridiction, ...), ou d'expressions régulières, comme l'illustre la \figureref{fig:intro:juriSearchForm}. La manipulation de tels critères est difficile pour constituer des échantillons pertinents suivant une sémantique souhaitée tels que l'ensemble des décisions traitant d'une catégorie de demande ou d'une circonstance factuelle donnée. 
 
 \begin{table}[!htb]
  	\small
  	\begin{center}
  		\begin{tabular}{|l|l|l|l|l|l|}
  			\hline
- 			\textbf{Justice}	& \textbf{2013}      & \textbf{2014}      & \textbf{2015}      & \textbf{2016}      & \textbf{2017}      \\ \hline
- 			civile         & 2 761 554 & 2 618 374 & 2 674 878 & 2 630 085 & 2 609 394 \\ \hline
- 			pénale         & 1 303 469 & 1 203 339 & 1 206 477 & 1 200 575 & 1 180 949 \\ \hline
- 			administrative & 221 882   & 230 477   & 228 876   & 231 909   & 242 882   \\ \hline
+ 			\textbf{Justice}	& \textbf{2013}  & \textbf{2014}  & \textbf{2015}  & \textbf{2016}  & \textbf{2017}  \\ \hline
+ 			civile   & 2 761 554 & 2 618 374 & 2 674 878 & 2 630 085 & 2 609 394 \\ \hline
+ 			pénale   & 1 303 469 & 1 203 339 & 1 206 477 & 1 200 575 & 1 180 949 \\ \hline
+ 			administrative & 221 882 & 230 477 & 228 876 & 231 909 & 242 882 \\ \hline
  		\end{tabular}
  		
- 		\textit{\scriptsize{Source: \url{http://www.justice.gouv.fr/statistiques-10054/chiffres-cles-de-la-justice-10303/}}}  
+ 		\textit{\scriptsize{\textbf{Source}: \url{http://www.justice.gouv.fr/statistiques-10054/chiffres-cles-de-la-justice-10303/}}}  
  	\end{center}
  	\caption{Nombre de décisions prononcées en France par an de 2013 à 2017}\label{tab:intro:nbdecisionstats}
  \end{table}
- 
-Dans ce contexte, l'analyse manuelle ne peut être limitée qu'à une infime proportion de documents disponibles.
-En effet, au regard de la croissance rapide du nombre de décisions, même une étude sur une question très précise nécessite la constitution d'un large corpus de décisions. Par ailleurs, il peut s'avérer très pénible de lire les décisions pour en identifier les données d'intérêt. Les documents sont très souvent longs et complexes dans leur style de rédaction. Par exemple, on y retrouve des phrases comprenant plusieurs clauses discutant d'aspects différents, et des références à des jugements antérieurs.
+Plus de 4 millions de décisions sont prononcées en France chaque année d'après les chiffres du ministère français de la justice (\tableref{tab:intro:nbdecisionstats}). Dans ce contexte, l'analyse manuelle ne peut être limitée qu'à une infime proportion de documents disponibles.
+En effet, au regard de la croissance rapide du nombre de décisions, même une étude sur une question très précise nécessite la constitution d'un large corpus de décisions pertinentes. Par ailleurs, il peut s'avérer très pénible de les lire pour en identifier les données d'intérêt. Les documents sont très souvent longs et complexes dans leur style de rédaction. Par exemple, Certaines phrases comprennent plusieurs clauses discutant d'aspects différents (\figureref{fig:intro:multiclauses}). On y retrouve aussi des références à des jugements antérieurs (\figureref{fig:intro:referencejugementanterieur}).
+\begin{figure}[!htb]
+\fvset{gobble=2, numbers=left, fontsize=\footnotesize}
+\begin{Verbatim}[firstnumber=69]
+  Exposant subir un trouble anormal de voisinage pour être privée d'une vue sur la 
+  mer dont elle disposait auparavant, ce en raison de l'absence de taille de haies 
+  implantées à proximité de son jardin privatif, elle a attrait devant le juge des 
+  référés du tribunal de grande instance de Marseille, le syndicat des 
+  copropriétaires LES CATALANS (ci-après désigné : le syndicat des copropriétaires) 
+  , et son syndic recherché personnellement, le Cabinet L., à l'effet, au visa de 
+  l'article 809 du code de procédure civile d'obtenir leur condamnation sous 
+  astreinte de 200 euros par jour de retard à tailler les haies qui bouchent sa 
+  vue et la condamnation personnelle du Cabinet L. à lui régler une provision de 
+  2.000 euros à valoir sur dommages et intérêts, outre 1.500 euros sur le 
+  fondement des dispositions de l'article 700 du code de procédure civile.
+\end{Verbatim}
+\scriptsize{\textit{\textbf{Source}: extrait de la décision R.G. 15/10226 de la Cour d'Appel d'Aix-en-Provence du 2 Juin 2016}}
+  \caption{Exemple de phrases composée de plusieurs clauses dont une demande de condamnation sous astreinte, une autre de dommages et intérêts pour trouble anormal de voisinage, et une dernière de dommages et intérêts sur l'article 700 du code de procédure civile.}
+  \label{fig:intro:multiclauses}
+\end{figure}
 
-Il est évident qu'une automatisation du traitement des corpus de décisions s'impose pour répondre aux diverses difficultés d'accès, de volumétrie, et de complexité liées à la compréhension des décisions. L'automatisation ferait gagner du temps aux juristes lors de tâches de traitement préalables à leur raisonnement d'experts, tout en leur fournissant une vue pertinente de la jurisprudence. D'autre part, \citet{cretin2014justicecomplexe} fait remarquer que la justice est complexe dans son organisation (Figure \ref{orgjusticefrance}) et son fonctionnement, et que son langage est peu compréhensible. Il est donc presque impossible pour les "profanes" d'estimer leurs droits et le risque judiciaire qu'ils encourent dans leur quotidien sans consulter un initié du droit. L'automatisation de l'analyse de la jurisprudence pourrait ainsi améliorer l'accessibilité du droit dans ce cas.  L'exigence pour le profane étant l'exacte pertinence des ressources, leur accessibilité, et l'intuitivité du processus de leur exploitation \citep{narazenko2017legalnlpintro}. Le traitement automatique de la jurisprudence constituerait alors une aide précieuse non seulement pour les professionnels du droit, mais aussi pour les particuliers et les entreprises soucieux de voir l'issue de leur affaire leur être favorable. Par exemple, en comparant le montant qu'on peut espérer d'une juridiction et le coût d'un procès, on peut plus aisément se décider entre un arrangement à l'amiable et la poursuite du litige en justice \citep{langlaischappe2009ecoresolutionlitige}. 
+
+\begin{figure}[!htb]
+\fvset{gobble=2, numbers=left, fontsize=\footnotesize}
+\begin{Verbatim}[firstnumber=73]
+    Vu le jugement du tribunal de grande instance de Versailles du 5 décembre 2013 
+    qui a :
+    - rejeté la demande de démolition de la construction litigieuse,
+\end{Verbatim}
+\begin{Verbatim}[firstnumber=118, stepnumber=2]
+    ...
+    SUR CE LA COUR,
+\end{Verbatim}
+\begin{Verbatim}[firstnumber=277, stepnumber=2]
+    ...  
+    PAR CES MOTIFS, 
+    ...
+\end{Verbatim}
+\begin{Verbatim}[firstnumber=281]
+    Confirme le jugement en toutes ses dispositions à l'exception de celle relative 
+    au montant des dommages et intérêts ...
+\end{Verbatim}
+\scriptsize{\textit{\textbf{Source}: extrait de la décision R.G. 14/01640 de la Cour d'Appel de Versaille du 7 Avril 2016}}
+  \caption{Exemple de référence à un jugement antérieur dans une décision d'appel.}
+  \label{fig:intro:referencejugementanterieur}
+\end{figure}
+Il est évident qu'une automatisation du traitement des corpus de décisions s'impose pour répondre aux diverses difficultés d'accès, de volumétrie, et de complexité liées à la compréhension des décisions. Une telle automatisation ferait gagner du temps aux juristes lors de tâches d'analyse métier préalables à leur raisonnement d'experts, tout en leur fournissant une vue exhaustive de la jurisprudence. D'autre part, \citet{cretin2014justicecomplexe} fait remarquer que la justice est complexe dans son organisation (\figureref{orgjusticefrance}) et son fonctionnement, et que son langage est peu compréhensible. Il est donc presque impossible pour les profanes en droit d'estimer leurs droits et le risque judiciaire qu'ils encourent dans leur quotidien sans consulter un initié du droit.  L'exigence pour le profane étant l'exacte pertinence des ressources, leur accessibilité, et l'intuitivité du processus de leur exploitation \citep{narazenko2017legalnlpintro}, l'automatisation de l'analyse de la jurisprudence pourrait ainsi améliorer l'accessibilité du droit dans d'indénombrables situations. Par exemple, en comparant le montant qu'on peut espérer d'une juridiction et le coût d'un procès, on peut plus aisément se décider entre un arrangement à l'amiable et la poursuite du litige en justice \citep{langlaischappe2009ecoresolutionlitige}. Le traitement automatique de la jurisprudence constituerait alors une aide précieuse non seulement pour les professionnels du droit, mais aussi pour les particuliers et entreprises tous soucieux de voir l'issue de leur affaire leur être favorable.  
 
 \begin{figure}[!htb]
 	\centering \includegraphics[angle=90,width=0.65\textwidth]{organisation_justice_francaise_grand.png}
 	
-	\textit{\scriptsize{Source: \url{http://www.justice.gouv.fr/organisation-de-la-justice-10031/}}}  
+	\textit{\scriptsize{\textbf{Source}: \url{http://www.justice.gouv.fr/organisation-de-la-justice-10031/}}}  
 	\caption{Organisation des institutions judiciaires françaises} \label{orgjusticefrance}
 \end{figure}
 
@@ -119,7 +162,7 @@ La difficulté d'extraire de telles informations découlent de l'état non-struc
 
 Les métadonnées de référence sont des segments de texte qu'on peut directement localiser dans le document. Elles sont donc semblables aux entités nommées dont la reconnaissance est une problématique intensivement étudiée en traitement automatique du langage naturel \citep{yadav2018surveyNeuralNER} dans plusieurs travaux et compétitions, aussi bien pour des entités communes \citep{tjong2003introCoNLL,grishman1996muc6}, que pour des entités spécifiques à un domaine \citep{kim2004bioNer, persson2012nbbioner,hanisch2005prominer}, et dans diverses langues \citep{li2018wcpbioner,alfred2014malayner,amarappa2015kannada}. 
 
-Le problème d'identification des demandes consiste à reconnaître, dans la décision analysée, l' objet , le fondement, le quantum demandé, le sens du résultat correspondant, et le quantum accordé de chaque prétention. La demande s'apparente donc aux entités structurées telles que les évènements \cite{ace2005event} qui sont décrits par un type, un terme-clé, des participants, un temps, une polarité.
+Le problème d'identification des demandes consiste à reconnaître, dans la décision analysée, l'objet, le fondement, le quantum demandé, le sens du résultat correspondant, et le quantum accordé de chaque prétention. La demande s'apparente donc aux entités structurées telles que les évènements \cite{ace2005event} qui sont décrits par un type, un terme-clé, des participants, un temps, une polarité.
 
 Le problème d'identification des circonstances factuelles consiste à constituer des regroupements de décisions mentionnant une certaine catégorie de demande (objet+fondement). Le but est, comme indiqué précédemment, de repérer les différentes situations dans lesquelles cette catégorie de demande est formulée. Chacun des groupes représente donc une situation particulière partagée par les membres du groupe mais bien distinctes de celles reflétées par les autres groupes. Ce problème évoque des problématiques de similarité entre textes, de catégorisation non-supervisée (\textit{clustering}), et de \og modélisation thématique \fg{} (\textit{topic modeling}). 
 
@@ -131,7 +174,7 @@ L'analyse descriptive exploite l'ensemble des connaissances extraites et organis
 
 \section{Méthodologie}
 \label{sec:intro:methodologie}
-
+Les tâches sont définies par le métier.
 Comme illustrées précédemment (\ref{subsec:intro:ie}), les problématiques propres aux textes juridiques trouvent généralement des analogies avec les problèmes d'analyse de données textuelles (\textit{text mining}). Ainsi, les méthodes issues de ce domaine sont applicables aux textes juridiques. Cependant, quelques adaptations sont généralement nécessaires pour obtenir des résultats de bonne qualité hors des domaines pour lesquels ces approches ont été développées \citep{Waltl2016lexia}. De plus, la recherche en fouille de textes est souvent réalisée sur des échantillons qui ne reflètent pas toujours la complexité des données réelles. Effectuant l'une des premières études d'analyse sémantique des décisions françaises, nous avons axé notre travail sur le rapprochement des problèmes liés à l'analyse des décisions jurisprudentielles de ceux généralement traités en analyse de textes. Il s'agit ensuite d'établir des protocoles d'évaluation et d'annotation manuelle de données. Selon les problématiques identifiées et les protocoles d'évaluations définis, des méthodes adaptées ont été proposées et expérimentées sur les données réelles annotées manuellement par un expert juriste.
 
 \section{Résultats}
