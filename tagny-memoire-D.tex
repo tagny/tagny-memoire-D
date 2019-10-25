@@ -167,28 +167,28 @@
 
 %\include{content/cover}
 %\include{content/acknowledgement}
-\include{content/resume}
-\include{content/abstract}
+%\include{content/resume}
+%\include{content/abstract}
 %liste des matières
 \addcontentsline{toc}{chapter}{\contentsname}
-\tableofcontents
+%\tableofcontents
 %liste des figures
-\listoffigures
 \addcontentsline{toc}{chapter}{\listfigurename}
+%\listoffigures
 %liste des tableaux
-\listoftables
 \addcontentsline{toc}{chapter}{\listtablename}
+%\listoftables
 
 \mainmatter
 
 %\include{introduction}
-\input{content/introduction} % INCLUDE: introduction
+%\input{content/introduction} % INCLUDE: introduction
 
 % changement du style des chapitres
 \include{config/style_chapitre2}
 
 %\input{content/chapter-literature} % INCLUDE: related work
-%\input{content/chapter-structuration}	% INCLUDE: structuration
+\input{content/chapter-structuration}	% INCLUDE: structuration
 %\input{content/chapter-quanta} % INCLUDE: quanta
 %\input{content/chapter-sensresultat} % INCLUDE: sensresultat
 %\input{content/chapter-similarite} % INCLUDE: similarite
@@ -198,9 +198,9 @@
 \backmatter
 
 % changement du style des chapitres
-\include{config/style_chapitre3}
+%\include{config/style_chapitre3}
 
-\input{content/conclusion} % INCLUDE: conclusion
+%\input{content/conclusion} % INCLUDE: conclusion
 
 %Bibliographie
 \def\bibname{Bibliographie}
