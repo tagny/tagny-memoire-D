@@ -167,28 +167,44 @@
 
 %\include{content/cover}
 %\include{content/acknowledgement}
-\include{content/resume}
-\include{content/abstract}
+%\include{content/resume}
+%\include{content/abstract}
 %liste des matières
+<<<<<<< HEAD
 \addcontentsline{toc}{chapter}{\contentsname}
-\tableofcontents
+%\tableofcontents
 %liste des figures
-\listoffigures
 \addcontentsline{toc}{chapter}{\listfigurename}
+%\listoffigures
 %liste des tableaux
-\listoftables
 \addcontentsline{toc}{chapter}{\listtablename}
+%\listoftables
+=======
+%\addcontentsline{toc}{chapter}{\contentsname}
+%\tableofcontents
+%liste des figures
+%\listoffigures
+%\addcontentsline{toc}{chapter}{\listfigurename}
+%liste des tableaux
+%\listoftables
+%\addcontentsline{toc}{chapter}{\listtablename}
+>>>>>>> 4b10db9118a0e36819860b417affa6a38d134c90
 
 \mainmatter
 
 %\include{introduction}
-\input{content/introduction} % INCLUDE: introduction
+%\input{content/introduction} % INCLUDE: introduction
 
 % changement du style des chapitres
 \include{config/style_chapitre2}
 
+<<<<<<< HEAD
 %\input{content/chapter-literature} % INCLUDE: related work
+\input{content/chapter-structuration}	% INCLUDE: structuration
+=======
+\input{content/chapter-literature} % INCLUDE: related work
 %\input{content/chapter-structuration}	% INCLUDE: structuration
+>>>>>>> 4b10db9118a0e36819860b417affa6a38d134c90
 %\input{content/chapter-quanta} % INCLUDE: quanta
 %\input{content/chapter-sensresultat} % INCLUDE: sensresultat
 %\input{content/chapter-similarite} % INCLUDE: similarite
@@ -198,9 +214,9 @@
 \backmatter
 
 % changement du style des chapitres
-\include{config/style_chapitre3}
+%\include{config/style_chapitre3}
 
-\input{content/conclusion} % INCLUDE: conclusion
+%\input{content/conclusion} % INCLUDE: conclusion
 
 %Bibliographie
 \def\bibname{Bibliographie}
