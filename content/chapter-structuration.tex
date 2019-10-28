@@ -15,7 +15,7 @@ Ce chapitre traite de la détection de sections et d'entités dans les décision
 	\item le dispositif est la synthèse du résultat final c'est-à-dire qu'on y retrouve les réponses aux demandes des parties.
 \end{itemize}
 
-Certaines informations spécifiques se retrouvent très souvent dans une même section, e.g. méta-données (localisation, date), prétentions des parties, décisions finales. Compte tenu de la répartition standard de certaines informations, certaines tâches d'extraction d'information peuvent être abordées comme des traitements spécifiques à appliquer à certaines sections. Ce chapitre traite dans un premier temps des modèles utilisés pour appliquer cette phase de segmentation des décisions en sections. Par la suite, les entités, et données sur les demandes et résultats, pourront plus facilement être extraites. Nous nous focaliserons en particulier ici sur la détection des mentions d'entités telles que la date à laquelle le jugement a été prononcé, le type de juridiction, sa localisation (ville), les noms des juges, des parties, et les règles de loi citées (normes). La Table \ref{tab:structuration:relevantinfo} liste les différentes entités ciblées et fournit des exemples illustrant leurs occurrences dans les décisions avec lesquelles nous avons travaillé.
+Certaines informations spécifiques se retrouvent très souvent dans une même section, e.g. méta-données (localisation, date), prétentions des parties, décisions finales. Compte tenu de la répartition standard de certaines informations, certaines tâches d'extraction d'information peuvent être abordées comme des traitements spécifiques à appliquer à certaines sections. Ce chapitre traite dans un premier temps des modèles utilisés pour appliquer cette phase de segmentation des décisions en sections. Par la suite, les entités, et données sur les demandes et résultats, pourront plus facilement être extraites. Nous nous focaliserons en particulier ici sur la détection des mentions d'entités telles que la date à laquelle le jugement a été prononcé, le type de juridiction, sa localisation (ville), les noms des juges, des parties, et les règles de loi citées (normes). La Table \ref{tab:structuration:relevantinfo} liste les différentes entités cibles et fournit des exemples illustrant leurs occurrences dans les décisions avec lesquelles nous avons travaillé.
 
 \begin{table}[!ht]
 \scriptsize
@@ -65,7 +65,7 @@ Notre étude consiste à analyser l'application du Modèle Caché de Markov (HMM
 \begin{itemize}
 \item Les \textbf{systèmes à recherche lexicale} sont conçus sur la base d'une liste d'entités préalablement connues, et leurs synonymes dans le domaine d'intérêt. Par exemple, dans le domaine juridique, un lexique pourrait contenir les identifiants de règles juridiques et les noms des juges. La liste des entités peut être fournie par des experts ou apprise à partir d'un ensemble de données annotées manuellement (phase d'apprentissage). Cependant, il s'avère très difficile de maintenir une telle liste car le domaine change régulièrement (nouvelles lois par ex.). De plus, les mentions d'entités peuvent avoir plusieurs variantes. Par exemple, la même règle juridique \og Article 700 du code de procédure civile \fg{} peut être citée seule et en entier (\og article 700 du code de procédure civile \fg{}), ou abrégée (\og article 700 CPC \fg{}), ou encore avec d'autres règles (\og articles 700 et 699 du code de procédure civile \fg{}). De plus, ces approches sont sujettes aux problèmes d'ambiguïté, par exemple lorsque différentes entités comprennent les mêmes mots. Ces problèmes ont largement limité ces premiers systèmes \citep{palmer1997learnedLookup}.
 
-\item Les \textbf{systèmes à base de règles} décrivent la variété des mentions d'entités en fonction de la régularité du contexte, de la structure et du lexique. Il existe plusieurs plateformes et langages permettant de formaliser l'écriture des règles. Par exemple, dans le formalisme JAPE de Gate, \citet{wyner2010extractlegalelts} détecte les énoncés de décisions à l'aide d'une règle qui sélectionne les phrases contenant un terme de jugement (\textit{affirm, grant,} etc.) et suivies d'un nom de juge:
+\item Les \textbf{systèmes à base de règles} décrivent la variété des mentions d'entités en fonction de la régularité du contexte, de la structure et du lexique. Il existe plusieurs plate-formes et langages permettant de formaliser l'écriture des règles. Par exemple, dans le formalisme JAPE de Gate, \citet{wyner2010extractlegalelts} détecte les énoncés de décisions à l'aide d'une règle qui sélectionne les phrases contenant un terme de jugement (\textit{affirm, grant,} etc.) et suivies d'un nom de juge:
 
 \begin{verbatim}
 	Rule: DecisionStatement
@@ -86,7 +86,7 @@ Notre étude consiste à analyser l'application du Modèle Caché de Markov (HMM
 \end{itemize}
 Certains travaux ont combiné différentes approches pour extraire les entités à partir de documents juridiques,  par exemple,  par la description de l'information contextuelle en utilisant des règles pour répondre au problème d'ambiguïté des méthodes à recherche lexicale \citep{mikheev1999NERlexicalWithRules,hanisch2005prominer}. Mais les systèmes basés sur l'apprentissage automatique sont les plus efficaces actuellement pour l'extraction d'information, en particulier les modèles graphiques probabilistes.
 
-Trois principaux aspects doivent être traités lors de la conception des systèmes à étiquetage de séquence : la sélection du modèle d'étiquetage, l'ingénierie des caractéristiques des segments à labelliser, et le choix d'une représentation de segment (encore appelé schéma d'étiquetage). 
+Trois principaux aspects doivent être traités lors de la conception des systèmes à étiquetage de séquence : la sélection du modèle d'étiquetage, l'ingénierie des caractéristiques des segments à étiqueter, et le choix d'une représentation de segment (encore appelé schéma d'étiquetage). 
 
 \subsection{Les modèles graphiques probabilistes HMM et CRF}
 
@@ -139,8 +139,44 @@ avec
 $t_i$ étant l'observation (le mot) en position $i$ dans $T$, $POS_i$ étant le rôle grammatical de $t_i$ (\textit{NUM} = valeur numérique, \textit{NOM} = nom), et $NP1_i$ et $NS1_i$ sont les lemmes des mots avant et après $t_i$, respectivement. Les symboles \textit{<unknown>} et \textit{@card@} encodent les lemmes inconnus et ceux des nombres respectivement. Pouvant être activées au même moment, les fonctions $f_1$ et $f_2$ définissent des descripteurs se chevauchant. Avec plusieurs fonctions activées, la croyance dans le fait que $l_i = NORME$ est renforcée par la somme $\lambda_1 + \lambda_2$ des poids affectés respectivement à $f_1$ et $f_2$ \citep{Zhu2010CRFlecture}.  Un modèle CRF active une fonction $f_j$ lorsque ses conditions sont satisfaites (celles activant $b_j(T,\cdot)$) et $\lambda_j > 0$. Les diverses fonctions pondérées $f_j$ sont définies par des descripteurs caractérisant les segments, et les labels des données d'entraînement. La phase d'apprentissage consiste principalement à estimer le vecteur de paramètres $\lambda = (\lambda_1,...,\lambda_F)$ à partir de textes annotés manuellement $ \lbrace (T_1, L_1), ..., (T_M, L_M) \rbrace $, $ T_k $ étant un texte et $ L_k $ la séquence de labels correspondants. La valeur optimale de $\lambda$ est celle qui maximise la fonction objectif   
 $\sum\limits_ {k = 1} ^ M \log P (L_k \vert T_k) $ sur les données d'entraînement. En général, outre le maximum de vraisemblance, cette optimisation est résolue à l'aide de l'algorithme de descente de gradient dont l'exécution peut être accélérée à l'aide de l'algorithme L-BFGS de \citet{liu1989l-bfgs}.
 
-\subsubsection{CRF et apprentissage profond}
-Les réseaux de neurones permettent d'apprendre des caractéristiques  grâce à des méthodes de plongement sémantique telles que Word2Vec \citep{lemikolov2014word2vec} et Glove \citep{pennington2014glove}.  
+\subsubsection{CRF et réseaux de neurones artificiels}
+\paragraph{Définitions}
+
+\begin{figure}[!htb]
+	\centering \includegraphics[width=0.9\textwidth]{Principe-de-fonctionnement-dun-neurone-artificiel.png}
+	\caption{Un neurone artificiel \citep{truong2016optimisationmachinesynchrone}}\label{fig:structuration:neuroneartificiel}
+\end{figure}
+
+Un réseau de neurones artificiels est un algorithme d'apprentissage automatique dont le fonctionnement est inspiré de celui du cerveau \citep{mcculloch1943nervousactivity,rosenblatt1958perceptron}. Un neurone reçoit des valeurs $x = [x_1, x_2, \dots, x_n]$ en entrée, puis calcule un élément de sortie $y$ par une fonction de la combinaison pondérée (poids $W = [w_0, w_1, \dots, w_n]$ des entrées (\figureref{fig:structuration:neuroneartificiel}).  Un réseau de neurones comprend des neurones structurés en couches. Les sorties d'une couche servent d'entrées à la couche suivante (\figureref{fig:structuration:couchedeneuronnes}). 
+
+\begin{figure}[!htb]
+	\centering \includegraphics[scale=0.5]{organisation_en_couches_reseau_de_neurones.jpg}
+	
+	\scriptsize{Source: \url{https://upload.wikimedia.org/wikipedia/commons/e/e1/Organisation_en_couches_réseau_de_neurones.JPG}}
+	\caption{Un réseau à trois couches de neurones}\label{fig:structuration:couchedeneuronnes}
+\end{figure}
+
+Les poids sont déterminés lors d'une phase d'entraînement qui les ajuste afin de minimiser l'erreur entre les valeurs attendues $y$ en sorties et celles prédites $\hat{y}$ par le modèle:
+\begin{enumerate}
+\item les poids sont initialisés aléatoirement;
+\item On fait passer $X_{train}$ par notre modèle pour obtenir une prédiction $\hat{y}_{train}$. On calcule ensuite la valeur de la fonction de coût $L(y_{train},  \hat{y}_{train})$
+\item On calcule le gradient de cette fonction $L$ par rapport aux paramètres $W$
+\item On cherche à minimiser notre fonction de coût en mettant à jour les paramètres $W$. Pour cela, on effectue une descente de gradient grâce au gradient calculé à l’étape précédente : $W = W - \lambda grad(L)$
+\end{enumerate}
+
+Traditionnellement, les réseaux de neurones sont à \og propagation avant \fg{} (\textit{feed-forward}) i.e. l'unique sens de propagation de l'information est de la couche d'entrée successivement vers a couche de sortie. Mais comme nous l'avons vue précédemment, la prise en compte du contexte (état précédent ou suivant) est très importante dans la modélisation des séquences. Les réseaux de neurones à propagation avant ne sont pas adaptés pour prédire la sortie à l'instant $t$ à partir de ses connaissances des instants précédents.
+
+Les réseaux de neurones récurrents (\textit{recurrent neural networks - RNN}) \citep{jordan1986serialorder_rnn,elman1990findingstructure_rnn} sont une architecture conçue pour modéliser les données séquentielles. Le principe est de définir un réseau RNN pour chaque instant, en permettant à chaque RNN de communiquer son information à l'instant suivant. La version simple des RNN (\textit{vanilla RNN}) réalise la tangente hyperbolique ($tanh$) pondéré de la concaténation de la sortie $h_{t-1}$ du RNN précédent ($t-1$) et de l'entrée $x_{t}$ de l'état courant $t$. Les RNN rencontrent deux principales limites: la mémoire courte (réduction de l'influence d'un instant sur les instants futurs du fait des applications successives de $tanh$) et le \og gradient disparaissant ou \fg{} \textit{vanishing gradient} (). Cette version est limitée par le fait que  La variante LSTM (\textit{Long-Short Term Memory}) est généralement préférée en traitement du langage naturel. Un LSTM est en effet un RNN qui 
+
+\paragraph{Représentation}
+
+Les réseaux de neurones permettent d'apprendre des caractéristiques  grâce à des méthodes de plongement de mots telles que Word2Vec \citep{lemikolov2014word2vec} et Glove \citep{pennington2014glove}.  
+
+\paragraph{Entraînement}
+
+\paragraph{Décodage}
+
+
 
 
 Deux architectures de réseaux de neurones réalisent actuellement les meilleures performances en matière de détection d'entités nommées. Il s'agit du modèle BiLSTM-CRF de  \citet{lample2016nnner} et du LSTM-CNN-CRF de \citet{ma2016lstm-cnns-crf}. On pourrait résumer ces architectures en trois phases. Dans un premier temps, les segments de textes (mots) ont une représentation vectorielle concaténant 2 vecteurs de plongement sémantique : l'un issu de l'apprentissage morphologique du mot à partir de ses caractères, et l'autre issu de l'apprentissage du contexte général d'occurrence du mot. Lors de la seconde phase, deux couches de cellules LSTM enchaînées permettent de modéliser le contexte à droite et à gauche de chaque mot du texte labellisé. La dernière phase détermine la séquence de labels la plus probable pour le texte à l'aide d'une implémentation neuronale du modèle CRF. Le CRF reçoit en entrée la concaténation des contextes à droite et à gauche des mots. \textcolor{red}{schémas du biLSTM}
