@@ -142,22 +142,39 @@ $\sum\limits_ {k = 1} ^ M \log P (L_k \vert T_k) $ sur les données d'entraînem
 \subsubsection{CRF et réseaux de neurones artificiels}
 \paragraph{Définitions}
 
-Un réseau de neurones artificiels est un algorithme d'apprentissage automatique dont le fonctionnement est inspiré de celui du cerveau \citep{mcculloch1943nervousactivity,rosenblatt1958perceptron}. Un neurone reçoit des valeurs $x = [x_1, x_2, \dots, x_l]$ en entrée, puis calcule un élément de sortie $y$ par une fonction de la combinaison pondérée  des entrées (poids $W = [w_0, w_1, \dots, w_l]$).
-Un réseau de neurones comprend des neurones structurés en couches. Les sorties d'une couche servent d'entrées à la couche suivante et les n\oe{}uds d'une couche ne sont pas connectés. Les poids sont déterminés lors d'une phase d'entraînement qui les ajuste afin de minimiser l'erreur entre les valeurs attendues $y$ en sorties et celles prédites $\hat{y}$ par le modèle.
-Traditionnellement, les réseaux de neurones sont à \og propagation avant \fg{} (\textit{feed-forward}) i.e. l'unique sens de propagation de l'information est de la couche d'entrée successivement vers a couche de sortie. Mais comme nous l'avons vue précédemment, la prise en compte du contexte (état précédent ou suivant) est très importante dans la modélisation des séquences. Les réseaux à propagation avant ne sont pas adaptés pour prédire la sortie à l'instant $t$ à partir de ses connaissances des instants précédents.
+\begin{figure}[!htb]
+	\centering \includegraphics[width=0.9\textwidth]{Principe-de-fonctionnement-dun-neurone-artificiel.png}
+	\caption{Un neurone artificiel \citep{truong2016optimisationmachinesynchrone}}\label{fig:structuration:neuroneartificiel}
+\end{figure}
 
-Les réseaux récurrents de neurones (\textit{recurrent neural networks - RNN}) \citep{jordan1986serialorder_rnn,elman1990findingstructure_rnn} sont une architecture conçue pour modéliser les données séquentielles $X = X_{1:n}$. Le principe est de passer à l'instant $t$ en entrée du réseau, la sortie ou état du réseau de l'instant précédent $t-1$ en plus de l'observation courante $X_t$. Un LSTM est une variante particulière de RNN dont l'état est définie par la sortie $h_t$ du réseau et la sortie $C_t$ qui permet de gérer la mémoire à plus long terme  (\figureref{fig:structuration:couchedelstm}). 
+Un réseau de neurones artificiels est un algorithme d'apprentissage automatique dont le fonctionnement est inspiré de celui du cerveau \citep{mcculloch1943nervousactivity,rosenblatt1958perceptron}. Un neurone reçoit des valeurs $x = [x_1, x_2, \dots, x_n]$ en entrée, puis calcule un élément de sortie $y$ par une fonction de la combinaison pondérée (poids $W = [w_0, w_1, \dots, w_n]$ des entrées (\figureref{fig:structuration:neuroneartificiel}).  Un réseau de neurones comprend des neurones structurés en couches. Les sorties d'une couche servent d'entrées à la couche suivante (\figureref{fig:structuration:couchedeneuronnes}). 
 
 \begin{figure}[!htb]
-	\centering \includegraphics[width=0.7\textwidth]{LSTM3-chain.png}
-	\includegraphics[width=0.7\textwidth]{LSTM2-notation.png}
+	\centering \includegraphics[scale=0.5]{organisation_en_couches_reseau_de_neurones.jpg}
+	
+	\scriptsize{Source: \url{https://upload.wikimedia.org/wikipedia/commons/e/e1/Organisation_en_couches_réseau_de_neurones.JPG}}
+	\caption{Un réseau à trois couches de neurones}\label{fig:structuration:couchedeneuronnes}
+\end{figure}
+
+Les poids sont déterminés lors d'une phase d'entraînement qui les ajuste afin de minimiser l'erreur entre les valeurs attendues $y$ en sorties et celles prédites $\hat{y}$ par le modèle:
+\begin{enumerate}
+\item les poids sont initialisés aléatoirement;
+\item On fait passer $X_{train}$ par notre modèle pour obtenir une prédiction $\hat{y}_{train}$. On calcule ensuite la valeur de la fonction de coût $L(y_{train},  \hat{y}_{train})$
+\item On calcule le gradient de cette fonction $L$ par rapport aux paramètres $W$
+\item On cherche à minimiser notre fonction de coût en mettant à jour les paramètres $W$. Pour cela, on effectue une descente de gradient grâce au gradient calculé à l’étape précédente : $W = W - \lambda grad(L)$
+\end{enumerate}
+
+Traditionnellement, les réseaux de neurones sont à \og propagation avant \fg{} (\textit{feed-forward}) i.e. l'unique sens de propagation de l'information est de la couche d'entrée successivement vers a couche de sortie. Mais comme nous l'avons vue précédemment, la prise en compte du contexte (état précédent ou suivant) est très importante dans la modélisation des séquences. Les réseaux de neurones à propagation avant ne sont pas adaptés pour prédire la sortie à l'instant $t$ à partir de ses connaissances des instants précédents.
+
+Les réseaux de neurones récurrents (\textit{recurrent neural networks - RNN}) \citep{jordan1986serialorder_rnn,elman1990findingstructure_rnn} sont une architecture conçue pour modéliser les données séquentielles. Le principe est de définir un réseau RNN pour chaque instant, en permettant à chaque RNN de communiquer son information à l'instant suivant. La version simple des RNN (\textit{vanilla RNN}) réalise la tangente hyperbolique ($tanh$) pondéré de la concaténation de la sortie $h_{t-1}$ du RNN précédent ($t-1$) et de l'entrée $x_{t}$ de l'état courant $t$. Les RNN rencontrent deux principales limites lorsque les séquences sont longues: la mémoire courte (réduction de l'influence d'un instant sur les instants futurs du fait des applications successives de $tanh$) et le \og gradient disparaissant ou \fg{} \textit{vanishing gradient} (le gradient est une multiplication de dérivées de $tanh$ et s'approche rapidement de 0 car la dérivée de la fonction $tanh$ est dans $[0,1]$). La variante de RNN dite LSTM (\textit{Long-Short Term Memory}) \citet{Hochreiter1997LSTM} a été conçue pour remédier à ces limites. Un LSTM est en effet un RNN qui ajoute à l'état $h_t$ un autre état $C_t$ qui permet de gérer la mémoire à plus long terme. L'architecture du LSTM est plus complexe aussi (\figureref{fig:structuration:couchedelstm}).
+
+\begin{figure}[!htb]
+	\centering \includegraphics[width=0.9\textwidth]{LSTM3-chain.png}
+	\includegraphics[width=0.9\textwidth]{LSTM2-notation.png}
 	
 	\scriptsize{Source: \url{https://colah.github.io/posts/2015-08-Understanding-LSTMs/}}
 	\caption{Structure interne d'un LSTM dans une couche de réseau LSTM}\label{fig:structuration:couchedelstm}
 \end{figure}
-
-
-Les entrées et sorties d'un LSTM sont des vecteurs de nombres réels. L'entrée $X_i$ est la représentation vectorielle indépendante de la séquence entrée de l'observation en position $i$, par exemple celle du mot $t_i$ du texte $T=t_{1:n}$. La sortie $h_i$ représente le contexte de l'observation en position $i$ dans la séquence entrée. On peut ainsi chaîner des LSTM pour modéliser les textes entrées et y appliquer un CRF pour l'étiquetage. C'est le principe du BiLSTM-CRF de \citet{lample2016nnner} une des architectures les plus efficaces pour la l'étiquetage d'entités nommées. En effet, le BiLSTM comprend deux couches de LSTM. Une couche permet d'apprendre le contexte "avant" des mots, les états étant propager dans le sens du début vers la fin du texte. L'autre couche apprend le contexte "arrière" en propageant les informations dans le sens inverse.
 
 \paragraph{Représentation}
 
@@ -172,7 +189,7 @@ Les réseaux de neurones permettent d'apprendre des caractéristiques  grâce à
 
 
 
-
+Deux architectures de réseaux de neurones réalisent actuellement les meilleures performances en matière de détection d'entités nommées. Il s'agit du modèle BiLSTM-CRF de  \citet{lample2016nnner} et du LSTM-CNN-CRF de \citet{ma2016lstm-cnns-crf}. On pourrait résumer ces architectures en trois phases. Dans un premier temps, les segments de textes (mots) ont une représentation vectorielle concaténant 2 vecteurs de plongement sémantique : l'un issu de l'apprentissage morphologique du mot à partir de ses caractères, et l'autre issu de l'apprentissage du contexte général d'occurrence du mot. Lors de la seconde phase, deux couches de cellules LSTM enchaînées permettent de modéliser le contexte à droite et à gauche de chaque mot du texte labellisé. La dernière phase détermine la séquence de labels la plus probable pour le texte à l'aide d'une implémentation neuronale du modèle CRF. Le CRF reçoit en entrée la concaténation des contextes à droite et à gauche des mots. \textcolor{red}{schémas du biLSTM}
 
 
 \subsection{Représentation des segments atomiques}
