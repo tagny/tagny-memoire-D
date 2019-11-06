@@ -13,20 +13,20 @@ est un ensemble de décisions rendues par les tribunaux. Elle représente la man
 	\begin{subfigure}[t]{\textwidth}
 		\centering
 		\fbox{\includegraphics[width=\textwidth]{legifrance.PNG}}
-		\caption{Formulaire de Légifrance}
+		\caption{Formulaire de Légifrance.}
 	\end{subfigure}%
 
 	\begin{subfigure}[t]{0.75\textwidth}
 		\centering
 		\fbox{\includegraphics[width=\textwidth]{dalloz.png}}
-		\caption{Formulaire de Dalloz}
+		\caption{Formulaire de Dalloz.}
 	\end{subfigure}
 % 	\begin{subfigure}[t]{0.56\textwidth}
 % 		\centering
 % 		\fbox{\includegraphics[width=\textwidth]{lexisnexis.png}}
 % 		\caption{Formulaire de LexisNexis}
 % 	\end{subfigure}%
-	\caption{Exemples de critères des moteurs de recherche juridique}\label{fig:intro:juriSearchForm}
+	\caption{Exemples de critères des moteurs de recherche juridique.}\label{fig:intro:juriSearchForm}
 \end{figure}
 
 Il existe aussi des moteurs de recherche juridiques qui permettent de retrouver des décisions intéressantes. Cependant, qu'ils soient payants (LexisNexis\footnote{\url{https://www.lexisnexis.fr/}}, Dalloz\footnote{\url{http://www.dalloz.fr}}, Lamyline\footnote{\url{http://lamyline.lamy.fr}},...) ou gratuits (CanLII\footnote{\url{https://www.canlii.org}}, Légifrance\footnote{\url{https://www.legifrance.gouv.fr}}, ...), les critères de recherche offerts par leurs moteurs de recherche limitent grandement la pertinence des résultats pouvant être obtenus. En effet, il ne s'agit en général que de combinaisons de mots-clés et autres méta-données (date, type de juridiction, ...), ou d'expressions régulières, comme l'illustre la \figureref{fig:intro:juriSearchForm}. La manipulation de tels critères est difficile pour constituer des échantillons pertinents suivant une sémantique souhaitée tels que l'ensemble des décisions traitant d'une catégorie de demande ou d'une circonstance factuelle donnée. 
@@ -44,7 +44,7 @@ Il existe aussi des moteurs de recherche juridiques qui permettent de retrouver 
  		
  		\textit{\scriptsize{\textbf{Source}: \url{http://www.justice.gouv.fr/statistiques-10054/chiffres-cles-de-la-justice-10303/}}}  
  	\end{center}
- 	\caption{Nombre de décisions prononcées en France par an de 2013 à 2017}\label{tab:intro:nbdecisionstats}
+ 	\caption{Nombre de décisions prononcées en France par an de 2013 à 2017.}\label{tab:intro:nbdecisionstats}
  \end{table}
 Plus de 4 millions de décisions sont prononcées en France chaque année d'après les chiffres du ministère français de la justice (\tableref{tab:intro:nbdecisionstats}). Dans ce contexte, l'analyse manuelle ne peut être limitée qu'à une infime proportion de documents disponibles.
 En effet, au regard de la croissance rapide du nombre de décisions, même une étude sur une question très précise nécessite la constitution d'un large corpus de décisions pertinentes. Par ailleurs, il peut s'avérer très pénible de les lire pour en identifier les données d'intérêt. Les documents sont très souvent longs et complexes dans leur style de rédaction. Par exemple, Certaines phrases comprennent plusieurs clauses discutant d'aspects différents (\figureref{fig:intro:multiclauses}). On y retrouve aussi des références à des jugements antérieurs (\figureref{fig:intro:referencejugementanterieur}).
@@ -93,13 +93,13 @@ En effet, au regard de la croissance rapide du nombre de décisions, même une �
   \caption{Exemple de référence à un jugement antérieur dans une décision d'appel.}
   \label{fig:intro:referencejugementanterieur}
 \end{figure}
-Il est évident qu'une automatisation du traitement des corpus de décisions s'impose pour répondre aux diverses difficultés d'accès, de volumétrie, et de complexité liées à la compréhension des décisions. Une telle automatisation ferait gagner du temps aux juristes lors de tâches d'analyse métier préalables à leur raisonnement d'experts, tout en leur fournissant une vue exhaustive de la jurisprudence. D'autre part, \citet{cretin2014justicecomplexe} fait remarquer que la justice est complexe dans son organisation (\figureref{orgjusticefrance}) et son fonctionnement, et que son langage est peu compréhensible. Il est donc presque impossible pour les profanes en droit d'estimer leurs droits et le risque judiciaire qu'ils encourent dans leur quotidien sans consulter un initié du droit. L'exigence pour le profane étant l'exacte pertinence des ressources, leur accessibilité, et l'intuitivité du processus de leur exploitation \citep{narazenko2017legalnlpintro}, l'automatisation de l'analyse de la jurisprudence pourrait ainsi améliorer l'accessibilité du droit dans d'indénombrables situations. Par exemple, en comparant le montant qu'on peut espérer d'une juridiction et le coût d'un procès, on peut plus aisément se décider entre un arrangement à l'amiable et la poursuite du litige en justice \citep{langlaischappe2009ecoresolutionlitige}. Le traitement automatique de la jurisprudence constituerait alors une aide précieuse non seulement pour les professionnels du droit, mais aussi pour les particuliers et entreprises tous soucieux de voir l'issue de leur affaire leur être favorable.  
+Il est évident qu'une automatisation du traitement des corpus de décisions s'impose pour répondre aux diverses difficultés d'accès, de volumétrie, et de complexité liées à la compréhension des décisions. Une telle automatisation ferait gagner du temps aux juristes lors de tâches d'analyse métier préalables à leur raisonnement d'experts, tout en leur fournissant une vue exhaustive de la jurisprudence. D'autre part, \citet{cretin2014justicecomplexe} fait remarquer que la justice est complexe dans son organisation (\figureref{fig:intro:orgjusticefrance}) et son fonctionnement, et que son langage est peu compréhensible. Il est donc presque impossible pour les profanes en droit d'estimer leurs droits et le risque judiciaire qu'ils encourent dans leur quotidien sans consulter un initié du droit. L'exigence pour le profane étant l'exacte pertinence des ressources, leur accessibilité, et l'intuitivité du processus de leur exploitation \citep{narazenko2017legalnlpintro}, l'automatisation de l'analyse de la jurisprudence pourrait ainsi améliorer l'accessibilité du droit dans d'indénombrables situations. Par exemple, en comparant le montant qu'on peut espérer d'une juridiction et le coût d'un procès, on peut plus aisément se décider entre un arrangement à l'amiable et la poursuite du litige en justice \citep{langlaischappe2009ecoresolutionlitige}. Le traitement automatique de la jurisprudence constituerait alors une aide précieuse non seulement pour les professionnels du droit, mais aussi pour les particuliers et entreprises tous soucieux de voir l'issue de leur affaire leur être favorable.  
 
 \begin{figure}[!htb]
-	\centering \includegraphics[angle=90,width=0.65\textwidth]{organisation_justice_francaise_grand.png}
+	\centering \includegraphics[width=0.9\textwidth]{organisationjusticefrance.png}
 	
-	\textit{\scriptsize{\textbf{Source}: \url{http://www.justice.gouv.fr/organisation-de-la-justice-10031/}}}  
-	\caption{Organisation des institutions judiciaires françaises} \label{orgjusticefrance}
+	\textit{\scriptsize{\textbf{Source}: \url{https://fr.wikipedia.org/wiki/Organisation_juridictionnelle_(France)}}}  
+	\caption{Organisation de la justice en France.} \label{fig:intro:orgjusticefrance}
 \end{figure}
 
 \section{Objectifs}
@@ -120,7 +120,7 @@ La problématique de notre étude est \og \textbf{comment donner accès à l'ana
  	\includegraphics[scale=0.7]{demande-central.png}
  	
  	\scriptsize{\textit{Sens des flèches: l'extrémité est l'information sur l'origine.}}
- 	\caption{La demande au centre de la compréhension des décisions}
+ 	\caption{La demande au centre de la compréhension des décisions.}
  	\label{fig:intro:demande-central}
  \end{figure} 
 
@@ -139,7 +139,7 @@ Comme illustré par la  \figureref{fig:intro:objectif-these}, l'analyse sémanti
 \begin{figure}[!htb]
 % pipeline-cassandra.pdf
 	\includegraphics[width=\textwidth]{Objectif_these.pdf}
-	\caption{Objectifs et applications de la thèse} \label{fig:intro:objectif-these}
+	\caption{Objectifs et exemples d'application de la thèse.} \label{fig:intro:objectif-these}
 \end{figure} 
 
 \subsection{Collecte, gestion et pré-traitement des documents}

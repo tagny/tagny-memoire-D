@@ -180,7 +180,7 @@
 \mainmatter
 
 %\include{introduction}
-%\input{content/introduction} % INCLUDE: introduction
+\input{content/introduction} % INCLUDE: introduction
 
 % changement du style des chapitres
 \include{config/style_chapitre2}
@@ -210,9 +210,17 @@
 %\printnomenclature[2cm]
 %\addcontentsline{toc}{chapter}{\nomname}
 %Annexes
-%annexes
 %\appendix
+%\def\appendixname{Bibliographie}
+%\addcontentsline{toc}{chapter}{\appendixname}
 %\begin{appendices}
-%\input{content/annexe-coliee2017} % INCLUDE: coliee
+%%\input{content/annexe-coliee2017} % INCLUDE: coliee
+%\section{Organisation de la justice en France}
+%\begin{figure}[!htb]
+%	\centering \includegraphics[width=1.2\textwidth]{Organisation_juridictionnelle_France_LexisNexis.jpg}
+%	
+%	\textit{\scriptsize{\textbf{Source}: \url{http://etudiant.lexisnexis.fr/media/marketing/z-card_en-ligne.jpg}}}  
+%	\caption{Organisation principale de la justice en France.} \label{orgjusticefrance}
+%\end{figure}
 %\end{appendices}
 \end{document}
