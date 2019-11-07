@@ -4,7 +4,7 @@
 \usepackage[square]{natbib}
 \usepackage[french]{babel}
 \bibliographystyle{authordate2}
-%\bibliographystyle{plainnat}
+%\bibliographystyle{plain}
 \usepackage{amsmath}
 \usepackage{mathtools}
 \usepackage{amsfonts}
@@ -142,7 +142,7 @@
 \newtheorem{remark}{Remarque}
 \newtheorem{theorem}{Theorem}
 %\input{tcilatex}
-\numberwithin{equation}{section}
+%\numberwithin{equation}{section}
 
 \setcounter{tocdepth}{3}
 \setcounter{secnumdepth}{3}
@@ -164,33 +164,32 @@
 
 %\include{content/cover}
 %\include{content/acknowledgement}
-%\include{content/resume}
-%\include{content/abstract}
+\include{content/resume}
+\include{content/abstract}
 %liste des matières
 
 \addcontentsline{toc}{chapter}{\contentsname}
-%\tableofcontents
+\tableofcontents
 %liste des figures
 \addcontentsline{toc}{chapter}{\listfigurename}
-%\listoffigures
+\listoffigures
 %liste des tableaux
 \addcontentsline{toc}{chapter}{\listtablename}
-%\listoftables
+\listoftables
 
 \mainmatter
 
-%\include{introduction}
 \input{content/introduction} % INCLUDE: introduction
 
 % changement du style des chapitres
 \include{config/style_chapitre2}
 
 \input{content/chapter-literature} % INCLUDE: related work
-%\input{content/chapter-structuration}	% INCLUDE: structuration
-%\input{content/chapter-quanta} % INCLUDE: quanta
-%\input{content/chapter-sensresultat} % INCLUDE: sensresultat
-%\input{content/chapter-similarite} % INCLUDE: similarite
-%\input{content/chapter-demo} % INCLUDE: demo
+\input{content/chapter-structuration}	% INCLUDE: structuration
+\input{content/chapter-quanta} % INCLUDE: quanta
+\input{content/chapter-sensresultat}% INCLUDE: sensresultat
+\input{content/chapter-similarite} %INCLUDE: similarite
+\input{content/chapter-demo} %INCLUDE: demo
 
 
 \backmatter
@@ -198,29 +197,11 @@
 % changement du style des chapitres
 %\include{config/style_chapitre3}
 
-%\input{content/conclusion} % INCLUDE: conclusion
+\input{content/conclusion} % INCLUDE: conclusion
 
 %Bibliographie
 \def\bibname{Bibliographie}
 \addcontentsline{toc}{chapter}{\bibname}
 \bibliography{bib/references-pub}
 
-%\newpage
-%Glossaire
-%\printnomenclature[2cm]
-%\addcontentsline{toc}{chapter}{\nomname}
-%Annexes
-%\appendix
-%\def\appendixname{Bibliographie}
-%\addcontentsline{toc}{chapter}{\appendixname}
-%\begin{appendices}
-%%\input{content/annexe-coliee2017} % INCLUDE: coliee
-%\section{Organisation de la justice en France}
-%\begin{figure}[!htb]
-%	\centering \includegraphics[width=1.2\textwidth]{Organisation_juridictionnelle_France_LexisNexis.jpg}
-%	
-%	\textit{\scriptsize{\textbf{Source}: \url{http://etudiant.lexisnexis.fr/media/marketing/z-card_en-ligne.jpg}}}  
-%	\caption{Organisation principale de la justice en France.} \label{orgjusticefrance}
-%\end{figure}
-%\end{appendices}
 \end{document}
