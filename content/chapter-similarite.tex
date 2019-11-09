@@ -1,6 +1,8 @@
  \chapter{Découverte des circonstances factuelles}
 \label{chap:similarite}
 
+\textit{\small \textbf{Résumé.} Le présent chapitre s'intéresse à découvrir les situations qui permettent généralement de formuler une catégorie donnée de demande. Nous avons montré dans le Chapitre \ref{chap:quanta} qu'il est facile, par classification, de déterminer si une décision traite d'une catégorie donnée de demande. Ce problème considéré comme résolu, il est donc facile de rassembler les décisions relatives à une catégorie. Nous proposons donc de découvrir les circonstances factuelles en formant des groupes de documents similaires définissants les situations recherchées.  }
+
 \section{Introduction}
 \label{sec:similarite:introduction}
 Les circonstances factuelles définissent les contextes possibles dans lesquels une catégorie de demande peut être formulée (voir \ref{sec:similarite:données} pour des exemples). Les analyses descriptives ou prédictives ne prennent sens que lorsqu'elles sont appliquées à un ensemble de décisions aux circonstances similaires. Par exemple, il serait imprudent de considérer toutes les décisions pour analyser les chances d'acceptation d'une demande de dommages et intérêts fondée sur l'\og article 700 du code de procédure civile \fg{}. Les taux d'acceptation ou de rejet peuvent être différents entre des affaires de licenciement et celles portant sur les troubles anormaux du voisinage, et même plus spécifiquement entre des troubles de voisinage entre particuliers et entreprises. % (par exemple: chantier de construction), ou simplement entre particuliers (par exemple: troubles sonores). 
@@ -263,13 +265,13 @@ La génération de la base synthétique nécessite de définir une formulation d
 $d$ est un document du corpus original $\mathcal{D}$, et $d'$ est le résultat d'une transformation contrôlée de $d$. $\overrightarrow{d[k]}$ désigne le plongement lexical du mot $d[k]$. Pour garantir la symétrie et la réflexivité de la métrique, nous imposons respectivement ${Dis_\mathcal{M}}(d,d') = {Dis_\mathcal{M}}(d', d)$ et ${Dis_\mathcal{M}}(d, d) = {Dis_\mathcal{M}}(d', d') = 0, \forall d \in \mathcal{D}$ sur le jeu d'entraînement généré. L'algorithme \ref{algo:similarite:modifierdoc} de génération de documents synthétiques contrôle le taux de modifications à effectuer sur le document original grâce à un seuil donnée $0\leq p\leq1$. En variant $p$, plusieurs documents $d'$ sont générés pour chaque $d \in \mathcal{D}$ pour former un jeu d'apprentissage $B_\mathcal{M} = \lbrace ((d_1, d_2)*, {Dis}(d_1, d_2))_i\rbrace_{1 \leq i \leq \setsize{B_\mathcal{M}}}$.
 
 \begin{algorithm}[!htb] % Version française avec : https://pierre.chachatelier.fr/latex/index.php
-	\footnotesize
+	\small
  \KwData{document $d \in \mathcal{D}$, valeur seuil $p$, ensemble $W$ des mots}
  \KwResult{$d'$, $\mathcal{M}_{(d,d')}$}
  ${d'} = [] $\; 
  $\mathcal{M}_{(d,d')} = \emptyset$\;
  \For{ $k \in [1\twodots \setsize{d}]$ }{
- 	$v = valeur\_aléatoire\_entre(0,1)$\;
+ 	$v = valeur_réelle_\_aléatoire\_entre(0,1)$\;
     \eIf{v < p}{
        $d'[k] = modifie\_mot(d[k], W)$; // mot aléatoire de $W$ différent de $d[k]$\;
        $\mathcal{M}_{d[k],d'[k]} = \mathcal{M}_{(d,d')} \cup \lbrace (d[k],d'[k]) \rbrace$\;
@@ -407,7 +409,7 @@ Le Tableau \ref{tab:similarite:silhouette-vecteur-manuel} présente la représen
 		$Dis_{braycurtis}$ & 0.002& 0.182 (TP-NGL, FNM, 4) \\ \hline
 		$Dis_{euclidienne}$ & 0.001& 0.168  (TP-NGL, FNM, 4) \\ \hline
 		$Dis_{manhattan}$ & -0.019& 0.17   (TP-NGL, FNM, 4) \\ \hline
-		$Dis_{pearson}$ & 0.014 & 0.057 (TP-CHI2, aucun, 19763) \\ \hline
+		$Dis_{pearson}$ & 0.014 & 0.057 (TP-CHI2, aucune, 19763) \\ \hline
 		$Dis_{wmd}$ & -0.096 &  - \\ \hline
 	\end{tabular}
 
@@ -649,4 +651,4 @@ Pour la catégorie DORIS\footnote{DORIS: dommages-intérêts pour trouble anorma
 \label{sec:similarite:conclusion}
 Les circonstances factuelles organisent les décisions d'une même catégorie de demande mais sont illimitées car elles correspondent aux faits courants de la vie. Leur découverte est indispensable afin de rapprocher les litiges non décidés des cas similaires de la jurisprudence.  Ce chapitre aborde ce problème comme une tâche de catégorisation non supervisée de documents. La proposition faite ici est double: (i) l'apprentissage d'une métrique de dis-similarité en considérant qu'un document est obtenu par transformation de tout autre document, (ii) l'exploitation de la faible quantité de catégorisations manuelles  pour sélectionner la représentation de texte qui correspond au mieux à la sémantique des circonstances factuelles. Le schéma sélectionné permet de transformer de nouveaux corpus non annotés afin d'y découvrir les circonstances factuelles par catégorisation non supervisée. Les expérimentations montrent une amélioration considérable par rapport au modèle de base TF-IDF. La silhouette reste néanmoins faible. Ce qui signifie que la réduction de dimension par FNM est efficace mais il faudrait la combiner avec de meilleurs modèles vectoriels ou mieux l'intégrer au processus de catégorisation. Une approche semblable à celle proposée par \citet{xie2013MGCTM} basée sur l'allocation latente de Dirichlet, mériterait d'être étudiée. Néanmoins cette sélection de représentation permet d'obtenir une assez bonne efficacité de catégorisation sur le corpus annoté. En effet, nous obtenons, avec respectivement les K-moyennes et les K-medoïdes, 0.599 et 0.551 de $F_1$-mesure, correspondant à 0.407 et 0.398 de ARI, et 0.423 et 0.421 de NMI pour un nombre de clusters déterminé automatiquement. Ces résultats se traduisent aussi sur la largeur moyenne de la silhouette autant pour le corpus annoté (0.438 et 0.526 respectivement) que pour les six corpus non annotés utilisés (entre 0.403 et 0.770 au maximum pour toutes les catégories). La métrique apprise s'accorde mieux avec les K-moyennes que les autres distances selon différents indices de validation, et même pour la détermination du nombre de clusters.
 
-Dans ce chapitre, la représentation vectorielle n'est sélectionnée que sur un seul corpus. Il serait intéressant à l'avenir d'annoter plusieurs corpus pour sélectionner la représentation qui correspond le mieux en moyenne aux circonstances factuelles sur l'ensemble de ces catégorisations manuelles. De plus, les expérimentations doivent être étendues au regroupement à chevauchement pour les affaires  concernant plus d'une circonstance factuelle.
+Dans ce chapitre, la représentation vectorielle n'est sélectionnée que sur un seul corpus. Il serait intéressant à l'avenir d'annoter plusieurs corpus pour sélectionner la meilleure représentation en moyenne sur l'ensemble de ces catégorisations manuelles. De plus, les expérimentations doivent être étendues au regroupement à chevauchement pour les affaires  concernant plus d'une circonstance factuelle.

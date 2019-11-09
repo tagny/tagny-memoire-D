@@ -2,6 +2,8 @@
 %\chapter{Extraction des demandes et résultats correspondants}
 \label{chap:quanta}
 
+\textit{\small \textbf{Résumé.} Ce chapitre aborde le problème d'identification automatique, dans une décision, des éléments structurants les demandes formulées. L'identification manuelle réalisée à travers la lecture exige beaucoup d'effort à cause de la complexité du contenu dans lequel les demandes sont mélangées à d'autres informations (des demandes de nature différente, des arguments, des faits, etc.). L'automatisation de cette tâche métier vise à aider les experts à rapidement comprendre les réclamations des parties et les réponses correspondantes des juges.  Une demande est abstraite par cinq attributs : la norme qui la fonde, son objet, l'interprétation du résultat ($s_r$), le quantum demandé ($q_d$), et celui obtenu ($q_r$). La norme et l'objet forment ensemble la catégorie de la demande. L'annotation manuelle des données d'évaluation suit un protocole que nous avons précisément défini avec l'expert du projet. Ce protocole recommande des cycles d'annotation consistant chacun à constituer un ensemble de décisions et à y identifier toutes les demandes d'une seule catégorie donnée car il serait difficile d'annoter simultanément des données pour toutes les catégories qui sont très nombreuses. L'approche proposée extrait à chaque application les demandes d'une seule catégorie et est formulée en trois tâches. La présence de la catégorie est déterminée  par classification de la décision. Ensuite, les quanta et le sens du résultat sont identifiés à proximité de termes appris de la catégorie dans les sections adéquates identifiées à l'aide d'un modèle à base de CRF comme décrit au chapitre \ref{chap:structuration}. Enfin, les demandes sont formées en mettant en correspondance les éléments précédemment déterminés. Réalisées par validation croisées, nos expérimentations comparent une douzaine de méthodes statistiques d'extraction de termes-clés et quatre algorithmes de classification pour l'extraction de 6 catégories prédéfinies de demandes. Les résultats montrent que la détection de catégorie est facile quelque soit l'algorithme utilisé ($F_1$-mesure comprise entre 98.8 \% et 100 \%). Il résulte aussi que l'extraction des demandes nécessite de sélectionner la méthode d'extraction de terminologie la mieux adaptée à la catégorie. Cette sélection préalable permet d'observer, sur les données de test, des $F_1$-mesures comprises entre 33.09 \% et 71.43 \% pour les champs $q_d$, $q_r$, et $s_r$, et entre 28.65 \% et 58.99 \% pour les triplets $(q_d,s_r, q_r)$ qui définissent la demande.}
+
 \section{Introduction}
 \label{sec:quanta:introduction}
 
@@ -45,7 +47,11 @@ Au c\oe{}ur de l'analyse des décisions de justice se trouve le concept de deman
 		}}
 		\caption{Exemple d'énoncés de résultats}\label{fig:quanta:expr-rst}
 	\end{subfigure}
-	\caption{Enoncés \textcolor{gray}{simples}, ou comprenant des  \textcolor{blue}{références} et  des \textcolor{brown}{agrégations} (extraits de la décision 14/01082 de la cour d'appel de Saint-Denis (Réunion))}\label{fig:quanta:expr-dmd-rst}
+
+\textit{\textbf{Source:} extraits de la décision 14/01082 de la cour d'appel de Saint-Denis (Réunion).}
+
+\textit{\textbf{Légende:} énoncés simples en \textcolor{gray}{gris}, références en \textcolor{blue}{bleu}, et agrégations en \textcolor{brown}{marron}.}
+	\caption{Illustrations de la complexité dans les énoncés de demandes et de résultats.}\label{fig:quanta:expr-dmd-rst}
 \end{figure}
 
 

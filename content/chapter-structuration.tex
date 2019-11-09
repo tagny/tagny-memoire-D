@@ -6,7 +6,7 @@
 % Objectif: L'annotation manuelle peut atteirndre des interagréments raisonables (kappa) et nous démontrons qu'il est faisable d'automatiquement annoter les sections et métadonnées de référence d'un jugement à l'aide de modèle probabiliste graphiques comme le CRF ou le HMM moyennant de bien choisir les features
 %Mots clés: annotation d'entités nommées judiciaires, chaine caché de markov, champ conditionnel aléatoires
 
-\textit{Ce chapitre traite de la détection de sections et des mentions (occurrences) d'entités dans les décisions jurisprudentielles françaises. Ce problème est important car il vise une structuration des documents par le balisage des sections organisant le document, des méta-données de référence de l'affaire, et des citations des normes juridiques employées. L'utilité pour le métier de juriste est améliorée de plusieurs façons. L'identification des méta-données d'indexation des décisions est automatisée. La lecture des décisions et leur compréhension manuelles ou automatiques est facilitée. Aussi, en complétant le problème par la désambigüisation des méta-données et des normes, les critères de recherche de décisions peuvent être enrichis. Les principales contributions du travail discuté ici sont : la constitution et l'annotation manuelles d'un corpus d'évaluation, l'expérimentation et la discussion de l'impact, sur le problème, de divers aspects de la conception d'un système d'extraction d'information par étiquetage de séquence (l'ingénierie manuelle et automatique des caractéristiques des objets à classer, le choix du schéma d'étiquetage, l'augmentation des données d'entrainement). Les résultats montrent l'efficacité de modèle à base de champs aléatoires conditionnels à chaîne linéaire (CRF) pour les différentes tâches.}
+\textit{\small \textbf{Résumé.} Ce chapitre traite de la détection de sections et des mentions (occurrences) d'entités dans les décisions de justices françaises. Ce problème est important car il vise une structuration des documents par le balisage des sections organisant le document, des méta-données de référence de l'affaire, et des citations des normes juridiques employées. Cette annotation automatique facilite la lecture des décisions et fournit des méta-données pour rapidement indexer et retrouver des  décisions. Le problème est formulée en des tâches d'étiquetage de séquence puisque tout document textuel est une séquence de mots, de lignes, etc. Les principales contributions discutées ici sont : l'annotation manuelle d'un corpus d'évaluation de 500 documents, une analyse de l'application des modèles probabilistes graphiques HMM et CRF, et des discussions sur l'impact de divers aspects de la conception d'un système d'annotation par étiquetage de séquence. Les expérimentations effectuées permettent de comparer l'ingénierie manuelle et l'ingénierie automatique de la représentation des objets à classer, de comparer des schéma d'étiquetage, d'analyser l'effet de l'augmentation des données d'entrainement sur la qualité des annotations. Les résultats montrent principalement l'efficacité des modèles à base de champs aléatoires conditionnels à chaîne linéaire (CRF) pour les différentes tâches.}
 
 
 \section{Introduction}
@@ -205,12 +205,12 @@ La définition manuelle des caractéristiques suivie de la sélection est souven
 Nous traitons d'entités dont les occurrences comprennent un ou plusieurs éléments atomiques. Pour améliorer les résultats d'un modèle d'étiquetage, certaines parties des entités peuvent être mises en évidence à travers une représentation appropriée de segments. La \figureref{p4_sample-tagmod} illustre l'utilisation la différence entre des schémas appelés IO, BIO, IEO et BIEO, sur un extrait de décision de justice pour l'annotation du nom d'un juge et de sa fonction.
 \begin{figure}[!ht]
 	\scriptsize
-	\begin{tabular}{l|ccccccccccc}
-		& \textit{composée} & \textit{de} & \textit{Madame} & \textit{Martine} & \textit{JEAN} & , & \textit{Président} & \textit{de} & \textit{chambre} & , & \textit{de} \\ 
-		IO & O & O & I-JUGE & I-JUGE & I-JUGE & O & I-FONCTION & I-FONCTION & I-FONCTION & O & O \\
-		BIO & O & O & B-JUGE & I-JUGE & I-JUGE & O & B-FONCTION & I-FONCTION & I-FONCTION & O & O \\
-		IEO & O & O & I-JUGE & I-JUGE & E-JUGE & O & I-FONCTION & I-FONCTION & E-FONCTION & O & O \\
-		BIEO & O & O & B-JUGE & I-JUGE & E-JUGE & O & B-FONCTION & I-FONCTION & E-FONCTION & O & O \\
+	\begin{tabular}{l|ccccccccc}
+		& \textit{composée} & \textit{de} & \textit{Madame} & \textit{Martine} & \textit{JEAN} & , & \textit{Président} & \textit{de} & \textit{chambre} \\ 
+		IO & O & O & I-JUGE & I-JUGE & I-JUGE & O & I-FONCTION & I-FONCTION & I-FONCTION \\
+		BIO & O & O & B-JUGE & I-JUGE & I-JUGE & O & B-FONCTION & I-FONCTION & I-FONCTION \\
+		IEO & O & O & I-JUGE & I-JUGE & E-JUGE & O & I-FONCTION & I-FONCTION & E-FONCTION\\
+		BIEO & O & O & B-JUGE & I-JUGE & E-JUGE & O & B-FONCTION & I-FONCTION & E-FONCTION \\
 	\end{tabular}
 	\caption{Illustration des schémas d'étiquetage IO, BIO, IEO, BIEO}\label{p4_sample-tagmod}
 \end{figure}
@@ -252,21 +252,31 @@ Nous proposons de travailler uniquement avec le contenu textuel des documents. C
 
 Les modèles HMM et CRF étant tous les deux supervisés, ils doivent être entraînés sur des exemples manuellement annotés pour estimer leurs paramètres. Nous proposons de sélectionner le schéma d'étiquetage et les sous-ensembles minimaux de caractéristiques manuellement définies, avant d'entraîner les modèles HMM et CRF (\figureref{fig:structuration:training}). 
 
-\subsection{Définition de descripteurs candidats}
+\subsection{Définition manuelle de descripteurs candidats}
 
 \subsubsection{Descripteurs pour la détection des sections}
 
-Nous considérons donc la ligne comme élément à étiqueter lors du sectionnement. Nous n'avons pas travaillé au niveau des mots afin d'éviter que des mots de la même ligne ne soient classés dans des sections différentes. L'étiquetage des phrases a aussi été évité car en découpant les documents en phrases telles qu'elles sont entendues en français, on a généralement des segments qui s'étendent d'une section à une autre (absence de ponctuation). De plus, l'entête en particulier d'avantage l'apparence d'un formulaire.
+Nous considérons donc la ligne comme élément à étiqueter lors du sectionnement. Nous n'avons pas travaillé au niveau des mots afin d'éviter que des mots de la même ligne ne soient classés dans des sections différentes. L'étiquetage des phrases a aussi été évité car en découpant les documents en phrases telles qu'elles sont entendues en français, on a généralement des segments qui s'étendent d'une section à une autre (absence de ponctuation). De plus, l'entête à davantage l'apparence d'un formulaire.
 
 Plusieurs critères peuvent être utilisés pour différencier les sections, à savoir: la longueur des lignes (plus longues dans le corps, plus courtes dans l'entête), les premiers termes de certaines lignes (typiques de chaque section) et le nombre total de lignes. Un HMM n'adapte qu'un descripteur assimilé à l'élément à étiqueter. D'autres descripteurs peuvent être la position de l'élément à étiqueter (numéro de ligne) ou le début de la ligne. Le descripteur capturant la longueur de ligne peut être absolu (nombre exact de mots dans la ligne), ou relatif (une catégorie de la longueur). Sur la base des quantiles de la distribution des longueurs de lignes sur un ensemble de décisions, nous avons défini trois catégories:
-\verb|LQ1| ($longueur \leq$ 5), \verb|LQ2| (5 < $longueur \leq$ 12) et \verb|LQ2| (12 < $longueur \leq$ 14). Nous avons également catégorisé les parties de documents afin de capturer une position de ligne relative.
-
-Lors de l'extraction des caractéristiques, le document est considéré comme divisé en $N$ parties (10 dans nos expériences). La position relative d'une ligne est donc le numéro de la partie contenant la ligne particulière. En résumé, les caractéristiques sont décrites comme suit (avec leurs étiquettes entre parenthèses):
+\verb|LQ1| ($longueur \leq$ 5), \verb|LQ2| (5 < $longueur \leq$ 12) et \verb|LQ2| (12 < $longueur \leq$ 14). Nous avons également catégorisé les parties du document afin de capturer une position relative de ligne.
+En effet, le document est considéré comme divisé en $N$ parties (10 dans nos expériences). La position relative d'une ligne est donc le numéro de la partie contenant la ligne. En résumé, les caractéristiques sont décrites comme suit (avec leurs étiquettes entre parenthèses):
 \begin{itemize}
  \item forme de la ligne: la ligne entière, ses premiers mots (\verb|t0, t1, t2|), sa longueur absolue (\verb|absLength|) et sa longueur relative (\verb|relLength|);
  \item contexte de ligne: le numéro de ligne (\verb|absNum|) et le numéro de la partie de document contenant la ligne (\verb|relNum|), les deux premiers mots des lignes précédente (\verb|p0, p1|) et suivantes (\verb|n0, n1|), ainsi que leurs longueurs absolues et relatives
  (\verb|pLength|, \verb|pRelLength|, \verb|nLength|, \verb|nRelLength|).
 \end{itemize}
+
+\begin{table}[!htb]
+	\centering
+	\begin{tabular}{|l|l|}
+		 \hline
+		Type & Descripteur \\ \hline
+		forme & la ligne entière (\verb|l|)  \\ \hline
+		contexte & le numéro de ligne (\verb|absNum|) \\ \hline
+	\end{tabular}
+\caption{Descripteurs candidats de lignes pour les sections.}
+\end{table}
 
 \subsubsection{Descripteurs pour la détection d'entités}
 
@@ -287,6 +297,17 @@ Nous avons étendu ces caractéristiques avec les rôles grammaticaux (\textit{P
 
 \textbf{Modèles thématiques}: comme \citet{polifroni2011usingLDA} et \citet{nallapati2010blinddomaintransferner}, nous utilisons des associations mot-thème pour décrire les mots. Il s'agit de modéliser un ensemble de $N$ thèmes et d'utiliser leurs identifiants comme descripteurs. Il serait peut-être intéressant d'utiliser la probabilité déduite du modèle thématique, mais l'inférence sous-jacente au modèle LDA \citep{blei2003lda} n'est pas déterministe (la distribution de probabilité change pour le même mot entre différentes inférences).
 Néanmoins, l'ordre des sujets ne changeant pas de manière significative, nous avons utilisé l'identifiant du thème le plus pertinent pour le mot (\verb|topic0|) ainsi que ceux de ses voisins (\verb|w-2topic0|, \verb|w-1topic0|, \verb|w1topic0|, \verb|w2topic0|).
+
+\begin{table}[!htb]
+	\centering
+	\begin{tabular}{|l|l|}
+		\hline
+		Type & Descripteur \\ \hline
+		forme & le mot (\verb|token|)  \\ \hline
+		contexte & les mots précédents (\verb|w-2, w-1|)  \\ \hline
+	\end{tabular}
+	\caption{Descripteurs candidats de mots pour les mentions d'entités.}
+\end{table}
 
 \subsection{Sélection des descripteurs}
 \subsubsection{Sélection  pour le modèle CRF}
@@ -665,7 +686,7 @@ Il apparaît que les scores $F_1$ croissent avec le nombre de données d'entraî
 	\caption{Comparaison entre le CRF avec des descripteurs définis manuellement et le BiLSTM-CRF au niveau entité.}\label{tab:structuration:perf-bilstmcrf}
 \end{table}
 
-L'ingénierie manuelle des caractéristiques est difficile car arbitraire. Nous avons comparé les performances de nos descripteurs avec celles des réseaux de neurones qui apprennent une représentation des segments. Pour cela nous avons choisi le BiLSTM-CRF de \citet{lample2016nnner} qui fait partie des meilleures approches récentes. La comparaison a été effectuée pour la détection des entités avec le schéma d'étiquetage BIEO et une validation croisée à 9 itérations. Le BiLSTM-CRF prend en entrée les plongements sémantiques Word2Vec \citep{mikolov2013word2vec} des mots. Pour cela, nous avons entraîné des vecteurs de mots à partir d'un corpus jurisprudentiel de plus de 800K documents provenant de \url{www.legifrance.gouv.fr} avec l'implémentation\footnote{\url{https://code.google.com/archive/p/word2vec/}} de \citet{lemikolov2014word2vec}. Les vecteurs obtenus ont une dimension de 300. Etant donné que les décisions sont des documents particulièrement longs, leur contenu a été découpé en des morceaux de texte dont la taille n'excède pas 300 mots. Les résultats obtenus par le BiLSTM-CRF sont assez proches de ceux que nous observons avec les descripteurs manuellement définis (\tableref{tab:structuration:perf-bilstmcrf}). Etant donné que ces derniers permettent de mieux détecter certaines entités comme les \textit{intervenants}, les \textit{avocats} ou les numéro \textit{R.G.}, et vice-versa pour les \textit{normes} ou les \textit{appelants} chez le BiLSTM-CRF, une combinaison des deux types de descripteurs pourrait améliorer les résultats actuels. %On peut par exemple exploiter des modèles thématiques déduits en partitionnant (\textit{clustering}) l'ensemble des vecteurs de mots  et les utiliser comme descripteurs définis manuellement. 
+L'ingénierie manuelle des caractéristiques est difficile car arbitraire. Nous avons comparé les performances de nos descripteurs avec celles des réseaux de neurones qui apprennent une représentation des segments. Pour cela nous avons choisi le BiLSTM-CRF de \citet{lample2016nnner} qui fait partie des meilleures approches récentes. La comparaison a été effectuée pour la détection des entités avec le schéma d'étiquetage BIEO et une validation croisée à 9 itérations. Le BiLSTM-CRF prend en entrée les plongements sémantiques Word2Vec \citep{mikolov2013word2vec} des mots. Pour cela, nous avons entraîné des vecteurs de mots à partir d'un corpus jurisprudentiel de plus de 800K documents provenant de \url{www.legifrance.gouv.fr} avec l'implémentation\footnote{\url{https://code.google.com/archive/p/word2vec/}} de \citet{mikolov2013word2vec}. Les vecteurs obtenus ont une dimension de 300. Etant donné que les décisions sont des documents particulièrement longs, leur contenu a été découpé en des morceaux de texte dont la taille n'excède pas 300 mots. Les résultats obtenus par le BiLSTM-CRF sont assez proches de ceux que nous observons avec les descripteurs manuellement définis (\tableref{tab:structuration:perf-bilstmcrf}). Etant donné que ces derniers permettent de mieux détecter certaines entités comme les \textit{intervenants}, les \textit{avocats} ou les numéro \textit{R.G.}, et vice-versa pour les \textit{normes} ou les \textit{appelants} chez le BiLSTM-CRF, une combinaison des deux types de descripteurs pourrait améliorer les résultats actuels. %On peut par exemple exploiter des modèles thématiques déduits en partitionnant (\textit{clustering}) l'ensemble des vecteurs de mots  et les utiliser comme descripteurs définis manuellement. 
  
 
 \section{Conclusion}
