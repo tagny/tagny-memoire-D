@@ -156,7 +156,7 @@ Les réseaux récurrents de neurones (\textit{recurrent neural networks - RNN}) 
 	\centering \includegraphics[width=0.7\textwidth]{LSTM3-chain.png}
 	\includegraphics[width=0.7\textwidth]{LSTM2-notation.png}
 	
-	\scriptsize{Source: \url{https://colah.github.io/posts/2015-08-Understanding-LSTMs/}}
+\textit{\footnotesize{\textbf{Source}: \url{https://colah.github.io/posts/2015-08-Understanding-LSTMs/}}}
 	\caption{Structure interne d'un LSTM dans une couche de réseau LSTM}\label{fig:structuration:couchedelstm}
 \end{figure}
 
@@ -166,7 +166,7 @@ Les entrées et sorties d'un LSTM sont des vecteurs de nombres réels. L'entrée
 \begin{figure}[!htb]
 	\centering \includegraphics[width=0.7\textwidth]{bi-lstm.png}
 		
-	\scriptsize{Source: \url{https://guillaumegenthial.github.io/sequence-tagging-with-tensorflow.html}}
+	\textit{\footnotesize{\textbf{Source}: \url{https://guillaumegenthial.github.io/sequence-tagging-with-tensorflow.html}}}
 	\caption{Apprentissage de la représentation contextuelle avec une double couche de réseaux LSTM (BiLSTM)}\label{fig:structuration:bi-lstm}
 \end{figure}
 
@@ -231,13 +231,14 @@ Un autre intérêt des schémas plus complexes que IO est de pouvoir distinguer 
 
 \section{Architecture proposée}
 \label{sec:structuration:proposition}
-\begin{figure}[!ht]
+\begin{figure}[!htb]
 %\sidecaption
-\centering
+\begin{center}
 \includegraphics [width=0.45\textwidth]{structuration-preprocess.png}
 \includegraphics [width=0.45\textwidth]{structuration-pipeline-application.png}
+\end{center}
 
-{\scriptsize Après la collecte et le pré-traitement des documents, l'étiqueteur de ligne est d'abord appliqué pour détecter les sections, puis les étiqueteurs d'entités peuvent être appliqués simultanément dans les sections.}
+{\footnotesize Après la collecte et le pré-traitement des documents, l'étiqueteur de ligne est d'abord appliqué pour détecter les sections, puis les étiqueteurs d'entités peuvent être appliqués simultanément dans les sections.}
 \caption{Application des modèles entraînés pour l'étiquetage de sections et entités.}\label{fig:structuration:archAppli}
 \end{figure}
 Nous proposons de travailler uniquement avec le contenu textuel des documents. Ce contenu est extrait des documents téléchargés en éliminant les éléments inutiles, principalement des espaces vides. Ces éléments sont typiques des documents formatés (\verb|.rtf, .doc(x), .pdf|). Ils ne fournissent pas une indication standard sur le début des sections. Le choix de ne pas exploiter le formatage des documents permet d'avoir à gérer un nombre plus faible de diversités entre les textes tout en appliquant le même processus de traitement à tout document indépendamment de son format d'origine. Une simple architecture d'étiquetage de sections et d'entités juridiques a été conçue avec cette uniformisation des documents comme point d'entrée (\figureref{fig:structuration:archAppli}). Ainsi, les documents sont collectés puis pré-traités suivant leur format d'origine (extraction du texte et séparation des décisions apparaissant dans le même document).  Ensuite, après le sectionnement des décisions, les entités sont identifiées dans les différentes sections. Par ailleurs, comme segment atomique à étiqueter nous avons choisi les lignes pour la détection des sections, et les mots pour les entités. 
@@ -260,22 +261,27 @@ Nous considérons donc la ligne comme élément à étiqueter lors du sectionnem
 
 Plusieurs critères peuvent être utilisés pour différencier les sections, à savoir: la longueur des lignes (plus longues dans le corps, plus courtes dans l'entête), les premiers termes de certaines lignes (typiques de chaque section) et le nombre total de lignes. Un HMM n'adapte qu'un descripteur assimilé à l'élément à étiqueter. D'autres descripteurs peuvent être la position de l'élément à étiqueter (numéro de ligne) ou le début de la ligne. Le descripteur capturant la longueur de ligne peut être absolu (nombre exact de mots dans la ligne), ou relatif (une catégorie de la longueur). Sur la base des quantiles de la distribution des longueurs de lignes sur un ensemble de décisions, nous avons défini trois catégories:
 \verb|LQ1| ($longueur \leq$ 5), \verb|LQ2| (5 < $longueur \leq$ 12) et \verb|LQ2| (12 < $longueur \leq$ 14). Nous avons également catégorisé les parties du document afin de capturer une position relative de ligne.
-En effet, le document est considéré comme divisé en $N$ parties (10 dans nos expériences). La position relative d'une ligne est donc le numéro de la partie contenant la ligne. En résumé, les caractéristiques sont décrites comme suit (avec leurs étiquettes entre parenthèses):
-\begin{itemize}
- \item forme de la ligne: la ligne entière, ses premiers mots (\verb|t0, t1, t2|), sa longueur absolue (\verb|absLength|) et sa longueur relative (\verb|relLength|);
- \item contexte de ligne: le numéro de ligne (\verb|absNum|) et le numéro de la partie de document contenant la ligne (\verb|relNum|), les deux premiers mots des lignes précédente (\verb|p0, p1|) et suivantes (\verb|n0, n1|), ainsi que leurs longueurs absolues et relatives
- (\verb|pLength|, \verb|pRelLength|, \verb|nLength|, \verb|nRelLength|).
-\end{itemize}
+En effet, le document est considéré comme divisé en $N$ parties (10 dans nos expériences). La position relative d'une ligne est donc le numéro de la partie contenant la ligne. Les descripteurs caractéristiques des lignes sont résumés dans le \tableref{tab:structuration:descripteursligne}.
 
 \begin{table}[!htb]
 	\centering
 	\begin{tabular}{|l|l|}
 		 \hline
-		Type & Descripteur \\ \hline
-		forme & la ligne entière (\verb|l|)  \\ \hline
-		contexte & le numéro de ligne (\verb|absNum|) \\ \hline
+		\multicolumn{1}{|c}{Type} & \multicolumn{1}{|c|}{Descripteur} \\ \hline
+		Forme & \tabitem la ligne entière (\verb|l|)  \\  
+		& \tabitem ses premiers mots (\verb|t0, t1, t2|) \\
+		& \tabitem sa longueur absolue (\verb|absLength|) \\ 
+		& \tabitem sa longueur relative (\verb|relLength|) \\ \hline
+		Contexte & \tabitem le numéro de ligne (\verb|absNum|) \\
+				  & \tabitem partie du document contenant la ligne (\verb|relNum|) \\
+				  & \tabitem premiers mots de la ligne précédente (\verb|p0, p1|) \\ 
+				   & \tabitem premiers mots de la ligne suivante (\verb|n0, n1|) \\
+				   & \tabitem longueur absolue de ligne précédente (\verb|nLength|) \\  
+				   & \tabitem longueur relative de ligne précédente (\verb|nRelLength|) \\
+				    & \tabitem longueur absolue de ligne suivante (\verb|nLength|) \\  
+				    & \tabitem longueur relative de ligne suivante (\verb|nRelLength|) \\ \hline
 	\end{tabular}
-\caption{Descripteurs candidats de lignes pour les sections.}
+\caption{Descripteurs candidats de lignes pour les sections.} \label{tab:structuration:descripteursligne}
 \end{table}
 
 \subsubsection{Descripteurs pour la détection d'entités}
@@ -299,14 +305,41 @@ Nous avons étendu ces caractéristiques avec les rôles grammaticaux (\textit{P
 Néanmoins, l'ordre des sujets ne changeant pas de manière significative, nous avons utilisé l'identifiant du thème le plus pertinent pour le mot (\verb|topic0|) ainsi que ceux de ses voisins (\verb|w-2topic0|, \verb|w-1topic0|, \verb|w1topic0|, \verb|w2topic0|).
 
 \begin{table}[!htb]
-	\centering
-	\begin{tabular}{|l|l|}
+	%\centering 
+	\small
+	\begin{tabular}{|l|p{0.78\textwidth}|}
 		\hline
-		Type & Descripteur \\ \hline
-		forme & le mot (\verb|token|)  \\ \hline
-		contexte & les mots précédents (\verb|w-2, w-1|)  \\ \hline
-	\end{tabular}
-	\caption{Descripteurs candidats de mots pour les mentions d'entités.}
+		\multicolumn{1}{|c|}{Type} & \multicolumn{1}{c|}{Descripteur} \\ \hline
+Forme & \tabitem le mot (\verb|token|)  \\ 
+	& \tabitem son lemme (\verb|lemma_W0|) \\
+	& \tabitem \og commence-t-il par une lettre majuscule ? \fg{} (\verb|startsWithCAP|) \\
+	&\tabitem\og est-il entièrement en majuscule ? \fg{} (\verb|isAllCAP|)\\
+	&\tabitem\og est-ce une initiale solitaire tel que "B."? \fg{} (\verb|isLONELYINITIAL|)\\
+	& \tabitem \og contient-il un caractère de ponctuation ? \fg{} (\verb|PUN-IN|) \\
+	& \tabitem \og n'est-ce qu'une ponctuation ? \fg{} (\verb|isALLPUN|) \\
+	& \tabitem \og contient-il un caractère numérique ? \fg{} (\verb|DIGIT-IN|) \\
+	& \tabitem \og ne contient-il que 
+des chiffres ? \fg{} (\verb|isALLDIGIT|) \\ \hline
+Syntaxe & \tabitem rôle grammatical du mot (\verb|POS|) \\ \hline
+Sémantique & \tabitem thème du mot (\verb|topic0|) \\  \hline
+Contexte & \tabitem les mots précédents (\verb|w-1, w-2|) \\
+		& \tabitem les lemmes des mots précédents  (\verb|lemmaW-1, lemmaW-2|) \\
+	& \tabitem les mots suivants (\verb|w1, w2|) \\
+	& \tabitem les lemmes des mots suivants  (\verb|lemmaW1, lemmaW2|) \\
+	& \tabitem numéro de ligne (\verb|lineNum|) \\ 
+	& \tabitem position de l'élément dans la ligne (\verb|numInLine|) \\
+	& \tabitem \og le document contient-il le mot \textit{intervenant} ? \fg{} (\verb|intervenantInText|) \\
+	& \tabitem \og le mot apparaît-il après \textit{APPELANT} ? \fg{} (\verb|isAfterAPPELANT|) \\
+	& \tabitem \og le mot apparaît-il après \textit{INTIME} \fg{} (\verb|isAfterINTIME|)\\
+	& \tabitem \og le mot apparaît-il après  \textit{INTERVENANT} \fg{} (\verb|isAfterINTERVENANT|) \\
+	& \tabitem numéro de la ligne précédente contenant le mot (\verb|lastSeenAt|)\\
+	& \tabitem nombre d'occurrences du mot (\verb|nbTimesPrevSeen|)\\
+	& \tabitem \og S'agit-il d'un mot-clé de règles juridiques ? \fg{} (\verb|isKEYWORD|) \\
+	 & \tabitem rôles grammaticaux des mots voisins (\texttt{POSW-2, POSW-1, POSW1, POSW2}) \\ 
+	 & \tabitem thèmes des mots voisins (\verb|w-2topic0|, \verb|w-1topic0|, \verb|w1topic0|, \verb|w2topic0|) \\ 
+	 \hline
+	\end{tabular}	
+	\caption{Descripteurs candidats de mots pour les mentions d'entités.} \label{tab:structuration:descripteursmots}
 \end{table}
 
 \subsection{Sélection des descripteurs}

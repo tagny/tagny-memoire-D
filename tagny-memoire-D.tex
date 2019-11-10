@@ -1,4 +1,4 @@
-\documentclass[12pt,letterpaper,oneside,openright]{book}
+\documentclass[12pt,letterpaper,openright]{book}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[square]{natbib}
@@ -23,9 +23,11 @@
 \usepackage{array,multirow}
 \usepackage{longtable}
 %\usepackage{subfigure}
-\usepackage[font=footnotesize,singlelinecheck=off,justification=centering]{caption}
+\usepackage[font=small,singlelinecheck=off,justification=centering]{caption}
 \usepackage[font=footnotesize]{subcaption}
 \usepackage{fancyvrb}
+\usepackage{booktabs}% http://ctan.org/pkg/booktabs
+\newcommand{\tabitem}{~~\llap{\textbullet}~~}
 %\usepackage[left=3cm,right=3cm,top=2.5cm,bottom=2.5cm]{geometry}%
 %\usepackage[margin=1.2in]{geometry}
 %\usepackage{geometry}
@@ -34,7 +36,6 @@
 \usepackage{setspace}
 \usepackage[titletoc]{appendix}
 \usepackage{nameref}
-
 \usepackage{mathrsfs}
 \usepackage{float} 
 \usepackage{bbding}
@@ -148,11 +149,17 @@
 \setcounter{secnumdepth}{3}
 
 \pagestyle{fancy}
+%\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
 \fancyhf{}
 \setlength{\headheight}{15pt}
-\fancyhead[L]{\scriptsize \it \rightmark}
-\fancyhead[R]{\thepage}
+\fancyhead[LE,RO]{\thepage}
+\fancyhead[LO]{\itshape\nouppercase{\rightmark}}
+\fancyhead[RE]{\itshape\nouppercase{\leftmark}}
+
 \renewcommand{\headrulewidth}{0pt}
+
+%\pagestyle{headings}
+
 
 \begin{document}
 \nocite{}

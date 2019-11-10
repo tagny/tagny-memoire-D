@@ -324,7 +324,8 @@ Pour l'évaluation supervisée, nous disposons d'une base annotée sur la catég
 
 Les terminologies des cas se distinguent bien (Tableau \ref{tab:similarite:terminologie-resp_avocat}). Par conséquent, une représentation des documents qui mettrait en évidence de tels termes permettrait de retrouver les circonstances factuelles. 
 \begin{table}[ht]
-	\centering \scriptsize
+\footnotesize
+	\begin{center}
 	\begin{tabular}{|l|p{.85\textwidth}|}
 		\hline
 		\textbf{Corpus} & \textbf{Terminologie} \\ \hline
@@ -339,7 +340,7 @@ Les terminologies des cas se distinguent bien (Tableau \ref{tab:similarite:termi
 		\textit{cas d} & revêtir aucun, revêtir aucun caractère, article code, article code procédure, faire référence aucun, fautif madame, civil profit autre, civil depuis, mention expresse, moyen dont
 		\\ \hline
 	\end{tabular}
-
+	\end{center}
 	\textit{10 premiers termes lémmatisés de 1 à 3 mots sélectionnés à l'aide du coefficient de corrélation $ngl$ (cf. \ref{sec:quanta:poids-globaux-superv})}
 	\caption{Terminologies de  la catégorie  $arcpa$ et de ses circonstances factuelles manuellement annotées.}\label{tab:similarite:terminologie-resp_avocat}
 \end{table}
@@ -583,7 +584,7 @@ $\bar{s}_K$: largeur moyenne de la silhouette
 	\caption{Evaluation non-supervisée des K-moyennes et K-medoïdes sur $\mathcal{D}_{acpa}, \mathcal{D}_{concdel}, \mathcal{D}_{danais}, \mathcal{D}_{dcppc}, \mathcal{D}_{doris}, \mathcal{D}_{styx}$.} \label{tab:similarite:validation-nonsupervisee}
 \end{table}
 
-La silhouette étant bonne en général, on s'attend à ce que les groupes soient en majorité formés effectivement de décisions partageant les mêmes circonstances factuelles. Il est possible de se faire une idée des circonstances factuelles découvertes en observant leur terminologie qu'on peut extraire à l'aide d'une pondération globale supervisée comme le coefficient NGL. Considérons par exemple le regroupement avec les K-medoïdes combinés à la distance cosinus pour laquelle des résultats intéressants ont été obtenus sur $\mathcal{D}_{arcpa}$. Pour la catégorie CONCDEL\footnote{CONDEL: dommages-intérêts pour concurrence déloyale.}, on obtient 4 circonstances factuelles dont les champs lexicaux (Tableau \ref{tab:similarite:terminologie-clusters-concdel}) semblent définir les cas de contrefaçon pour le cluster 0, de publicité déloyale pour le cluster 1, de recrutement d'un salarié par un concurrent pour le cluster 2, et de contrats avec des partenaires pour le dernier cluster.
+La silhouette étant bonne en général, on s'attend à ce que les groupes soient en majorité formés effectivement de décisions partageant les mêmes circonstances factuelles. Il est possible de se faire une idée des circonstances factuelles découvertes en observant leur terminologie qu'on peut extraire à l'aide d'une pondération globale supervisée comme le coefficient $ngl$. Considérons par exemple le regroupement avec les K-medoïdes combinés à la distance cosinus pour laquelle des résultats intéressants ont été obtenus sur $\mathcal{D}_{arcpa}$. Pour la catégorie \textit{concdel}\footnote{\textit{concdel}: dommages-intérêts pour concurrence déloyale.}, on obtient 4 circonstances factuelles dont les champs lexicaux (Tableau \ref{tab:similarite:terminologie-clusters-concdel}) semblent définir les cas de contrefaçon pour le cluster 0, de publicité déloyale pour le cluster 1, de recrutement d'un salarié par un concurrent pour le cluster 2, et de contrats avec des partenaires pour le dernier cluster.
 
 
 %\subsection{Terminologie des clusters générés}
@@ -607,7 +608,7 @@ La silhouette étant bonne en général, on s'attend à ce que les groupes soien
 	\caption{Terminologies des circonstances factuelles découvertes en combinant les K-medoïdes et la distance cosinus sur $\mathcal{D}_{concdel}$.}\label{tab:similarite:terminologie-clusters-concdel}
 \end{table}
 
-Pour la catégorie DORIS\footnote{DORIS: dommages-intérêts pour trouble anormal de voisinage},  on obtient 5 circonstances factuelles dont les champs lexicaux (Tableau \ref{tab:similarite:terminologie-clusters-doris}) semblent définir les cas d'excès de trouble pour le cluster 0, de différents entre copropriétaires d'un immeuble pour le cluster 1, de toit dépassant la limite entre deux habitations pour le cluster 2, et d'ouvrage dépassant la hauteur limite autorisée pour le dernier cluster.% Le cluster 3 est plus difficile à interpréter  même s'il semble s'agir du droit de jouir d'une propriété.
+Pour la catégorie \textit{doris}\footnote{\textit{doris}: dommages-intérêts pour trouble anormal de voisinage},  on obtient 5 circonstances factuelles dont les champs lexicaux (Tableau \ref{tab:similarite:terminologie-clusters-doris}) semblent définir les cas d'excès de trouble pour le cluster 0, de différents entre copropriétaires d'un immeuble pour le cluster 1, de toit dépassant la limite entre deux habitations pour le cluster 2, et d'ouvrage dépassant la hauteur limite autorisée pour le dernier cluster.% Le cluster 3 est plus difficile à interpréter  même s'il semble s'agir du droit de jouir d'une propriété.
 
 \begin{table}[ht]
 	\centering \scriptsize
