@@ -2,6 +2,8 @@
 \renewcommand{\thechapter}{\arabic{chapter}}
 \renewcommand{\thesection}{\thechapter.\arabic{section}}
 \renewcommand\thesubsection{\thesection.\arabic{subsection}}
+\renewcommand\chaptermark[1]{%
+	\markboth{\MakeUppercase{\chaptername\ \thechapter.\ {#1}}}{#1}}
 
 %{\usefont{OT1}{ptm}{b}{n}
  \titleformat{\chapter}[display]

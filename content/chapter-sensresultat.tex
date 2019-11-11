@@ -18,7 +18,7 @@
 %
 %Template \verb=2011 Comparing_Mining_Algorithms_for_Predicting_the_Sev.pdf=
 
-\textit{\small \textbf{Résumé.} }
+\textit{\small \textbf{Résumé.} L'extraction des demandes a été présentée dans le chapitre précédent comme l'identification du quantum demandé, du quantum résultat et du sens du résultat pour chaque demande d'une catégorie donnée. Le sens du résultat est l'information la plus importante pour le métier car elle donne une idée du taux d'acceptation des demandes dans les tribunaux pour une analyse descriptive du sens du résultat. Il a été proposé d'identifier le sens du résultat en interprétant simplement le verbe de décision de l'énoncé du résultat. Cette technique a l'inconvénient de dépendre de l'identification explicite du passage exprimant le résultat qui est donc une source supplémentaire d'erreurs. Le présent chapitre adresse cet inconvénient en reformulant l'identification du sens du résultat par la classification binaire (\og accepte \fg{} / \og rejette \fg{}) de la décision représentée en entrée sous forme vectorielle. Une décision pouvant comprendre plusieurs demandes de la catégorie traitée, nous ne traitons que le cas des décisions à une seule demande de la catégorie. Cependant, le défi de ce problème est le déséquilibre observé entre les 2 classes sur les données d'apprentissage. Nous observons en effet que la tendance est de rejeter une forte majorité des demandes, ce qui serait aussi le cas en général en justice pour la majorité des catégories. Sur la base de l'expertise d'une partie de l'encadrement de cette thèse, nous proposons une application de la méthode Gini-PLS de \citet{mussard2018ginipls} qui a été conçue pour rendre robuste aux valeurs aberrantes, de vecteurs représentatifs, la régression par analyse des moindres carrés partiels (PLS). Nos expérimentations la compare à d'autres algorithmes de classification et sous différentes conditions de représentation dont divers modèles vectoriels et restriction du document à des sous-parties. Les meilleures résultats sont obtenus avec les arbres de classification avec une moyenne  de $F_1$-mesure sur les catégories de ??\%, maximale de ??\%, minimale de ??\%. Le Gini-PLS étant à ...?}
 
 
 \section{Introduction}
@@ -27,19 +27,19 @@
 préciser l'importance de la tâche pour le métier: analyse descriptive du sens du résultat.
 
 
-Comme le précédent, ce chapitre est relatif à l'extraction de données sur les demandes et résultats correspondants. Cependant, il est question ici d'extraire uniquement le sens du résultat d'une demande connaissant sa catégorie. Cette étude est intéressante parce que le problème devient plus simple. En se passant de la localisation précise de l'énoncé du résultat, l'extraction du sens du résultat peut être formulée comme une tâche de classification de documents. Nous modélisons la tâche comme un problème de classification binaire consistant à entrainer un algorithme à reconnaitre si la demande a été rejetée (sens = rejette) ou acceptée (sens = accepte). Cette modélisation est proposée sur une restriction du problème définie par les postulats  (\textcolor{red}{observations})
- \ref{postulat:sens:unedemande} et \ref{postulat:sens:sensbinaire} suivants.
-\textcolor{red}{commencer par le postulat: qui sont des observations! en précisant que le choix de motivation est motivé par l'expertise du métier.}
+Comme le précédent, ce chapitre est relatif à l'extraction de données sur les demandes et résultats correspondants. Cependant, il est question ici d'extraire uniquement le sens du résultat d'une demande connaissant sa catégorie. Cette étude est intéressante parce que le problème devient plus simple. En se passant de la localisation précise de l'énoncé du résultat, l'extraction du sens du résultat peut être formulée comme une tâche de classification de documents. Nous modélisons la tâche comme un problème de classification binaire consistant à entrainer un algorithme à reconnaitre si la demande a été rejetée (sens = rejette) ou acceptée (sens = accepte). Cette modélisation est proposée sur une restriction du problème définie par les postulats  %(\textcolor{red}{observations})
+ \ref{postulat:sens:unedemande} et \ref{postulat:sens:sensbinaire}  basés sur nos observations des données annotées manuellement.
+%\textcolor{red}{commencer le postulat: qui sont des observations! en précisant que le choix de motivation est motivé par l'expertise du métier.}
 \begin{postulat}\label{postulat:sens:unedemande}
 Pour toute catégorie de demande $C$, les documents ne contenant qu'une demande de catégorie $C$ sont majoritaires. 
 \end{postulat} 
 
-Ce postulat est légitime car les statistiques sur les données labellisées de la Figure \ref{fig:quanta:hist-repartition-docs} montrent bien que dans chaque catégorie, les décisions contiennent en majorité une demande. On remarque néanmoins l'exception de la catégorie STYX (dommage-intérêt sur l'article 700 CPC), où dans la majorité des documents, on a plutôt 2 demandes. Cette exception peut se justifier par le fait que chaque partie fait généralement ce type de demande car elle porte sur le remboursement des frais de justice. Ce postulat présente cependant un inconvénient dû au fait que la majorité des demandes se trouvent dans des décisions à plus d'une demande. Il est donc possible de manquer un grand nombre de demandes. %On pourrait peut-être porter la classification à un modèle multi-label qui déterminera plusieurs sens à partir d'un seul document. Par exemple <SENS1, SENS2, SENS3> avec des valeurs prédéfinies sur les SENS 2 et 3 par exemple NO-DMD pour indiquer que la décision ne comprend pas de seconde ou de troisième demande.
+Ce postulat est légitime car les statistiques sur les données labellisées de la Figure \ref{fig:quanta:hist-repartition-docs} montrent bien que dans chaque catégorie, les décisions contiennent en majorité une seule demande. On remarque néanmoins l'exception de la catégorie STYX (dommage-intérêt sur l'article 700 CPC), où dans la majorité des documents, on a plutôt 2 demandes. Cette exception peut se justifier par le fait que chaque partie fait généralement ce type de demande car elle porte sur le remboursement des frais de justice. Ce postulat présente cependant un inconvénient dû au fait que la majorité des demandes se trouvent dans des décisions à plus d'une demande. Il est donc possible de manquer un grand nombre de demandes. %On pourrait peut-être porter la classification à un modèle multi-label qui déterminera plusieurs sens à partir d'un seul document. Par exemple <SENS1, SENS2, SENS3> avec des valeurs prédéfinies sur les SENS 2 et 3 par exemple NO-DMD pour indiquer que la décision ne comprend pas de seconde ou de troisième demande.
 
 \begin{postulat}\label{postulat:sens:sensbinaire}
 Le sens du résultat est généralement binaire: accepte ou rejette.
 \end{postulat} 
-Ce postulat est justifié car les sens de résultat ont majoritairement l'une de ces deux valeurs (Figure \ref{stat-sensrst}). Les autres sens sont très rares.
+Ce postulat est justifié car les sens de résultat ont majoritairement l'une de ces deux valeurs (\figureref{stat-sensrst}). Les autres valeurs sont très rares.
 
 \begin{figure}
 \includegraphics[width=\textwidth]{chartDistrSens.png}
@@ -52,7 +52,31 @@ Cette étude porte sur l'analyse de l'impact de différents aspects techniques e
 \section{Classification de documents}
 \label{sec:sensresultat:biblio_classif}
 
-La classification de textes permet d'organiser des documents dans des groupes prédéfinis. Elle reçoit depuis longtemps beaucoup d'attentions. Deux choix techniques influencent principalement les performances: la représentation des textes et l'algorithme de classification. Dans la suite, la variable à prédire est notée $y$, et la base d'apprentissage comprend les observations de l'échantillon $S = \lbrace (x_i, y_i)_{i=1..n} \rbrace$.
+La classification de textes permet d'organiser des documents dans des groupes prédéfinis. Elle reçoit depuis longtemps beaucoup d'attentions. Deux choix techniques influencent principalement les performances: la représentation des textes et l'algorithme de classification. Dans la suite, la variable à prédire est notée $y$, et la base d'apprentissage comprend les observations de l'échantillon $\mathcal{D} = \lbrace (x_i, y_i)_{i=1..n} \rbrace$.
+
+\subsection{Représentation de textes}
+Chaque document $d$ est représenté sous une forme vectorielle du type TF-IDF (\textit{term frequency - inverse document frequency}) proposé par \cite{salton1988term-weighting} dont chaque dimension $k$ est identifiée par un terme $t_k$. Tout document $d \in \mathcal{D}$ est une séquence de mots $d=(d[1], \dots, d[\setsize{d}])$, où $d_i$ est le mot à la position $i$ dans $d$. Sa représentation vectorielle  est notée $\vec{d}=(\vec{d}[1], \vec{d}[2], \dots, \vec{d}[m])$. Pour un modèle vectoriel de type TF-IDF de vocabulaire $T = \lbrace t_1, t_2, \dots, t_m \rbrace$, $\vec{d}[k] = w(t_k,d)$ le poids du terme $t_k \in T$ dans le texte $d$ ({cf. \ref{sec:quanta:classification}}). Le poids $w(t_k, d)$ affecté à ce dernier est le produit normalisé d'un poids global $g(t_k)$ au corpus du mot et d'un poids local $l(t_k,d)$ de $t_k$ dans le document $d$ : $w(t_k, d) = l(t,d) \times g(t) \times nf(d)$, où $nf$ est un facteur de normalisation tel que la norme euclidienne $\sqrt{\sum\limits_k (w(t_k,d))^2}$. Le poids global est calculé à partir d'une des méthodes de la section \ref{sec:quanta:extract-terminologie-domaine}. Le poids local est calculé à partir de la fréquence d'occurrence du terme dans le document à l'aide d'une des méthodes du \tableref{tab:sensresultat:metriq_locales}.
+
+\begin{table}[!htb]
+	\small\centering
+	\begin{tabular}{p{0.5\textwidth}@{\hskip 0.2in}|p{0.45\textwidth}}
+		\hline
+		\multicolumn{1}{c|}{Description} & \multicolumn{1}{c}{Formule} \\
+		\hline
+		Décompte brute du terme \citep{salton1988term-weighting}  & $tf(t,d) = $ nombre d'occurrences de $t$ dans $d$\\   \hline\noalign{\smallskip}
+		Présence du terme \citep{salton1988term-weighting} & $tp(t,d) = \left\lbrace \begin{array}{cl}
+		1 & \text{, si } tf(t,d) > 0 \\
+		0 & \text{, sinon}
+		\end{array} \right.$ \\  \hline
+		Normalisation logarithmique  & $logtf(t,d) = 1 + \log{\left(tf(t,d)\right)}$  \\  \hline
+		Fréquence augmentée et normalisée du terme \citep{salton1988term-weighting}%: $k$ is set such that the normalized weight should lie in $[0.5, 1]$  
+		& $atf(t,d) = k + (1-k) \frac{tf(t,d)}{\max\limits_{t \in T} tf(t,d)}$  \\  \hline\
+		Normalisation basée sur la fréquence moyenne du terme  \citep{manning2009irbook-weighting} ($\avg $ représente la moyenne) & $logave(t,d) = \frac{1+\log {tf(t,d)}}{1 + \log \avg\limits_{t \in T} tf(t, d) }$  \\ 
+		\hline
+	\end{tabular}
+	
+	\caption{Métriques locales}\label{tab:sensresultat:metriq_locales}
+\end{table}
 
 \subsection{Algorithmes traditionnels de classification de données}
 Bien que la classification de documents voit se développer récemment des algorithmes propres aux textes, un grand nombre de méthodes ont été développées. Ces méthodes sont généralement basée sur une représentation  des textes dans un espace vectoriel $\mathcal{X}$ d'entrée et délimitent une frontière entre les classes dans un espace multidimensionnel. Les notations du Tableau \ref{tab:quanta:notations_metriques} sont utilisées dans cette section. 
@@ -149,7 +173,7 @@ Un arbre de décision est une structure arborescente utilisée en fouille de don
 	\caption{Classification par arbre de décision} \label{algo:sensresultat:classifywithtree}
 \end{algorithm}
 
-La construction de l'arbre (phase d'apprentissage) consiste à générer une hiérarchie de tests, aussi courte que possible, qui divise successivement l'ensemble $S$ d'exemples d'apprentissage en sous-ensembles disjoints de plus en plus pures\footnote{homogénéité des labels}. %, tels que des sous-groupes de cas appartenant à la même classe soient rapidement détectés. 
+La construction de l'arbre (phase d'apprentissage) consiste à générer une hiérarchie de tests, aussi courte que possible, qui divise successivement l'ensemble $D$ d'exemples d'apprentissage en sous-ensembles disjoints de plus en plus pures\footnote{homogénéité des labels}. %, tels que des sous-groupes de cas appartenant à la même classe soient rapidement détectés. 
 L'arbre est construit de la racine aux feuilles en divisant les données d'entraînement $S_{t}$ à chaque nœud ($t$) de sorte à minimiser le degré d'impureté des sous-ensembles d'exemples  $S_{t_i}$ dans les n\oe{}uds fils ($t_i$). Le critère de coupe est généralement défini à partir d'une métrique d'impureté comme par exemple:
 \begin{itemize}
 	\item l'entropie de la distribution des classes dans $S_t$: \\ $h_C(S_t) = - \sum\limits_{c \in C} \left[p(c \vert S_t) \log_2 p(c \vert S_t)\right];$
@@ -166,7 +190,7 @@ Pour ces métriques, $p(c \vert S_t)$ représente la proportion d'exemples du n\
 
 Les variables nominales peuvent être divisées soit en utilisant autant de partitions que de valeurs distinctes, soit uniquement en des partitions binaires suivant des tests booléens nécessitant de rechercher la division optimale. Les variables numériques sont divisées quant à elles soit par discrétisation de leur domaine en les transformant en variables catégoriques ordinales, soit en recherchant la meilleure division binaire parmi  toutes les séparations possibles. 
 
-La construction de l'arbre est une division récursive qui peut continuer tant qu'il est possible d'améliorer la pureté des nœuds, ce qui peut engendrer un arbre très grand résultant en un sur-apprentissage\footnote{Un modèle trop précis a un très faible taux d'erreur sur les données d'entraînement (erreur d'apprentissage) mais un fort taux d'erreur sur les données de test (erreur de test).}, et une forte complexité temporelle et spatiale lors de la prédiction. Pour s'arrêter plus tôt ("pré-élagage"), plusieurs conditions sont possibles comme par exemple, l'atteinte par la taille des données ($\vert S_t \vert$) d'un seuil minimum, ou l'atteinte par l'arbre d'une profondeur maximale, ou l'amélioration du critère de division est très faible, etc. Le post-élagage\footnote{Suppression de sous-arbres superflus ou en trop après génération de l'arbre.} est appliqué après construction de l'arbre toujours dans le but de minimiser le sur-apprentissage et la complexité. Le post-élagage peut consister par exemple, soit à simplement et rapidement éliminer successivement les feuilles si cela  ne fait pas croître le taux d'erreur sur $S$ (\og élagage basé sur la réduction du taux d'erreur \fg{}), et remplacer chaque nœud par sa classe majoritaire, soit à éliminer successivement les sous-arbres qui minimisent $\frac{erreur(elagage(A, A'), S) - erreur(A, S)}{\norm{feuille(A)} - \norm{feuille(elagage(A, A'))}}$ (\og stratégie coût-complexité \fg{}). 
+La construction de l'arbre est une division récursive qui peut continuer tant qu'il est possible d'améliorer la pureté des nœuds, ce qui peut engendrer un arbre très grand résultant en un sur-apprentissage\footnote{Un modèle trop précis a un très faible taux d'erreur sur les données d'entraînement (erreur d'apprentissage) mais un fort taux d'erreur sur les données de test (erreur de test).}, et une forte complexité temporelle et spatiale lors de la prédiction. Pour s'arrêter plus tôt ("pré-élagage"), plusieurs conditions sont possibles comme par exemple, l'atteinte par la taille des données ($\vert S_t \vert$) d'un seuil minimum, ou l'atteinte par l'arbre d'une profondeur maximale, ou l'amélioration du critère de division est très faible, etc. Le post-élagage\footnote{Suppression de sous-arbres superflus ou en trop après génération de l'arbre.} est appliqué après construction de l'arbre toujours dans le but de minimiser le sur-apprentissage et la complexité. Le post-élagage peut consister par exemple, soit à simplement et rapidement éliminer successivement les feuilles si cela  ne fait pas croître le taux d'erreur sur $D$ (\og élagage basé sur la réduction du taux d'erreur \fg{}), et remplacer chaque nœud par sa classe majoritaire, soit à éliminer successivement les sous-arbres qui minimisent $\frac{erreur(elagage(A, A'), D) - erreur(A, D)}{\norm{feuille(A)} - \norm{feuille(elagage(A, A'))}}$ (\og stratégie coût-complexité \fg{}). 
 
 Les algorithmes de construction d'arbres diffèrent ainsi par leur critère de séparation, leur stratégie d'élagage, et leur capacité à gérer les types d'attributs, les valeurs manquantes et extrêmes. \citet{singh2014id3cartc45} comparent les deux algorithmes CART \citep{Breiman1984CART} (critère de \og doublabe \fg{}, élagage coût-complexité) et C4.5 \citep{quinlan1993c4.5} (rapport des gains, élagage à réduction d'erreur).
 
