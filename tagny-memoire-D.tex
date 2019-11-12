@@ -14,8 +14,37 @@
 \graphicspath{ {gfx/} }
 \usepackage{mathpazo}
 \usepackage{fancyhdr}
-%\usepackage{cite}
-%\usepackage{epigraph}
+
+\usepackage{color}
+\definecolor{gray}{rgb}{0.4,0.4,0.4}
+\definecolor{darkblue}{rgb}{0.0,0.0,0.6}
+\definecolor{cyan}{rgb}{0.0,0.6,0.6}
+
+\usepackage{listings}
+
+\lstset{
+	basicstyle=\ttfamily\scriptsize,
+	columns=fullflexible,
+	showstringspaces=false,
+	inputencoding=utf8,
+	extendedchars=true,
+	literate={á}{{\'a}}1 {à}{{\`a}}1 {î}{{\^i}}1 {ê}{{\^e}}1 {ã}{{\~a}}1 {ç}{{\,c}}1 {è}{{\`e}}1 {°}{{}}1 {é}{{\'e}}1 {É}{{\'E}}1 {ô}{{\^o}}1 {ù}{{\`u}}1,
+	commentstyle=\color{gray}\upshape
+}
+
+\lstdefinelanguage{XML}
+{
+	morestring=[s]{"}{"},
+	morecomment=[s]{?}{?},
+	morecomment=[s]{!--}{--},
+	commentstyle=\color{darkblue},
+	moredelim=[s][\color{black}]{>}{<},
+	moredelim=[s][\color{black}]{\ }{=},
+	stringstyle=\color{gray},
+	keywordstyle=\color{cyan},
+	identifierstyle=\color{darkblue}
+}
+
 \usepackage{setspace}
 \usepackage{nomencl}
 \usepackage[titles]{tocloft}
@@ -171,24 +200,24 @@
 
 %\include{content/cover}
 %\include{content/acknowledgement}
-%\include{content/resume}
-%\include{content/abstract}
+\include{content/resume}
+\include{content/abstract}
 
 %liste des matières
-%\addcontentsline{toc}{chapter}{\contentsname}
-%\tableofcontents
+\addcontentsline{toc}{chapter}{\contentsname}
+\tableofcontents
 
 %liste des figures
-%\addcontentsline{toc}{chapter}{\listfigurename}
-%\listoffigures
+\addcontentsline{toc}{chapter}{\listfigurename}
+\listoffigures
 
 %liste des tableaux
-%\addcontentsline{toc}{chapter}{\listtablename}
-%\listoftables
+\addcontentsline{toc}{chapter}{\listtablename}
+\listoftables
 
 \mainmatter
 
-%\input{content/introduction} % INCLUDE: introduction
+\input{content/introduction} % INCLUDE: introduction
 
 % changement du style des chapitres
 \include{config/style_chapitre2}
@@ -206,11 +235,15 @@
 % changement du style des chapitres
 \include{config/style_chapitre3}
 
-%\input{content/conclusion} % INCLUDE: conclusion
+\input{content/conclusion} % INCLUDE: conclusion
 
 %Bibliographie
 \def\bibname{Bibliographie}
 \addcontentsline{toc}{chapter}{\bibname}
 \bibliography{bib/references-pub}
+
+\appendix
+
+\input{content/appendix-exemple-decision}
 
 \end{document}
