@@ -1,19 +1,7 @@
 \chapter[Application à l'analyse descriptive d'un grand corpus]{Application à l'analyse descriptive d'un grand corpus de décisions jurisprudentielles}
 \label{chap:demo}
-Ce chapitre décrit des résultats d'analyses statistiques observés lors de l'application de la chaîne proposée (Figure \ref{fig:intro:pipeline-globale}) sur un corpus formé de la base CAPP de la \citet{dila2019capp} (+65k XML sur 1997-2019), et plus de 10k autres documents de cours d'appels. Le module d'extraction d'information (Figure \ref{fig:demo:module-extraction}) est un système qui comprend les modèles développés durant les expérimentations de cette thèse. 
-
-%  une base du tribunal de commerce de Paris (300k MS DOC sur ?-?), 500k décisions collectées de Legifrance
-%à CAPP\_20190805-214041.tar.gz et Freemium_capp\_global\_20180315-170000.tar.gz 
-
-%\verb|wget -c --accept='*.tar.gz' -r  ftp://echanges.dila.gouv.fr/CAPP/|
-
-\begin{figure}[!htb]
-	\centering 
-	\includegraphics[width=0.8\textwidth]{pipeline-demo.png}
-	\caption{Détails du module d'extraction d'information}\label{fig:demo:module-extraction}
-\end{figure}
-
-Après extraction, les décisions de la base de données sont réparties dans l'espace (ville) comme sur la figure \ref{fig:demo:doc-per-city} et dans le temps comme sur la figure \ref{fig:demo:doc-per-year}. Les demandes extraites se répartissent comme suit: 476 ACPA, 409 CONCDEL, 160 DANAIS, 0 DCPPC, 34 DORIS, et 45928 STYX.  
+Ce chapitre décrit des résultats d'analyses statistiques observés sur un corpus formé de la base CAPP de la \citet{dila2019capp} (+65k XML sur 1997-2019) et plus de 10k autres documents de cours d'appels. Les connaissances jurisprudentielles ont été extraites à partir de ce corpus non structuré à l'aide des approches dans cette thèse. 
+Après cette extraction, les décisions de la base de données sont réparties dans l'espace (ville) comme sur la figure \ref{fig:demo:doc-per-city} et dans le temps comme sur la figure \ref{fig:demo:doc-per-year}. Les demandes extraites se répartissent comme suit: 476 ACPA, 409 \textit{concdel}, 160 \textit{danais}, 0 \textit{dcppc}, 34 \textit{doris}, et 45928 \textit{styx}.  
 
 \begin{figure}[ht]
 	\centering
