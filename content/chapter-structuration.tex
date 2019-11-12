@@ -268,7 +268,7 @@ En effet, le document est considéré comme divisé en $N$ parties (10 dans nos 
 	\begin{tabular}{|l|l|}
 		 \hline
 		\multicolumn{1}{|c}{Type} & \multicolumn{1}{|c|}{Descripteur} \\ \hline
-		Forme & \tabitem la ligne entière (\verb|l|)  \\  
+		Forme & \tabitem la ligne entière (\verb|token|)  \\  
 		& \tabitem ses premiers mots (\verb|t0, t1, t2|) \\
 		& \tabitem sa longueur absolue (\verb|absLength|) \\ 
 		& \tabitem sa longueur relative (\verb|relLength|) \\ \hline
@@ -328,15 +328,18 @@ Contexte & \tabitem les mots précédents (\verb|w-1, w-2|) \\
 	& \tabitem les lemmes des mots suivants  (\verb|lemmaW1, lemmaW2|) \\
 	& \tabitem numéro de ligne (\verb|lineNum|) \\ 
 	& \tabitem position de l'élément dans la ligne (\verb|numInLine|) \\
-	& \tabitem \og le document contient-il le mot \textit{intervenant} ? \fg{} (\verb|intervenantInText|) \\
-	& \tabitem \og le mot apparaît-il après \textit{APPELANT} ? \fg{} (\verb|isAfterAPPELANT|) \\
-	& \tabitem \og le mot apparaît-il après \textit{INTIME} \fg{} (\verb|isAfterINTIME|)\\
-	& \tabitem \og le mot apparaît-il après  \textit{INTERVENANT} \fg{} (\verb|isAfterINTERVENANT|) \\
+	& \tabitem \og le document contient-il le mot \textit{intervenant} ? \fg{} \\
+	& (\verb|intervenantInText|) \\
+	& \tabitem \og le mot apparaît-il après \textit{appelant} ? \fg{} (\verb|isAfterAPPELANT|) \\
+	& \tabitem \og le mot apparaît-il après \textit{intimé} \fg{} (\verb|isAfterINTIME|)\\
+	& \tabitem \og le mot apparaît-il après  \textit{intervenant} ? \fg{} \\ 
+	& (\verb|isAfterINTERVENANT|) \\
 	& \tabitem numéro de la ligne précédente contenant le mot (\verb|lastSeenAt|)\\
 	& \tabitem nombre d'occurrences du mot (\verb|nbTimesPrevSeen|)\\
 	& \tabitem \og S'agit-il d'un mot-clé de règles juridiques ? \fg{} (\verb|isKEYWORD|) \\
-	 & \tabitem rôles grammaticaux des mots voisins (\texttt{POSW-2, POSW-1, POSW1, POSW2}) \\ 
-	 & \tabitem thèmes des mots voisins (\verb|w-2topic0|, \verb|w-1topic0|, \verb|w1topic0|, \verb|w2topic0|) \\ 
+	& \tabitem rôles grammaticaux des mots voisins (\texttt{POSW-2, POSW-1,} \\ 
+	& \texttt{POSW1, POSW2}) \\ 
+	& \tabitem thèmes des mots voisins (\verb|w-2topic0|, \verb|w-1topic0|, \verb|w1topic0|, \verb|w2topic0|) \\ 
 	 \hline
 	\end{tabular}	
 	\caption{Descripteurs candidats de mots pour les mentions d'entités.} \label{tab:structuration:descripteursmots}
@@ -642,9 +645,9 @@ D'un point de vue général (évaluation globale), les modèles HMM se comporten
 
 \subsection{Discussions}
 \subsubsection{Confusion de classes}
-Certaines erreurs sont probablement dues à la proximité des entités de types différents. D'après la matrice de confusion des méta-données d'entête (\figureref{fig:structuration:matrice-confusion-entete}), les \textit{intervenants} sont parfois mal classifiés comme \textit{intimé} en majorité (17 \%), mais aussi comme \textit{appelant} (4 \%) ou \textit{avocat} (2 \%) probablement parce qu'il s'agit d'entités mentionnées les unes à la suite des autres dans l'entête (les \textit{intervenants} sont généralement mentionnés juste après les \textit{avocats} des \textit{intimés}). De plus, les intervenants apparaissent dans une très faible proportion de documents annotés.  Par ailleurs, une quantité considérable d'\textit{appelants} sont aussi classifiés comme \textit{intimés} (16 \%).  Ce qui signifie que la transition entre la liste des appelants et celle des intimés est difficilement identifiable avec les descripteurs de mots que nous avons définis.
+Certaines erreurs sont probablement dues à la proximité des entités de types différents. D'après la matrice de confusion des méta-données d'entête (\figureref{fig:structuration:matrice-confusion-entete}), les \textit{intervenants} sont parfois mal classifiés comme \textit{intimé} en majorité (17 \%), mais aussi comme \textit{appelant} (4 \%) ou \textit{avocat} (2 \%) probablement parce qu'il s'agit d'entités mentionnées les unes à la suite des autres dans l'entête (les \textit{intervenants} sont généralement mentionnés juste après les \textit{avocats} des \textit{intimés}). 
 
-\begin{figure}[ht]
+\begin{figure}[!htb]
     \centering
     \includegraphics[width=\textwidth]{confusion_matrix_entete.png}
     %\textcolor{red}{Matrices de confusion}
@@ -652,11 +655,11 @@ Certaines erreurs sont probablement dues à la proximité des entités de types 
     \label{fig:structuration:matrice-confusion-entete}
 \end{figure}
 
- La proximité crée aussi des confusions entre les sections CORPS et DISPOSITIF qui se suivent (\figureref{fig:structuration:matrice-confusion-section}). 
+ De plus, les intervenants apparaissent dans une très faible proportion de documents annotés.  Par ailleurs, une quantité considérable d'\textit{appelants} sont aussi classifiés comme \textit{intimés} (16 \%).  Ce qui signifie que la transition entre la liste des appelants et celle des intimés est difficilement identifiable avec les descripteurs de mots que nous avons définis. La proximité crée aussi des confusions entre les sections CORPS et DISPOSITIF qui se suivent (\figureref{fig:structuration:matrice-confusion-section}). 
 
-\begin{figure}[!ht]
+\begin{figure}[!htb]
 	\centering
-	\includegraphics[width=0.8\textwidth]{confusion_matrix_section.png}
+	\includegraphics[width=0.6\textwidth]{confusion_matrix_section.png}
 	%\textcolor{red}{Matrices de confusion}
 	\caption{Matrice de confusion entre lignes des sections avec le modèle CRF}
 	\label{fig:structuration:matrice-confusion-section}
@@ -721,7 +724,22 @@ Il apparaît que les scores $F_1$ croissent avec le nombre de données d'entraî
 
 L'ingénierie manuelle des caractéristiques est difficile car arbitraire. Nous avons comparé les performances de nos descripteurs avec celles des réseaux de neurones qui apprennent une représentation des segments. Pour cela nous avons choisi le BiLSTM-CRF de \citet{lample2016nnner} qui fait partie des meilleures approches récentes. La comparaison a été effectuée pour la détection des entités avec le schéma d'étiquetage BIEO et une validation croisée à 9 itérations. Le BiLSTM-CRF prend en entrée les plongements sémantiques Word2Vec \citep{mikolov2013word2vec} des mots. Pour cela, nous avons entraîné des vecteurs de mots à partir d'un corpus jurisprudentiel de plus de 800K documents provenant de \url{www.legifrance.gouv.fr} avec l'implémentation\footnote{\url{https://code.google.com/archive/p/word2vec/}} de \citet{mikolov2013word2vec}. Les vecteurs obtenus ont une dimension de 300. Etant donné que les décisions sont des documents particulièrement longs, leur contenu a été découpé en des morceaux de texte dont la taille n'excède pas 300 mots. Les résultats obtenus par le BiLSTM-CRF sont assez proches de ceux que nous observons avec les descripteurs manuellement définis (\tableref{tab:structuration:perf-bilstmcrf}). Etant donné que ces derniers permettent de mieux détecter certaines entités comme les \textit{intervenants}, les \textit{avocats} ou les numéro \textit{R.G.}, et vice-versa pour les \textit{normes} ou les \textit{appelants} chez le BiLSTM-CRF, une combinaison des deux types de descripteurs pourrait améliorer les résultats actuels. %On peut par exemple exploiter des modèles thématiques déduits en partitionnant (\textit{clustering}) l'ensemble des vecteurs de mots  et les utiliser comme descripteurs définis manuellement. 
  
+\subsubsection{Sectionnement en 4 sections pour l'extraction des demandes}
+Le sectionnement permet de mieux localiser les informations qui se retrouvent, selon leur nature, dans des sections spécifiques. Pour l'extraction des demandes nous avons dû passer d'un sectionnement à 3 sections comme étudié depuis le début de ce chapitre, vers un sectionnement à 4 sections. En effet, la section Corps est remplacé par les deux sections qu'elle englobait: l'exposé du litige (Litige) et les motivations des juges (Motifs). Comme nous le faisons remarquer dans le chapitre \ref{chap:quanta}, les demandes sont généralement énoncées dans la section Litige et les résultats dans le Dispositif. En expérimentant cet affinement du sectionnement par 5-\textit{fold} validation croisée avec les mêmes documents annotés manuellement, les mêmes descripteurs caractéristiques de lignes, le schéma d'étiquetage IO, et le modèle CRF, nous observons les résultats du \tableref{tab:structuration:5folccvCRF-4sections} au niveau atomique. L'Entête reste aisément détectable ($F_1$-mesure=99.67\%) contrairement aux autres sections qui ont quasiment 3\% en moins en moyenne de $F_1$-mesures par rapport à l'entête.
 
+\begin{table}[!htb]
+	\centering
+\begin{tabular}{|l|l|l|l|}
+	\hline
+	\multirow{2}{*}{}	&      \multicolumn{3}{|c|}{\textbf{CRF (\%)}}          \\ \cline{2-4} & \textit{Precision} & \textit{Rappel} & $F_1$ \\ \hline
+	\textbf{entete} &   99.80 &	99.54 &	99.67      \\ 
+	\textbf{litige}      &  96.10 &	97.66	& 96.87       \\ 
+	\textbf{motifs}      &   97.31	&95.96	&96.62 \\
+	\textbf{dispositif}    &   99.00&	98.49&	98.72  \\ \hline
+	\textbf{Evaluation globale} &97.55	&97.55	&97.55       \\ \hline
+\end{tabular}
+\caption{Evaluation au niveau atomique de la détection de 4 sections à l'aide du CRF.} \label{tab:structuration:5folccvCRF-4sections}
+\end{table}
 \section{Conclusion}
 \label{sec:structuration:conclusion}
 L'application des modèles HMM et CRF dans le but de détecter des sections et des entités dans les décisions de justice est une tâche difficile. Ce chapitre a examiné les effets de divers aspects de la conception sur la qualité des résultats. En résumé, malgré une importante réduction du nombre de descripteurs, l'amélioration des résultats semble être insignifiante lorsque l'on sélectionne séparément la représentation du segment et le sous-ensemble de caractéristiques. Cependant, opter pour la bonne configuration en évaluant les approches de sélection combinées avec diverses représentations de segment pourrait peut-être offrir de meilleurs résultats. En raison de la longue durée de recherche du sous-ensemble optimal de descripteurs, il serait préférable d'utiliser un algorithme de sélection beaucoup plus rapide que les méthodes BDS et SFFS que nous avons expérimentées. De plus, même si les résultats s'améliorent avec l'augmentation de la taille de l'échantillon d'apprentissage, la mesure globale $F_1$ semble atteindre une limite très rapidement. Étant donné que certaines entités ne sont pas très bien détectées, il peut être avantageux d'ajouter des exemples appropriés afin de traiter ces problèmes spécifiques.

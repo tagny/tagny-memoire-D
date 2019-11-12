@@ -240,9 +240,9 @@ Les métriques supervisées mesurent l'information contenue dans les labels des 
 	\[rf(t,c) = \log\left(2 + \frac{N_{t,c}}{max(1, N_{t,\overline{c}})}\right)\]
 	\item[Le coefficient du $\chi^2$] \citep{schutze1995chi2} estime le manque d'indépendance entre $t$ et $c$. Par conséquent, une grande valeur de  $\chi^2(t,c)$ indique une relation étroite entre $t$ et $c$. Elle est calculée par la formule :
 	\[\chi^2(t,c) = \frac{N ((N_{t,c} N_{\overline{t},\overline{c}}) - (N_{t,\overline{c}} N_{\overline{t},c}))^2}{N_t N_{\overline{t}} \vert D_c \vert  \vert D_{\overline{c}} \vert }\]
-	\item[Le coefficient de corrélation $ngl$] de Ng, Goh et Low \citep{ng1997ngl} est la racine carré positive du $\chi^2$ \citep{schutze1995chi2} :
-	\[ngl(t,c) = \frac{\sqrt{N} \vert (N_{t,c} N_{\overline{t},\overline{c}}) - (N_{t,\overline{c}} N_{\overline{t},c})\vert}{\sqrt{N_t N_{\overline{t}} \vert D_c \vert  \vert D_{\overline{c}} \vert }}.\]
-	L'intuition est de ne regarder que les termes qui proviennent de $D_c$ et qui indiquent l'appartenance à $c$.
+	\item[Le coefficient de corrélation $ngl$] de Ng, Goh et Low \citep{ng1997ngl} est la racine carré du $\chi^2$ \citep{schutze1995chi2} :
+	\[ngl(t,c) = \frac{\sqrt{N} (N_{t,c} N_{\overline{t},\overline{c}}) - (N_{t,\overline{c}} N_{\overline{t},c})}{\sqrt{N_t N_{\overline{t}} \vert D_c \vert  \vert D_{\overline{c}} \vert }}.\]
+	L'intuition est de ne regarder que les termes qui proviennent de $D_c$ et qui indiquent l'appartenance à $c$. Une valeur positive de $ngl$ signifie que $t$ est corrélé avec $c$, lorsqu'une valeur négative signifie que $t$ est corrélé à $\overline{c}$.
 	\item[Le coefficient $gss$] de Galavotti, Sebastiani, et Simi
 	 \citep{galavotti2000gss} est une fonction simplifiée du $ngl$ \citep{ng1997ngl} :
 	\[gss(t,c) = (N_{t,c} N_{\overline{t},\overline{c}}) -  (N_{t,\overline{c}} N_{\overline{t},c}).\]
@@ -276,7 +276,7 @@ A l'exception de la $\text{C-value}$, ces métriques ne tiennent pas expliciteme
 \subsection{Extraction basée sur la proximité entre sommes d'argent et termes-clés}
 \label{sec:quanta:extraction}
 
-Diverses approches d'extraction d'informations existent (\ref{quanta:related-approaches}). Il est important de proposer dans un premier temps une approche basique explorant la solvabilité du problème du fait de ses multiples spécificités dont l'annotation d'une seule catégorie dans un document qui en contient plusieurs, l'annotation dans un tableau et donc à l'extérieur du document, la très faible quantité des données annotées, la multiplicité des demandes et des catégories dans un même document. Par conséquent, nous proposons ici une chaîne d'extraction à base de termes-clés, applicable pour chaque catégorie de demande. Il s'agit d'une approche qui tente de reproduire une lecture naïve du document en se basant sur des expressions couramment employées pour énoncer les demandes et résultats. La méthode consiste en deux phases dont une phase d'apprentissage des termes-clés de la catégorie, à proximité desquels seront identifiés les attributs durant la phase d'extraction des demandes comme l'illustre la \figureref{fig:quanta:exemple-proximite}. On remarque en effet que, naïvement, le seul fait que $1500$ euros soit aussi proche des termes-clés \textit{amende civile} et \textit{pour procédure abusive} signifie bien qu'il s'agit du quantum demandé comme amende civile pour procédure abusive.
+Diverses approches d'extraction d'information existent (\ref{quanta:related-approaches}). Il est important de proposer dans un premier temps une approche basique explorant la solvabilité du problème du fait de ses multiples spécificités dont l'annotation d'une seule catégorie dans un document qui en contient plusieurs, l'annotation dans un tableau et donc à l'extérieur du document, la très faible quantité des données annotées, la multiplicité des demandes et des catégories dans un même document. Par conséquent, nous proposons ici une chaîne d'extraction à base de termes-clés, applicable pour chaque catégorie de demande. Il s'agit d'une approche qui tente de reproduire une lecture naïve du document en se basant sur des expressions couramment employées pour énoncer les demandes et résultats. La méthode consiste en deux phases dont une phase d'apprentissage des termes-clés de la catégorie, à proximité desquels seront identifiés les attributs durant la phase d'extraction des demandes comme l'illustre la \figureref{fig:quanta:exemple-proximite}. On remarque en effet que, naïvement, le seul fait que $1500$ euros soit aussi proche des termes-clés \textit{amende civile} et \textit{pour procédure abusive} signifie bien qu'il s'agit du quantum demandé comme amende civile pour procédure abusive.
 
 \begin{figure}[!htb]
 	\small
@@ -316,7 +316,7 @@ Diverses approches d'extraction d'informations existent (\ref{quanta:related-app
 
 Le pré-traitement est nécessaire pour :
 \begin{enumerate}
-	\item sectionner le document comme décrit au chapitre \ref{chap:structuration} en sections Entête, Litige, Motifs, Dispositif ;
+	\item sectionner le document en 4 sections Entête, Litige, Motifs, Dispositif ;
 	\item annoter les sommes d'argent (en chiffre) à l'aide de l'expression régulière \og \texttt{[0-9]([0-9]|[',.]|\textbackslash s)*\textbackslash s*([Ee]uro[s]\{0,1\} |franc[s]\{0,1\} \\ |\euro|F|XPF|CFP|EUR|EUROS|[i])( |\$)}\fg{} ;
 	\item annoter les énoncés de demandes et de résultats respectivement dans les sections Litige et Dispositif:  pour cela, les mots introductifs du Tableau \tableref{tab:quanta:mots-introductifs} sont employés car ils indiquent le début d'un énoncé indépendamment de la catégorie; 	cette technique de recherche de passages à l'aide de listes de termes-clés prédéfinies a déjà été employé par  \citet{wyner2010extractlegalelts} pour annoter les énoncés de résultats en considérant toute phrase contenant un terme de jugement : \textit{affirm, grant, deny, reverse, overturn, remand, ...}
 	 
@@ -358,7 +358,7 @@ A l'aide des termes-clés appris, l'extraction des données de couples demandes-
 	\item relier les attributs ($q_d, s_r, q_r$) de chaque paire demande-résultat:% longcommonsubsequence puis ordre des quanta 
 	\begin{enumerate}
 		\item former les paires (énoncé de demande, énoncé de résultat) similaire (nous utilisons la métrique de \og la plus longue sous-séquence commune \fg{} \citep{hirschberg1977algorithms_LCS, bakkelund2009lcs}) 
-		\item pour chaque paire d'énoncés formée, relier les quanta demandés et quanta résultats par ordre d'occurrence similaire.
+		\item pour chaque paire d'énoncés formée, relier les quanta demandés et quanta résultats en considérant que les quanta correspondants apparaissent dans le même ordre dans les deux énoncés.
 	\end{enumerate}
 \end{enumerate}
 
@@ -435,7 +435,7 @@ Les implémentations de la bibliothèque Weka \citep{frank2016weka} ont permis d
 	\begin{center}
 	\begin{tabular}{l|ccc|ccc|ccc|ccc}
 		\hline\noalign{\smallskip}
-		&   \multicolumn{3}{|c|}{NB}    &    \multicolumn{3}{|c|}{J48}   &  \multicolumn{3}{|c|}{KNN}  & \multicolumn{3}{|c}{SVM}     \\       
+		&   \multicolumn{3}{|c|}{NB}    &    \multicolumn{3}{|c|}{C4.5}   &  \multicolumn{3}{|c|}{KNN}  & \multicolumn{3}{|c}{SVM}     \\       
 		\noalign{\smallskip}
 		\hline
 		\noalign{\smallskip}
