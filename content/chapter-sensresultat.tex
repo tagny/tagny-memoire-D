@@ -34,16 +34,16 @@ Comme le précédent, ce chapitre est relatif à l'extraction de données sur le
 Pour toute catégorie de demande, les décisions ne contenant qu'une demande de cette catégorie sont majoritaires. 
 \end{postulat} 
 
-Ce postulat est légitime car les statistiques sur les données labellisées de la Figure \ref{fig:quanta:hist-repartition-docs} montrent bien que dans chaque catégorie, les décisions contiennent en majorité une seule demande d'une même catégorie. On remarque néanmoins l'exception de la catégorie STYX (dommage-intérêt sur l'article 700 CPC), où dans la majorité des documents, on a plutôt 2 demandes. Cette exception peut se justifier par le fait que chaque partie fait généralement ce type de demande car elle porte sur le remboursement des frais de justice. Ce postulat présente cependant un inconvénient dû au fait que la majorité des demandes d'une catégorie peuvent se retrouver dans des décisions comprenant plus d'une demande de cette catégorie. Pour la catégorie \textit{concdel} par exemple, 58 demandes ont été annotées manuellement (\figureref{stat-sensrst}) mais 19 décisions sur 30 (63,33\%) ont une seule demande de cette catégorie (\figureref{fig:quanta:hist-repartition-docs}). Par conséquent, 67.24\% des demandes de la catégorie \textit{concdel} sont dans les décisions annotées à plus d'une demande de cette catégorie.  Il est donc possible de manquer un grand nombre de demandes. %On pourrait peut-être porter la classification à un modèle multi-label qui déterminera plusieurs sens à partir d'un seul document. Par exemple <SENS1, SENS2, SENS3> avec des valeurs prédéfinies sur les SENS 2 et 3 par exemple NO-DMD pour indiquer que la décision ne comprend pas de seconde ou de troisième demande.
+Ce postulat est légitime car les statistiques sur les données labellisées de la Figure \ref{fig:quanta:hist-repartition-docs} montrent bien que dans chaque catégorie, les décisions contiennent en majorité une seule demande d'une même catégorie. On remarque néanmoins l'exception de la catégorie STYX (dommage-intérêt sur l'article 700 CPC), où dans la majorité des documents, on a plutôt 2 demandes. Cette exception peut se justifier par le fait que chaque partie fait généralement ce type de demande car elle porte sur le remboursement des frais de justice. Ce postulat présente cependant un inconvénient dû au fait que la majorité des demandes d'une catégorie peuvent se retrouver dans des décisions comprenant plus d'une demande de cette catégorie. Pour la catégorie \textit{concdel} par exemple, 58 demandes ont été annotées manuellement (\figureref{stat-sensrst}) mais 19 décisions sur 30 (63,33\%) ont une seule demande de cette catégorie (\figureref{fig:quanta:hist-repartition-docs}). Ces 19 décisions comprennent donc seulement 32,75\% ($100 \times 19 / 58$) des demandes annotées pour \textit{concdel}.  Par conséquent, 67.24\% de ces demandes sont dans les décisions annotées ayant plus d'une demande de cette catégorie.  Il est donc possible de manquer un grand nombre de demandes. %On pourrait peut-être porter la classification à un modèle multi-label qui déterminera plusieurs sens à partir d'un seul document. Par exemple <SENS1, SENS2, SENS3> avec des valeurs prédéfinies sur les SENS 2 et 3 par exemple NO-DMD pour indiquer que la décision ne comprend pas de seconde ou de troisième demande.
 
 \begin{postulat}\label{postulat:sens:sensbinaire}
 Le sens du résultat est généralement binaire: accepte ou rejette.
 \end{postulat} 
 Ce postulat est justifié car les sens de résultat ont majoritairement l'une de ces deux valeurs (\figureref{stat-sensrst}). Les autres valeurs sont très rares.
 
-\begin{figure}
+\begin{figure}[!htb]
 \centering
-\includegraphics[width=0.85\textwidth]{chartDistrSens.png}
+\includegraphics[width=\textwidth]{chartDistrSens.png}
 \caption{Répartition des sens de résultat dans les données annotées.}\label{stat-sensrst}
 \end{figure}
 
@@ -80,14 +80,14 @@ Chaque document $d$ est représenté sous une forme vectorielle du type TF-IDF (
 \end{table}
 
 \subsection{Algorithmes traditionnels de classification de données}
-Ces méthodes sont généralement basée sur une représentation  des textes dans un espace vectoriel $\mathcal{X}$ d'entrée et délimitent une frontière entre les classes dans un espace multidimensionnel.  
+Bien que la classification de documents voit se développer récemment des algorithmes propres aux textes, un grand nombre de méthodes ont été développées dans des contextes détachés des considérations applicatives. Ces méthodes sont généralement basée sur une représentation  des textes dans un espace vectoriel $\mathcal{X}$ d'entrée et délimitent une frontière entre les classes dans un espace multidimensionnel. $C$ représente l'ensemble des classes. 
 %NB et SVM : https://www.dropbox.com/home/Documents/to-read/term-weight?preview=Best+Terms+An+Efficient+Feature+Selection+Algorithm+for+Text+Categorization.pdf
 % C4.5, k-means, svm, apriori algo, em algo, page rank, ada boost, knn, NB, CART: http://www.cs.umd.edu/~samir/498/10Algorithms-08.pdf
 
 \subsubsection{Le classifieur bayésien naïf (NB)}
 %http://stackoverflow.com/questions/10059594/a-simple-explanation-of-naive-bayes-classification#20556654
 %https://webdocs.cs.ualberta.ca/~greiner/R/PAPERS/ExplainNB.pdf
-Le classifieur naïf bayésien \citep{duda1973patternclass} est  un modèle à densité qui estime la probabilité qu'un texte appartienne à une classe à l'aide du théorème de Bayes \citep{raschka2014naivebayes}:
+Le classifieur naïf bayésien \citep{duda1973patternclass} est  un modèle probabiliste qui estime la probabilité qu'un texte appartienne à une classe à l'aide du théorème de Bayes \citep{raschka2014naivebayes}:
 
 \[\text{probabilité a posteriori} = \frac{\text{probabilité conditionnelle} \cdot \text{probabilité a priori}}{\text{évidence}}\]
 
@@ -138,10 +138,10 @@ où $C$ est la constante de régularisation pour éviter un sur-apprentissage ou
 La classification par SVM ne s'applique que lorsque les exemples d'apprentissage des classes sont linéairement séparables. Cependant, ils ne le sont pas toujours dans l'espace  $\mathcal{X}$. Ainsi, une fonction \og noyau \fg{} (\textit{kernel}) $K: \mathcal{X} \longrightarrow \mathcal{F}$ doit être choisie pour transformer chaque donnée entrée $x$ de l'espace original  $\mathcal{X}$ vers un nouvel espace  $\mathcal{F}$ dit de caractéristiques dans lequel les classes sont linéairement séparables. Par conséquent, la fonction de classification s'écrit \[f(x) = \sum\limits_{i=1}^n \alpha_i K(x,x_i) + b\] où les $\alpha_i$ sont les coefficients de la combinaison linéaire des exemples d'apprentissage égale à $w$ ($w = \sum\limits_{i=1}^n\alpha_i x_i$) \citep{Ben-Hur2010svm}. Parmi les multiples formes qu'il peut prendre, le noyau peut être, par exemple, soit linéaire($K(x,x_i) = x^Tx_i + c$), soit polynomial ($K(x,x_i) = (\gamma x^Tx_i + c)^d$), soit Gaussien ou RBF\footnote{\textit{radial base function}} ($K(x,x_i) = \exp{-\gamma \norm{x-x_i}}$), soit une sigmoïde ($K(x,x_i) = \tanh(\gamma x^Tx_i + c)$) \citep{Amami2013PracticalModelSelectionSVM}.
 
 \subsubsection{k-plus-proches-voisins (kNN)}
-L'algorithme des $k$-plus-proches-voisins \citep{cover1967knn} est un algorithme très simple qui consiste à affecter à un nouvel objet $x$ la classe majoritaire $y'$ parmi ceux des $k$ points d'exemples d'entrainement $\lbrace (x_i,y_i) \rbrace_{1\leq i \leq k}$, les plus proches du point $x$ selon la distance $Dis$ choisie. Ainsi, trois éléments clés influencent l'efficacité de la classification:
+L'algorithme des $k$-plus-proches-voisins \citep{cover1967knn} est un algorithme simple qui consiste à affecter à un nouvel objet $x$ la classe majoritaire $y'$ parmi ceux des $k$ points d'exemples d'entrainement $\lbrace (x_i,y_i) \rbrace_{1\leq i \leq k}$, les plus proches du point $x$ selon la distance $Dis$ choisie. Ainsi, trois éléments clés influencent l'efficacité de la classification:
 \begin{enumerate}
-	\item les données d'entrainement dont le nombre s'il est très grand peut rendre cher le processus de classification, car la distance du nouvel objet à chaque point annoté, est calculée;
-	\item le nombre de voisins (c'est-à-dire la valeur de $k$) qui ne doit être ni trop petit (sensibilité aux bruits / \textit{outliers}), ni trop grand (risque d'avoir dans le voisinage beaucoup de points d'une autre classe). La sensibilité au nombre de voisins peut être atténuée en pondérant les points par leur distance à l'objet à classer. Il a été proposé plusieurs variantes de cette stratégie de \og vote pondéré par la distance \fg{}, comme par exemple:
+	\item Si les les données d'entrainement sont trop nombreuses, le processus de classification peut devenir coûteux en temps de calcul. En effet, la distance du nouvel objet à chaque point annoté est calculée.
+	\item Le nombre de voisins (c'est-à-dire la valeur de $k$) ne doit être trop petit pour limiter la sensibilité aux bruits / \textit{outliers}. Il ne doit non plus être trop grand au risque d'avoir dans le voisinage trop de points d'une autre classe que celle attendue. La sensibilité au nombre de voisins peut être atténuée en pondérant les points par leur distance à l'objet à classer. Il a été proposé plusieurs variantes de cette stratégie de \og vote pondéré par la distance \fg{}, comme par exemple:
 	\begin{itemize}
 		\item $y' = \argmax\limits_c \sum\limits_{(x_i,y_i)} \frac{1}{Dis(x, x_i)^2} \times I(c = y_i)$  \citep{dudani1976originalwknn} \[\text{ où } I(c=y_i) = \left\lbrace \begin{array}{ll}
 		1 & \text{si }c = y_i \\
@@ -149,17 +149,17 @@ L'algorithme des $k$-plus-proches-voisins \citep{cover1967knn} est un algorithme
 		\end{array} \right.\]
 		\item $y' = \argmax\limits_c \sum\limits_{(x_i,y_i)} w_i \times I(c = y_i)$ \citep{gou2011wknn} \[\text{ avec } w_i = \left\lbrace \begin{array}{ll}
 		\frac{Dis(x, d_k) - Dis(x, d_i)}{Dis(x, d_k) - Dis(x, d_1)} & \text{si } Dis(x, d_k) \neq Dis(x, d_1) \\
-		1 & \text{sinon}
+		1 & \text{sinon.}
 		\end{array} \right.\]
 		%\item $y' = \argmin\limits_c d(vec(\hat{E}(x)),t_c)$ \citep{bicego2016wknnrevisited} avec $\hat{E} = ?$ et $t_c = ?$
 	\end{itemize}
 	 
-	\item la métrique de calcul de distance qui doit être adéquate pour le type de donnée et la tâche, comme par exemple, la distance cosinus qui est préférable à la distance euclidienne pour la classification de documents, la deuxième métrique se dégradant lorsque le nombre d'attributs augmente \citep{sohangir2017improvedCosSim, aggarwal2001behaviorOfDistHighDim}.
+	\item La métrique de calcul de distance doit être adéquate pour le type de donnée et la tâche. Par exemple, la distance cosinus est souvent préférable à la distance euclidienne pour la classification de documents. En effet, la distance euclidienne se dégrade lorsque le nombre de dimensions augmente \citep{sohangir2017improvedCosSim, aggarwal2001behaviorOfDistHighDim}.
 \end{enumerate}
 
 % le KNN souffre de 2 pbs: la complexité et la définition de la distance à utiliser. Le kNN doit stocker et rechercher à travers toute la base d'entraînement pour classer un point (O(n)). La recherche des voisins peut être accélérée en utilisant des algorithmes comme KD-trees\footnote{\url{https://gopalcdas.com/2017/05/24/construction-of-k-d-tree-and-using-it-for-nearest-neighbour-search/}} [Jon Louis Bentley, 1975] (O(k log(n))) ou ball-trees. La construction du kd-tree consiste à diviser les données d'entrainement à chaque  niveau suivant une valeur d'une dimension en essayant d'obtenir un arbre le plus équilibré possible pour optimiser la recherche. Le nombre de dimension doit être assez réduit?????
 \subsubsection{Arbre de décision}
-Un arbre de décision est une structure arborescente utilisée en fouille de données pour associer un label prédéfini à des objets (classification), ou prédire la valeur d'une variable continue (régression). Il comprend des n\oe{}uds internes qui correspondent chacun à un test sur la valeur d'un attribut (test uni-varié), des arêtes correspondant à une sortie du test, et enfin des feuilles ou n\oe{}uds terminaux qui correspondent chacun à une prédiction. La classification d'un objet $x$ consiste à faire passer successivement les tests en fonction des valeurs des attributs de $x$, de la racine jusqu'à une feuille dont le label est retourné comme classe de $x$ (Algorithme \ref{algo:sensresultat:classifywithtree}).
+Un arbre de décision est une structure arborescente qui associe un label prédéfini à des objets (classification), ou prédire la valeur d'une variable continue (régression). Il comprend des n\oe{}uds internes qui correspondent chacun à un test sur la valeur d'un attribut (test uni-varié), des arêtes correspondant à une sortie du test, et enfin des feuilles ou n\oe{}uds terminaux qui correspondent chacun à une prédiction. La classification d'un objet $x$ consiste à faire passer successivement les tests en fonction des valeurs des attributs de $x$, de la racine jusqu'à une feuille dont le label est retourné comme classe de $x$ (Algorithme \ref{algo:sensresultat:classifywithtree}).
 
 \begin{algorithm}[ht] \small
 	\KwData{Objet $x$, Arbre $A$}
@@ -474,11 +474,12 @@ $P_{macro} = \frac{\overline{TP}}{\overline{TP} + \overline{FP}}$, $R_{macro} = 
 
 Les données utilisées sont une restriction, des données du chapitre précédent, aux documents n'ayant qu'une seule demande annotée pour chacune des catégories de demande. Le déséquilibre entre les classes est illustrée par la figure \ref{fig:sensresultat:stat-1dmd}. En effet, les demandes sont en majorité rejetées pour les catégories ACPA, CONCDEL, DANAIS et STYX. Le contraire est observé pour DCPPC, et le rapport est légèrement équilibré pour DORIS.
 \begin{figure}[htb]
-\includegraphics[width=\textwidth]{chartDataset1dmd.png}
-\caption{Répartition des documents à une demande de la catégorie considérée.}\label{fig:sensresultat:stat-1dmd}
+	\centering
+\includegraphics[width=0.8\textwidth]{chartDataset1dmd.png}
+\caption{Répartition des documents entre \textit{accepte} et \textit{rejette}.}\label{fig:sensresultat:stat-1dmd}
 \end{figure}
 
-L'efficacité des algorithmes dépend souvent des valeurs de méta-paramètres dont il faut déterminer des valeurs optimales. Scikit-learn implémente deux stratégies de recherche des ces valeurs: RandomSearch et GridSearch. Malgré la rapidité de la méthode RandomSearch, elle est non déterministe et les valeurs qu'elle trouve donnent une prédiction moins précise que les valeurs par défaut. Idem pour la méthode GridSearch, qui est très lente, et donc peu pratique face au grand nombre de configurations à évaluer. Par conséquent, les valeurs utilisées pour les expérimentations sont les valeurs par défaut définies par Scikit-learn (Tableau \ref{tab:sensrst:metapara}).
+L'efficacité des algorithmes dépend souvent des méta-paramètres dont il faut déterminer des valeurs optimales. Scikit-learn implémente deux stratégies de recherche des ces valeurs: RandomSearch et GridSearch. Malgré la rapidité de la méthode RandomSearch, elle est non déterministe et les valeurs qu'elle trouve donnent une prédiction moins précise que les valeurs par défaut. Idem pour la méthode GridSearch, qui est très lente, et donc peu pratique face au grand nombre de configurations à évaluer. Par conséquent, les valeurs utilisées pour les expérimentations sont les valeurs par défaut définies par Scikit-learn (Tableau \ref{tab:sensrst:metapara}).
 
 \begin{table}[htb]
 	\scriptsize

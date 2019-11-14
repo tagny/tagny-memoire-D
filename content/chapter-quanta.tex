@@ -396,29 +396,14 @@ L'annotation manuelle d'exemples s'effectue pour une catégorie à la fois afin 
 \subsection{Métriques d'évaluation}
 \paragraph{Reconnaissance de catégories par classification}
 
-La classification des documents est évaluée en utilisant les métriques précision (P), rappel (P), f1-mesure (F1) calculées à l'aide des nombres de vrais positifs (TP), faux positifs (FP), faux négatifs (FN) comme suit:
-
-$P = \frac{TP}{TP+FP}$ \hfill $R = \frac{TP}{TP+FN}$ \hfill $F1 = 2 \times \frac{P \times R}{P + R}$
+La classification des documents est évaluée en utilisant les métriques précision (P), rappel (P), f1-mesure (F1). %\textcolor{red}{Quelle moyenne: macro / micro?}
 
 \paragraph{Extraction des attributs des paires demande-résultat}
- Nous évaluons les approches proposées sur l'extraction de 3 données: le quantum demandé $q_d$, le sens du résultat $s_r$ et le quantum obtenu $q_r$. Une demande est donc un triplet $(q_d, s_r, q_r)$. Il est possible d'évaluer le système pour un sous-ensemble $x$ de $\lbrace q_d, s_r, q_r \rbrace$ sur les demandes extraites d'un corpus annotées $D$ de test. Nous utilisons les métriques traditionnellement employées en extraction d'information: la précision (Eq. \ref{eq:quanta:precisiondmd}), le rappel (Eq. \ref{eq:quanta:recalldmd}), et la F1-mesure (Eq. \ref{eq:quanta:f1dmd}). 
- \begin{equation}
- Precision_{c,x,D} = \frac{TP_{c,x,D}}{TP_{c,x,D} + FP_{c,x,D}}  \label{eq:quanta:precisiondmd}
-\end{equation}
-
-\begin{equation}
-Rappel_{c,x,D} = \frac{TP_{c,x,D}}{TP_{c,x,D} + FN_{c,x,D}} \label{eq:quanta:recalldmd}
-\end{equation}
-
-\begin{equation}
-F1_{c,x,D} =2 \times \frac{Precision_{c,x,D} \times Rappel_{c,x,D}}{Precision_{c,x,D} + Rappel_{c,x,D}} \label{eq:quanta:f1dmd}
-\end{equation}
-
-Ces mesures sont définies à partir des nombres de vrais positifs ($TP$), faux positifs ($FP$) et faux négatifs ($FN$). Au niveau d'un document $d$:
+ Nous évaluons les approches proposées sur l'extraction de 3 données: le quantum demandé $q_d$, le sens du résultat $s_r$ et le quantum obtenu $q_r$. Une demande est donc un triplet $(q_d, s_r, q_r)$. Il est possible d'évaluer le système pour un sous-ensemble $x$ de $\lbrace q_d, s_r, q_r \rbrace$ sur les demandes extraites d'un corpus annotées $D$ de test. Nous utilisons les métriques traditionnellement employées en extraction d'information: la précision ($Precision_{c,x,D}$), le rappel ($Rappel_{c,x,D}$), et la F1-mesure ($F1_{c,x,D}$). Ces mesures sont définies à partir des nombres de vrais positifs ($TP$), faux positifs ($FP$) et faux négatifs ($FN$) calculés au niveau d'un document $d$:
 \begin{itemize}
-\item  $TP_{c, x, d}$ est le nombre de demandes extraites de $d$ par le système, qui sont effectivement de la catégorie $c$ ;
+\item  $TP_{c, x, d}$ est le nombre de demandes extraites de $d$ par le système, qui sont effectivement de la catégorie $c$ (demandes correctes);
 \item  $FP_{c, x, d}$ est le nombre de demandes extraites de $d$ par le système, mais qui ne sont pas des demandes de $c$ (demandes en trop);
-\item  $FP_{c, x, d}$ est le nombre de demandes annotées comme étant de $c$ mais qui n'ont pas pu être extraites par le système (demandes manquées).
+\item  $FN_{c, x, d}$ est le nombre de demandes annotées comme étant de $c$ mais qui n'ont pas pu être extraites par le système (demandes manquées).
 \end{itemize}
 
 Au niveau d'un corpus d'évaluation $D$, ces métriques sont sommées: 
