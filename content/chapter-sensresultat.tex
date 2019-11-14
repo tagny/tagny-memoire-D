@@ -461,6 +461,10 @@ L'algorithme LOGIT-Gini-PLS généralisé est donc le suivant :
 
 \section{Expérimentations et résultats}
 \label{sec:sensresultat:experimentations}
+
+%\textcolor{red}{0. expérimenter les rerésentations Doc2vec 1. sélection du $\nu$ pour le ginipls. 2. comparaisons des classifieurs en moyenne sur les représentations. 3. comparaison des représentations en moyenne sur les classifieurs. 4. comparaison des algos avec sélection de la meilleure représentation.}
+
+
 Nous discutons ici les performances de divers algorithmes populaires et l'impact de la quantité et du déséquilibre des données, de l'heuristique, et de la restriction explicite des documents aux passages relatifs à la catégorie de demandes, ainsi que leur capacité à faire abstraction des autres demandes du document. {Ces expériences visent aussi à comparer l'efficacité du Gini-Logit-PLS par rapport à d'autres analyses discriminantes}.  Comme \citet{im2017textclasstermweighting}, différentes combinaisons d'algorithmes de classification et méthodes de pondération  sont comparées; ce qui représente un total de 8 algorithmes * 11 métriques globales * 5 métriques locales = 440 configurations (+ 2 algorithmes i.e. FastText et NBSVM). La méthode Gini-Logit-PLS réalisant une projection dans un espace de petite dimension, elle a été comparée aussi à d'autres méthode de réduction de dimension.
 
 \subsection{Protocole d'évaluation}

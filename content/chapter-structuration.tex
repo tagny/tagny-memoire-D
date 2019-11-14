@@ -257,52 +257,43 @@ Les modèles HMM et CRF étant tous les deux supervisés, ils doivent être entr
 
 \subsubsection{Descripteurs pour la détection des sections}
 
-Nous considérons donc la ligne comme élément à étiqueter lors du sectionnement. Nous n'avons pas travaillé au niveau des mots afin d'éviter que des mots de la même ligne ne soient classés dans des sections différentes. L'étiquetage des phrases a aussi été évité car en découpant les documents en phrases telles qu'elles sont entendues en français, on a généralement des segments qui s'étendent d'une section à une autre (absence de ponctuation). De plus, l'entête à davantage l'apparence d'un formulaire.
-
-Plusieurs critères peuvent être utilisés pour différencier les sections, à savoir: la longueur des lignes (plus longues dans le corps, plus courtes dans l'entête), les premiers termes de certaines lignes (typiques de chaque section) et le nombre total de lignes. Un HMM n'adapte qu'un descripteur assimilé à l'élément à étiqueter. D'autres descripteurs peuvent être la position de l'élément à étiqueter (numéro de ligne) ou le début de la ligne. Le descripteur capturant la longueur de ligne peut être absolu (nombre exact de mots dans la ligne), ou relatif (une catégorie de la longueur). Sur la base des quantiles de la distribution des longueurs de lignes sur un ensemble de décisions, nous avons défini trois catégories:
-\verb|LQ1| ($longueur \leq$ 5), \verb|LQ2| (5 < $longueur \leq$ 12) et \verb|LQ2| (12 < $longueur \leq$ 14). Nous avons également catégorisé les parties du document afin de capturer une position relative de ligne.
-En effet, le document est considéré comme divisé en $N$ parties (10 dans nos expériences). La position relative d'une ligne est donc le numéro de la partie contenant la ligne. Les descripteurs caractéristiques des lignes sont résumés dans le \tableref{tab:structuration:descripteursligne}.
-
 \begin{table}[!htb]
 	\centering
 	\begin{tabular}{|l|l|}
-		 \hline
+		\hline
 		\multicolumn{1}{|c}{Type} & \multicolumn{1}{|c|}{Descripteur} \\ \hline
 		Forme & \tabitem la ligne entière (\verb|token|)  \\  
 		& \tabitem ses premiers mots (\verb|t0, t1, t2|) \\
 		& \tabitem sa longueur absolue (\verb|absLength|) \\ 
 		& \tabitem sa longueur relative (\verb|relLength|) \\ \hline
 		Contexte & \tabitem le numéro de ligne (\verb|absNum|) \\
-				  & \tabitem partie du document contenant la ligne (\verb|relNum|) \\
-				  & \tabitem premiers mots de la ligne précédente (\verb|p0, p1|) \\ 
-				   & \tabitem premiers mots de la ligne suivante (\verb|n0, n1|) \\
-				   & \tabitem longueur absolue de ligne précédente (\verb|nLength|) \\  
-				   & \tabitem longueur relative de ligne précédente (\verb|nRelLength|) \\
-				    & \tabitem longueur absolue de ligne suivante (\verb|nLength|) \\  
-				    & \tabitem longueur relative de ligne suivante (\verb|nRelLength|) \\ \hline
+		& \tabitem partie du document contenant la ligne (\verb|relNum|) \\
+		& \tabitem premiers mots de la ligne précédente (\verb|p0, p1|) \\ 
+		& \tabitem premiers mots de la ligne suivante (\verb|n0, n1|) \\
+		& \tabitem longueur absolue de ligne précédente (\verb|nLength|) \\  
+		& \tabitem longueur relative de ligne précédente (\verb|nRelLength|) \\
+		& \tabitem longueur absolue de ligne suivante (\verb|nLength|) \\  
+		& \tabitem longueur relative de ligne suivante (\verb|nRelLength|) \\ \hline
 	\end{tabular}
-\caption{Descripteurs candidats de lignes pour les sections.} \label{tab:structuration:descripteursligne}
+	\caption{Descripteurs candidats de lignes pour les sections.} \label{tab:structuration:descripteursligne}
 \end{table}
+
+Nous considérons donc la ligne comme élément à étiqueter lors du sectionnement. Nous n'avons pas travaillé au niveau des mots afin d'éviter que des mots de la même ligne ne soient classés dans des sections différentes. L'étiquetage des phrases a aussi été évité car en découpant les documents en phrases telles qu'elles sont entendues en français, on a parfois des segments qui s'étendent d'une section à une autre (absence de ponctuation). De plus, l'entête à davantage l'apparence d'un formulaire.
+
+Plusieurs critères peuvent être utilisés pour différencier les sections, à savoir: la longueur des lignes (plus longues dans le corps, plus courtes dans l'entête), les premiers termes de certaines lignes (typiques de chaque section) et le nombre total de lignes. Un HMM ne supporte qu'un descripteur représentant l'élément à étiqueter. D'autres descripteurs peuvent être la position de l'élément à étiqueter (numéro de ligne) ou le début de la ligne. Le descripteur capturant la longueur de ligne peut être absolu (nombre exact de mots dans la ligne), ou relatif (une catégorie de la longueur). Sur la base des quantiles de la distribution des longueurs de lignes sur un ensemble de décisions, nous avons défini trois catégories:
+\verb|LQ1| ($longueur \leq$ 5), \verb|LQ2| (5 < $longueur \leq$ 12) et \verb|LQ2| (12 < $longueur \leq$ 14). Nous avons également catégorisé les parties du document afin de capturer une position relative de ligne.
+En effet, le document est considéré comme divisé en $N$ parties (10 dans nos expériences). La position relative d'une ligne est donc le numéro de la partie contenant la ligne. Les descripteurs représentant les lignes sont résumés dans le \tableref{tab:structuration:descripteursligne}.
 
 \subsubsection{Descripteurs pour la détection d'entités}
 
-La détection d'entités consiste, dans notre cas, à entraîner soit un modèle CRF, soit un modèle HMM pour étiqueter les différents segments de texte (mot, ponctuation, numéro, identifiant) suivant qu'ils appartiennent ou non à la mention d'une entité. Les deux modèles nécessitent des caractéristiques, dont certaines peuvent être définies sur la base de régularités directement observables dans les textes. Il est également possible d'obtenir des descripteurs à partir du résultat d'autres tâches d'analyse de texte.
+La détection d'entités consiste, dans notre cas, à entraîner un modèle CRF ou HMM pour étiqueter les différents segments de texte (mot, ponctuation, numéro, identifiant) suivant qu'ils appartiennent ou non à la mention d'une entité. Les deux modèles nécessitent des caractéristiques, dont certaines peuvent être définies sur la base de régularités directement observables dans les textes. Sur la base des observations de décision, nous avons défini la morphologie des mots en décrivant la forme des caractères du mots. Le lemme est aussi utilisé car il homogénéise les variantes du mot correspondant. Pour identifier les normes,  nous définissons une liste de mots utilisés pour citer les règles juridiques (\textit{article, code, loi, contrat, décret, convention, civil, pénal}, etc.). Cette liste permet d'indiquer si le mot est décrit est un mot-clé de norme. Le contexte des mots est défini en plus de la forme en décrivant les mots voisins. Par ailleurs, la position des mots par rapport à certains termes-clés semble indiquer la nature potentielle de ces mots. Par exemple, les appelants sont généralement listés avant le mot \textit{appelants} et après le mot \textit{intimés}.
+Il est également possible d'obtenir des descripteurs à partir du résultat d'autres tâches d'analyse de texte dont les rôles grammaticaux (\textit{Part-of-Speech}) comme \citet{chang2005applyingNER} et les modèles thématiques (\textit{topic model}) comme \citet{polifroni2011usingLDA} et \citet{nallapati2010blinddomaintransferner}. Le \tableref{tab:structuration:descripteursmots} résume l'ensemble des descripteurs caractéristiques définis pour la détection des entités.
+%Les rôles grammaticaux peuvent être intéressants par exemple pour identifier les noms de personnes et de villes dont les mots dont le rôle est généralement ??. Le thème d'un mot 
 
-Sur la base des observations de décision, nous avons défini la morphologie des mots pour les normes et méta-données d'entête:
-\begin{itemize}
-	\item forme du mot : le mot (\verb|token|), son lemme (\verb|lemma_W0|), \og commence-t-il par une lettre majuscule ? \fg{} (\verb|startsWithCAP|), \og est-il entièrement en majuscule ? \fg{} (\verb|isAllCAP|), \og est-ce une initiale solitaire ? \fg{} comme par exemple \og B. \fg{} (\verb|isLONELYINITIAL|), \og contient-il un caractère de ponctuation ? \fg{} (\verb|PUN-IN|), \og n'est-ce qu'une ponctuation ? \fg{} (\verb|isALLPUN|), \og contient-il un caractère numérique ? \fg{} (\verb|DIGIT-IN|),  \og ne contient-il que 
-	des chiffres ? \fg{} (\verb|isALLDIGIT|);
-	\item contexte de mot : les mots précédents (\verb|w-2, w-1|) et suivants (\verb|w1, w2|) et leurs lemmes (\verb|lemmaW|$_i$). La lemmatisation homogénéise les variantes du même mot. Les mots adjacents sont choisis pour indiquer les termes couramment utilisés pour introduire des entités.
-\end{itemize}
-
-Plus particulièrement pour les méta-données d'entête, nous avons défini des descripteurs supplémentaires pour capter le contexte du mot : numéro de ligne (\verb|lineNum|), position de l'élément dans la ligne (\verb|numInLine|), \og le document contient-il le mot clé \textit{intervenant} ? \fg{} (\verb|intervenantInText|), le texte vient-il après le mot clé \og APPELANT \fg{} (\verb|isAfterAPPELANT|), \og INTIME \fg{} (\verb|isAfterINTIME|), \og INTERVENANT \fg{} (\verb|isAfterINTERVENANT|). Nous avons également pris en compte les dernières lignes, où le mot était précédemment rencontré dans le texte ( \verb|lastSeenAt| ), ainsi que le nombre de fois où il a été trouvé ( \verb|nbTimesPrevSeen| ), car les noms des parties sont souvent répétés à des emplacements différents. Nous avons également défini une caractéristique spéciale pour les normes : \og le mot est-il un mot clé de règles juridiques ? \fg{} (\verb|isKEYWORD|). Pour ce dernier descripteur, nous avons établi une courte liste de mots-clés généralement utilisés pour citer des règles juridiques (\textit{article, code, loi, contrat, décret, convention, civil, pénal}, etc.).
-
-Nous avons étendu ces caractéristiques avec les rôles grammaticaux (\textit{Part-of-Speech} et les modèles thématiques (\textit{topic model}).
-
-\textbf{Rôles grammaticaux} : certaines entités ont tendance à contenir des rôles grammaticaux particuliers. Par exemple, les noms d'individus sont composés de noms propres (Chang et Sung, 2005). Nous avons extrait le rôle grammatical du mot courant (\verb|POS|) ainsi que celui de ses voisins (\texttt{POSW-2, POSW-1, POSW1, POSW2}).
-
-\textbf{Modèles thématiques}: comme \citet{polifroni2011usingLDA} et \citet{nallapati2010blinddomaintransferner}, nous utilisons des associations mot-thème pour décrire les mots. Il s'agit de modéliser un ensemble de $N$ thèmes et d'utiliser leurs identifiants comme descripteurs. Il serait peut-être intéressant d'utiliser la probabilité déduite du modèle thématique, mais l'inférence sous-jacente au modèle LDA \citep{blei2003lda} n'est pas déterministe (la distribution de probabilité change pour le même mot entre différentes inférences).
-Néanmoins, l'ordre des sujets ne changeant pas de manière significative, nous avons utilisé l'identifiant du thème le plus pertinent pour le mot (\verb|topic0|) ainsi que ceux de ses voisins (\verb|w-2topic0|, \verb|w-1topic0|, \verb|w1topic0|, \verb|w2topic0|).
+%\textbf{Rôles grammaticaux} : certaines entités ont tendance à contenir des rôles grammaticaux particuliers. Par exemple, les noms d'individus sont composés de noms propres . Nous avons extrait le rôle grammatical du mot courant (\verb|POS|) ainsi que celui de ses voisins (\texttt{POSW-2, POSW-1, POSW1, POSW2}).
+%
+%\textbf{Modèles thématiques}: comme \citet{polifroni2011usingLDA} et \citet{nallapati2010blinddomaintransferner}, nous utilisons des associations mot-thème pour décrire les mots. Il s'agit de modéliser un ensemble de $N$ thèmes et d'utiliser leurs identifiants comme descripteurs. Il serait peut-être intéressant d'utiliser la probabilité déduite du modèle thématique, mais l'inférence sous-jacente au modèle LDA \citep{blei2003lda} n'est pas déterministe (la distribution de probabilité change pour le même mot entre différentes inférences).
+%Néanmoins, l'ordre des sujets ne changeant pas de manière significative, nous avons utilisé l'identifiant du thème le plus pertinent pour le mot (\verb|topic0|) ainsi que ceux de ses voisins (\verb|w-2topic0|, \verb|w-1topic0|, \verb|w1topic0|, \verb|w2topic0|).
 
 \begin{table}[!htb]
 	%\centering 
@@ -319,7 +310,8 @@ Forme & \tabitem le mot (\verb|token|)  \\
 	& \tabitem \og n'est-ce qu'une ponctuation ? \fg{} (\verb|isALLPUN|) \\
 	& \tabitem \og contient-il un caractère numérique ? \fg{} (\verb|DIGIT-IN|) \\
 	& \tabitem \og ne contient-il que 
-des chiffres ? \fg{} (\verb|isALLDIGIT|) \\ \hline
+des chiffres ? \fg{} (\verb|isALLDIGIT|) \\ 
+	& \tabitem \og S'agit-il d'un mot-clé de règles juridiques ? \fg{} (\verb|isKEYWORD|) \\ \hline
 Syntaxe & \tabitem rôle grammatical du mot (\verb|POS|) \\ \hline
 Sémantique & \tabitem thème du mot (\verb|topic0|) \\  \hline
 Contexte & \tabitem les mots précédents (\verb|w-1, w-2|) \\
@@ -336,7 +328,6 @@ Contexte & \tabitem les mots précédents (\verb|w-1, w-2|) \\
 	& (\verb|isAfterINTERVENANT|) \\
 	& \tabitem numéro de la ligne précédente contenant le mot (\verb|lastSeenAt|)\\
 	& \tabitem nombre d'occurrences du mot (\verb|nbTimesPrevSeen|)\\
-	& \tabitem \og S'agit-il d'un mot-clé de règles juridiques ? \fg{} (\verb|isKEYWORD|) \\
 	& \tabitem rôles grammaticaux des mots voisins (\texttt{POSW-2, POSW-1,} \\ 
 	& \texttt{POSW1, POSW2}) \\ 
 	& \tabitem thèmes des mots voisins (\verb|w-2topic0|, \verb|w-1topic0|, \verb|w1topic0|, \verb|w2topic0|) \\ 
@@ -443,9 +434,9 @@ présente des mots représentatifs trouvés dans les premiers thèmes inférés.
 
 
 \begin{table}[!ht]
-\scriptsize
+\small
 \begin{center}
-\begin{tabular}{c|l}
+\begin{tabular}{c|p{0.8\textwidth}}
 Id thème & Mots représentatifs  \\ \hline
 0	& 	préjudice  dommage  somme  subir  réparation  titre  faute  payer  intérêt  responsabilité  \\ \hline
 1	& société  salarié  groupe  mirabeau  pouvoir  demande  article  licenciement  cour  titre    \\ \hline
