@@ -322,9 +322,9 @@ Contexte & \tabitem les mots précédents (\verb|w-1, w-2|) \\
 	& \tabitem position de l'élément dans la ligne (\verb|numInLine|) \\
 	& \tabitem \og le document contient-il le mot \textit{intervenant} ? \fg{} \\
 	& (\verb|intervenantInText|) \\
-	& \tabitem \og le mot apparaît-il après \textit{appelant} ? \fg{} (\verb|isAfterAPPELANT|) \\
-	& \tabitem \og le mot apparaît-il après \textit{intimé} \fg{} (\verb|isAfterINTIME|)\\
-	& \tabitem \og le mot apparaît-il après  \textit{intervenant} ? \fg{} \\ 
+	& \tabitem \og le mot apparaît-il après \textit{APPELANT}, \textit{ENTRE}, et \textit{DEMANDEUR} ? \fg{} (\verb|isAfterAPPELANT|) \\
+	& \tabitem \og le mot apparaît-il après \textit{INTIME}, \textit{ET}, et \textit{DEFENDEUR} \fg{} (\verb|isAfterINTIME|)\\
+	& \tabitem \og le mot apparaît-il après  \textit{INTERVENANT} ? \fg{} \\ 
 	& (\verb|isAfterINTERVENANT|) \\
 	& \tabitem numéro de la ligne précédente contenant le mot (\verb|lastSeenAt|)\\
 	& \tabitem nombre d'occurrences du mot (\verb|nbTimesPrevSeen|)\\
@@ -573,7 +573,7 @@ Nous discutons ici la capacité des modèles à identifier individuellement chaq
 
 \begin{table}[!ht]
 	\centering
-	\scriptsize
+	\footnotesize
 	\begin{tabular}{|l|l|l|l|l|l|l|}
 		\hline
 	\multirow{2}{*}{}	& \multicolumn{3}{c}{\textbf{HMM}}  &      \multicolumn{3}{|c|}{\textbf{CRF}}          \\ \cline{2-7}
@@ -605,7 +605,7 @@ Nous discutons ici la capacité des modèles à identifier individuellement chaq
 D'un point de vue général (évaluation globale), les modèles HMM se comportent assez bien au niveau élément avec un seul descripteur, particulièrement pour l'identification des sections et des normes. Le modèle HMM est capable de labelliser les normes car plusieurs d'entre elles sont répétées entre les décisions. De plus, la citation des normes est quasi standard (\verb|article [IDENTIFIANT] [TEXTE D'ORIGINE]|). Le modèle HMM n'est cependant pas aussi efficace pour détecter entièrement les mots des entités d'où le faible score enregistré au niveau entité. Quant aux modèles CRF, leurs résultats sont très bons sur toutes les tâches et à tous les niveaux d'évaluation malgré quelques limites observées sur l'identification des parties.
 
 \begin{table}[!ht]
-	\scriptsize
+	\footnotesize
 	\centering
 	\begin{tabular}{|l|l|l|l|l|l|l|}
 		\hline
@@ -664,15 +664,15 @@ Il est aussi intéressant de remarquer que certaines entités sont répétées d
 
 \begin{figure}[!htb]
 	\centering
-	\begin{subfigure}[ht]{0.95\textwidth}
+	\begin{subfigure}[ht]{\textwidth}
 		\centering
-		\includegraphics[width=0.8\textwidth]{lc-crf.png} 
+		\includegraphics[width=0.9\textwidth]{lc-crf.png} 
 		\caption{CRF} \label{fig:structuration:learning-curves-crf}
 	\end{subfigure} 
 	
-	\begin{subfigure}[ht]{0.95\textwidth}
+	\begin{subfigure}[ht]{\textwidth}
 		\centering
-		\includegraphics[width=0.8\textwidth]{lc-hmm.png}
+		\includegraphics[width=0.9\textwidth]{lc-hmm.png}
 		\caption{HMM} \label{fig:structuration:learning-curves-hmm}
 	\end{subfigure}
 	\caption{Évolution du score F1 en fonction de l'augmentation du nombre de données d'entraînement.} \label{fig:structuration:learning-curves}
@@ -689,7 +689,7 @@ Il apparaît que les scores $F_1$ croissent avec le nombre de données d'entraî
 \subsubsection{Descripteurs manuels vs. réseau de neurones}
 
 \begin{table}[!ht]
-	\scriptsize
+	\footnotesize
 	\centering
 	\begin{tabular}{|l|l|l|l|l|l|l|}
 		\hline
@@ -716,21 +716,26 @@ Il apparaît que les scores $F_1$ croissent avec le nombre de données d'entraî
 L'ingénierie manuelle des caractéristiques est difficile car arbitraire. Nous avons comparé les performances de nos descripteurs avec celles des réseaux de neurones qui apprennent une représentation des segments. Pour cela nous avons choisi le BiLSTM-CRF de \citet{lample2016nnner} qui fait partie des meilleures approches récentes. La comparaison a été effectuée pour la détection des entités avec le schéma d'étiquetage BIEO et une validation croisée à 9 itérations. Le BiLSTM-CRF prend en entrée les plongements sémantiques Word2Vec \citep{mikolov2013word2vec} des mots. Pour cela, nous avons entraîné des vecteurs de mots à partir d'un corpus jurisprudentiel de plus de 800K documents provenant de \url{www.legifrance.gouv.fr} avec l'implémentation\footnote{\url{https://code.google.com/archive/p/word2vec/}} de \citet{mikolov2013word2vec}. Les vecteurs obtenus ont une dimension de 300. Etant donné que les décisions sont des documents particulièrement longs, leur contenu a été découpé en des morceaux de texte dont la taille n'excède pas 300 mots. Les résultats obtenus par le BiLSTM-CRF sont assez proches de ceux que nous observons avec les descripteurs manuellement définis (\tableref{tab:structuration:perf-bilstmcrf}). Etant donné que ces derniers permettent de mieux détecter certaines entités comme les \textit{intervenants}, les \textit{avocats} ou les numéro \textit{R.G.}, et vice-versa pour les \textit{normes} ou les \textit{appelants} chez le BiLSTM-CRF, une combinaison des deux types de descripteurs pourrait améliorer les résultats actuels. %On peut par exemple exploiter des modèles thématiques déduits en partitionnant (\textit{clustering}) l'ensemble des vecteurs de mots  et les utiliser comme descripteurs définis manuellement. 
  
 \subsubsection{Sectionnement en 4 sections pour l'extraction des demandes}
-Le sectionnement permet de mieux localiser les informations qui se retrouvent, selon leur nature, dans des sections spécifiques. Pour l'extraction des demandes nous avons dû passer d'un sectionnement à 3 sections comme étudié depuis le début de ce chapitre, vers un sectionnement à 4 sections. En effet, la section Corps est remplacé par les deux sections qu'elle englobait: l'exposé du litige (Litige) et les motivations des juges (Motifs). Comme nous le faisons remarquer dans le chapitre \ref{chap:quanta}, les demandes sont généralement énoncées dans la section Litige et les résultats dans le Dispositif. En expérimentant cet affinement du sectionnement par 5-\textit{fold} validation croisée avec les mêmes documents annotés manuellement, les mêmes descripteurs caractéristiques de lignes, le schéma d'étiquetage IO, et le modèle CRF, nous observons les résultats du \tableref{tab:structuration:5folccvCRF-4sections} au niveau atomique. L'Entête reste aisément détectable ($F_1$-mesure=99.67\%) contrairement aux autres sections qui ont quasiment 3\% en moins en moyenne de $F_1$-mesures par rapport à l'entête.
+\label{sec:structuration:sectionnement-en-4}
 
 \begin{table}[!htb]
+	\footnotesize
 	\centering
-\begin{tabular}{|l|l|l|l|}
-	\hline
-	\multirow{2}{*}{}	&      \multicolumn{3}{|c|}{\textbf{CRF (\%)}}          \\ \cline{2-4} & \textit{Precision} & \textit{Rappel} & $F_1$ \\ \hline
-	\textbf{entete} &   99.80 &	99.54 &	99.67      \\ 
-	\textbf{litige}      &  96.10 &	97.66	& 96.87       \\ 
-	\textbf{motifs}      &   97.31	&95.96	&96.62 \\
-	\textbf{dispositif}    &   99.00&	98.49&	98.72  \\ \hline
-	\textbf{Evaluation globale} &97.55	&97.55	&97.55       \\ \hline
-\end{tabular}
-\caption{Evaluation au niveau atomique de la détection de 4 sections à l'aide du CRF.} \label{tab:structuration:5folccvCRF-4sections}
+	\begin{tabular}{|l|c|c|c|}
+		\hline
+		\multirow{2}{*}{}	&      \multicolumn{3}{|c|}{\textbf{CRF (\%)}}          \\ \cline{2-4} & \textit{Precision} & \textit{Rappel} & $F_1$ \\ \hline
+		\textbf{entete} &   99.80 &	99.54 &	99.67      \\ 
+		\textbf{litige}      &  96.10 &	97.66	& 96.87       \\ 
+		\textbf{motifs}      &   97.31	&95.96	&96.62 \\
+		\textbf{dispositif}    &   99.00&	98.49&	98.72  \\ \hline
+		\textbf{Evaluation globale} &97.55	&97.55	&97.55       \\ \hline
+	\end{tabular}
+	\caption{Evaluation au niveau atomique de la détection de 4 sections à l'aide du CRF.} \label{tab:structuration:5folccvCRF-4sections}
 \end{table}
+
+Le sectionnement peut permettre de mieux localiser les informations selon leur nature. Pour l'extraction des demandes nous avons dû passer d'un sectionnement à 3 sections comme étudié depuis le début de ce chapitre, vers un sectionnement à 4 sections (cf. Annexe \ref{appendix:exemple-decision} Page \pageref{appendix:exemple-decision}). En effet, la section Corps est remplacé par les deux sections qu'elle englobait: l'exposé du litige (Litige) et les motivations des juges (Motifs). Comme nous le faisons remarquer dans le chapitre \ref{chap:quanta}, les demandes sont généralement énoncées dans la section Litige et les résultats dans le Dispositif. En expérimentant cet affinement du sectionnement par 5-\textit{fold} validation croisée avec les mêmes documents annotés manuellement, les mêmes descripteurs caractéristiques de lignes, le schéma d'étiquetage IO, et le modèle CRF, nous observons les résultats du \tableref{tab:structuration:5folccvCRF-4sections} au niveau atomique. L'Entête reste aisément détectable ($F_1$-mesure=99.67\%) contrairement aux autres sections qui ont quasiment 3\% en moins en moyenne de $F_1$-mesures par rapport à l'entête.
+
+
 \section{Conclusion}
 \label{sec:structuration:conclusion}
 L'application des modèles HMM et CRF dans le but de détecter des sections et des entités dans les décisions de justice est une tâche difficile. Ce chapitre a examiné les effets de divers aspects de la conception sur la qualité des résultats. En résumé, malgré une importante réduction du nombre de descripteurs, l'amélioration des résultats semble être insignifiante lorsque l'on sélectionne séparément la représentation du segment et le sous-ensemble de caractéristiques. Cependant, opter pour la bonne configuration en évaluant les approches de sélection combinées avec diverses représentations de segment pourrait peut-être offrir de meilleurs résultats. En raison de la longue durée de recherche du sous-ensemble optimal de descripteurs, il serait préférable d'utiliser un algorithme de sélection beaucoup plus rapide que les méthodes BDS et SFFS que nous avons expérimentées. De plus, même si les résultats s'améliorent avec l'augmentation de la taille de l'échantillon d'apprentissage, la mesure globale $F_1$ semble atteindre une limite très rapidement. Étant donné que certaines entités ne sont pas très bien détectées, il peut être avantageux d'ajouter des exemples appropriés afin de traiter ces problèmes spécifiques.

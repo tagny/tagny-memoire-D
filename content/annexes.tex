@@ -1,0 +1,12 @@
+%annexes
+\appendix
+\renewcommand\thesection{A.\roman{section}}
+\renewcommand\thefigure{A.\arabic{figure}}
+\renewcommand\thetable{A.\arabic{table}}
+\chapter*{Annexes}
+\addcontentsline{toc}{chapter}{Annexes}
+\section{Exemple de décision judiciaire annotée}
+%\chaptermark{Exemple de décision de justice}
+%\addcontentsline{toc}{chapter}{Exemple de décision de justice française annotée}
+\label{appendix:exemple-decision}
+\lstinputlisting[language=XMl]{content/CANIM1103924.xml}

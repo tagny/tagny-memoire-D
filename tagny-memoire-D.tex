@@ -14,35 +14,47 @@
 \graphicspath{ {gfx/} }
 \usepackage{mathpazo}
 \usepackage{fancyhdr}
-
 \usepackage{color}
 \definecolor{gray}{rgb}{0.4,0.4,0.4}
 \definecolor{darkblue}{rgb}{0.0,0.0,0.6}
 \definecolor{cyan}{rgb}{0.0,0.6,0.6}
-
 \usepackage{listings}
-
 \lstset{
-	basicstyle=\ttfamily\scriptsize,
-	columns=fullflexible,
+	basicstyle=\footnotesize,
+	breaklines=true,
 	showstringspaces=false,
 	inputencoding=utf8,
-	extendedchars=true,
-	literate={á}{{\'a}}1 {à}{{\`a}}1 {î}{{\^i}}1 {ê}{{\^e}}1 {ã}{{\~a}}1 {ç}{{\,c}}1 {è}{{\`e}}1 {°}{{}}1 {é}{{\'e}}1 {É}{{\'E}}1 {ô}{{\^o}}1 {ù}{{\`u}}1,
-	commentstyle=\color{gray}\upshape
+	extendedchars=false,
+	literate=%
+	{é}{{\'{e}}}1
+	{è}{{\`{e}}}1
+	{ê}{{\^{e}}}1
+	{ë}{{\¨{e}}}1
+	{û}{{\^{u}}}1
+	{ù}{{\`{u}}}1
+	{â}{{\^{a}}}1
+	{à}{{\`{a}}}1
+	{î}{{\^{i}}}1
+	{ô}{{\^{o}}}1
+	{ç}{{\c{c}}}1
+	{Ç}{{\c{C}}}1
+	{É}{{\'{E}}}1
+	{Ê}{{\^{E}}}1
+	{À}{{\`{A}}}1
+	{Â}{{\^{A}}}1
+	{Î}{{\^{I}}}1
+	{°}{{$^\circ$}}1   
 }
 
 \lstdefinelanguage{XML}
 {
-	morestring=[s]{"}{"},
-	morecomment=[s]{?}{?},
-	morecomment=[s]{!--}{--},
-	commentstyle=\color{darkblue},
-	moredelim=[s][\color{black}]{>}{<},
-	moredelim=[s][\color{black}]{\ }{=},
-	stringstyle=\color{gray},
+	morestring=[b]",
+	morestring=[s]{>}{<},
+	morecomment=[s]{<?}{?>},
+	stringstyle=\color{black},
+	identifierstyle=\color{darkblue},
 	keywordstyle=\color{cyan},
-	identifierstyle=\color{darkblue}
+	morekeywords={xmlns,version,type}% list your attributes here
 }
 
 \usepackage{setspace}
@@ -63,7 +75,7 @@
 \usepackage[titlenotnumbered,ruled,vlined,noend,linesnumbered,french, onelanguage]{algorithm2e}
 %\usepackage{nomencl}
 \usepackage{setspace}
-\usepackage[titletoc]{appendix}
+\usepackage[toc,page]{appendix}
 \usepackage{nameref}
 \usepackage{mathrsfs}
 \usepackage{float} 
@@ -200,34 +212,34 @@
 
 %\include{content/cover}
 %\include{content/acknowledgement}
-%\include{content/resume}
-%\include{content/abstract}
+\include{content/resume}
+\include{content/abstract}
 
 %liste des matières
-%\addcontentsline{toc}{chapter}{\contentsname}
-%\tableofcontents
+\addcontentsline{toc}{chapter}{\contentsname}
+\tableofcontents
 
 %liste des figures
-%\addcontentsline{toc}{chapter}{\listfigurename}
-%\listoffigures
+\addcontentsline{toc}{chapter}{\listfigurename}
+\listoffigures
 %
 %%liste des tableaux
-%\addcontentsline{toc}{chapter}{\listtablename}
-%\listoftables
+\addcontentsline{toc}{chapter}{\listtablename}
+\listoftables
 
 \mainmatter
 
-%\input{content/introduction} % INCLUDE: introduction
+\input{content/introduction} % INCLUDE: introduction
 
 % changement du style des chapitres
 \include{config/style_chapitre2}
 
 %\input{content/chapter-literature} % INCLUDE: related work
 \input{content/chapter-structuration}	% INCLUDE: structuration
-%\input{content/chapter-quanta} % INCLUDE: quanta
-%\input{content/chapter-sensresultat}% INCLUDE: sensresultat
-%\input{content/chapter-similarite} %INCLUDE: similarite
-%\input{content/chapter-demo} %INCLUDE: demo
+\input{content/chapter-quanta} % INCLUDE: quanta
+\input{content/chapter-sensresultat}% INCLUDE: sensresultat
+\input{content/chapter-similarite} %INCLUDE: similarite
+\input{content/chapter-demo} %INCLUDE: demo
 
 
 \backmatter
@@ -235,15 +247,13 @@
 % changement du style des chapitres
 \include{config/style_chapitre3}
 
-%\input{content/conclusion} % INCLUDE: conclusion
+\input{content/conclusion} % INCLUDE: conclusion
 
 %Bibliographie
 \def\bibname{Bibliographie}
 \addcontentsline{toc}{chapter}{\bibname}
 \bibliography{bib/references-pub}
 
-%\appendix
-%
-%\input{content/appendix-exemple-decision}
+\include{content/annexes}
 
 \end{document}
