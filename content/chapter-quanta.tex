@@ -2,12 +2,12 @@
 %\chapter{Extraction des demandes et résultats correspondants}
 \label{chap:quanta}
 
-\textit{\small \textbf{Résumé.} Ce chapitre aborde le problème d'identification automatique, dans une décision, des éléments structurants les demandes formulées. L'identification manuelle réalisée à travers la lecture exige beaucoup d'effort à cause de la complexité du contenu dans lequel les demandes sont mélangées à d'autres informations (des demandes de nature différente, des arguments, des faits, etc.). L'automatisation de cette tâche métier vise à aider les experts à rapidement comprendre les réclamations des parties et les réponses correspondantes des juges.  Une demande est abstraite par cinq attributs : la norme qui la fonde, son objet, l'interprétation du résultat ($s_r$), le quantum demandé ($q_d$), et celui obtenu ($q_r$). La norme et l'objet forment ensemble la catégorie de la demande. L'annotation manuelle des données d'évaluation suit un protocole que nous avons précisément défini avec l'expert du projet. Ce protocole recommande des cycles d'annotation consistant chacun à constituer un ensemble de décisions et à y identifier toutes les demandes d'une seule catégorie donnée car il serait difficile d'annoter simultanément des données pour toutes les catégories qui sont très nombreuses. L'approche proposée extrait à chaque application les demandes d'une seule catégorie et est formulée en trois tâches. La présence de la catégorie est déterminée  par classification de la décision. Ensuite, les quanta et le sens du résultat sont identifiés à proximité de termes appris de la catégorie dans les sections adéquates identifiées à l'aide d'un modèle à base de CRF comme décrit au chapitre \ref{chap:structuration}. Enfin, les demandes sont formées en mettant en correspondance les éléments précédemment déterminés. Réalisées par validation croisées, nos expérimentations comparent une douzaine de méthodes statistiques d'extraction de termes-clés et quatre algorithmes de classification pour l'extraction de 6 catégories prédéfinies de demandes. Les résultats montrent que la détection de catégorie est facile quelque soit l'algorithme utilisé ($F_1$-mesure comprise entre 98.8 \% et 100 \%). Il résulte aussi que l'extraction des demandes nécessite de sélectionner la méthode d'extraction de terminologie la mieux adaptée à la catégorie. Cette sélection préalable permet d'observer, sur les données de test, des $F_1$-mesures comprises entre 33.09 \% et 71.43 \% pour les champs $q_d$, $q_r$, et $s_r$, et entre 28.65 \% et 58.99 \% pour les triplets $(q_d,s_r, q_r)$.}
+\textit{\small \textbf{Résumé.} Ce chapitre aborde le problème d'identification automatique, dans une décision, des éléments structurants les demandes formulées. L'identification manuelle réalisée à travers la lecture exige beaucoup d'effort à cause de la complexité du contenu dans lequel les demandes sont mélangées à d'autres informations (des demandes de nature différente, des arguments, des faits, etc.). L'automatisation de cette tâche métier vise à aider les experts à rapidement comprendre les réclamations des parties et les réponses correspondantes des juges. Une demande est abstraite par cinq attributs : la norme qui la fonde, son objet, l'interprétation du résultat ($s_r$), le quantum demandé ($q_d$), et celui obtenu ($q_r$). La norme et l'objet forment ensemble la catégorie de la demande. L'annotation manuelle des données d'évaluation suit un protocole que nous avons précisément défini avec l'expert du projet. Ce protocole recommande des cycles d'annotation consistant chacun à constituer un ensemble de décisions et à y identifier toutes les demandes d'une seule catégorie donnée car il serait difficile d'annoter simultanément des données pour toutes les catégories qui sont très nombreuses. L'approche proposée extrait à chaque application les demandes d'une seule catégorie et est formulée en trois tâches. La présence de la catégorie est déterminée par classification de la décision. Ensuite, les quanta et le sens du résultat sont identifiés à proximité de termes appris de la catégorie dans les sections adéquates identifiées à l'aide d'un modèle à base de CRF comme décrit au chapitre \ref{chap:structuration}. Enfin, les demandes sont formées en mettant en correspondance les éléments précédemment déterminés. Réalisées par validation croisées, nos expérimentations comparent une douzaine de méthodes statistiques d'extraction de termes-clés et quatre algorithmes de classification pour l'extraction de 6 catégories prédéfinies de demandes. Les résultats montrent que la détection de catégorie est facile quelque soit l'algorithme utilisé ($F_1$-mesure comprise entre 98.8 \% et 100 \%). Il résulte aussi que l'extraction des demandes nécessite de sélectionner la méthode d'extraction de terminologie la mieux adaptée à la catégorie. Cette sélection préalable permet d'observer, sur les données de test, des $F_1$-mesures comprises entre 33.09 \% et 71.43 \% pour les champs $q_d$, $q_r$, et $s_r$, et entre 28.65 \% et 58.99 \% pour les triplets $(q_d,s_r, q_r)$.}
 
 \section{Introduction}
 \label{sec:quanta:introduction}
 
-%\textcolor{red}{Introduire, chaque chapitre, de manière explicite  par la contribution, discuter l'impacte de chaque méthode explorée, contribution sur la constitution des datasets, accompagnement des experts. dans un encadré}
+%\textcolor{red}{Introduire, chaque chapitre, de manière explicite par la contribution, discuter l'impacte de chaque méthode explorée, contribution sur la constitution des datasets, accompagnement des experts. dans un encadré}
 
 Au c\oe{}ur de l'analyse des décisions de justice se trouve le concept de demande. Il s'agit d'une réclamation ou requête effectuée par une ou plusieurs parties aux juges. Une partie peut demander des dommages-intérêts en réparation d'un préjudice subi ou à l'issu d'un divorce, des indemnités auxquelles elle pense avoir droit, ou encore une étude d'expert, etc. Les demandes sont fondamentales car l'argumentation au cours d'une affaire a deux buts : faire accepter ses demandes, et faire rejeter celles de la partie adverse. L'extraction des demandes et des résultats correspondants, dans un corpus, permet ainsi de récolter des données informant de la manière dont sont jugés des types de demandes d'intérêt. Les informations qui nous intéressent sont la catégorie de la demande, le quantum (montant) demandé, le sens du résultat (par ex. la demande a-t-elle été acceptée ou rejetée ?), et le quantum obtenu (décidé par les juges). Pour pouvoir extraire les demandes et les résultats, il est nécessaire de comprendre comment ceux-ci sont exprimés et co-référencés dans les décisions jurisprudentielles. Leur énoncé peut comporter des expressions plus ou moins complexes, dont souvent des références à des jugements antérieurs, des agrégations ou des restrictions (\figureref{fig:quanta:expr-dmd-rst}).
 
@@ -23,13 +23,13 @@ Au c\oe{}ur de l'analyse des décisions de justice se trouve le concept de deman
 				
 				Statuant à nouveau ...
 				
-				- \textcolor{brown}{les condamner au paiement d'une somme de  3 000,00 \euro{} pour procédure abusive et aux entiers dépens} ; }}
+				- \textcolor{brown}{les condamner au paiement d'une somme de 3 000,00 \euro{} pour procédure abusive et aux entiers dépens} ; }}
 		\caption{Exemples d'énoncés de demandes}\label{fig:quanta:expr-dmd}
 	\end{subfigure} 
 	
 	
 	\begin{subfigure}[t]{0.95\textwidth}
-		\fbox{\parbox{\textwidth}{La cour, ...  
+		\fbox{\parbox{\textwidth}{La cour, ... 
 				
 				CONFIRME \textcolor{blue}{le jugement entreprise} en \textcolor{brown}{toutes ses dispositions}.
 				
@@ -63,16 +63,16 @@ Au c\oe{}ur de l'analyse des décisions de justice se trouve le concept de deman
 Une catégorie $c$ de demande regroupe les prétentions qui sont de même nature par le fait qu'elles partagent deux aspects : l'objet demandé (par ex. dommages-intérêts, amende civile, déclaration de créance) et le fondement c'est-à-dire les règles ou normes ou principes juridiques qui fondent la demande (par ex. article 700 du code de procédure civile). Des noms particuliers sont utilisés pour identifier les catégories (Tableau \ref{tab:quanta:exemple-categorie}).
 
 \begin{table}[!htb]
-%\scriptsize
+\small
 \begin{tabular}{|c|p{0.35\textwidth}|p{0.15\textwidth}|p{0.3\textwidth}|}
 \hline
-\textbf{Label} & \textbf{Expression nominative }                                     & \textbf{Objet}                                                       & \textbf{Fondement}                                                                 \\ \hline
-\textit{acpa} & amende civile pour abus de procédure                         & amende civile                                               & Articles 32-1 code de procédure civile + 559 code de procédure civile  \\ \hline
-concdel & dommages-intérêts pour concurrence déloyale                  & dommages-intérêts                                           & Article 1382 du code civil                                             \\ \hline
-\textit{danais} & dommages-intérêts pour abus de procédure                   & dommages-intérêts                                           & Articles 32-1 code de procédure civile + 1382 code de procédure civile \\ \hline
-\textit{dcppc} & déclaration de créance au passif de la procédure collective  & déclaration de créance & L622-24 code de commerce                                               \\ \hline
-\textit{doris} & dommages-intérêts pour trouble de voisinage                  & dommages-intérêts                                           & principe de responsabilité pour trouble anormal de voisinage           \\ \hline
-\textit{styx} & frais irrépétibles                                          & dommages-intérêts                                           & Article 700 du code de procédure civile                                 \\ \hline
+\textbf{Label} & \textbf{Nom} & \textbf{Objet} & \textbf{Fondement} \\ \hline
+\textit{acpa} & amende civile pour abus de procédure & amende civile & Articles 32-1 code de procédure civile + 559 code de procédure civile \\ \hline
+\textit{concdel} & dommages-intérêts pour concurrence déloyale & dommages-intérêts & Article 1382 du code civil \\ \hline
+\textit{danais} & dommages-intérêts pour abus de procédure & dommages-intérêts & Articles 32-1 code de procédure civile + 1382 code de procédure civile \\ \hline
+\textit{dcppc} & déclaration de créance au passif de la procédure collective & déclaration de créance & L622-24 code de commerce \\ \hline
+\textit{doris} & dommages-intérêts pour trouble de voisinage & dommages-intérêts & principe de responsabilité pour trouble anormal de voisinage \\ \hline
+\textit{styx} & frais irrépétibles & dommages-intérêts & Article 700 du code de procédure civile \\ \hline
 \end{tabular}
 \textit{Les labels ont été définis particulièrement dans le cadre du projet, et par conséquent, ils n'existent pas dans le langage juridique.}
 \caption{Exemples de catégories de demandes}\label{tab:quanta:exemple-categorie}
@@ -100,7 +100,7 @@ Les demandes sont en général décrites à la fin de la section d'exposé des f
 
  Cette pseudo-structure n'est pas standard et impose de nombreux défis à relever. En effet, une décision jurisprudentielle porte sur plusieurs demandes de catégories différentes ou similaires. Il est important de faire correspondre un quantum demandé extrait au sens et quantum du résultat qui font référence à la même demande. La séparation des demandes et des résultats rend difficile cette mise en correspondance. Ce problème peut aussi être causé par la redondance des quanta ; par exemple, les résultats exprimés dans les Motifs sont résumés dans le Dispositif. D'autre part, les références aux jugements antérieurs exigent de résoudre des références aux résultats de jugements antérieurs qui sont, généralement, rappelés dans le même document. Notons aussi que les difficultés liées aux agrégations (par ex. "\textit{infirmer ... en toutes ces dispositions}") et aux restrictions/sélections (par ex. "\textit{infirme le jugement ... sauf en ce qu'il a condamné M. A. ...}") méritent d'être résolues. Par ailleurs, les catégories de demandes sont nombreuses\footnote{plus de 500 selon la nomenclature des affaires civiles NAC+.} mais ne sont pas toutes présentes à la fois dans les décisions. Tous ces aspects rendent difficile l'annotation manuelle des données de référence et la modélisation d'une approche d'extraction adéquate. Nous avons cependant identifié des indicateurs qui pourraient être utiles.
 
-On pourrait au préalable annoter les candidats potentiels de quanta. Nous nous sommes intéressés aux demandes dont les quanta sont des sommes d'argent. Les mentions de somme d'argent sont généralement de la forme \og \texttt{[valeur] [monnaie]} \fg{} (par ex. \texttt{3000 \euro}, \texttt{15 503 676 francs}, \texttt{un euro}, \texttt{339.000 XPF}). Des centimes apparaissent parfois (par ex. \texttt{dix huit euros et soixante quatorze centimes}, \texttt{26'977 \euro{}  19}).  Ainsi, il est possible d'annoter les sommes d'argent à l'aide d'une expression régulière. Même s'il est difficile de reconnaître des sommes d'argent écrites en lettre, il faut remarquer que l'équivalent en chiffre est généralement mentionné tout près (par ex. \texttt{neuf mille cinq cent soixante six euros et quatre vingt sept centimes (9566,87 \euro{}  )}). 
+On pourrait au préalable annoter les candidats potentiels de quanta. Nous nous sommes intéressés aux demandes dont les quanta sont des sommes d'argent. Les mentions de somme d'argent sont généralement de la forme \og \texttt{[valeur] [monnaie]} \fg{} (par ex. \texttt{3000 \euro}, \texttt{15 503 676 francs}, \texttt{un euro}, \texttt{339.000 XPF}). Des centimes apparaissent parfois (par ex. \texttt{dix huit euros et soixante quatorze centimes}, \texttt{26'977 \euro{} 19}). Ainsi, il est possible d'annoter les sommes d'argent à l'aide d'une expression régulière. Même s'il est difficile de reconnaître des sommes d'argent écrites en lettre, il faut remarquer que l'équivalent en chiffre est généralement mentionné tout près (par ex. \texttt{neuf mille cinq cent soixante six euros et quatre vingt sept centimes (9566,87 \euro{} )}). 
 
 La terminologie utilisée est aussi un bon indicateur pour reconnaître des demandes et des résultats. En effet, le vocabulaire utilisé est très souvent propre aux catégories de demandes. Par exemple le dernier élément de la Figure \ref{fig:quanta:expr-dmd} comprend le terme "\textit{pour procédure abusive}" qui est près d'une somme d'argent (\textit{3000 \euro{}}) ; il est donc probable que ce type de terme assez particulier soit un bon indicateur de la position des quanta. Par ailleurs, des verbes particuliers sont utilisés pour exprimer les demandes et résultats : infirmer, confirmer, constater, débouter, dire ... %Comme autres formes récurrentes, on pourrait citer l'ordre des demandes (resp. résultats). Généralement, on a les constats, les références aux jugements antérieurs, les demandes principales (?) et secondaires (?).
 
@@ -116,12 +116,12 @@ La terminologie utilisée est aussi un bon indicateur pour reconnaître des dema
 Nous avons tenu compte de deux principaux aspects du problème :
 \begin{enumerate}
 	\item Une décision comprend plusieurs demandes de catégories similaires ou différentes;
-	\item  Il existe un grand nombre de catégories (500+) ; ce qui rend difficile l'annotation d'exemples de référence pour couvrir toutes ces catégories.
+	\item Il existe un grand nombre de catégories (500+) ; ce qui rend difficile l'annotation d'exemples de référence pour couvrir toutes ces catégories.
 \end{enumerate}
 
  L'idée est de pouvoir ajouter progressivement de nouvelles catégories. Nous avons par conséquent opté pour une extraction par catégorie. Cette stratégie permet par ailleurs d'ajouter facilement de nouvelles classes sans avoir à redéfinir les classes déjà entraînées. Une exécution du système d'extraction permet ainsi d'extraire les demandes d'une seule catégorie. Le problème est décomposé en deux tâches :
 \begin{description}
-	\item[Tâche 1 :] Détecter les catégories présentes dans le document pour appliquer l'extraction  uniquement à ces catégories;
+	\item[Tâche 1 :] Détecter les catégories présentes dans le document pour appliquer l'extraction uniquement à ces catégories;
 	\item[Tâche 2 :] Pour chaque catégorie $c$ identifiée, extraire les demandes :
 	\begin{enumerate}
 		\item identification des valeurs d'attributs : quanta demandés ($q_d$), quanta obtenus ($q_r$), et sens du résultat ($s_r$);
@@ -143,13 +143,13 @@ Les demandes ressemblent aux structures telles que les relations ou les évènem
 	\small
 	\begin{tabular}{|p{0.15\textwidth}|p{0.21\textwidth}|p{0.24\textwidth}|p{0.30\textwidth}|}
 		\hline		%\textbf{Champs} 
-		 & \textbf{Relation \citep{ace2005relation}}  & \textbf{Événement \citep{ace2005event}} & \textbf{Analogie chez les demandes} \\ \hline
+		 & \textbf{Relation \citep{ace2005relation}} & \textbf{Événement \citep{ace2005event}} & \textbf{Analogie chez les demandes} \\ \hline
 		\textbf{Type} & Org-Aff.Student-Alum & Die & Catégorie="Dommages-intérêts pour procédure abusive" \\ \hline
-		\textbf{Passage} (\textit{extend}) & \textit{Card graduated from the University of South Carolina}  & "Il est mort hier d'une insuffisance rénale."  & (\textit{Figure \ref{fig:quanta:expr-dmd-rst}}) \\ \hline
+		\textbf{Passage} (\textit{extend}) & \textit{Card graduated from the University of South Carolina} & "Il est mort hier d'une insuffisance rénale." & (\textit{Figure \ref{fig:quanta:expr-dmd-rst}}) \\ \hline
 		\textbf{Déclencheur (\textit{trigger})} & - & "mort" & "procédure abusive"\\ \hline
-		\textbf{Participants ou Arguments  (\textit{arguments})} & Arg1="Card" \linebreak Arg2="the University of South
-		Carolina"& Victim-Arg="il" \linebreak Time-Arg="hier"  & Quantum-demandé="3000\euro{}"\linebreak  Quantum-obtenu="0 \euro{}"\ \\ \hline
-		\textbf{Classes  (\textit{attributes, classes})} & Asserted & Polarity=POSITIVE, Tense=PAST & Sens-résultat="Rejeté" \\ \hline
+		\textbf{Participants ou Arguments (\textit{arguments})} & Arg1="Card" \linebreak Arg2="the University of South
+		Carolina"& Victim-Arg="il" \linebreak Time-Arg="hier" & Quantum-demandé="3000\euro{}"\linebreak Quantum-obtenu="0 \euro{}"\ \\ \hline
+		\textbf{Classes (\textit{attributes, classes})} & Asserted & Polarity=POSITIVE, Tense=PAST & Sens-résultat="Rejeté" \\ \hline
 	\end{tabular}
 	\caption{Exemples d'analogie entre relations, évènements et demandes} \label{tab:quanta:analogie-relation-evt}
 \end{table}
@@ -158,9 +158,9 @@ Les demandes ressemblent aux structures telles que les relations ou les évènem
 \label{quanta:related-approaches}
 L'extraction d'éléments structurés repose généralement sur une approche modulaire du problème qui le décompose en tâches plus simples. D'une part, on dispose de l'identification des déclencheurs\footnote{Terme-clés indiquant la présence d'un évènement \citep{ace2005event}.} et des arguments. D'autre part, une mise en correspondance relie les arguments et déclencheurs qui participent à la même relation ou au même évènement. Les classes peuvent être déterminées par classification du passage associé. Cette décomposition a permis à de nombreuses méthodes de voir le jour. 
 
-L'approche traditionnelle consiste en une chaîne de traitements enchaînant des modules adaptés à une tâche simple. La sortie d'une étape est l'entrée de la suivante. C'est ainsi que \citet{ahn2006stages} définit un enchaînement de modèles de classification (k-plus-proches-voisins \citep{cover1967knn} vs. classificateur d'entropie maximum \citep{nigam1999maxent}), pour extraire des champs d'évènements dans le corpus d'ACE\citet{ace2005event}. Bien que les différents modules soient plus faciles à développer, ce type d'architecture souffre de la propagation d'erreurs d'une étape à la suivante, ainsi que de la non exploitation de l'interdépendance entre les tâches. Par conséquent, l'inférence jointe des champs est préconisée. Celle-ci peut-être réalisée par une modélisation graphique probabiliste ou neuronale. Par exemple, pour l'extraction d'évènements, \citet{yang2016jointEntityEvt} estiment la probabilité conditionnelle jointe du type d'entité $t_i$, les rôles des arguments $r_{i\cdot}$ et les types d'entités qui remplissent ces rôles $a.$ :  $p_\theta(t_i,r_{i\cdot},a. \vert i, N_i, x)$, $i$ étant un déclencheur candidat, $N_i$ l'ensemble des entités candidates qui sont de potentiels arguments pour $i$, et $x$ est le document. Cette approche obtient 50.6\% de $F_1$-mesure moyenne pour la détection des valeurs d'arguments et 48.4\% pour leur classification dans leur rôle respectif. Par ailleurs, \citet{nguyen2016jointtrgarg} illustrent l'utilisation des réseaux de neurones profonds avec une couche pour la prédiction du déclencheur, une autre pour le rôle des arguments, et la dernière encode la dépendance entre les labels de déclencheurs et les rôles d'arguments. Cette approche obtient 62.8\% de $F_1$-mesure moyenne pour la détection des valeurs d'arguments et 55.4\% pour leur classification dans leur rôle respectif. %\textcolor{red}{[PERFORMANCE DE LEUR METHODE]} 
+L'approche traditionnelle consiste en une chaîne de traitements enchaînant des modules adaptés à une tâche simple. La sortie d'une étape est l'entrée de la suivante. C'est ainsi que \citet{ahn2006stages} définit un enchaînement de modèles de classification (k-plus-proches-voisins \citep{cover1967knn} vs. classificateur d'entropie maximum \citep{nigam1999maxent}), pour extraire des champs d'évènements dans le corpus d'ACE\citet{ace2005event}. Bien que les différents modules soient plus faciles à développer, ce type d'architecture souffre de la propagation d'erreurs d'une étape à la suivante, ainsi que de la non exploitation de l'interdépendance entre les tâches. Par conséquent, l'inférence jointe des champs est préconisée. Celle-ci peut-être réalisée par une modélisation graphique probabiliste ou neuronale. Par exemple, pour l'extraction d'évènements, \citet{yang2016jointEntityEvt} estiment la probabilité conditionnelle jointe du type d'entité $t_i$, les rôles des arguments $r_{i\cdot}$ et les types d'entités qui remplissent ces rôles $a.$ : $p_\theta(t_i,r_{i\cdot},a. \vert i, N_i, x)$, $i$ étant un déclencheur candidat, $N_i$ l'ensemble des entités candidates qui sont de potentiels arguments pour $i$, et $x$ est le document. Cette approche obtient 50.6\% de $F_1$-mesure moyenne pour la détection des valeurs d'arguments et 48.4\% pour leur classification dans leur rôle respectif. Par ailleurs, \citet{nguyen2016jointtrgarg} illustrent l'utilisation des réseaux de neurones profonds avec une couche pour la prédiction du déclencheur, une autre pour le rôle des arguments, et la dernière encode la dépendance entre les labels de déclencheurs et les rôles d'arguments. Cette approche obtient 62.8\% de $F_1$-mesure moyenne pour la détection des valeurs d'arguments et 55.4\% pour leur classification dans leur rôle respectif. %\textcolor{red}{[PERFORMANCE DE LEUR METHODE]} 
 
-L'annotation du corpus de l'ACE est un marquage des champs dans le texte, et par conséquent, la position ou l'occurrence des champs est indiquée (\og annotation au niveau du segment de mots \fg{}). Comme dans notre cas, les données peuvent être annotées dans un tableau, hors des textes d'où elles sont issues. Il est donc nécessaire de retrouver leur position sans supervision. \citet{palm2017e2e-dnn} proposent dans cette logique une architecture de réseaux de neurones point-à-point qu'ils ont expérimentés sur des corpus de requêtes de recherche de restaurant et films \citep{liu2013mitmovierestaurant} ou de réservation de billets d'avion \citep{price1990atis}. Ils se sont intéressés au problème de remplissage de champs en apprenant la correspondance entre les textes et les valeurs de sorties. Leur modèle est basé sur les réseaux de pointeurs \citep{vinyals2015pointernetworks} qui sont des modèles séquence-à-séquence avec attention, dans lesquels la sortie est une position de la séquence d'entrée. Le modèle proposé consiste en un encodeur de la phrase et des contextes, plusieurs décodeurs (un pour chaque champ). L'application de cette architecture à l'extraction des demandes serait confrontée à deux obstacles majeurs auxquels il faut répondre au préalable. Premièrement, les décisions judiciaires ont des contenus de plusieurs centaines à plusieurs milliers de lignes contrairement aux requêtes manipulées par \citet{palm2017e2e-dnn}  dont la plus longue ne comprend que quelques dizaines de mots. La complexité des architectures neuronales de TALN augmente rapidement en espace et en temps avec la longueur des documents manipulés. Deuxièmement, nous disposons de très peu de données annotées ; entre 23 et 198 documents annotés dans notre cas contre plusieurs milliers pour les expérimentations de \citet{palm2017e2e-dnn}.
+L'annotation du corpus de l'ACE est un marquage des champs dans le texte, et par conséquent, la position ou l'occurrence des champs est indiquée (\og annotation au niveau du segment de mots \fg{}). Comme dans notre cas, les données peuvent être annotées dans un tableau, hors des textes d'où elles sont issues. Il est donc nécessaire de retrouver leur position sans supervision. \citet{palm2017e2e-dnn} proposent dans cette logique une architecture de réseaux de neurones point-à-point qu'ils ont expérimentés sur des corpus de requêtes de recherche de restaurant et films \citep{liu2013mitmovierestaurant} ou de réservation de billets d'avion \citep{price1990atis}. Ils se sont intéressés au problème de remplissage de champs en apprenant la correspondance entre les textes et les valeurs de sorties. Leur modèle est basé sur les réseaux de pointeurs \citep{vinyals2015pointernetworks} qui sont des modèles séquence-à-séquence avec attention, dans lesquels la sortie est une position de la séquence d'entrée. Le modèle proposé consiste en un encodeur de la phrase et des contextes, plusieurs décodeurs (un pour chaque champ). L'application de cette architecture à l'extraction des demandes serait confrontée à deux obstacles majeurs auxquels il faut répondre au préalable. Premièrement, les décisions judiciaires ont des contenus de plusieurs centaines à plusieurs milliers de lignes contrairement aux requêtes manipulées par \citet{palm2017e2e-dnn} dont la plus longue ne comprend que quelques dizaines de mots. La complexité des architectures neuronales de TALN augmente rapidement en espace et en temps avec la longueur des documents manipulés. Deuxièmement, nous disposons de très peu de données annotées ; entre 23 et 198 documents annotés dans notre cas contre plusieurs milliers pour les expérimentations de \citet{palm2017e2e-dnn}.
 
 L'avantage de l'utilisation des réseaux de neurones vient de leur capacité à apprendre automatiquement des caractéristiques pertinentes contrairement aux modèles probabilistes qui exigent très souvent une ingénierie manuelle des caractéristiques. Par contre, il est beaucoup plus facile d'utiliser les modèles probabilistes sur des corpus de faible taille et de longs textes comme c'est le cas pour le problème d'identification des demandes judiciaires.
 
@@ -194,31 +194,31 @@ $c$ & la catégorie (domaine ciblé) \\
 $\overline{c}$ & la classe complémentaire ou négative \\
 $D$& ensemble global des documents de taille $N = \vert D \vert$ \\
 $D_{c}$& ensemble des documents de $c$ de taille $\vert D_{c} \vert$ \\% = $N^+$\\
-$D_{\overline{c}}$& ensemble des documents de $\overline{c}$ de taille $\vert D_{\overline{c}} \vert$\\%  = $N^-$\\
+$D_{\overline{c}}$& ensemble des documents de $\overline{c}$ de taille $\vert D_{\overline{c}} \vert$\\% = $N^-$\\
 $N$& nombre total de documents\\
 $N_{t}$& nombre de documents contenant $t$\\
 $N_{\overline{t}}$& nombre de documents ne contenant pas $t$\\
 $N_{t,c}$ & nombre de documents de $c$ contenant $t$\\
-$N_{\overline{t},c}$ & nombre de documents de $c$ ne contenant pas $t$\\%   = $b$\\
-$N_{t,\overline{c}}$ & nombre de documents de $\overline{c}$ contenant $t$\\%   = $c$\\
-$N_{\overline{t},\overline{c}}$ & nombre de documents de $\overline{c}$ ne contenant pas $t$\\%   = $d$\\
+$N_{\overline{t},c}$ & nombre de documents de $c$ ne contenant pas $t$\\% = $b$\\
+$N_{t,\overline{c}}$ & nombre de documents de $\overline{c}$ contenant $t$\\% = $c$\\
+$N_{\overline{t},\overline{c}}$ & nombre de documents de $\overline{c}$ ne contenant pas $t$\\% = $d$\\
 %$\vert D \vert$ & nombre total de documents ($\vert D \vert = \vert D_{c} \vert + \vert D_{\overline{c}} \vert$)\\
 %$DF_c$ & proportion de documents du corpus appartenant à $c$ (probabilité qu'un texte pris au hasard soit de la classe $c$ )\\
 %$DF_t$& proportion de documents du corpus contenant $t$ (\textit{Document Frequency})\\
 $DF_{t \vert c}$ & proportion de documents contenant $t$ dans le corpus de $c$ ($DF_{t \vert c} = \frac{N_{t,c}}{\vert D_c \vert}$) \\
-$DF_{c \vert t}$ & proportion de documents appartenant à $c$ dans l'ensemble de ceux qui contiennent $t$  \\
+$DF_{c \vert t}$ & proportion de documents appartenant à $c$ dans l'ensemble de ceux qui contiennent $t$ \\
 \hline
 \end{tabular}
 \caption{Notation utilisée pour formuler les métriques} \label{tab:quanta:notations_metriques}
 \end{table}
 
-% Lorsque la fonction n'utilise que le corpus représentatif du domaine d'intérêt, elle mesure ainsi le degré d'importance du terme dans le langage d'un domaine particulier ou une classe particulière de documents. Par exemple, la fonction \og fréquence de document \fg{} (\textit{DF - Document Frequency}) mesure l'importance d'un terme en lui affectant la proportion de documents qui le contiennent dans un corpus global considéré. De telles fonctions sont qualifiées de non-supervisées contrairement à celles qui se calculent entre différents corpus  et par conséquent utilisent les labels des données d'entraînement \citep{lan2009termweighting, wu2017balancingtermweight}. Ces dernières mesurent l'importance du terme dans la discrimination (ou la différence) entre le domaine d'intérêt et les autres corpus. Un exemple simple s'obtient en faisant la différence de \og fréquence de document \fg{} d'un terme entre un corpus $c$ et sont complémentaire $\overline{c}$. 
+% Lorsque la fonction n'utilise que le corpus représentatif du domaine d'intérêt, elle mesure ainsi le degré d'importance du terme dans le langage d'un domaine particulier ou une classe particulière de documents. Par exemple, la fonction \og fréquence de document \fg{} (\textit{DF - Document Frequency}) mesure l'importance d'un terme en lui affectant la proportion de documents qui le contiennent dans un corpus global considéré. De telles fonctions sont qualifiées de non-supervisées contrairement à celles qui se calculent entre différents corpus et par conséquent utilisent les labels des données d'entraînement \citep{lan2009termweighting, wu2017balancingtermweight}. Ces dernières mesurent l'importance du terme dans la discrimination (ou la différence) entre le domaine d'intérêt et les autres corpus. Un exemple simple s'obtient en faisant la différence de \og fréquence de document \fg{} d'un terme entre un corpus $c$ et sont complémentaire $\overline{c}$. 
 
 \subsubsection{Métriques non-supervisées}
-Les métriques non-supervisées affectent un score à un terme en rapport avec l'importance de ce dernier dans le corpus global $D$. Parmi ces métriques, on retrouve par exemple la fréquence inverse de document (\textit{inverse document frequency}) $idf$ \citep{sparck1972idf} et ses variantes $pidf$ \citep{wu1981pidf}  et $bidf$ \citep{jones2000bm25idf} accordent plus d'importance aux termes rares. Elles considèrent en fait qu'un terme rare est plus efficace pour la distinction entre des documents. Par conséquent, elles sont efficaces en recherche d'information mais moins indiquées en classification de textes où le but est plutôt de séparer des catégories \citep{wu2017balancingtermweight}. Elles se formulent comme suit :
+Les métriques non-supervisées affectent un score à un terme en rapport avec l'importance de ce dernier dans le corpus global $D$. Parmi ces métriques, on retrouve par exemple la fréquence inverse de document (\textit{inverse document frequency}) $idf$ \citep{sparck1972idf} et ses variantes $pidf$ \citep{wu1981pidf} et $bidf$ \citep{jones2000bm25idf} accordent plus d'importance aux termes rares. Elles considèrent en fait qu'un terme rare est plus efficace pour la distinction entre des documents. Par conséquent, elles sont efficaces en recherche d'information mais moins indiquées en classification de textes où le but est plutôt de séparer des catégories \citep{wu2017balancingtermweight}. Elles se formulent comme suit :
 \[idf(t) = \log_2\left(\frac{N}{N_t}\right), pidf(t) = \log_2\left(\frac{N}{N_t} - 1\right), bidf(t) = \log_2\left(\frac{N_{\overline{t}} + 0.5}{N_t + 0.5}\right)\]
 
-Il est possible de prendre explicitement en compte le fait que les termes peuvent comprendre plusieurs mots (n-grammes) et avoir des tailles différentes (nombre de mots). La $\text{C-value}$ \citep{frantzi2000CValueNCValue}, par exemple, distingue la fréquence du terme et de ses sous-termes (termes imbriqués) par la formule : %  t \mbox{ n'est imbriqué dans aucun terme candidat}
+Il est possible de prendre explicitement en compte le fait que les termes peuvent comprendre plusieurs mots (n-grammes) et avoir des tailles différentes (nombre de mots). La $\text{C-value}$ \citep{frantzi2000CValueNCValue}, par exemple, distingue la fréquence du terme et de ses sous-termes (termes imbriqués) par la formule : % t \mbox{ n'est imbriqué dans aucun terme candidat}
 \[\text{C-value}(t) = \begin{cases} \log_2(\vert t \vert) \cdot (N_t - \frac{1}{\vert T_t \vert} \cdot \sum\limits_{b \in T_t} N_b), & \mbox{si } t \mbox{ est imbriqué} \\ \log_2(\vert t \vert) \cdot N_t, & \mbox{sinon,} \end{cases}\]
 $T_t$ étant l'ensemble des termes candidats qui contiennent $t$.
 
@@ -236,35 +236,35 @@ Les métriques supervisées mesurent l'information contenue dans les labels des 
 	{+ \frac{N_{t,\overline{c}}}{N} \log_2 \left(\frac{N_{t,\overline{c}}N}{N_{t}\vert D_{\overline{c}}\vert}\right)
 	+ \frac{N_{\overline{t},\overline{c}}}{N} \log_2 \left(\frac{N_{\overline{t},\overline{c}}N}{N_{\overline{t}}\vert D_c \vert}\right)}
 	\end{equation*}
-	\item[La fréquence de pertinence] $rf$ \citep{lan2009rf} a comme intuition de considérer que  plus la fréquence d'un terme $t$ est élevée dans $D_c$ relativement à sa fréquence dans $D_{\overline{c}}$, plus il contribue à distinguer les documents de $c$ de ceux de $\overline{c}$. Elle est calculée par la formule :
+	\item[La fréquence de pertinence] $rf$ \citep{lan2009rf} a comme intuition de considérer que plus la fréquence d'un terme $t$ est élevée dans $D_c$ relativement à sa fréquence dans $D_{\overline{c}}$, plus il contribue à distinguer les documents de $c$ de ceux de $\overline{c}$. Elle est calculée par la formule :
 	\[rf(t,c) = \log\left(2 + \frac{N_{t,c}}{max(1, N_{t,\overline{c}})}\right)\]
-	\item[Le coefficient du $\chi^2$] \citep{schutze1995chi2} estime le manque d'indépendance entre $t$ et $c$. Par conséquent, une grande valeur de  $\chi^2(t,c)$ indique une relation étroite entre $t$ et $c$. Elle est calculée par la formule :
-	\[\chi^2(t,c) = \frac{N ((N_{t,c} N_{\overline{t},\overline{c}}) - (N_{t,\overline{c}} N_{\overline{t},c}))^2}{N_t N_{\overline{t}} \vert D_c \vert  \vert D_{\overline{c}} \vert }\]
+	\item[Le coefficient du $\chi^2$] \citep{schutze1995chi2} estime le manque d'indépendance entre $t$ et $c$. Par conséquent, une grande valeur de $\chi^2(t,c)$ indique une relation étroite entre $t$ et $c$. Elle est calculée par la formule :
+	\[\chi^2(t,c) = \frac{N ((N_{t,c} N_{\overline{t},\overline{c}}) - (N_{t,\overline{c}} N_{\overline{t},c}))^2}{N_t N_{\overline{t}} \vert D_c \vert \vert D_{\overline{c}} \vert }\]
 	\item[Le coefficient de corrélation $ngl$] de Ng, Goh et Low \citep{ng1997ngl} est la racine carré du $\chi^2$ \citep{schutze1995chi2} :
-	\[ngl(t,c) = \frac{\sqrt{N} (N_{t,c} N_{\overline{t},\overline{c}}) - (N_{t,\overline{c}} N_{\overline{t},c})}{\sqrt{N_t N_{\overline{t}} \vert D_c \vert  \vert D_{\overline{c}} \vert }}.\]
+	\[ngl(t,c) = \frac{\sqrt{N} (N_{t,c} N_{\overline{t},\overline{c}}) - (N_{t,\overline{c}} N_{\overline{t},c})}{\sqrt{N_t N_{\overline{t}} \vert D_c \vert \vert D_{\overline{c}} \vert }}.\]
 	L'intuition est de ne regarder que les termes qui proviennent de $D_c$ et qui indiquent l'appartenance à $c$. Une valeur positive de $ngl$ signifie que $t$ est corrélé avec $c$, lorsqu'une valeur négative signifie que $t$ est corrélé à $\overline{c}$.
 	\item[Le coefficient $gss$] de Galavotti, Sebastiani, et Simi
 	 \citep{galavotti2000gss} est une fonction simplifiée du $ngl$ \citep{ng1997ngl} :
-	\[gss(t,c) = (N_{t,c} N_{\overline{t},\overline{c}}) -  (N_{t,\overline{c}} N_{\overline{t},c}).\]
-   Le facteur $N$ a été éliminé car il est le même pour tous les termes. Le facteur $\sqrt{N_tN_{\overline{t}}}$ est supprimé car il accentue les termes extrêmement rares qui ne sont pas efficaces pour la classification de textes. Le facteur  $\sqrt{\vert D_c \vert \vert D_{\overline{c}} \vert}$ est éliminé car il accentue les catégories extrêmement rares, ce qui tend à réduire l'efficacité micro-moyennée (efficacité calculée globalement sur le corpus de test sans distinction du label des éléments).
-   \item[Le coefficient de Maracuilo] ($mar$)  \citep{marascuilo1966multcomparison} qui se calcule par la formule :
-    \begin{equation*} mar(t, c) =  
-    \,
-    \dfrac{\left(
-    	\splitdfrac{\splitdfrac{\splitdfrac{(N_{t,c} - N_{t}N_{t,c}/N)^2}{+ (N_{t,\overline{c}} - N_{t} \vert D_{\overline{c}} \vert /N)^2}}{+ (N_{\overline{t},c} - \vert D_c \vert N_{\overline{t}}/N)^2}}{+ (N_{\overline{t},\overline{}} - N_{\overline{t}} \vert D_{\overline{c}} \vert /N)^2}\right)}{N}.
-    \end{equation*}
-    C'est un test de proportion multivariée. Nous proposons de l'utiliser pour comparer les proportions d'occurrences d'un terme $t$ dans différents corpus. % Autrement dit, il s'agit de tester l'homogénéité des textes du corpus contenant $t$. %Lorsque $ mar(t, c) \geq 3.84$ on accepte l'hypothèse selon laquelle la proportion de textes pour lesquels $t$ prédit $c$ est significative avec un risque d'erreur de $5\%$.\textcolor{red}{référence**}
-    %\item[La distance de Kullback-Leibler] $kld$ se formule comme suit:
-    %\[kld(t, c)=(N_{t,c} / N_{t}) * \log (\frac{N_{t,c} N}{N_{t}\vert D_c \vert})\]
-    %adaptée pour la classification de texte par \citet{bigi2003kld} est la métrique symétrique de la divergence de Kullback-Leibler ou entropie relative qui mesure comment deux distributions de probabilité sont différents
-    \item[Le \og delta lissé d'$idf$\fg{}], $dsidf$ \citep{paltoglou2010dsidfANDdbidf}, est une version lissée du delta $idf$ ($didf$) de \citet{martineau2009didf} ($didf(t,c)=\log_2\left(\frac{\vert D_{\overline{c}} \vert N_{t,c}}{\vert D_c \vert N_{t,\overline{c}}}\right)$). $dsidf$ se formule comme suit :
-    \[dsidf(t,c) = \log_2\left(\frac{\vert D_{\overline{c}} \vert (N_{t,c} + 0.5)}{\vert D_c \vert (N_{t,\overline{c}} + 0.5)}\right)\].
-    \item[Le delta BM25 d'$idf$], $dbidf$ \citep{paltoglou2010dsidfANDdbidf}, est une autre variante plus sophistiquée du $didf$ qui se calcule comme suit :
-    \[dbidf(t,c) = \log_2\left(\frac{( \vert D_{\overline{c}} \vert  - N_{t,\overline{c}} + 0.5) \vert (N_{t,c} + 0.5)}{(\vert D_c \vert - N_{t,c} + 0.5) (N_{t,\overline{c}} + 0.5)}\right)\]
+	\[gss(t,c) = (N_{t,c} N_{\overline{t},\overline{c}}) - (N_{t,\overline{c}} N_{\overline{t},c}).\]
+ Le facteur $N$ a été éliminé car il est le même pour tous les termes. Le facteur $\sqrt{N_tN_{\overline{t}}}$ est supprimé car il accentue les termes extrêmement rares qui ne sont pas efficaces pour la classification de textes. Le facteur $\sqrt{\vert D_c \vert \vert D_{\overline{c}} \vert}$ est éliminé car il accentue les catégories extrêmement rares, ce qui tend à réduire l'efficacité micro-moyennée (efficacité calculée globalement sur le corpus de test sans distinction du label des éléments).
+ \item[Le coefficient de Maracuilo] ($mar$) \citep{marascuilo1966multcomparison} qui se calcule par la formule :
+ \begin{equation*} mar(t, c) = 
+ \,
+ \dfrac{\left(
+ 	\splitdfrac{\splitdfrac{\splitdfrac{(N_{t,c} - N_{t}N_{t,c}/N)^2}{+ (N_{t,\overline{c}} - N_{t} \vert D_{\overline{c}} \vert /N)^2}}{+ (N_{\overline{t},c} - \vert D_c \vert N_{\overline{t}}/N)^2}}{+ (N_{\overline{t},\overline{}} - N_{\overline{t}} \vert D_{\overline{c}} \vert /N)^2}\right)}{N}.
+ \end{equation*}
+ C'est un test de proportion multivariée. Nous proposons de l'utiliser pour comparer les proportions d'occurrences d'un terme $t$ dans différents corpus. % Autrement dit, il s'agit de tester l'homogénéité des textes du corpus contenant $t$. %Lorsque $ mar(t, c) \geq 3.84$ on accepte l'hypothèse selon laquelle la proportion de textes pour lesquels $t$ prédit $c$ est significative avec un risque d'erreur de $5\%$.\textcolor{red}{référence**}
+ %\item[La distance de Kullback-Leibler] $kld$ se formule comme suit:
+ %\[kld(t, c)=(N_{t,c} / N_{t}) * \log (\frac{N_{t,c} N}{N_{t}\vert D_c \vert})\]
+ %adaptée pour la classification de texte par \citet{bigi2003kld} est la métrique symétrique de la divergence de Kullback-Leibler ou entropie relative qui mesure comment deux distributions de probabilité sont différents
+ \item[Le \og delta lissé d'$idf$\fg{}], $dsidf$ \citep{paltoglou2010dsidfANDdbidf}, est une version lissée du delta $idf$ ($didf$) de \citet{martineau2009didf} ($didf(t,c)=\log_2\left(\frac{\vert D_{\overline{c}} \vert N_{t,c}}{\vert D_c \vert N_{t,\overline{c}}}\right)$). $dsidf$ se formule comme suit :
+ \[dsidf(t,c) = \log_2\left(\frac{\vert D_{\overline{c}} \vert (N_{t,c} + 0.5)}{\vert D_c \vert (N_{t,\overline{c}} + 0.5)}\right)\].
+ \item[Le delta BM25 d'$idf$], $dbidf$ \citep{paltoglou2010dsidfANDdbidf}, est une autre variante plus sophistiquée du $didf$ qui se calcule comme suit :
+ \[dbidf(t,c) = \log_2\left(\frac{( \vert D_{\overline{c}} \vert - N_{t,\overline{c}} + 0.5) \vert (N_{t,c} + 0.5)}{(\vert D_c \vert - N_{t,c} + 0.5) (N_{t,\overline{c}} + 0.5)}\right)\]
 \end{description}
 
 \subsubsection{Discussions}
-A l'exception de la $\text{C-value}$, ces métriques ne tiennent pas explicitement compte de la taille des termes dans les situations où on souhaiterait manipuler des termes de tailles différentes. \citet{brown2013ngram1100languages} propose que soit affecté à un n-gramme $t$ le poids $\left(\frac{N_t}{N}\right)^{0.27} \vert t \vert^{0.09}$, une formule obtenue empiriquement pour l'identification du langage d'un document. Par ailleurs, la méthode $\text{C-value}$ \citep{frantzi2000CValueNCValue} propose un produit similaire avec le logarithme de la longueur à la place des puissances. Il est par conséquent évident que le produit lissé de la longueur du terme (puissance ou logarithme) avec les métriques décrites précédemment, permet de favoriser les longs termes qui, bien que rares, sont très souvent plus pertinents que certains termes plus courts. Aussi, le temps  pour calculer ces différentes métriques devient rapidement long, surtout pour des $n$-grammes de mots de taille variée (nombre de mots). Pour compter rapidement les occurrences des n-grammes des corpus, nous avons utilisé la librairie SML\footnote{\url{http://www.semantic-measures-library.org}} \citep{harispe2013semlib} lors des expérimentations.
+A l'exception de la $\text{C-value}$, ces métriques ne tiennent pas explicitement compte de la taille des termes dans les situations où on souhaiterait manipuler des termes de tailles différentes. \citet{brown2013ngram1100languages} propose que soit affecté à un n-gramme $t$ le poids $\left(\frac{N_t}{N}\right)^{0.27} \vert t \vert^{0.09}$, une formule obtenue empiriquement pour l'identification du langage d'un document. Par ailleurs, la méthode $\text{C-value}$ \citep{frantzi2000CValueNCValue} propose un produit similaire avec le logarithme de la longueur à la place des puissances. Il est par conséquent évident que le produit lissé de la longueur du terme (puissance ou logarithme) avec les métriques décrites précédemment, permet de favoriser les longs termes qui, bien que rares, sont très souvent plus pertinents que certains termes plus courts. Aussi, le temps pour calculer ces différentes métriques devient rapidement long, surtout pour des $n$-grammes de mots de taille variée (nombre de mots). Pour compter rapidement les occurrences des n-grammes des corpus, nous avons utilisé la librairie SML\footnote{\url{http://www.semantic-measures-library.org}} \citep{harispe2013semlib} lors des expérimentations.
 
 
 \section{Méthode}
@@ -318,7 +318,7 @@ Le pré-traitement est nécessaire pour :
 \begin{enumerate}
 	\item sectionner le document en 4 sections Entête, Litige, Motifs, Dispositif ;
 	\item annoter les sommes d'argent (en chiffre) à l'aide de l'expression régulière \og \texttt{[0-9]([0-9]|[',.]|\textbackslash s)*\textbackslash s*([Ee]uro[s]\{0,1\} |franc[s]\{0,1\} \\ |\euro|F|XPF|CFP|EUR|EUROS|[i])( |\$)}\fg{} ;
-	\item annoter les énoncés de demandes et de résultats respectivement dans les sections Litige et Dispositif:  pour cela, les mots introductifs du Tableau \tableref{tab:quanta:mots-introductifs} sont employés car ils indiquent le début d'un énoncé indépendamment de la catégorie; 	cette technique de recherche de passages à l'aide de listes de termes-clés prédéfinies a déjà été employé par  \citet{wyner2010extractlegalelts} pour annoter les énoncés de résultats en considérant toute phrase contenant un terme de jugement : \textit{affirm, grant, deny, reverse, overturn, remand, ...}
+	\item annoter les énoncés de demandes et de résultats respectivement dans les sections Litige et Dispositif: pour cela, les mots introductifs du Tableau \tableref{tab:quanta:mots-introductifs} sont employés car ils indiquent le début d'un énoncé indépendamment de la catégorie; 	cette technique de recherche de passages à l'aide de listes de termes-clés prédéfinies a déjà été employé par \citet{wyner2010extractlegalelts} pour annoter les énoncés de résultats en considérant toute phrase contenant un terme de jugement : \textit{affirm, grant, deny, reverse, overturn, remand, ...}
 	 
 	\begin{table}[!htb]
 		\centering
@@ -327,7 +327,7 @@ Le pré-traitement est nécessaire pour :
 		\begin{tabular}{|p{0.28\textwidth}|p{0.3\textwidth}|p{0.12\textwidth}|p{0.11\textwidth}|}
 			\hline
 			\textbf{Demande} & \multicolumn{3}{c|}{\textbf{Résultat} (organisé par polarité ou sens)} \\ \hline
-			& \textbf{accepte}  &\textbf{sursis à statuer} & \textbf{rejette}  \\ \hline
+			& \textbf{accepte} &\textbf{sursis à statuer} & \textbf{rejette} \\ \hline
 			\textit{accorder, admettre, admission, allouer, condamnation, condamner, fixer, laisser, prononcer, ramener, surseoir} & \textit{accorde, accordons, admet, admettons, alloue, allouons, condamne, condamnons, déclare, déclarons, fixe, fixons, laisse, laissons, prononce, prononçons} & \textit{réserve, réservons, sursoit, sursoyons} & \textit{déboute, déboutons, rejette, rejetons} \\ \hline
 		\end{tabular}
 		\caption{Mots introduisant les énoncés de demandes et de résultats}\label{tab:quanta:mots-introductifs}
@@ -341,11 +341,11 @@ Les termes-clés sont identifiés à l'aide de méthodes statistiques d'extracti
  
  \begin{enumerate}
  	\item Restreindre le contenu de chaque document de $D_c$ à la concaténation des énoncés de demande et résultats contenant des sommes d'argent de valeur égale à celle des quanta annotés.
- 	\item Restreindre chaque document de  $D_{\overline{c}}$ à la concaténation des énoncés  de demande et résultats contenant des sommes d'argent.
+ 	\item Restreindre chaque document de $D_{\overline{c}}$ à la concaténation des énoncés de demande et résultats contenant des sommes d'argent.
  	\item A l'aide d'une métrique global $g$, calculer le score des termes du corpus $D_c \cup D_{\overline{c}}$. Ce score est multiplié par le logarithme de la longueur du terme pour favoriser les termes longs: $g'(t,c) = \log_2(\vert t \vert) \times g(t, c)$.
  	\item Normaliser les scores en appliquant à chaque score original ($g'(t,c)$) la formule $g'_{norm}(t,c) = \frac{g'(t,c) - \min\limits_{t_k} (g'(t_k,c))}{\max\limits_{t_k} (g'(t_k,c)) - \min\limits_{t_k} (g'(t_k,c))}$. 
  	\item Trier les termes par ordre décroissant de score.
- 	\item Sélectionner les premiers termes qui obtiennent les meilleurs performances sur la base d'apprentissage.
+ 	\item Sélectionner les premiers termes qui fournissent les meilleures performances sur la base d'apprentissage.
  \end{enumerate}
 
 
@@ -364,14 +364,14 @@ A l'aide des termes-clés appris, l'extraction des données de couples demandes-
 
 \section{Résultats expérimentaux}
 
-Nous analysons ici la capacité de l'approche proposée à reconnaître efficacement les catégories de demandes présentes dans les documents, et à extraire les valeurs des attributs des différentes paires demandes-résultats qui y sont exprimées.  Sont discutées les données et métriques d'évaluation employées, ainsi que des résultats expérimentaux observés avec des exemples annotés pour les six catégories du Tableau \ref{tab:quanta:exemple-categorie}. 
+Nous analysons ici la capacité de l'approche proposée à reconnaître efficacement les catégories de demandes présentes dans les documents, et à extraire les valeurs des attributs des différentes paires demandes-résultats qui y sont exprimées. Sont discutées les données et métriques d'évaluation employées, ainsi que des résultats expérimentaux observés avec des exemples annotés pour les six catégories du Tableau \ref{tab:quanta:exemple-categorie}. 
 
 \subsection{Données d'évaluation}
 L'annotation manuelle d'exemples s'effectue pour une catégorie à la fois afin que la tâche soit plus facile pour les experts. Le protocole d'annotation se déroule en 3 étapes: 
 \begin{enumerate}
 	\item définir une catégorie $c$ par son objet et sa norme juridique;
 	\item former un corpus $D_c$ de documents contenant des demandes de $c$, et un autre $D_{\overline{c}}$ de documents n'en contenant pas; 
-	\item extraire toutes les demandes de catégories $c$ mentionnées dans $D_c$, pour annoter les données des paires demande-résultat dans un tableau comme celui illustré par le  Tableau \ref{tab:tab:quanta-annotations};
+	\item extraire toutes les demandes de catégories $c$ mentionnées dans $D_c$, pour annoter les données des paires demande-résultat dans un tableau comme celui illustré par le Tableau \ref{tab:tab:quanta-annotations};
 	
 	\begin{table}[!htb]
 		\includegraphics[width=\textwidth]{tab-annotations.png}
@@ -382,16 +382,16 @@ L'annotation manuelle d'exemples s'effectue pour une catégorie à la fois afin 
 
 %Le résultat d'une phase d'annotation comprend ainsi un tableau des demandes, deux corpus de décisions $D_{c}$ et $D_{\overline{c}}$.
 
- %Toutes les demandes du corpus $D_{c} \cup D_{\overline{c}}$  annoté manuellement, sont considérées inscrites dans le tableau des annotations manuelles.
+ %Toutes les demandes du corpus $D_{c} \cup D_{\overline{c}}$ annoté manuellement, sont considérées inscrites dans le tableau des annotations manuelles.
  
- La répartition des données d'évaluation est donnée par la Figure \ref{fig:quanta:hist-repartition-docs}.  
+ La répartition des données d'évaluation est donnée par la Figure \ref{fig:quanta:hist-repartition-docs}. 
  
  \begin{figure}[!htb]
  	\includegraphics[width=\textwidth]{chartDataset.png}
  	\caption{Répartitions des demandes dans les documents annotées.}\label{fig:quanta:hist-repartition-docs}
  \end{figure}
  
- Il faut aussi noter que bien que l'annotation manuelle des demandes et des résultats soit réalisée dans un tableau (annotation externe au contenu), elle reste une tâche très difficile. Le très faible nombre de documents annotés manuellement en témoigne. Le nombre  maximum de documents annotés pour une catégorie est seulement de 198 (barres vertes de \textit{danais}). 
+ Il faut aussi noter que bien que l'annotation manuelle des demandes et des résultats soit réalisée dans un tableau (annotation externe au contenu), elle reste une tâche très difficile. Le très faible nombre de documents annotés manuellement en témoigne. Le nombre maximum de documents annotés pour une catégorie est seulement de 198 (barres vertes de \textit{danais}). 
 
 \subsection{Métriques d'évaluation}
 \paragraph{Reconnaissance de catégories par classification}
@@ -401,9 +401,9 @@ La classification des documents est évaluée en utilisant les métriques préci
 \paragraph{Extraction des attributs des paires demande-résultat}
  Nous évaluons les approches proposées sur l'extraction de 3 données: le quantum demandé $q_d$, le sens du résultat $s_r$ et le quantum obtenu $q_r$. Une demande est donc un triplet $(q_d, s_r, q_r)$. Il est possible d'évaluer le système pour un sous-ensemble $x$ de $\lbrace q_d, s_r, q_r \rbrace$ sur les demandes extraites d'un corpus annotées $D$ de test. Nous utilisons les métriques traditionnellement employées en extraction d'information: la précision ($Precision_{c,x,D}$), le rappel ($Rappel_{c,x,D}$), et la F1-mesure ($F1_{c,x,D}$). Ces mesures sont définies à partir des nombres de vrais positifs ($TP$), faux positifs ($FP$) et faux négatifs ($FN$) calculés au niveau d'un document $d$:
 \begin{itemize}
-\item  $TP_{c, x, d}$ est le nombre de demandes extraites de $d$ par le système, qui sont effectivement de la catégorie $c$ (demandes correctes);
-\item  $FP_{c, x, d}$ est le nombre de demandes extraites de $d$ par le système, mais qui ne sont pas des demandes de $c$ (demandes en trop);
-\item  $FN_{c, x, d}$ est le nombre de demandes annotées comme étant de $c$ mais qui n'ont pas pu être extraites par le système (demandes manquées).
+\item $TP_{c, x, d}$ est le nombre de demandes extraites de $d$ par le système, qui sont effectivement de la catégorie $c$ (demandes correctes);
+\item $FP_{c, x, d}$ est le nombre de demandes extraites de $d$ par le système, mais qui ne sont pas des demandes de $c$ (demandes en trop);
+\item $FN_{c, x, d}$ est le nombre de demandes annotées comme étant de $c$ mais qui n'ont pas pu être extraites par le système (demandes manquées).
 \end{itemize}
 
 Au niveau d'un corpus d'évaluation $D$, ces métriques sont sommées: 
@@ -413,28 +413,28 @@ Une donnée observée (par exemple \og 3 000 \euro \fg) est bien extraite automa
 
 \subsection{Détection des catégories par classification}
 Les implémentations de la bibliothèque Weka \citep{frank2016weka} ont permis d'utiliser plusieurs modèles de classification: le modèle Bayésien naïf (NB), l'arbre de décision C4.5 (implémenté sous l'appelation J48), les k-plus-proches-voisins (KNN), et le SVM. 
- A chaque entraînement, s'exécute une sélection de modèles par validation croisée sur les données d'entraînement. Elle a pour but de sélectionner la métrique locale et la métrique globale appropriée. Les résultats obtenus par 5-\textit{folds} validation croisée sont présentés sur le \tableref{tab:quanta:resultat-detect-cat}.  
+ A chaque entraînement, s'exécute une sélection de modèles par validation croisée sur les données d'entraînement. Elle a pour but de sélectionner la métrique locale et la métrique globale appropriée. Les résultats obtenus par 5-\textit{folds} validation croisée sont présentés sur le \tableref{tab:quanta:resultat-detect-cat}. 
  
 \begin{table}[!h]
 	\scriptsize
 	\begin{center}
 	\begin{tabular}{l|ccc|ccc|ccc|ccc}
 		\hline\noalign{\smallskip}
-		&   \multicolumn{3}{|c|}{NB}    &    \multicolumn{3}{|c|}{C4.5}   &  \multicolumn{3}{|c|}{KNN}  & \multicolumn{3}{|c}{SVM}     \\       
+		& \multicolumn{3}{|c|}{NB} & \multicolumn{3}{|c|}{C4.5} & \multicolumn{3}{|c|}{KNN} & \multicolumn{3}{|c}{SVM} \\ 
 		\noalign{\smallskip}
 		\hline
 		\noalign{\smallskip}
-		%Categorie  
-		& $P$     & $R$     & $F_1$    & $P$     & $R$     & $F_1$    & $P$     & $R$     & $F_1$    & $P$     & $R$     & $F_1$    \\        
+		%Categorie 
+		& $P$ & $R$ & $F_1$ & $P$ & $R$ & $F_1$ & $P$ & $R$ & $F_1$ & $P$ & $R$ & $F_1$ \\ 
 		\noalign{\smallskip}
 		\hline
 		\noalign{\smallskip}
-		acpa    & 1.0 & 1.0 & 1.0 & 0.996 & 0.955 & 0.972 & 1.0 & 1.0 & 1.0 & 0.996 & 0.955 & 0.972 \\
-		concdel & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 0.995 & 0.967 & 0.979 \\
-		danais  & 0.988 & 0.989 & 0.988 & 0.996 & 0.995 & 0.995 & 0.995 & 0.995 & 0.995 & 0.993 & 0.993 & 0.993 \\
-		dcppc   & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 \\
-		doris   & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 \\
-		styx    & 1.0 & 1.0 & 1.0 & 0.984 & 0.983 & 0.983 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 \\
+		\textit{acpa} & 1.0 & 1.0 & 1.0 & 0.996 & 0.955 & 0.972 & 1.0 & 1.0 & 1.0 & 0.996 & 0.955 & 0.972 \\
+		\textit{concdel} & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 0.995 & 0.967 & 0.979 \\
+		\textit{danais} & 0.988 & 0.989 & 0.988 & 0.996 & 0.995 & 0.995 & 0.995 & 0.995 & 0.995 & 0.993 & 0.993 & 0.993 \\
+		\textit{dcppc} & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 \\
+		\textit{doris} & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 \\
+		\textit{styx} & 1.0 & 1.0 & 1.0 & 0.984 & 0.983 & 0.983 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 & 1.0 \\
 		\hline
 	\end{tabular}
 \end{center}
@@ -446,7 +446,7 @@ $P$= Précision, $R$=Rappel, $F_1$ = $F_1$-mesure
 D'après les résultats, la détection de catégorie par classification binaire est relativement aisée pour les algorithmes traditionnels qui détectent parfaitement la présence ou non d'une catégorie dans les documents. Par conséquent, pour toute catégorie $c$, les résultats de l'extraction, dans la suite, ne sont discutés que pour les documents de $c$, car, grâce à l'efficacité de la phase de classification, aucun document de $\overline{c}$ ne sera traité par la phase d'extraction.
 
 \subsection{Extraction de données des paires demandes-résultats}
-Les scores des termes-clés candidats étant normalisés, si on sélectionne les termes dont les scores sont supérieurs à un seuil fixé, on remarque que chaque métrique d'extraction a un niveau d'efficacité différent entre les catégories de demande (\tableref{tab:quanta:compareGW} avec 0.5 comme  seuil fixé). 
+Les scores des termes-clés candidats étant normalisés, si on sélectionne les termes dont les scores sont supérieurs à un seuil fixé, on remarque que chaque métrique d'extraction a un niveau d'efficacité différent entre les catégories de demande (\tableref{tab:quanta:compareGW} avec 0.5 comme seuil fixé). 
 
 \begin{table}[!htb]
 	\centering \small
@@ -470,7 +470,7 @@ Les scores des termes-clés candidats étant normalisés, si on sélectionne les
 \caption{Comparaison des pondérations globales suivant la $F_1$-mesure.} \label{tab:quanta:compareGW}
 \end{table}
 
-Par conséquent, la métrique et le seuil doivent être bien sélectionnés en fonction de la catégorie de demandes traitée. En choisissant, pour ces hyper-paramètres, les valeurs les plus efficaces pour l'extraction sur la base d'apprentissage, les résultats du \tableref{tab:quanta:resultDetailExtraction} sont observés. Les améliorations sont à noter notamment pour trois catégories. Le score $F_1$ sur l'extraction des triplets $(q_d,s_r, q_r)$ passe de 54.55 au maximum  à 58.99 (plus de 4\%) pour \textit{acpa}, de 29.06 à 29.41 pour \textit{dcppc}, de 19.64 à 29.08 (près de 10\%) pour \textit{doris}. Les baisses de performances observées pour les autres catégories est comparativement très faibles (moins de 2\%).
+Par conséquent, la métrique et le seuil doivent être bien sélectionnés en fonction de la catégorie de demandes traitée. En choisissant, pour ces hyper-paramètres, les valeurs les plus efficaces pour l'extraction sur la base d'apprentissage, les résultats du \tableref{tab:quanta:resultDetailExtraction} sont observés. Les améliorations sont à noter notamment pour trois catégories. Le score $F_1$ sur l'extraction des triplets $(q_d,s_r, q_r)$ passe de 54.55 au maximum à 58.99 (plus de 4\%) pour \textit{acpa}, de 29.06 à 29.41 pour \textit{dcppc}, de 19.64 à 29.08 (près de 10\%) pour \textit{doris}. Les baisses de performances observées pour les autres catégories est comparativement très faibles (moins de 2\%).
  
 
 \begin{table}[!htb]
@@ -478,14 +478,14 @@ Par conséquent, la métrique et le seuil doivent être bien sélectionnés en f
 \begin{center}
 	\begin{tabular}{l|l|l|llll|llll}
 			 \hline
-		&                 &                       &          \multicolumn{4}{c|}{Données d'entraînement}      &      \multicolumn{4}{c}{Données de test}       \\ \hline
-		$c$ & Données & $\vert V_c \vert$ & $P$     & $R$     & $F_1$                       & \%Docs & $P$     & $R$     & $F_1$              & \%Docs \\ \hline
-		\multirow{5}{*}{\textit{acpa}}  & $q_d$ & 1 & 86.4 & 56.37 & 68.13 & 56.37 & 68.33 & 54 & 58.99 & 46 \\
+		& & & \multicolumn{4}{c|}{Données d'entraînement} & \multicolumn{4}{c}{Données de test} \\ \hline
+		$c$ & Données & $\vert V_c \vert$ & $P$ & $R$ & $F_1$ & \%Docs & $P$ & $R$ & $F_1$ & \%Docs \\ \hline
+		\multirow{5}{*}{\textit{acpa}} & $q_d$ & 1 & 86.4 & 56.37 & 68.13 & 56.37 & 68.33 & 54 & 58.99 & 46 \\
 		& $q_r$ & 1 & 100 & 65.09 & 78.74 & 65.09 & 93.33 & 63 & 71.43 & 55 \\
 		& $s_r$ & 1 & 100 & 65.09 & 78.74 & 65.09 & 93.33 & 63 & 71.43 & 55 \\
 		& $(s_r, q_r)$ & 1 & 100 & 65.09 & 78.74 & 65.09 & 93.33 & 63 & 71.43 & 55 \\
 		& $(q_d,s_r, q_r)$ & 1 & 86.4 & 56.37 & 68.13 & 56.37 & 68.33 & 54 & 58.99 & 46 \\ \hline
-		\multirow{5}{*}{\textit{concdel}}  & $q_d$ & 26 & 49.33 & 44.02 & 45.31 & 24.17 & 73.2 & 29.72 & 33.29 & 26.67 \\
+		\multirow{5}{*}{\textit{concdel}} & $q_d$ & 26 & 49.33 & 44.02 & 45.31 & 24.17 & 73.2 & 29.72 & 33.29 & 26.67 \\
 		& $q_r$ & 26 & 48.3 & 42.66 & 44.1 & 22.5 & 75.73 & 28.89 & 34.3 & 26.67 \\
 		& $s_r$ & 26 & 46.52 & 40.89 & 42.36 & 22.5 & 74.93 & 26.39 & 33.09 & 26.67 \\
 		& $(s_r, q_r)$ & 26 & 46.52 & 40.89 & 42.36 & 22.5 & 74.93 & 26.39 & 33.09 & 26.67 \\
@@ -495,12 +495,12 @@ Par conséquent, la métrique et le seuil doivent être bien sélectionnés en f
 		& $s_r$ & 37 & 77.05 & 48.33 & 59.19 & 37.03 & 77.78 & 46.46 & 57.79 & 36.22 \\
 		& $(s_r, q_r)$ & 37 & 77.05 & 48.33 & 59.19 & 37.03 & 77.78 & 46.46 & 57.79 & 36.22 \\
 		& $(q_d,s_r, q_r)$ & 37 & 74.45 & 46.65 & 57.16 & 35.81 & 74.41 & 44.38 & 55.23 & 34.59 \\ \hline
-		\multirow{5}{*}{\textit{dcppc}}   & $q_d$ & 35 & 45.71 & 36.64 & 40.66 & 34.05 & 44.64 & 40.73 & 41.75 & 31.4 \\
+		\multirow{5}{*}{\textit{dcppc}} & $q_d$ & 35 & 45.71 & 36.64 & 40.66 & 34.05 & 44.64 & 40.73 & 41.75 & 31.4 \\
 		& $q_r$ & 35 & 78.99 & 63.21 & 70.2 & 59.33 & 75.48 & 64.51 & 68.41 & 53.82 \\
 		& $s_r$ & 35 & 84.73 & 67.85 & 75.33 & 63.24 & 81.21 & 69.14 & 73.51 & 57.43 \\
 		& $(s_r, q_r)$ & 35 & 78.99 & 63.21 & 70.2 & 59.33 & 75.48 & 64.51 & 68.41 & 53.82 \\
 		& $(q_d,s_r, q_r)$ & 35 & 34.2 & 27.39 & 30.41 & 28.03 & 31.66 & 28.55 & 29.41 & 25.37 \\ \hline
-		\multirow{5}{*}{\textit{doris}}  & $q_d$ & 8 & 31.98 & 35.76 & 32.94 & 7.75 & 37.48 & 35.9 & 36.63 & 7.12 \\
+		\multirow{5}{*}{\textit{doris}} & $q_d$ & 8 & 31.98 & 35.76 & 32.94 & 7.75 & 37.48 & 35.9 & 36.63 & 7.12 \\
 		& $q_r$ & 8 & 35.73 & 39.72 & 36.69 & 8.63 & 39.43 & 38.47 & 38.89 & 7.12 \\
 		& $s_r$ & 8 & 35.06 & 39.56 & 36.24 & 9.06 & 42.91 & 41.44 & 42.12 & 8.94 \\
 		& $(s_r, q_r)$ & 8 & 32.61 & 36.16 & 33.45 & 8.2 & 38.14 & 37.04 & 37.54 & 7.12 \\
@@ -509,7 +509,7 @@ Par conséquent, la métrique et le seuil doivent être bien sélectionnés en f
 		& $q_r$ & 4 & 75.87 & 65.17 & 70.08 & 31.5 & 74.86 & 64.08 & 68.63 & 28 \\
 		& $s_r$ & 4 & 75.87 & 65.17 & 70.08 & 31.5 & 74.86 & 64.08 & 68.63 & 28 \\
 		& $(s_r, q_r)$ & 4 & 75.87 & 65.17 & 70.08 & 31.5 & 74.86 & 64.08 & 68.63 & 28 \\
-		& $(q_d,s_r, q_r)$ & 4 & 57.61 & 49.44 & 53.19 & 25.5 & 57.24 & 48.36 & 52.08 & 24  \\
+		& $(q_d,s_r, q_r)$ & 4 & 57.61 & 49.44 & 53.19 & 25.5 & 57.24 & 48.36 & 52.08 & 24 \\
 			\hline\noalign{\smallskip}
 	\end{tabular}
 \end{center}
@@ -535,33 +535,33 @@ Etant donné que la précision est en général supérieure au rappel d'après n
 	\centering\small
 	\begin{tabular}{|c|c|c|c|c|}
 		\hline
-		      &    \multicolumn{2}{|c|}{Données d'entraînement}      &      \multicolumn{2}{|c|}{Données de test}       \\ \hline
+		 & \multicolumn{2}{|c|}{Données d'entraînement} & \multicolumn{2}{|c|}{Données de test} \\ \hline
 		& \textbf{\%erreurs FP} & \textbf{\%erreurs FN} & \textbf{\%erreurs FP} & \textbf{\%erreurs FN} \\ \hline
-		$q_d$            & 36.90                 & 63.10                 & 36.52                 & 63.48                 \\ \hline
-		$q_r$            & 32.30                 & 67.70                 & 34.32                 & 65.68                 \\ \hline
-		$s_r$            & 31.72                 & 68.28                 & 34.11                 & 65.89                 \\ \hline
-		$(s_r, q_r)$     & 32.32                 & 67.68                 & 34.39                 & 65.61                 \\ \hline
-		$(q_d,s_r, q_r)$ & 37.77                 & 62.23                 & 37.72                 & 62.28                 \\ \hline
+		$q_d$ & 36.90 & 63.10 & 36.52 & 63.48 \\ \hline
+		$q_r$ & 32.30 & 67.70 & 34.32 & 65.68 \\ \hline
+		$s_r$ & 31.72 & 68.28 & 34.11 & 65.89 \\ \hline
+		$(s_r, q_r)$ & 32.32 & 67.68 & 34.39 & 65.61 \\ \hline
+		$(q_d,s_r, q_r)$ & 37.77 & 62.23 & 37.72 & 62.28 \\ \hline
 	\end{tabular}
 \caption{Types et taux d'erreurs (pourcentage en moyenne sur les 6 catégories de demandes)} \label{tab:quanta:types_erreurs}
 \end{table}
 
-Trois raisons peuvent expliquer le fait que  peu de données attendues soient extraites. 
+Trois raisons peuvent expliquer le fait que peu de données attendues soient extraites. 
 
 Premièrement, certaines valeurs d'attributs ne sont pas mentionnées dans les sections Litige et Dispositif utilisées (pourcentages inférieurs à 100 dans les Tableaux \ref{tab:quanta:mentionQd} et \ref{tab:quanta:mentionQr}). Par exemple, les quanta résultat de \textit{doris} sont plus présents dans les Motifs que dans le Dispositif.
 
 \begin{table}[!htb]
-	\footnotesize  \centering
+	\footnotesize \centering
 	\begin{tabular}{|l|l|l|l|l|l|l|}
 		\hline
 		%\textbf{Catégorie}
 		& \textbf{\#$q_d$} & \textbf{\#$q_d\neq NUL$} & \textbf{\# dans doc.} & \textbf{\# dans Litige} & \textbf{\# dans Motifs} & \textbf{\# dans Dispositif} \\ \hline
-		\textit{acpa}               & 23                   & 16                                           & 16 (100\%)                   & 16 (100\%)              & 9 (56.25\%)             & 5 (31.25\%)                 \\ \hline
-		\textit{concdel}            & 58                   & 56                                           & 55 (98.21\%)                 & 55 (98.21\%)            & 7 (12.5\%)              & 2 (3.57\%)                  \\ \hline
-		\textit{danais}             & 208                  & 182                                          & 182 (100\%)                  & 179(100\%)              & 39 (21.43\%)            & 23 (12.64\%)                \\ \hline
-		\textit{dcppc}              & 126                  & 126                                          & 122 (96.83\%)                & 109 (86.51\%)           & 71 (56.35\%)            & 65 (51.59\%)                \\ \hline
-		\textit{doris}              & 94                   & 83                                           & 83 (100\%)                   & 82 (98.80\%)            & 21 (25.30)\%            & 6 (7.23\%)                  \\ \hline
-		\textit{styx}               & 89                   & 86                                           & 86 (100\%)                   & 86 (100\%)              & 12 (13.95\%)            & 9 (10.47\%)                 \\ \hline
+		\textit{acpa} & 23 & 16 & 16 (100\%) & 16 (100\%) & 9 (56.25\%) & 5 (31.25\%) \\ \hline
+		\textit{concdel} & 58 & 56 & 55 (98.21\%) & 55 (98.21\%) & 7 (12.5\%) & 2 (3.57\%) \\ \hline
+		\textit{danais} & 208 & 182 & 182 (100\%) & 179(100\%) & 39 (21.43\%) & 23 (12.64\%) \\ \hline
+		\textit{dcppc} & 126 & 126 & 122 (96.83\%) & 109 (86.51\%) & 71 (56.35\%) & 65 (51.59\%) \\ \hline
+		\textit{doris} & 94 & 83 & 83 (100\%) & 82 (98.80\%) & 21 (25.30)\% & 6 (7.23\%) \\ \hline
+		\textit{styx} & 89 & 86 & 86 (100\%) & 86 (100\%) & 12 (13.95\%) & 9 (10.47\%) \\ \hline
 	\end{tabular}
 
 	\textit{Les pourcentages ne sont calculés que pour les valeurs non nulles}
@@ -574,31 +574,31 @@ Premièrement, certaines valeurs d'attributs ne sont pas mentionnées dans les s
 		\hline
 		%\textbf{Catégorie}
 		& \textbf{\# $q_r$} & \textbf{\# $q_r\neq NUL$} & \textbf{\# dans doc.} & \textbf{\# dans Litige} & \textbf{\# dans Motifs} & \textbf{\# dans Dispositif} \\ \hline
-		\textit{acpa}               & 23                & 6                       & 6 (100\%)             & 3 (50\%)                & 6 (100\%)               & 5 (83.33\%)                 \\ \hline
-		\textit{concdel}            & 58                & 8                       & 8 (100\%)             & 2 (25\%)                & 8 (100\%)               & 6 (75\%)                    \\ \hline
-		\textit{danais}             & 208               & 23                      & 23 (100\%)            & 15 (65.22\%)            & 22 (95.65\%)            & 20 (86.96\%)                \\ \hline
-		\textit{dcppc}              & 126               & 76                      & 75 (98.68\%)          & 55 (72.37\%)            & 56 (73.68\%)            & 64 (84.21\%)                \\ \hline
-		\textit{doris}              & 94                & 44                      & 44 (100\%)            & 28 (63.64\%)            & 40 (90.91)\%            & 24 (54.55\%)                \\ \hline
-		\textit{styx}               & 89                & 30                      & 29 (96.67\%)          & 16 (53.33\%)            & 22 (73.33\%)            & 29 (96.67\%)                \\ \hline
+		\textit{acpa} & 23 & 6 & 6 (100\%) & 3 (50\%) & 6 (100\%) & 5 (83.33\%) \\ \hline
+		\textit{concdel} & 58 & 8 & 8 (100\%) & 2 (25\%) & 8 (100\%) & 6 (75\%) \\ \hline
+		\textit{danais} & 208 & 23 & 23 (100\%) & 15 (65.22\%) & 22 (95.65\%) & 20 (86.96\%) \\ \hline
+		\textit{dcppc} & 126 & 76 & 75 (98.68\%) & 55 (72.37\%) & 56 (73.68\%) & 64 (84.21\%) \\ \hline
+		\textit{doris} & 94 & 44 & 44 (100\%) & 28 (63.64\%) & 40 (90.91)\% & 24 (54.55\%) \\ \hline
+		\textit{styx} & 89 & 30 & 29 (96.67\%) & 16 (53.33\%) & 22 (73.33\%) & 29 (96.67\%) \\ \hline
 	\end{tabular}
 
 	\textit{Les pourcentages ne sont calculés que pour les valeurs non nulles}
 	\caption{Taux de quanta accordés ($q_r$) mentionnés dans les documents annotés} \label{tab:quanta:mentionQr}
 \end{table}
 
-En second, la sélection des termes-clés n'est pas parfaite (Tableau \ref{tab:quanta:exemples_termes}). D'une part, l'ensemble sélectionné ne couvre  pas toutes les situations d'expression de la catégorie (par exemple, pour la catégorie \textit{styx}, le terme \og frais irrépétibles\fg{} est souvent utilisé à la place de \og article 700 du code de procédure civile\fg{}, mais dans très peu d'exemples annotés). D'autre part, certains termes sont trop spécifiques à la base d'apprentissage (par exemple, pour la catégorie \textit{concdel}, des sommes d'argent et autres termes comme \og condamner in solidum les sociétés \fg{} apparaissent dans la liste).
+En second, la sélection des termes-clés n'est pas parfaite (Tableau \ref{tab:quanta:exemples_termes}). D'une part, l'ensemble sélectionné ne couvre pas toutes les situations d'expression de la catégorie (par exemple, pour la catégorie \textit{styx}, le terme \og frais irrépétibles\fg{} est souvent utilisé à la place de \og article 700 du code de procédure civile\fg{}, mais dans très peu d'exemples annotés). D'autre part, certains termes sont trop spécifiques à la base d'apprentissage (par exemple, pour la catégorie \textit{concdel}, des sommes d'argent et autres termes comme \og condamner in solidum les sociétés \fg{} apparaissent dans la liste).
 
 \begin{table}[!htb]
 		\centering\footnotesize
 	\begin{tabular}{|c|p{0.8\textwidth}|}
 		\hline
 		{Catégorie} & \multicolumn{1}{c|}{Termes-clés appris} \\ \hline
-		\textit{acpa}    & amende civile                                                                                                                                                                                                                               \\ \hline
-		\textit{concdel} & titre de la concurrence déloyale, somme de 15000euros à titre, réparation de son préjudice financier, payer la somme de 15000euros, condamner in solidum les sociétés, agissements constitutifs de concurrence déloyale                   \\ \hline
-		\textit{danais}  & dommages et intérêts pour procédure, 32-1 du code de procédure, intérêts pour procédure abusive, titre de dommages-intérêts pour procédure, intérêts pour procédure, article 32-1 du code, dommages-intérêts pour procédure abusive         \\ \hline
-		\textit{dcppc}   & admet la créance déclarée, admet la créance, passif de la procédure collective, passif de la procédure, hauteur de la somme, créance déclarée, titre chirographaire, admission de la créance, rejette la créance,                           \\ \hline
-		\textit{doris}   & préjudices, abusive, condamner solidairement, solidairement, réparation du préjudice, réparation, titre de dommages et intérêts, dommages, titre de dommages, dommages et intérêts, titre de dommages-intérêts, payer aux époux, jouissance \\ \hline
-		\textit{styx}    & 700 du code de procédure, article 700 du code, 700 du code, article 700, 700                                                                                                                                                                \\ \hline
+		\textit{acpa} & amende civile  \\ \hline
+		\textit{concdel} & titre de la concurrence déloyale, somme de 15000euros à titre, réparation de son préjudice financier, payer la somme de 15000euros, condamner in solidum les sociétés, agissements constitutifs de concurrence déloyale \\ \hline
+		\textit{danais} & dommages et intérêts pour procédure, 32-1 du code de procédure, intérêts pour procédure abusive, titre de dommages-intérêts pour procédure, intérêts pour procédure, article 32-1 du code, dommages-intérêts pour procédure abusive \\ \hline
+		\textit{dcppc} & admet la créance déclarée, admet la créance, passif de la procédure collective, passif de la procédure, hauteur de la somme, créance déclarée, titre chirographaire, admission de la créance, rejette la créance, \\ \hline
+		\textit{doris} & préjudices, abusive, condamner solidairement, solidairement, réparation du préjudice, réparation, titre de dommages et intérêts, dommages, titre de dommages, dommages et intérêts, titre de dommages-intérêts, payer aux époux, jouissance \\ \hline
+		\textit{styx} & 700 du code de procédure, article 700 du code, 700 du code, article 700, 700  \\ \hline
 	\end{tabular}
 
 Les termes candidats sont des $n$-grammes de taille variant d'1 à 5 mots consécutifs
@@ -609,4 +609,4 @@ Enfin, les expérimentations ont été réalisées sur des décisions d'appel ma
 
 \section{Conclusion}
 \label{sec:quanta:conclusion}
-Ce chapitre décrit le problème d'extraction de données pertinentes relatives aux paires demande-résultat mentionnées dans les décisions de justice. Les divers défis relatifs à la tâche  y sont discutés en remarquant des analogies avec d'autres tâches classiques de la fouille de données textuelles. Il a été démontré la solvabilité du problème par la proposition et l'expérimentation d'une approche d'extraction basée sur la terminologie de la  catégorie des demandes à extraire et autres connaissances du domaine judiciaire telles que les motifs d'énoncés de demandes et de résultats, ainsi que leur position conventionnelle dans les documents.  Les expérimentations démontrent que l'approche permet d'extraire plus ou moins bien des demandes selon la catégorie traitée. Même si nos résultats ont été obtenus à partir de terminologies apprises, une liste de termes fournis par les experts pourrait être plus précise et mettrait à l'abris des biais liés aux échantillons d'apprentissage. A cause de la  forte dépendance aux subtilités de rédaction des décisions judiciaires, la méthode proposée rencontre des limites qui ne peuvent être surmontées qu'en la rendant beaucoup plus complexe qu'elle ne l'est déjà. Des approches d'apprentissage automatique sont recommandées comme perspectives. Elles devront être capables d'apprendre l'emplacement des données à extraire de manière semi-supervisée à l'aide de faibles quantités de longs documents annotés.
+Ce chapitre décrit le problème d'extraction de données pertinentes relatives aux paires demande-résultat mentionnées dans les décisions de justice. Les divers défis relatifs à la tâche y sont discutés en remarquant des analogies avec d'autres tâches classiques de la fouille de données textuelles. Il a été démontré la solvabilité du problème par la proposition et l'expérimentation d'une approche d'extraction basée sur la terminologie de la catégorie des demandes à extraire et autres connaissances du domaine judiciaire telles que les motifs d'énoncés de demandes et de résultats, ainsi que leur position conventionnelle dans les documents. Les expérimentations démontrent que l'approche permet d'extraire plus ou moins bien des demandes selon la catégorie traitée. Même si nos résultats ont été obtenus à partir de terminologies apprises, une liste de termes fournis par les experts pourrait être plus précise et mettrait à l'abris des biais liés aux échantillons d'apprentissage. A cause de la forte dépendance aux subtilités de rédaction des décisions judiciaires, la méthode proposée rencontre des limites qui ne peuvent être surmontées qu'en la rendant beaucoup plus complexe qu'elle ne l'est déjà. Des approches d'apprentissage automatique sont recommandées comme perspectives. Elles devront être capables d'apprendre l'emplacement des données à extraire de manière semi-supervisée à l'aide de faibles quantités de longs documents annotés.
