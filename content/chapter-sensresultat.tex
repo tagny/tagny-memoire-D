@@ -47,7 +47,7 @@ Ce postulat est justifié car les sens de résultat ont majoritairement l'une de
 \caption{Répartition des sens de résultat dans les données annotées.}\label{stat-sensrst}
 \end{figure}
 
-Cette étude porte sur l'analyse de l'impact de différents aspects techniques en général impliqués dans la classification de textes qui consistent en général en une combinaison de représentations des documents et d'algorithmes de classification. Cette analyse permettra de savoir s'il existe une certaine configuration permettant de déterminer le sens du résultat à une demande sans identifier précisément cette dernière dans le document. 
+Cette étude porte sur l'analyse de l'impact de différents aspects techniques en général impliqués dans la classification de textes qui consistent en général en une combinaison de représentations des documents et d'algorithmes de classification. Cette analyse permettra de savoir s'il existe une certaine configuration permettant de déterminer le sens du résultat à une demande sans identifier précisément cette dernière dans le document. Nous proposons l'algorithme Gini-PLS généralisé qui est une extension du modèle Gini-PLS simple. Il s'agit d'un nouveau modèle dans lequel un paramètre de régularisation va permettre de mieux adapter la régression aux informations se situant en queues de distribution tout en atténuant, comme dans le Gini-PLS simple, l'influence exercée par les valeurs aberrantes. Nous proposons également une nouvelle régression (LOGIT-Gini-PLS) qui est mieux adaptée à l'explication d'une variable cible lorsque cette dernière est une variable binaire. Ces deux modèles n'ont par ailleurs jamais été appliqués à de la classification de textes.
 
 
 \section{Classification de documents}
@@ -115,7 +115,7 @@ La classification binaire par une machine à vecteurs de support (SVM) \citep{va
 
 \begin{figure}[!htb]
 	\centering
-	\includegraphics[width=0.5\textwidth]{Inkedsvm_LI.jpg}
+	\includegraphics[width=0.6\textwidth]{svm.png}
 	\caption{Hyperplan optimal et marge maximale d'un SVM.}\label{fig:sensresultat:svm}
 \end{figure}
 
@@ -135,7 +135,18 @@ où $C$ est la constante de régularisation pour éviter un sur-apprentissage ou
 
 % variables ressort: https://cours.etsmtl.ca/gti770/private/notes/PDF/LOG770-SVM_1pp.pdf
 
-La classification par SVM ne s'applique que lorsque les exemples d'apprentissage des classes sont linéairement séparables. Cependant, ils ne le sont pas toujours dans l'espace $\mathcal{X}$. Ainsi, une fonction \og noyau \fg{} (\textit{kernel}) $K: \mathcal{X} \longrightarrow \mathcal{F}$ doit être choisie pour transformer chaque donnée entrée $x$ de l'espace original $\mathcal{X}$ vers un nouvel espace $\mathcal{F}$ dit de caractéristiques dans lequel les classes sont linéairement séparables. Par conséquent, la fonction de classification s'écrit \[f(x) = \sum\limits_{i=1}^n \alpha_i K(x,x_i) + b\] où les $\alpha_i$ sont les coefficients de la combinaison linéaire des exemples d'apprentissage égale à $w$ ($w = \sum\limits_{i=1}^n\alpha_i x_i$) \citep{Ben-Hur2010svm}. Parmi les multiples formes qu'il peut prendre, le noyau peut être, par exemple, soit linéaire($K(x,x_i) = x^Tx_i + c$), soit polynomial ($K(x,x_i) = (\gamma x^Tx_i + c)^d$), soit Gaussien ou RBF\footnote{\textit{radial base function}} ($K(x,x_i) = \exp{-\gamma \norm{x-x_i}}$), soit une sigmoïde ($K(x,x_i) = \tanh(\gamma x^Tx_i + c)$) \citep{Amami2013PracticalModelSelectionSVM}.
+Lorsque les exemples d'apprentissage des classes sont linéairement séparables, la classe d'un objet x correspond au signe de $w^T x + b$:
+\[
+y =
+\left\{ \begin{array}{ll}
+-1 & \text{si }w^Tx+b<0\\
++1 & \text{si }w^Tx+b>0.
+\end{array}
+\right.
+\]
+
+
+. Cependant, ils ne le sont pas toujours dans l'espace $\mathcal{X}$. Ainsi, une fonction \og noyau \fg{} (\textit{kernel}) $K: \mathcal{X} \longrightarrow \mathcal{F}$ doit être choisie pour transformer chaque donnée entrée $x$ de l'espace original $\mathcal{X}$ vers un nouvel espace $\mathcal{F}$ dit de caractéristiques dans lequel les classes sont linéairement séparables. Par conséquent, la fonction de classification s'écrit \[f(x) = \sum\limits_{i=1}^n \alpha_i K(x,x_i) + b\] où les $\alpha_i$ sont les coefficients de la combinaison linéaire des exemples d'apprentissage égale à $w$ ($w = \sum\limits_{i=1}^n\alpha_i x_i$) \citep{Ben-Hur2010svm}. Parmi les multiples formes qu'il peut prendre, le noyau peut être, par exemple, soit linéaire($K(x,x_i) = x^Tx_i + c$), soit polynomial ($K(x,x_i) = (\gamma x^Tx_i + c)^d$), soit Gaussien ou RBF\footnote{\textit{radial base function}} ($K(x,x_i) = \exp{-\gamma \norm{x-x_i}}$), soit une sigmoïde ($K(x,x_i) = \tanh(\gamma x^Tx_i + c)$) \citep{Amami2013PracticalModelSelectionSVM}.
 
 \subsubsection{k-plus-proches-voisins (kNN)}
 L'algorithme des $k$-plus-proches-voisins \citep{cover1967knn} est un algorithme simple qui consiste à affecter à un nouvel objet $x$ la classe majoritaire $y'$ parmi ceux des $k$ points d'exemples d'entrainement $\lbrace (x_i,y_i) \rbrace_{1\leq i \leq k}$, les plus proches du point $x$ selon la distance $Dis$ choisie. Ainsi, trois éléments clés influencent l'efficacité de la classification:
