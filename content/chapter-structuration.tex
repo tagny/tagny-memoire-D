@@ -156,34 +156,19 @@ Les réseaux récurrents de neurones (\textit{recurrent neural networks - RNN}) 
 	\centering \includegraphics[width=0.7\textwidth]{LSTM3-chain.png}
 	\includegraphics[width=0.7\textwidth]{LSTM2-notation.png}
 	
-\textit{\footnotesize{\textbf{Source}: \url{https://colah.github.io/posts/2015-08-Understanding-LSTMs/}}}
-	\caption{Structure interne d'un LSTM dans une couche de réseau LSTM}\label{fig:structuration:couchedelstm}
+\textit{\scriptsize{\textbf{Source}: \url{https://colah.github.io/posts/2015-08-Understanding-LSTMs/}}}
+	\caption{Structure interne d'un LSTM dans une couche de réseau LSTM.}\label{fig:structuration:couchedelstm}
 \end{figure}
 
 
-Les entrées et sorties d'un LSTM sont des vecteurs de nombres réels. L'entrée $X_i$ est la représentation vectorielle indépendante de la séquence entrée de l'observation en position $i$, par exemple celle du mot $t_i$ du texte $T=t_{1:n}$. La sortie $h_i$ représente le contexte de l'observation en position $i$ dans la séquence entrée. On peut ainsi chaîner des LSTM pour modéliser les textes entrées et y appliquer un CRF pour l'étiquetage. C'est le principe du BiLSTM-CRF de \citet{lample2016nnner} une des architectures les plus efficaces pour la l'étiquetage d'entités nommées. En effet, le BiLSTM comprend deux couches enchaînat des LSTM (\figureref{fig:structuration:bi-lstm}). Une couche permet d'apprendre le contexte "gauche" des mots, les états étant propager dans le sens du début vers la fin du texte. L'autre couche apprend le contexte droit en propageant les informations dans le sens inverse. 
+Les entrées et sorties d'un LSTM sont des vecteurs de nombres réels. L'entrée $X_i$ est la représentation vectorielle indépendante de la séquence entrée de l'observation en position $i$, par exemple celle du mot $t_i$ du texte $T=t_{1:n}$. La sortie $h_i$ représente le contexte de l'observation en position $i$ dans la séquence entrée. On peut ainsi chaîner des LSTM pour modéliser les textes entrées et y appliquer un CRF pour l'étiquetage. C'est le principe du BiLSTM-CRF de \citet{lample2016nnner} une des architectures les plus efficaces pour la l'étiquetage d'entités nommées. En effet, le BiLSTM comprend deux couches enchaînant des LSTM (\figureref{fig:structuration:bi-lstm}). Une couche permet d'apprendre le contexte "gauche" des mots, les états étant propager dans le sens du début vers la fin du texte. L'autre couche apprend le contexte droit en propageant les informations dans le sens inverse. Les mots sont représentées en entrée sous forme vectorielle. Sur la \figureref{fig:structuration:bi-lstm} par exemple, il s'agit de la concaténation du plongement lexical des mot par la méthode Glove \citep{pennington2014glove} et de la représentation contextuelle des caractères dans le mot (\textit{Chars representation}).  
 
 \begin{figure}[!htb]
 	\centering \includegraphics[width=0.7\textwidth]{bi-lstm.png}
 		
-	\textit{\footnotesize{\textbf{Source}: \url{https://guillaumegenthial.github.io/sequence-tagging-with-tensorflow.html}}}
-	\caption{Apprentissage de la représentation contextuelle avec une double couche de réseaux LSTM (BiLSTM)}\label{fig:structuration:bi-lstm}
+	\textit{\scriptsize{\textbf{Source}: \url{https://guillaumegenthial.github.io/sequence-tagging-with-tensorflow.html}}}
+	\caption{Apprentissage de la représentation contextuelle avec une double couche de réseaux LSTM (BiLSTM).}\label{fig:structuration:bi-lstm}
 \end{figure}
-
-\paragraph{Représentation}
-
-
-
-Les réseaux de neurones permettent d'apprendre des caractéristiques  grâce à des méthodes de plongement de mots telles que Word2Vec \citep{mikolov2013word2vec} et Glove \citep{pennington2014glove}.  
-
-\paragraph{Entraînement}
-
-\paragraph{Décodage}
-
-
-
-
-
 
 
 \subsection{Représentation des segments atomiques}
