@@ -53,10 +53,10 @@ Cette étude porte sur l'analyse de l'impact de différents aspects techniques e
 \section{Classification de documents}
 \label{sec:sensresultat:biblio_classif}
 
-La classification de textes permet d'organiser des documents dans des groupes prédéfinis. Elle reçoit depuis longtemps beaucoup d'attention. Deux choix techniques influencent principalement les performances: la représentation des textes et l'algorithme de classification. Dans la suite, la variable à prédire est notée $y$, et la base d'apprentissage comprend les observations de l'échantillon $D = \lbrace (x_i, y_i)_{i=1..n} \rbrace$. Les notations du Tableau \ref{tab:quanta:notations_metriques} sont utilisées dans cette section.
+La classification de textes permet d'organiser des documents dans des groupes prédéfinis. Elle reçoit depuis longtemps beaucoup d'attention. Deux choix techniques influencent principalement les performances: la représentation des textes et l'algorithme de classification. Dans la suite, la variable à prédire est notée $y$, et la base d'apprentissage comprend les observations de l'échantillon $D = \lbrace (x_i, y_i)_{i=1..n} \rbrace$. $C$ représente l'ensemble des classes.  Les notations du Tableau \ref{tab:quanta:notations_metriques} sont utilisées dans cette section.
 
 \subsection{Représentation de textes}
-Chaque document $d$ est représenté sous une forme vectorielle du type TF-IDF (\textit{term frequency - inverse document frequency}) proposé par \cite{salton1988term-weighting} dont chaque dimension $k$ est identifiée par un terme $t_k$. Tout document $d \in D$ est une séquence de mots $d=(d[1], \dots, d[\setsize{d}])$, où $d_i$ est le mot à la position $i$ dans $d$. Sa représentation vectorielle est notée $\vec{d}=(\vec{d}[1], \vec{d}[2], \dots, \vec{d}[m])$. Pour un modèle vectoriel de type TF-IDF de vocabulaire $T = \lbrace t_1, t_2, \dots, t_m \rbrace$, $\vec{d}[k] = w(t_k,d)$ le poids du terme $t_k \in T$ dans le texte $d$ ({cf. \ref{sec:quanta:classification}}). Le poids $w(t_k, d)$ affecté à ce dernier est le produit normalisé d'un poids global $g(t_k)$ de $t_k$ dans le corpus d'entraînement et d'un poids local $l(t_k,d)$ de $t_k$ dans le document $d$ : $w(t_k, d) = l(t,d) \times g(t) \times nf(d)$, où $nf$ est un facteur de normalisation tel que la norme euclidienne $\sqrt{\sum\limits_k (w(t_k,d))^2}$. Le poids global est calculé à partir d'une des méthodes de la section \ref{sec:quanta:extract-terminologie-domaine}. Le poids local est calculé à partir de la fréquence d'occurrence du terme dans le document à l'aide d'une des méthodes du \tableref{tab:sensresultat:metriq_locales}.
+Chaque document $d$ est représenté sous une forme vectorielle du type TF-IDF (\textit{term frequency - inverse document frequency}) proposé par \cite{salton1988term-weighting} dont chaque dimension $k$ est identifiée par un terme $t_k$. Tout document $d \in D$ est une séquence de mots $d=(d[1], \dots, d[\setsize{d}])$, où $d_i$ est le mot à la position $i$ dans $d$. Sa représentation vectorielle est notée $\vec{d}=(\vec{d}[1], \vec{d}[2], \dots, \vec{d}[m])$. Pour un modèle vectoriel de type TF-IDF de vocabulaire $V = \lbrace t_1, t_2, \dots, t_m \rbrace$, $\vec{d}[k] = w(t_k,d)$ le poids du terme $t_k \in T$ dans le texte $d$ ({cf. \ref{sec:quanta:classification}}). Le poids $w(t_k, d)$ affecté à ce dernier est le produit normalisé d'un poids global $g(t_k)$ de $t_k$ dans le corpus d'entraînement et d'un poids local $l(t_k,d)$ de $t_k$ dans le document $d$ : $w(t_k, d) = l(t,d) \times g(t) \times nf(d)$, où $nf$ est un facteur de normalisation tel que la norme euclidienne $\sqrt{\sum\limits_k (w(t_k,d))^2}$. Le poids global est calculé à partir d'une des méthodes de la section \ref{sec:quanta:extract-terminologie-domaine}. Le poids local est calculé à partir de la fréquence d'occurrence du terme dans le document à l'aide d'une des méthodes du \tableref{tab:sensresultat:metriq_locales}.
 
 \begin{table}[!htb]
 	\small\centering
@@ -80,7 +80,7 @@ Chaque document $d$ est représenté sous une forme vectorielle du type TF-IDF (
 \end{table}
 
 \subsection{Algorithmes traditionnels de classification de données}
-Bien que la classification de documents voit se développer récemment des algorithmes propres aux textes, un grand nombre de méthodes ont été développées dans des contextes détachés des considérations applicatives. Ces méthodes sont généralement basée sur une représentation des textes dans un espace vectoriel $\mathcal{X}$ d'entrée et délimitent une frontière entre les classes dans un espace multidimensionnel. $C$ représente l'ensemble des classes. 
+Bien que la classification de documents voit se développer récemment des algorithmes propres aux textes, un grand nombre de méthodes ont été développées dans des contextes détachés des considérations applicatives. Ces méthodes sont généralement basée sur une représentation des textes dans un espace vectoriel $\mathcal{X}$ d'entrée et délimitent une frontière entre les classes dans un espace multidimensionnel.
 %NB et SVM : https://www.dropbox.com/home/Documents/to-read/term-weight?preview=Best+Terms+An+Efficient+Feature+Selection+Algorithm+for+Text+Categorization.pdf
 % C4.5, k-means, svm, apriori algo, em algo, page rank, ada boost, knn, NB, CART: http://www.cs.umd.edu/~samir/498/10Algorithms-08.pdf
 
@@ -93,21 +93,21 @@ Le classifieur naïf bayésien \citep{duda1973patternclass} est un modèle proba
 
 La probabilité a posteriori peut être interprétée pour la classification de documents par la question "Quelle est la probabilité que le document $d$ soit de la classe $y=c \in C$ ?". La réponse à cette question se formalise comme suit:
 
-\[\p(y=c \vert d) = \frac{\p(d \vert c)\p(c)}{\p(d)}, \forall c \in C \]
-ou plus simplement $\p(y = c \vert d) \propto \p(c)\p(d \vert c)$ car $\p(d)$ ne change pas en fonction de la classe et peut donc être ignorée \citep{rish2001nb_study}. $d$ est catégorisé dans la classe $c$ pour laquelle $\p(c \vert d)$ est maximale: \[y = \argmax_{c \in C} \p(c \vert d).\]
+\[P(y=c \vert d) = \frac{P(d \vert c)P(c)}{P(d)}, \forall c \in C \]
+ou plus simplement $P(y = c \vert d) \propto P(c)P(d \vert c)$ car $P(d)$ ne change pas en fonction de la classe et peut donc être ignorée \citep{rish2001nb_study}. $d$ est catégorisé dans la classe $c$ pour laquelle $P(c \vert d)$ est maximale: \[y = \argmax_{c \in C} P(c \vert d).\]
 
- La phase d'entrainement, appliquée à des exemples déjà labellisés, permet d'estimer les paramètres $\p(c)$ et $\p(d \vert c)$ qui servent à calculer $\p(c \vert d)$.
+ La phase d'entrainement, appliquée à des exemples déjà labellisés, permet d'estimer les paramètres $P(c)$ et $P(d \vert c)$ qui servent à calculer $P(c \vert d)$.
 
-$\p(c)$ est estimée par la proportion de documents classés dans $c$ parmi les exemples d'apprentissage: $\p(c) = \frac{N_c}{N}, \forall c \in C$.
+$P(c)$ est estimée par la proportion de documents classés dans $c$ parmi les exemples d'apprentissage: $P(c) = \frac{N_c}{N}, \forall c \in C$.
 
 
- $\p(c \vert d)$ est estimé grâce l'hypothèse \ref{hypo:sens_rst:iid} d'{indépendance conditionnelle des descripteurs (termes)}. Une hypothèse naïve dont la violation, par les données réelles, n'empêche pas le NB de bien fonctionner \citep{rish2001nb_study}. 
+ $P(c \vert d)$ est estimé grâce l'hypothèse \ref{hypo:sens_rst:iid} d'{indépendance conditionnelle des descripteurs (termes)}. Une hypothèse naïve dont la violation, par les données réelles, n'empêche pas le NB de bien fonctionner \citep{rish2001nb_study}. 
 
 \begin{hypothese}[indépendance conditionnelle des descripteurs] [Un modèle naïf bayésien étant de type génératif], étant donnée la catégorie du texte, la position de chaque mot dans le texte est générée indépendamment de tout autre mot. \label{hypo:sens_rst:iid}
 \end{hypothese}
 
-Si l'ensemble des termes de $d$ est $\lbrace t_{1}, \dots, t_{K} \rbrace$ $\subset T$ (vocabulaire), alors grâce à l'hypothèse \ref{hypo:sens_rst:iid},
-$\p(d \vert c) = \p(t_{1}, \dots, t_{K}\vert c) = \prod_{k=1}^K \p(t_{k} \vert c)$, et pour un terme $t_k$, la probabilité conditionnelle $\p(t_k \vert c)$ est la proportion d'exemples de $c$ qui contiennent $t_k$: $\p(t_k \vert c) = \frac{N_{t_k,c}}{\vert D_c \vert }, \forall k \in \lbrace 1, \dots, K \rbrace$.
+Si l'ensemble des termes de $d$ est $\lbrace t_{1}, \dots, t_m \rbrace$ $\subset V$ (vocabulaire), alors grâce à l'hypothèse \ref{hypo:sens_rst:iid},
+$P(d \vert c) = P(t_{1}, \dots, t_m\vert c) = Prod_{k=1}^m P(t_{k} \vert c)$, et pour un terme $t_k$, la probabilité conditionnelle $P(t_k \vert c)$ est la proportion d'exemples de $c$ qui contiennent $t_k$: $P(t_k \vert c) = \frac{N_{t_k,c}}{\vert D_c \vert }, \forall k \in \lbrace 1, \dots, m \rbrace$.
 
 \subsubsection{Machine à vecteurs de support (SVM)}
 \label{sec:sens-resultat:svm}
@@ -135,9 +135,9 @@ où $C$ est la constante de régularisation pour éviter un sur-apprentissage ou
 
 % variables ressort: https://cours.etsmtl.ca/gti770/private/notes/PDF/LOG770-SVM_1pp.pdf
 
-Lorsque les exemples d'apprentissage des classes sont linéairement séparables, la classe d'un objet x correspond au signe de $w^T x + b$:
+Lorsque les exemples d'apprentissage des classes sont linéairement séparables, la classe d'un objet x correspond au signe de la fonction de décision $f(x) = w^T x + b$:
 \[
-y =
+y = signe(f(x))=
 \left\{ \begin{array}{ll}
 -1 & \text{si }w^Tx+b<0\\
 +1 & \text{si }w^Tx+b>0.
@@ -154,11 +154,11 @@ L'algorithme des $k$-plus-proches-voisins \citep{cover1967knn} est un algorithme
 	\item Si les les données d'entrainement sont trop nombreuses, le processus de classification peut devenir coûteux en temps de calcul. En effet, la distance du nouvel objet à chaque point annoté est calculée.
 	\item Le nombre de voisins (c'est-à-dire la valeur de $k$) ne doit être trop petit pour limiter la sensibilité aux bruits / \textit{outliers}. Il ne doit non plus être trop grand au risque d'avoir dans le voisinage trop de points d'une autre classe que celle attendue. La sensibilité au nombre de voisins peut être atténuée en pondérant les points par leur distance à l'objet à classer. Il a été proposé plusieurs variantes de cette stratégie de \og vote pondéré par la distance \fg{}, comme par exemple:
 	\begin{itemize}
-		\item $y' = \argmax\limits_c \sum\limits_{(x_i,y_i)} \frac{1}{Dis(x, x_i)^2} \times I(c = y_i)$ \citep{dudani1976originalwknn} \[\text{ où } I(c=y_i) = \left\lbrace \begin{array}{ll}
+		\item $y = \argmax\limits_c \sum\limits_{(x_i,y_i)} \frac{1}{Dis(x, x_i)^2} \times I(c = y_i)$ \citep{dudani1976originalwknn} \[\text{ où } I(c=y_i) = \left\lbrace \begin{array}{ll}
 		1 & \text{si }c = y_i \\
 		0 & \text{sinon}
 		\end{array} \right.\]
-		\item $y' = \argmax\limits_c \sum\limits_{(x_i,y_i)} w_i \times I(c = y_i)$ \citep{gou2011wknn} \[\text{ avec } w_i = \left\lbrace \begin{array}{ll}
+		\item $y = \argmax\limits_c \sum\limits_{(x_i,y_i)} w_i \times I(c = y_i)$ \citep{gou2011wknn} \[\text{ avec } w_i = \left\lbrace \begin{array}{ll}
 		\frac{Dis(x, d_k) - Dis(x, d_i)}{Dis(x, d_k) - Dis(x, d_1)} & \text{si } Dis(x, d_k) \neq Dis(x, d_1) \\
 		1 & \text{sinon.}
 		\end{array} \right.\]
@@ -187,38 +187,51 @@ Un arbre de décision est une structure arborescente qui associe un label préd�
 La construction de l'arbre (phase d'apprentissage) consiste à générer une hiérarchie de tests, aussi courte que possible, qui divise successivement l'ensemble $D$ d'exemples d'apprentissage en sous-ensembles disjoints de plus en plus purs\footnote{homogénéité des labels}. %, tels que des sous-groupes de cas appartenant à la même classe soient rapidement détectés. 
 L'arbre est construit de la racine aux feuilles en divisant les données d'entraînement $S_{t}$ à chaque nœud ($t$) de sorte à minimiser le degré d'impureté des sous-ensembles d'exemples $S_{t_i}$ dans les n\oe{}uds fils ($t_i$). Le critère de coupe est généralement défini à partir d'une métrique d'impureté comme par exemple:
 \begin{itemize}
-	\item l'entropie de la distribution des classes dans $S_t$: \\ $h_C(S_t) = - \sum\limits_{c \in C} \left[p(c \vert S_t) \log_2 p(c \vert S_t)\right];$
-	\item l'indice de Gini mesurant la divergence entre les distributions de probabilité des valeurs de la variable prédite: $g_C(S_t) = 1 - \sum\limits_{c \in C} \left[p(c \vert S_t)\right]^2;$
-	\item l'erreur de classification définie par : $e_C(S_t) = 1 - \max\limits_{c \in C} \left[p(c \vert S_t)\right]$. 
+	\item l'entropie de la distribution des classes dans $S_t$: \\ $h_C(S_t) = - \sum\limits_{c \in C} \left[P(c \vert S_t) \log_2 P(c \vert S_t)\right];$
+	\item l'indice de Gini mesurant la divergence entre les distributions de probabilité des valeurs de la variable prédite: $g_C(S_t) = 1 - \sum\limits_{c \in C} \left[P(c \vert S_t)\right]^2;$
+	\item l'erreur de classification définie par : $e_C(S_t) = 1 - \max\limits_{c \in C} \left[P(c \vert S_t)\right]$. 
 \end{itemize}
-Pour ces métriques, $p(c \vert S_t)$ représente la proportion d'exemples du n\oe{}ud $t$ appartenant à $c$. Parmi les critères de séparation les plus populaires associés à ces métriques d'impureté, on retrouve: 
+Pour ces métriques, $P(c \vert S_t)$ représente la proportion d'exemples du n\oe{}ud $t$ appartenant à $c$. Parmi les critères de séparation les plus populaires associés à ces métriques d'impureté, on retrouve: 
 
 \begin{itemize}
 	\item le gain d'information apporté par le test $t$ portant sur l'attribut $a$ (qui divise $S_t$ en des sous-ensembles $S_{t_i}$) utilisant l'entropie comme métrique d'impureté, et est définie par la différence entre l'entropie de $t$ et la moyenne des entropies des fils de $t$: \\ $ig(S_t, a) = h_C(S_t) - i(S_t, t, a) = h_C(S_t) - \sum\limits_{i} \frac{\vert S_{t_i} \vert}{\vert S_{t} \vert} \cdot h_C(S_{t_i});$
 	\item le rapport des gains, qui corrige le gain d'information, biaisé en faveur des tests ayant un grand nombre d'alternatives (sorties du nœud), en prenant en compte l'information intrinsèque $h_t(S_t)$ de la séparation de $S_t$ suivant le test $t$ en sous-ensembles $S_{t_i}$: \\$gr(S_t, t, a) = \frac{ig(S_t, t, a)}{h_t(S_t)} \text{ avec } h_t(S_t) = \sum\limits_i \frac{\vert S_{t_i}\vert}{\vert S_t \vert} \log_2 \left(\frac{\vert S_{t_i}\vert}{\vert S_t \vert}\right)$
-	\item le critère binaire de "doublage" (\textit{twoing criteria}) qui ne s'emploie que pour les arbres binaires : \\ $tc(t) = \frac{P(S_{t_R} \vert S_t)P(S_{t_L} \vert S_t)}{4} \left[\sum\limits_{c \in C} \vert p(c \vert t_L) - p(c \vert t_R)\vert\right]^2$ où $P(S_{t_R} \vert S_t)$ et $P(S_{t_L} \vert S_t)$ sont les proportions de $S_t$ qui vont respectivement dans les fils $t_R$ et $t_L$ après séparation suivant le test $t$.
+	\item le critère binaire de "doublage" (\textit{twoing criteria}) qui ne s'emploie que pour les arbres binaires : \\ $tc(t) = \frac{P(S_{t_R} \vert S_t)P(S_{t_L} \vert S_t)}{4} \left[\sum\limits_{c \in C} \vert P(c \vert t_L) - P(c \vert t_R)\vert\right]^2$ où $P(S_{t_R} \vert S_t)$ et $P(S_{t_L} \vert S_t)$ sont les proportions de $S_t$ qui vont respectivement dans les fils $t_R$ et $t_L$ après séparation suivant le test $t$.
 \end{itemize}
 
 Les variables nominales peuvent être divisées soit en utilisant autant de partitions que de valeurs distinctes, soit uniquement en des partitions binaires suivant des tests booléens nécessitant de rechercher la division optimale. Les variables numériques sont divisées quant à elles soit par discrétisation de leur domaine en les transformant en variables catégoriques ordinales, soit en recherchant la meilleure division binaire parmi toutes les séparations possibles. 
 
-La construction de l'arbre est une division récursive qui peut continuer tant qu'il est possible d'améliorer la pureté des nœuds, ce qui peut engendrer un arbre très grand résultant en un sur-apprentissage\footnote{Un modèle trop précis a un très faible taux d'erreur sur les données d'entraînement (erreur d'apprentissage) mais un fort taux d'erreur sur les données de test (erreur de test).}, et une forte complexité temporelle et spatiale lors de la prédiction. Pour s'arrêter plus tôt ("pré-élagage"), plusieurs conditions sont possibles comme par exemple, l'atteinte d'un seuil minimum par la taille des données ($\vert S_t \vert$), ou l'atteinte par l'arbre d'une profondeur maximale, ou l'amélioration du critère de division est très faible, etc. Le post-élagage\footnote{Suppression de sous-arbres superflus ou en trop après génération de l'arbre.} est appliqué après construction de l'arbre toujours dans le but de minimiser le sur-apprentissage et la complexité. Le post-élagage peut être basé, par exemple, soit sur la réduction du taux d'erreur (éliminer successivement les feuilles si cela ne fait pas croître le taux d'erreur sur les données d'entrainement), soit sur la stratégie coût-complexité de \citet{Breiman1984CART}. % sélectionner un arbre en fonction du alpha qui correspond au T élagué qui minimise la variation de la fonction cout-complexité
+La construction de l'arbre est une division récursive qui peut continuer tant qu'il est possible d'améliorer la pureté des nœuds, ce qui peut engendrer un arbre très grand résultant en un sur-apprentissage\footnote{Un modèle trop précis a un très faible taux d'erreur sur les données d'entraînement (erreur d'apprentissage) mais un fort taux d'erreur sur les données de test (erreur de test).}, et une forte complexité temporelle et spatiale lors de la prédiction. Pour s'arrêter plus tôt ("pré-élagage"), plusieurs conditions sont possibles comme par exemple, l'atteinte d'un seuil minimum par la taille des données ($\vert S_t \vert$), ou l'atteinte par l'arbre d'une profondeur maximale, ou l'amélioration du critère de division est très faible, etc. Le post-élagage\footnote{Suppression de sous-arbres superflus après génération de l'arbre.} est appliqué après construction de l'arbre toujours dans le but de minimiser le sur-apprentissage et la complexité. Le post-élagage peut être basé, par exemple, soit sur la réduction du taux d'erreur (éliminer successivement les feuilles si cela ne fait pas croître le taux d'erreur sur les données d'entrainement), soit sur la stratégie coût-complexité de \citet{Breiman1984CART}. % sélectionner un arbre en fonction du alpha qui correspond au T élagué qui minimise la variation de la fonction cout-complexité
 % https://web.stanford.edu/class/stats202/content/lec19.pdf 
 
 Les algorithmes de construction d'arbres diffèrent ainsi par leur critère de séparation, leur stratégie d'élagage, et leur capacité à gérer les types d'attributs, les valeurs manquantes et extrêmes. \citet{singh2014id3cartc45} comparent les deux algorithmes CART \citep{Breiman1984CART} (critère de \og doublage \fg{}, élagage coût-complexité) et C4.5 \citep{quinlan1993c4.5} (rapport des gains, élagage à réduction d'erreur).
 
 \subsubsection{Analyses discriminantes linéaires et quadratiques}
 %\textcolor{red}{Pas de citation?}
-L'analyse discriminante comprend l'ensemble des méthodes déterminant les combinaisons linéaires de variables qui permettent de séparer le mieux possible $K$ catégories ou variables qualitatives. Les analyses linéaires et quadratiques sont des méthodes probabilistes basées sur la probabilité conditionnelle d'appartenance d'un objet $X$ à une classe $y_k$: \[P(Y=y_k \vert X) = \frac{P(Y=y_k) P(X \vert Y=y_k)}{P(X)} = \frac{P(Y=y_k) P(X \vert Y=y_k)}{\sum\limits_{j = 1}^K P(Y=y_j) P(X \vert Y=y_j)}.\]
-La classe de $X$ est donc $y_{k*} = \argmax_k P(Y=y_k \vert X)$, avec $P(Y=y_k \vert X) \propto P(Y=y_k) P(X \vert Y=y_k)$ car le dénominateur est le même pour toutes les classes. Dans cette expression, $P(Y=y_k)$ est la proportion d'exemples de classes $y_k$ dans l'ensemble des données d'apprentissage. Il ne reste donc qu'à déterminer $P(X \vert Y=y_k)$, pour trouver $y$. Deux hypothèses simplifient les calculs:
+L'analyse discriminante comprend l'ensemble des méthodes déterminant les combinaisons linéaires de variables qui permettent de séparer le mieux possible $\setsize{C}$ catégories ou variables qualitatives. Les analyses linéaires et quadratiques sont des méthodes probabilistes basées sur la probabilité conditionnelle d'appartenance d'un objet $x \in \R^m$ à une classe $c_k \in C$: \[P(y=c_k \vert x) = \frac{P(y=c_k) P(x \vert y=c_k)}{P(x)} = \frac{P(y=c_k) P(x \vert y=c_k)}{\sum\limits_{j = 1}^K P(y=c_j) P(x \vert y=c_j)}.\]
+La classe de $x$ est donc $y = \argmax_k P(y=c_k \vert x)$ avec $P(y=c_k \vert x) \propto P(y=c_k) P(x \vert y=c_k)$ car le dénominateur est le même pour toutes les classes. Dans cette expression, $P(y=c_k)$ est la proportion d'exemples de classes $c_k$ dans l'ensemble des données d'apprentissage. Il ne reste donc qu'à déterminer $P(x \vert y=c_k)$, pour trouver $y$. 
+% http://eric.univ-lyon2.fr/~ricco/cours/slides/analyse_discriminante.pdf
+Deux hypothèses simplifient les calculs:
 \begin{enumerate}
-	\item l'hypothèse de normalité statuant que la probabilité conditionnelle $P(X \vert Y)$ suit une loi normale multivariée: \[P(X \vert Y = y_k) = \frac{1}{\sqrt{2\pi det(V_k)}}e^{-\frac{1}{2}(X - \mu_k)'V_k^{-1}(X - \mu_k)} \] $\mu_k$ étant le centre de gravité conditionnel, et $V_k$ la matrice de variance-covariance de la classe $y_k$;
-	\item l'hypothèse d'homoscédasticité statuant que les matrices de variance co-variance conditionnelles sont identiques i.e.: \[\forall j, k \in \lbrace 1,...,K \rbrace, V_j = V_k = V.\]
+	\item L'hypothèse de normalité statue que la probabilité conditionnelle $P(x \vert y)$ suit une loi normale multidimensionnelle: \[P(x \vert y = c_k) = \mathcal{N}(\mu_k, V_k) = \frac{1}{\sqrt{(2\pi)^m det(V_k)}}e^{-\frac{1}{2}(x - \mu_k)^\top V_k^{-1}(x - \mu_k)}, \] $\mu_k$ étant le centre de gravité conditionnel (centre de gravité des données d'entraînement de la classe $c_k \in C$), et $V_k$ la matrice de variance-covariance de la classe $c_k$. Le logarithme de $P(x\vert c_k)$ donne :
+	$\ln\left(P(x \vert c_k)\right) \propto -\frac{m}{2}\ln(2\pi) -\frac{1}{2} \ln(det(V_k)) -\frac{1}{2}(x - \mu_k)^\top V_k^{-1}(x - \mu_k)$ \citep{ghojogh2019ldaqdatutorial}. Grâce à la proportionnalité de la probabilité conditionnelle à son logarithme, on déduit une fonction discriminante proportionnelle à $P(c_k \vert x)$:
+	\[\delta_1(x, c_k) = -\frac{1}{2} \ln(det(V_k)) -\frac{1}{2} (x-\mu_k)^\top V_k^{-1}(x-\mu_k) + \ln(P(c_k)) \]
+	en éliminant le terme $-\frac{m}{2}\ln(2\pi)$ car il est le même pour toutes les classes.
+	\item l'hypothèse d'homoscédasticité statue que les matrices de variance co-variance conditionnelles sont identiques i.e.: \[\forall j, k \in \lbrace 1,...,\setsize{C} \rbrace, V_j = V_k = V.\] Cette hypothèse permet de simplifier $\delta_1(x, c_k)$ en :
+	\[\begin{array}{rl}
+	\delta_2(x,k) & = -\frac{1}{2} \ln(det(V_k)) -\frac{1}{2} x^\top V^{-1} x - \mu_k^\top V^{-1} \mu_k + \mu_k^\top V^{-1} x+ \ln(P(c_k))\\
+	 & = \mu_k^\top V^{-1} x - \frac{1}{2} \mu_k^\top V^{-1}\mu_k +\ln(P(c_k))
+	\end{array} \]
+	car les termes $-\frac{1}{2} \ln(det(V_k))$ et $-\frac{1}{2}  x^\top V^{-1} x$ sont indépendants des classes.
 \end{enumerate}
 
-L'analyse discriminante linéaire (LDA) \citep{fukuaga1990StatPattRecogn-LDA, duda2012pattern-LDA} est définie par une simplification de $P(X \vert y_k)$ sous ces deux hypothèses. En effet, grâce à la proportionnalité de la probabilité conditionnelle à :$\ln\left[P(X \vert y_k)\right] \propto -\frac{1}{2}( X - \mu_k )'V^{-1}(X - \mu_k )$\textcolor{red}{(Vérifier la position de la transposée)}, on déduit une fonction discriminante (ou de classement) linéaire proportionnelle à $P(y_k \vert X)$: \[d(y_k, X) = \ln\left[P(Y = y_k)\right] + \mu_k V^{-1}X' - \frac{1}{2}\mu_k V^{-1}\mu_k'.\] Ainsi $y_{k*} = \argmax_{k \in \lbrace 1,...,K \rbrace} d(y_k, X)$.
-
-L'analyse discriminante quadratique (QDA) \citep{McLachlan1992DiscrAnalyStatPattRecog-QDA} considère l'hétéroscédasticité (i.e. $\exists k \neq j, V_k \neq V_j$), et donc ne s'appuie que sur la première hypothèse (normalité). Dans ce cas, on obtient une règle quadratique de classification $k* = \argmax_{k \in \lbrace 1,...,K \rbrace} Q_k(X)$ où:
-\[Q_k(X) = (X - \mu_k)' V_k^{-1}(X - \mu_k) - 2 \ln(\pi_k) + \ln(det(V_k))\] est la fonction quadratique de classement de la classe $k$.
+L'analyse discriminante linéaire (LDA) \citep{fisher1936linearDA} %\citep{fukuaga1990StatPattRecogn-LDA, duda2012pattern-LDA} 
+est définie à partir de la simplification de $P(x \vert c_k)$ sous ces deux hypothèses. Ainsi la classe de $x$ est $y = \argmax_{k \in \lbrace 1,...,\setsize{C} \rbrace} \delta_2(x, c_k)$.
+% source: http://eric.univ-lyon2.fr/~ricco/cours/slides/analyse_discriminante.pdf
+% preuve à : 
+% (1) https://arxiv.org/pdf/1906.02590.pdf tuto 2019 LDA vs QDA 
+% (2) http://www.math.u-bordeaux.fr/~mchave100p/wordpress/wp-content/uploads/2013/10/Analyse_discrim.pdf
+L'analyse discriminante quadratique (QDA) \citep{McLachlan1992DiscrAnalyStatPattRecog-QDA} quand à elle ne considère pas l'hétéroscédasticité (i.e. $\exists k \neq j, V_k \neq V_j$), et ne s'appuie que sur l'hypothèse de normalité. La classe de $x$ est par conséquent $y = \argmax_{k \in \lbrace 1,...,\setsize{C} \rbrace} \delta_1(x, c_k)$.
 
 %\subsubsection{Modèles ensemblistes}
 
@@ -229,8 +242,14 @@ Les algorithmes dédiés aux textes intègrent leur propre représentation de do
 
 \subsubsection{NBSVM}
 
-Le NBSVM \citep{wang2012nbsvm} est un classifieur binaire (deux labels $\lbrace -1; 1 \rbrace$) dont le principe consiste à transformer les poids $f^{(k)}$ caractéristiques $V$ des textes $x^{(k)}$, réduits à leur simple présence $\widehat{f}^{(k)}$ en réalisant leur produit élément à élément ($\overset{\sim}{f}^{(k)} = {r} \circ \widehat{f}^{(k)}$) avec le vecteur de poids $r$ du classifieurs bayésien multinomial (calculé avec le vecteur présence de caractéristique):
-$r = \log \left( \frac{p/\vert\vert p \vert\vert_1}{q / \vert\vert q \vert\vert_1}\right)
+Le NBSVM \citep{wang2012nbsvm} est un classifieur binaire qui consiste à appliquer le SVM à une transformation par le classifieur bayésien multinomial des composantes du vecteur $x$.
+
+
+
+
+
+consiste à transformer les poids $f^{(k)}$ caractéristiques $V$ des textes $x^{(k)}$, réduits à leur simple présence $\widehat{f}^{(k)}$ en réalisant leur produit élément à élément ($\overset{\sim}{f}^{(k)} = {r} \circ \widehat{f}^{(k)}$) avec le vecteur de poids $r$ du classifieurs bayésien multinomial (calculé avec le vecteur présence de caractéristique):
+$r = \log \left(\frac{p/\vert\vert p \vert\vert_1}{q / \vert\vert q \vert\vert_1}\right)
 \text{ avec } p=\alpha + \sum\limits_{k:y^{(k)}=1}{f}^{(k)}$, $q=\alpha + \sum\limits_{k:y^{(k)}=-1}{f}^{(k)}$. L'ensemble des caractéristiques $V$ est constitué de n-grammes de mots. Le nouveau vecteur issu de ce produit représente le texte ($x^{(k)} = \overset{\sim}{f}^{(k)}$) en entrée d'un SVM classique. La classe de $x^{(k)}$ est prédite par : $y^{(k)} = sign(\mathbf{w}^Tx^{(k)} + b)$, $\mathbf{w}$ et $b$ étant appris lors de l'entraînement du SVM. Une interpolation entre le bayésien multinomial et le SVM est nécessaire pour assurer la robustesse du NBSVM et des performances excellentes pour toute tâche de classification de documents; les poids $\mathbf{w}$ sont réajustés par le modèle $\mathbf{w'} = (1 - \beta) \overline{w} + \beta \mathbf{w}$, où $\overline{w} = \vert\vert \mathbf{w}\vert\vert_1 / \vert V \vert$ et $\beta \in \left[0; 1] \right.$. 
  
 
