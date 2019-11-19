@@ -56,7 +56,7 @@ Cette étude porte sur l'analyse de l'impact de différents aspects techniques e
 La classification de textes permet d'organiser des documents dans des groupes prédéfinis. Elle reçoit depuis longtemps beaucoup d'attention. Deux choix techniques influencent principalement les performances: la représentation des textes et l'algorithme de classification. Dans la suite, la variable à prédire est notée $y$, et la base d'apprentissage comprend les observations de l'échantillon $D = \lbrace (x_i, y_i)_{i=1..n} \rbrace$. $C$ représente l'ensemble des classes.  Les notations du Tableau \ref{tab:quanta:notations_metriques} sont utilisées dans cette section.
 
 \subsection{Représentation de textes}
-Chaque document $d$ est représenté sous une forme vectorielle du type TF-IDF (\textit{term frequency - inverse document frequency}) proposé par \cite{salton1988term-weighting} dont chaque dimension $k$ est identifiée par un terme $t_k$. Tout document $d \in D$ est une séquence de mots $d=(d[1], \dots, d[\setsize{d}])$, où $d_i$ est le mot à la position $i$ dans $d$. Sa représentation vectorielle est notée $\vec{d}=(\vec{d}[1], \vec{d}[2], \dots, \vec{d}[m])$. Pour un modèle vectoriel de type TF-IDF de vocabulaire $T = \lbrace t_1, t_2, \dots, t_m \rbrace$, $\vec{d}[k] = w(t_k,d)$ le poids du terme $t_k \in T$ dans le texte $d$ ({cf. \ref{sec:quanta:classification}}). Le poids $w(t_k, d)$ affecté à ce dernier est le produit normalisé d'un poids global $g(t_k)$ de $t_k$ dans le corpus d'entraînement et d'un poids local $l(t_k,d)$ de $t_k$ dans le document $d$ : $w(t_k, d) = l(t,d) \times g(t) \times nf(d)$, où $nf$ est un facteur de normalisation tel que la norme euclidienne $\sqrt{\sum\limits_k (w(t_k,d))^2}$. Le poids global est calculé à partir d'une des méthodes de la section \ref{sec:quanta:extract-terminologie-domaine}. Le poids local est calculé à partir de la fréquence d'occurrence du terme dans le document à l'aide d'une des méthodes du \tableref{tab:sensresultat:metriq_locales}.
+Chaque document $d$ est représenté sous une forme vectorielle du type TF-IDF (\textit{term frequency - inverse document frequency}) proposé par \cite{salton1988term-weighting} dont chaque dimension $k$ est identifiée par un terme $t_k$. Tout document $d \in D$ est une séquence de mots $d=(d[1], \dots, d[\setsize{d}])$, où $d_i$ est le mot à la position $i$ dans $d$. Sa représentation vectorielle est notée $\vec{d}=(\vec{d}[1], \vec{d}[2], \dots, \vec{d}[m])$. Pour un modèle vectoriel de type TF-IDF de vocabulaire $V = \lbrace t_1, t_2, \dots, t_m \rbrace$, $\vec{d}[k] = w(t_k,d)$ le poids du terme $t_k \in T$ dans le texte $d$ ({cf. \ref{sec:quanta:classification}}). Le poids $w(t_k, d)$ affecté à ce dernier est le produit normalisé d'un poids global $g(t_k)$ de $t_k$ dans le corpus d'entraînement et d'un poids local $l(t_k,d)$ de $t_k$ dans le document $d$ : $w(t_k, d) = l(t,d) \times g(t) \times nf(d)$, où $nf$ est un facteur de normalisation tel que la norme euclidienne $\sqrt{\sum\limits_k (w(t_k,d))^2}$. Le poids global est calculé à partir d'une des méthodes de la section \ref{sec:quanta:extract-terminologie-domaine}. Le poids local est calculé à partir de la fréquence d'occurrence du terme dans le document à l'aide d'une des méthodes du \tableref{tab:sensresultat:metriq_locales}.
 
 \begin{table}[!htb]
 	\small\centering
@@ -106,8 +106,8 @@ $P(c)$ est estimée par la proportion de documents classés dans $c$ parmi les e
 \begin{hypothese}[indépendance conditionnelle des descripteurs] [Un modèle naïf bayésien étant de type génératif], étant donnée la catégorie du texte, la position de chaque mot dans le texte est générée indépendamment de tout autre mot. \label{hypo:sens_rst:iid}
 \end{hypothese}
 
-Si l'ensemble des termes de $d$ est $\lbrace t_{1}, \dots, t_{K} \rbrace$ $\subset T$ (vocabulaire), alors grâce à l'hypothèse \ref{hypo:sens_rst:iid},
-$P(d \vert c) = P(t_{1}, \dots, t_{K}\vert c) = Prod_{k=1}^K P(t_{k} \vert c)$, et pour un terme $t_k$, la probabilité conditionnelle $P(t_k \vert c)$ est la proportion d'exemples de $c$ qui contiennent $t_k$: $P(t_k \vert c) = \frac{N_{t_k,c}}{\vert D_c \vert }, \forall k \in \lbrace 1, \dots, K \rbrace$.
+Si l'ensemble des termes de $d$ est $\lbrace t_{1}, \dots, t_m \rbrace$ $\subset V$ (vocabulaire), alors grâce à l'hypothèse \ref{hypo:sens_rst:iid},
+$P(d \vert c) = P(t_{1}, \dots, t_m\vert c) = Prod_{k=1}^m P(t_{k} \vert c)$, et pour un terme $t_k$, la probabilité conditionnelle $P(t_k \vert c)$ est la proportion d'exemples de $c$ qui contiennent $t_k$: $P(t_k \vert c) = \frac{N_{t_k,c}}{\vert D_c \vert }, \forall k \in \lbrace 1, \dots, m \rbrace$.
 
 \subsubsection{Machine à vecteurs de support (SVM)}
 \label{sec:sens-resultat:svm}
@@ -154,11 +154,11 @@ L'algorithme des $k$-plus-proches-voisins \citep{cover1967knn} est un algorithme
 	\item Si les les données d'entrainement sont trop nombreuses, le processus de classification peut devenir coûteux en temps de calcul. En effet, la distance du nouvel objet à chaque point annoté est calculée.
 	\item Le nombre de voisins (c'est-à-dire la valeur de $k$) ne doit être trop petit pour limiter la sensibilité aux bruits / \textit{outliers}. Il ne doit non plus être trop grand au risque d'avoir dans le voisinage trop de points d'une autre classe que celle attendue. La sensibilité au nombre de voisins peut être atténuée en pondérant les points par leur distance à l'objet à classer. Il a été proposé plusieurs variantes de cette stratégie de \og vote pondéré par la distance \fg{}, comme par exemple:
 	\begin{itemize}
-		\item $y' = \argmax\limits_c \sum\limits_{(x_i,y_i)} \frac{1}{Dis(x, x_i)^2} \times I(c = y_i)$ \citep{dudani1976originalwknn} \[\text{ où } I(c=y_i) = \left\lbrace \begin{array}{ll}
+		\item $y = \argmax\limits_c \sum\limits_{(x_i,y_i)} \frac{1}{Dis(x, x_i)^2} \times I(c = y_i)$ \citep{dudani1976originalwknn} \[\text{ où } I(c=y_i) = \left\lbrace \begin{array}{ll}
 		1 & \text{si }c = y_i \\
 		0 & \text{sinon}
 		\end{array} \right.\]
-		\item $y' = \argmax\limits_c \sum\limits_{(x_i,y_i)} w_i \times I(c = y_i)$ \citep{gou2011wknn} \[\text{ avec } w_i = \left\lbrace \begin{array}{ll}
+		\item $y = \argmax\limits_c \sum\limits_{(x_i,y_i)} w_i \times I(c = y_i)$ \citep{gou2011wknn} \[\text{ avec } w_i = \left\lbrace \begin{array}{ll}
 		\frac{Dis(x, d_k) - Dis(x, d_i)}{Dis(x, d_k) - Dis(x, d_1)} & \text{si } Dis(x, d_k) \neq Dis(x, d_1) \\
 		1 & \text{sinon.}
 		\end{array} \right.\]
@@ -209,7 +209,7 @@ Les algorithmes de construction d'arbres diffèrent ainsi par leur critère de s
 \subsubsection{Analyses discriminantes linéaires et quadratiques}
 %\textcolor{red}{Pas de citation?}
 L'analyse discriminante comprend l'ensemble des méthodes déterminant les combinaisons linéaires de variables qui permettent de séparer le mieux possible $\setsize{C}$ catégories ou variables qualitatives. Les analyses linéaires et quadratiques sont des méthodes probabilistes basées sur la probabilité conditionnelle d'appartenance d'un objet $x \in \R^m$ à une classe $c_k \in C$: \[P(y=c_k \vert x) = \frac{P(y=c_k) P(x \vert y=c_k)}{P(x)} = \frac{P(y=c_k) P(x \vert y=c_k)}{\sum\limits_{j = 1}^K P(y=c_j) P(x \vert y=c_j)}.\]
-La classe de $x$ est donc \[y = \argmax_k P(y=c_k \vert x)\] avec $P(y=c_k \vert x) \propto P(y=c_k) P(x \vert y=c_k)$ car le dénominateur est le même pour toutes les classes. Dans cette expression, $P(y=c_k)$ est la proportion d'exemples de classes $c_k$ dans l'ensemble des données d'apprentissage. Il ne reste donc qu'à déterminer $P(x \vert y=c_k)$, pour trouver $y$. 
+La classe de $x$ est donc $y = \argmax_k P(y=c_k \vert x)$ avec $P(y=c_k \vert x) \propto P(y=c_k) P(x \vert y=c_k)$ car le dénominateur est le même pour toutes les classes. Dans cette expression, $P(y=c_k)$ est la proportion d'exemples de classes $c_k$ dans l'ensemble des données d'apprentissage. Il ne reste donc qu'à déterminer $P(x \vert y=c_k)$, pour trouver $y$. 
 % http://eric.univ-lyon2.fr/~ricco/cours/slides/analyse_discriminante.pdf
 Deux hypothèses simplifient les calculs:
 \begin{enumerate}
@@ -242,7 +242,13 @@ Les algorithmes dédiés aux textes intègrent leur propre représentation de do
 
 \subsubsection{NBSVM}
 
-Le NBSVM \citep{wang2012nbsvm} est un classifieur binaire (deux labels $\lbrace -1; 1 \rbrace$) dont le principe consiste à transformer les poids $f^{(k)}$ caractéristiques $V$ des textes $x^{(k)}$, réduits à leur simple présence $\widehat{f}^{(k)}$ en réalisant leur produit élément à élément ($\overset{\sim}{f}^{(k)} = {r} \circ \widehat{f}^{(k)}$) avec le vecteur de poids $r$ du classifieurs bayésien multinomial (calculé avec le vecteur présence de caractéristique):
+Le NBSVM \citep{wang2012nbsvm} est un classifieur binaire qui consiste à appliquer le SVM à une transformation par le classifieur bayésien multinomial des composantes du vecteur $x$.
+
+
+
+
+
+consiste à transformer les poids $f^{(k)}$ caractéristiques $V$ des textes $x^{(k)}$, réduits à leur simple présence $\widehat{f}^{(k)}$ en réalisant leur produit élément à élément ($\overset{\sim}{f}^{(k)} = {r} \circ \widehat{f}^{(k)}$) avec le vecteur de poids $r$ du classifieurs bayésien multinomial (calculé avec le vecteur présence de caractéristique):
 $r = \log \left(\frac{p/\vert\vert p \vert\vert_1}{q / \vert\vert q \vert\vert_1}\right)
 \text{ avec } p=\alpha + \sum\limits_{k:y^{(k)}=1}{f}^{(k)}$, $q=\alpha + \sum\limits_{k:y^{(k)}=-1}{f}^{(k)}$. L'ensemble des caractéristiques $V$ est constitué de n-grammes de mots. Le nouveau vecteur issu de ce produit représente le texte ($x^{(k)} = \overset{\sim}{f}^{(k)}$) en entrée d'un SVM classique. La classe de $x^{(k)}$ est prédite par : $y^{(k)} = sign(\mathbf{w}^Tx^{(k)} + b)$, $\mathbf{w}$ et $b$ étant appris lors de l'entraînement du SVM. Une interpolation entre le bayésien multinomial et le SVM est nécessaire pour assurer la robustesse du NBSVM et des performances excellentes pour toute tâche de classification de documents; les poids $\mathbf{w}$ sont réajustés par le modèle $\mathbf{w'} = (1 - \beta) \overline{w} + \beta \mathbf{w}$, où $\overline{w} = \vert\vert \mathbf{w}\vert\vert_1 / \vert V \vert$ et $\beta \in \left[0; 1] \right.$. 
  
