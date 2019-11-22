@@ -100,3 +100,9 @@ Ce chapitre décrit l'utilisabilité des approches proposées et illustre leur u
     *  scénario de requête
 *  Publier l'appli sur internet taj.mines-ales.fr
 
+## gini-pls
+*  MCO équation??
+*   \(y = \hat{c}_1 t_1 + \hat{\varepsilon}_1\) : que sont les \(\hat{c}_h\)??
+*  la transformation du vecteur entré \(x\) dans le nouvel espace n'est pas explicitement décrite
+*  la valeur prédite de y ne peut pas être directement booléenne. Elle doit être discrétisée en y >= 0.5 (classe 0) et y < 0.5 (classe 1)
+
