@@ -196,7 +196,7 @@
 \renewcommand{\headrulewidth}{0pt}
 
 %\pagestyle{headings}
-
+\date{}
 
 \begin{document}
 \nocite{}
@@ -206,36 +206,36 @@
 % changement du style des chapitres
 \include{config/style_chapitre}
 
-%\include{content/cover}
+\include{content/cover}
 %\include{content/acknowledgement}
-%\include{content/resume}
-%\include{content/abstract}
+\include{content/resume}
+\include{content/abstract}
 
-%%liste des matières
-%\addcontentsline{toc}{chapter}{\contentsname}
-%\tableofcontents
+%liste des matières
+\addcontentsline{toc}{chapter}{\contentsname}
+\tableofcontents
+
+%liste des figures
+\addcontentsline{toc}{chapter}{\listfigurename}
+\listoffigures
 %
-%%liste des figures
-%\addcontentsline{toc}{chapter}{\listfigurename}
-%\listoffigures
-%%
-%%%liste des tableaux
-%\addcontentsline{toc}{chapter}{\listtablename}
-%\listoftables
+%%liste des tableaux
+\addcontentsline{toc}{chapter}{\listtablename}
+\listoftables
 
 \mainmatter
 
-%\input{content/introduction} % INCLUDE: introduction
+\input{content/introduction} % INCLUDE: introduction
 
 % changement du style des chapitres
 \include{config/style_chapitre2}
 
-%\input{content/chapter-literature} % INCLUDE: related work
-%\input{content/chapter-structuration}	% INCLUDE: structuration
+\input{content/chapter-literature} % INCLUDE: related work
+\input{content/chapter-structuration}	% INCLUDE: structuration
 \input{content/chapter-quanta} % INCLUDE: quanta
 \input{content/chapter-sensresultat}% INCLUDE: sensresultat
-%\input{content/chapter-similarite} %INCLUDE: similarite
-%\input{content/chapter-demo} %INCLUDE: demo
+\input{content/chapter-similarite} %INCLUDE: similarite
+\input{content/chapter-demo} %INCLUDE: demo
 
 
 \backmatter
@@ -243,7 +243,7 @@
 % changement du style des chapitres
 \include{config/style_chapitre3}
 
-%\input{content/conclusion} % INCLUDE: conclusion
+\input{content/conclusion} % INCLUDE: conclusion
 %
 %%Bibliographie
 \def\bibname{Bibliographie}
@@ -251,6 +251,6 @@
 \phantomsection
 \bibliography{bib/references-pub}
 %
-%\include{content/annexes}
+\include{content/annexes}
 
 \end{document}

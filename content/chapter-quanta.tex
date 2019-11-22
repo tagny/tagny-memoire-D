@@ -318,22 +318,24 @@ Le pré-traitement est nécessaire pour :
 \begin{enumerate}
 	\item sectionner le document en 4 sections Entête, Litige, Motifs, Dispositif ;
 	\item annoter les sommes d'argent (en chiffre) à l'aide de l'expression régulière \og \texttt{[0-9]([0-9]|[',.]|\textbackslash s)*\textbackslash s*([Ee]uro[s]\{0,1\} |franc[s]\{0,1\} \\ |\euro|F|XPF|CFP|EUR|EUROS|[i])( |\$)}\fg{} ;
-	\item annoter les énoncés de demandes et de résultats respectivement dans les sections Litige et Dispositif: pour cela, les mots introductifs du Tableau \tableref{tab:quanta:mots-introductifs} sont employés car ils indiquent le début d'un énoncé indépendamment de la catégorie; 	cette technique de recherche de passages à l'aide de listes de termes-clés prédéfinies a déjà été employé par \citet{wyner2010extractlegalelts} pour annoter les énoncés de résultats en considérant toute phrase contenant un terme de jugement : \textit{affirm, grant, deny, reverse, overturn, remand, ...}
+	\item annoter les énoncés de demandes dans les sections Litige, et ceux des résultats respectivement dans la section Dispositif à l'aide des mots prédéfinis du \tableref{tab:quanta:mots-introductifs}.
 	 
-	\begin{table}[!htb]
-		\centering
-		%\small
+	\begin{table}[!htb]		
+		\footnotesize
 		%\textcolor{red}{ajouter une colonne résultat\_a}
+		\begin{center}
 		\begin{tabular}{|p{0.28\textwidth}|p{0.3\textwidth}|p{0.12\textwidth}|p{0.11\textwidth}|}
 			\hline
 			\textbf{Demande} & \multicolumn{3}{c|}{\textbf{Résultat} (organisé par polarité ou sens)} \\ \hline
 			& \textbf{accepte} &\textbf{sursis à statuer} & \textbf{rejette} \\ \hline
 			\textit{accorder, admettre, admission, allouer, condamnation, condamner, fixer, laisser, prononcer, ramener, surseoir} & \textit{accorde, accordons, admet, admettons, alloue, allouons, condamne, condamnons, déclare, déclarons, fixe, fixons, laisse, laissons, prononce, prononçons} & \textit{réserve, réservons, sursoit, sursoyons} & \textit{déboute, déboutons, rejette, rejetons} \\ \hline
-		\end{tabular}
+		\end{tabular}						
+	\end{center}
 		\caption{Mots introduisant les énoncés de demandes et de résultats}\label{tab:quanta:mots-introductifs}
 	\end{table}
-
 \end{enumerate} 
+
+La recherche de passages à l'aide de listes de termes-clés prédéfinies a déjà été employé par \citet{wyner2010extractlegalelts} pour annoter les énoncés de résultats en considérant toute phrase contenant un terme de jugement : \textit{affirm, grant, deny, reverse, overturn, remand, ...} Les mots du \tableref{tab:quanta:mots-introductifs} sont, en général, des verbes identiques pour les passages exprimant des demandes, des résultats de la décisions ou des résultats de jugements antérieurs. Ils sont à l'infinitif pour les demandes, au présent pour les résultats de la décisions, et au passé pour les résultats antérieurs. Pour localiser un énoncé, nous identifions ces verbes qui marquent le début des énoncés. La fin des énoncés est identifié par le prochain verbe introductif ou le prochain point (\og . \fg{}) ou point-virgule (\og ; \fg{})
 
 \subsubsection{Apprentissage des termes-clés d'une catégorie}
 Les termes-clés sont identifiés à l'aide de méthodes statistiques d'extraction ou sélection de terminologie. La base d'apprentissage comprend les corpus $D_c$ et $D_{\overline{c}}$ dont les documents ont été pré-traités. % La méthode est sémi-supervisé car ne disposant pas d'exemples de termes-clés, des échantillons de documents labellisés dans les catégories $c$ et $\overline{c}$ sont disponibles. 
@@ -396,7 +398,7 @@ L'annotation manuelle d'exemples s'effectue pour une catégorie à la fois afin 
 \subsection{Métriques d'évaluation}
 \paragraph{Reconnaissance de catégories par classification}
 
-La classification des documents est évaluée en utilisant les métriques précision (P), rappel (P), f1-mesure (F1). %\textcolor{red}{Quelle moyenne: macro / micro?}
+La classification des documents est évaluée en utilisant les métriques précision (P), rappel (P), $F_1$-mesure ($F_1$). %\textcolor{red}{Quelle moyenne: macro / micro?}
 
 \paragraph{Extraction des attributs des paires demande-résultat}
  Nous évaluons les approches proposées sur l'extraction de 3 données: le quantum demandé $q_d$, le sens du résultat $s_r$ et le quantum obtenu $q_r$. Une demande est donc un triplet $(q_d, s_r, q_r)$. Il est possible d'évaluer le système pour un sous-ensemble $x$ de $\lbrace q_d, s_r, q_r \rbrace$ sur les demandes extraites d'un corpus annotées $D$ de test. Nous utilisons les métriques traditionnellement employées en extraction d'information: la précision ($Precision_{c,x,D}$), le rappel ($Rappel_{c,x,D}$), et la F1-mesure ($F1_{c,x,D}$). Ces mesures sont définies à partir des nombres de vrais positifs ($TP$), faux positifs ($FP$) et faux négatifs ($FN$) calculés au niveau d'un document $d$:

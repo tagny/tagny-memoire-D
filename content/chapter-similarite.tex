@@ -231,11 +231,15 @@ ARI a des valeurs dans $[-1;1]$. Une valeur négative indique que la catégorisa
 
 \subsubsection{Métriques non-supervisées ou indices internes}
 \label{sec:similarite:biblio:unsupeval}
-\textcolor{red}{Référence des interprétations}
- La cohésion et la séparation des clusters sont les principaux indices internes. La cohésion mesure le degré de proximité entre objets d'un cluster à partir du carré de la somme des erreurs (distance entre un point et le centre du cluster dont il est membre) dans les clusters. La formule est $WCSS(C) = \sum\limits_{j=1}^K\sum\limits_{d \in C_j} (Dis(d, z_j))^2$, où $C = \lbrace C_1, C_1, \cdots, C_K \rbrace$ est l'ensemble des clusters de la catégorisation, $z_j$ le centre de $C_j$, et $Dis(d,z_j)$ la distance (généralement euclidienne) entre un point $d$ et $z_j$. En général, une valeur faible de la cohésion indique que les clusters sont plus compacts, et donc de meilleur qualité. Tandis qu'une valeur élevée révèle une grande variabilité entre les objets à l'intérieur les clusters. La séparation quant à elle mesure l'éloignement de chaque cluster des autres à partir du carré de la somme des distances entre clusters: $BCSS(C) = \sum\limits_{j = 1}^{K} \vert C_j \vert (\overline{z} - z_j)$, 
+
+ La cohésion et la séparation des clusters sont les principaux indices internes. La cohésion mesure le degré de proximité entre objets d'un cluster à partir du carré de la somme des erreurs (distance entre un point et le centre du cluster dont il est membre) dans les clusters. La formule est $WCSS(C) = \sum\limits_{j=1}^K\sum\limits_{d \in C_j} (Dis(d, z_j))^2$, où $C = \lbrace C_1, C_1, \cdots, C_K \rbrace$ est l'ensemble des clusters de la catégorisation, $z_j$ le centre de $C_j$, et $Dis(d,z_j)$ la distance (généralement euclidienne) entre un point $d$ et $z_j$. 
+ %\textcolor{red}{Référence des interprétations}
+ %En général, une valeur faible de la cohésion indique que les clusters sont plus compacts, et donc de meilleur qualité. Tandis qu'une valeur élevée révèle une grande variabilité entre les objets à l'intérieur les clusters.
+  La séparation quant à elle mesure l'éloignement de chaque cluster des autres à partir du carré de la somme des distances entre clusters: $BCSS(C) = \sum\limits_{j = 1}^{K} \vert C_j \vert (\overline{z} - z_j)$, 
   $\overline{z}$ étant le centre de tous les documents.
   %l'ensemble des objets (la moyenne des vecteurs de tous les documents, où le document qui se trouve à une distance moyenne minimale de tous les autres). 
-  Une grande valeur de séparation indique que les clusters sont isolés les uns des autres. Le coefficient de silhouette de \citet{rousseeuw1987silhouetteclusternumber} (cf. \ref{sec:similarite:k-optimal})  combine les idées de cohésion et séparation mais individuellement pour chaque document.
+  %Une grande valeur de séparation indique que les clusters sont isolés les uns des autres. 
+  Le coefficient de silhouette de \citet{rousseeuw1987silhouetteclusternumber} (cf. \ref{sec:similarite:k-optimal})  combine les idées de cohésion et séparation mais individuellement pour chaque document.
 
 \section{Apprentissage d'une distance basée sur la transformation de document}
 Nous définissons une métrique $Dis_\mathcal{M}$ qui est fonction des transformations permettant de passer d'un document $d$ à un autre $d'$ :
