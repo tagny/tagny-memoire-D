@@ -549,16 +549,16 @@ L'efficacité des algorithmes dépend souvent des méta-paramètres dont il faut
 	\begin{tabular}{|l|p{0.7\textwidth}|}
 		\hline
 		Algorithmes & \multicolumn{1}{|c|}{Hyper-paramètres}\\ \hline
-		SVM & $C=1.0; \gamma=\frac{1}{\setsize{V} * var(X)}; noyau=RBF$ (fonction de base radiale)\\ \hline
-		KNN & $k = 5, weights='uniform', algorithm='auto'$ \\ \hline
-		LDA & $solver='svd', n\_components=10$ \\ \hline
+		SVM & $C=1.0; \gamma=\frac{1}{\setsize{V} \times var(X)}; noyau=RBF$ (fonction de base radiale)\\ \hline
+		KNN & $k = 5$ \\ \hline
+		LDA & $solver = svd, n\_components=10$ \\ \hline
 		QDA & \\ \hline
-		Arbre & critère de séparation='gini' \\ \hline
+		Arbre & critère de séparation=gini \\ \hline
 		NBSVM & $n$-grammes de 1 à 3 mots  \\ \hline
 		%fastText & valeurs par défa \\ \hline
-		Gini-PLS & $h=n\_components=10$ \\ \hline
-		Logit-PLS & $h=n\_components=10$ \\ \hline
-		Gini-Logit-PLS & $h=n\_components=10; \nu = 14$ \\ \hline
+		Gini-PLS & $h_{max} =10$ \\ \hline
+		Logit-PLS & $h_{max} =10$ \\ \hline
+		Gini-Logit-PLS & $h_{max} =10; \nu = 14$ \\ \hline
 	\end{tabular}
 	\caption{Valeurs utilisées pour les hyper-paramètres des algorithme.}\label{tab:sensrst:metapara}
 \end{table}
@@ -567,7 +567,7 @@ L'efficacité des algorithmes dépend souvent des méta-paramètres dont il faut
 %
 \subsection{Classification de l'ensemble du document}
 
-En représentant l'ensemble du document à l'aide de diverses représentations vectorielles, les algorithmes sont comparés avec les représentations qui leurs sont optimales. On remarque d'après les résultats du Tableau \ref{tab:sensrst:global} que les arbres sont en moyenne meilleurs sur l'ensemble des catégories même si en moyenne la $F_1$-mesure moyenne est limité à 0.668. Les résultats des extensions du PLS ne sont pas très éloignées de ceux des arbres avec des différences de $F_1$ à moins de 0.1 (si on choisit le bon schéma de "vectorisation").
+En représentant l'ensemble du document à l'aide de diverses représentations vectorielles, les algorithmes sont comparés avec les représentations qui leurs sont optimales. On remarque d'après les résultats du Tableau \ref{tab:sensrst:global} que les arbres sont en moyenne meilleurs sur l'ensemble des catégories même si en moyenne la $F_1$-mesure moyenne est limité à 0.668. Les résultats des extensions du PLS ne sont pas très éloignées de ceux des arbres avec des différences de $F_1$ à moins de 0.1 (si on choisit le bon schéma de représentation).
 
 \begin{table}[!htb]	
 	\scriptsize
