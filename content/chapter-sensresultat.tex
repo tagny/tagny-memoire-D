@@ -518,14 +518,14 @@ L'algorithme LOGIT-Gini-PLS généralisé est donc le suivant :
 %\textcolor{red}{0. expérimenter les rerésentations Doc2vec 1. sélection du $\nu$ pour le ginipls. 2. comparaisons des classifieurs en moyenne sur les représentations. 3. comparaison des représentations en moyenne sur les classifieurs. 4. comparaison des algos avec sélection de la meilleure représentation.}
 
 
-Nous discutons ici les performances de divers algorithmes populaires et l'impact de la quantité et du déséquilibre des données, de l'heuristique, et de la restriction explicite des documents aux passages relatifs à la catégorie de demandes, ainsi que leur capacité à faire abstraction des autres demandes du document. {Ces expériences visent aussi à comparer l'efficacité du Gini-Logit-PLS par rapport à d'autres analyses discriminantes}. Comme \citet{im2017textclasstermweighting}, nous comparons différentes combinaisons d'algorithmes de classification et méthodes de pondération de termes (utilisées pour la représentation des textes).  Ces combinaisons représente un total 450 configurations dont:
+Nous discutons ici les performances de divers algorithmes populaires et l'impact de la quantité et du déséquilibre des données, de l'heuristique, et de la restriction explicite des documents aux passages relatifs à la catégorie de demandes, ainsi que leur capacité à faire abstraction des autres demandes du document. {Ces expériences visent aussi à comparer l'efficacité du Gini-Logit-PLS par rapport à d'autres analyses discriminantes}. Comme \citet{im2017textclasstermweighting}, nous comparons différentes combinaisons d'algorithmes de classification et méthodes de pondération de termes (utilisées pour la représentation des textes).  Ces combinaisons représentent un plus de 600 configurations expérimentées dont:
 \begin{itemize}
-	\item 11 algorithmes de classification: NB, SVM, KNN, LDA, QDA, Arbre, fastText, NBSVM, Gini-PLS, Logit-PLS \citep{tenenhaus2005logitpls}, LOGIT-Gini-PLS;
-	\item 10 pondérations globales de termes: (cf. \ref{sec:quanta:extract-terminologie-domaine}): $\chi^2$, $dbidf$, $\delta_{DF}$, $dsidf$, $gss$, $idf$, $ig$, $mar$, $ngl$, $rf$;
-	\item 5 pondérations locales de termes (cf. \tableref{tab:sensresultat:metriq_locales}): $tf$, $tp$, $logtf$, $atf$, $logave$.
+	\item 12 algorithmes de classification: NB, SVM, KNN, LDA, QDA, Arbre, fastText, NBSVM, Gini-PLS (Gini-PLS généralisé), Logit-PLS \citep{tenenhaus2005logitpls}, GiniLogitPLS (LOGIT-Gini-PLS généralisé), StandardPLS (le PLS standard);
+	\item 11 pondérations globales de termes: (cf. \ref{sec:quanta:extract-terminologie-domaine}): $\chi^2$, $dbidf$, $\Delta_{DF}$, $dsidf$, $gss$, $idf$, $ig$, $mar$, $ngl$, $rf$, $avg_{global}$ (moyenne des métriques globales);
+	\item 6 pondérations locales de termes (cf. \tableref{tab:sensresultat:metriq_locales}): $tf$, $tp$, $logtf$, $atf$, $logave$, et $avg_{local}$ (moyenne des métriques locales).
 \end{itemize}
  
-  La méthode Gini-Logit-PLS réalisant une projection dans un espace de petite dimension, elle a été comparée aussi à d'autres méthode de réduction de dimension.
+  %La méthode Gini-Logit-PLS réalisant une projection dans un espace de petite dimension, elle a été comparée aussi à d'autres méthode de réduction de dimension.
 
 \subsection{Protocole d'évaluation}
 Deux métriques d'évaluation sont utilisées: la précision et la $F_1$-mesure. Pour tenir compte du déséquilibre entre les classes, la macro-moyenne est préférée. Il s'agit de l'agrégation de la contribution individuelle de chaque classe. 
@@ -579,19 +579,19 @@ En représentant l'ensemble du document à l'aide de diverses représentations v
 	\centering
 	\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|}
 		\hline
-		\textbf{Vecteur} & \textbf{algorithme} & \textbf{$F_1$} & \textbf{min} & \textbf{Cat. min} & \textbf{max} & \textbf{Cat. max} & \textbf{$F_1$ - 1er$F_1$} & \textbf{max - min} & \textbf{rang} \\ \hline
-		GSS*TF & Arbre & 0.668 & 0.5 & doris & 0.92 & dcppc & 0 & 0.42 & 1 \\ \hline
-		AVG-G*TF & LogitPLS & 0.648 & 0.518 & danais & 0.781 & dcppc & 0.02 & 0.263 & 13 \\ \hline
-		AVG-G*TF & StandardPLS & 0.636 & 0.49 & danais & 0.836 & dcppc & 0.032 & 0.346 & 24 \\ \hline
-		DELTADF*TF & GiniPLS & 0.586 & 0.411 & danais & 0.837 & dcppc & 0.082 & 0.426 & 169 \\ \hline
-		DELTADF*TF & GiniLogitPLS & 0.578 & 0.225 & styx & 0.772 & dcppc & 0.09 & 0.547 & 220 \\ \hline
-		- & NBSVM & 0.494 & 0.4 & styx & 0.834 & dcppc & 0.174 & 0.434 & \\ \hline
-		- & FastText & 0.412 & 0.343 & doris & 0.47 & danais & 0.256 & 0.127 & \\ \hline
+		\textbf{Représentation} & \textbf{Algorithme} & \textbf{$F_{1}$} & \textbf{min} & \textbf{Cat. min} & \textbf{max} & \textbf{Cat. max} & \textbf{$meilleur(F_1)$ - $F_1$} & \textbf{max - min} & \textbf{rang} \\ \hline
+		$tf-gss$ & Arbre & 0.668 & 0.5 & \textit{doris} & 0.92 & \textit{dcppc} & 0 & 0.42 & 1 \\ \hline
+		$tf - avg_{global}$ & LogitPLS & 0.648 & 0.518 & \textit{danais} & 0.781 & \textit{dcppc} & 0.02 & 0.263 & 13 \\ \hline
+		$tf - avg_{global}$ & StandardPLS & 0.636 & 0.49 & \textit{danais} & 0.836 & \textit{dcppc} & 0.032 & 0.346 & 24 \\ \hline
+		$tf - \Delta_{DF}$ & GiniPLS & 0.586 & 0.411 & \textit{danais} & 0.837 & \textit{dcppc} & 0.082 & 0.426 & 169 \\ \hline
+		$tf - \Delta_{DF}$ & GiniLogitPLS & 0.578 & 0.225 & \textit{styx} & 0.772 & \textit{dcppc} & 0.09 & 0.547 & 220 \\ \hline
+		- & NBSVM & 0.494 & 0.4 & \textit{styx} & 0.834 & \textit{dcppc} & 0.174 & 0.434 & \\ \hline
+		- & fastText & 0.412 & 0.343 & \textit{doris} & 0.47 & \textit{danais} & 0.256 & 0.127 & \\ \hline
 	\end{tabular}
-\caption{Comparaison des algorithmes proposées avec les arbres, fastText et NBSVM pour la détection du sens du résultat.}\label{tab:sensrst:global}
+\caption{Comparaison des combinaisons représentation+algorithme proposées avec les arbres, fastText et NBSVM pour la détection du sens du résultat.}\label{tab:sensrst:global}
 \end{table}
 
- Les scores $F_1$ moyens des algorithmes NBSVM et FastText n'excédent en général pas 0.5 malgré qu'ils soient spécialement conçus pour les textes. On peut estimer qu'ils sont très sensibles au déséquilibre des données entre les catégories (plus de rejets que d'acceptations), soit il est plus difficile de détecter l'acceptation des demandes. En effet, ces algorithmes classent toutes les données test avec le label (sens) majoritaire i.e. le rejet, et par conséquent, ils ne détectent quasiment pas d'acceptation de demande. Le cas des catégories \textit{doris} et \textit{dcppc} pour le NBSVM ($F_{1macro} = 0.834$) tend à démontrer la forte sensibilité aux cas négatifs de ces algorithmes puisque même avec presque autant de labels "accepte" que "rejette", la $F_1$-mesure de "rejette" est toujours supérieure à celle de "accepte" (Tableau \ref{tab:sensrst:fasttextnbsvm}). 
+ Les scores $F_1$ moyens des algorithmes NBSVM et fastText n'excédent en général pas 0.5 malgré qu'ils soient spécialement conçus pour les textes. On peut estimer qu'ils sont très sensibles au déséquilibre des données entre les catégories (plus de rejets que d'acceptations), soit il est plus difficile de détecter l'acceptation des demandes. En effet, ces algorithmes classent toutes les données test avec le label (sens) majoritaire i.e. le rejet, et par conséquent, ils ne détectent quasiment pas d'acceptation de demande. Le cas des catégories \textit{doris} et \textit{dcppc} pour le NBSVM ($F_{1macro} = 0.834$) tend à démontrer la forte sensibilité aux cas négatifs de ces algorithmes puisque même avec presque autant de labels "accepte" que "rejette", la $F_1$-mesure de "rejette" est toujours supérieure à celle de "accepte" (Tableau \ref{tab:sensrst:fasttextnbsvm}). 
  
  \begin{table}[htb]
  	\footnotesize 
@@ -599,18 +599,18 @@ En représentant l'ensemble du document à l'aide de diverses représentations v
  	\begin{tabular}{|l|l|l|l|l|l|l|l|l|}
  		\hline
  	\textbf{Cat. Dmd.} & \textbf{Algo.} & \textbf{Préc.} & \textbf{Préc. équi.} & \textbf{err-0} & \textbf{err-1} & $F_1(0)$ & $F_1(1)$ & \textbf{$F_{1macro}$} \\ \hline
- 	\textit{dcppc} & nbsvm & 0.875 & 0.812 & 0.375 & 0 & 0.752 & 0.916 & \textbf{0.834} \\ \hline
- 	\textit{danais} & fasttext & 0.888 & 0.5 & 0 & 1 & 0.941 & 0 & 0.47 \\ \hline
- 	\textit{danais} & nbsvm & 0.888 & 0.5 & 0 & 1 & 0.941 & 0 & 0.47 \\ \hline
- 	\textit{concdel} & fasttext & 0.775 & 0.5 & 0 & 1 & 0.853 & 0 & 0.437 \\ \hline
- 	\textit{concdel} & nbsvm & 0.775 & 0.5 & 0 & 1 & 0.873 & 0 & 0.437 \\ \hline
- 	\textit{acpa} & fasttext & 0.745 & 0.5 & 0 & 1 & 0.853 & 0 & 0.426 \\ \hline
- 	\textit{acpa} & nbsvm & 0.745 & 0.5 & 0 & 1 & 0.853 & 0 & 0.426 \\ \hline
- 	\textit{doris} & nbsvm & 0.5 & 0.492 & 0.85 & 0.167 & 0.174 & 0.63 & 0.402 \\ \hline
- 	dcppc & fasttext & 0.667 & 0.5 & 1 & 0 & 0.8 & 0 & 0.4 \\ \hline
- 	\textit{styx} & fasttext & 0.667 & 0.5 & 1 & 0 & 0.8 & 0 & 0.4 \\ \hline
- 	\textit{styx} & nbsvm & 0.667 & 0.5 & 0 & 1 & 0.8 & 0 & 0.4 \\ \hline
- 	\textit{doris} & fasttext & 0.523 & 0.5 & 1 & 0 & 0 & 0.686 & 0.343 \\ \hline
+ 	\textit{dcppc} & NBSVM & 0.875 & 0.812 & 0.375 & 0 & 0.752 & 0.916 & \textbf{0.834} \\ \hline
+ 	\textit{danais} & fastText & 0.888 & 0.5 & 0 & 1 & 0.941 & 0 & 0.47 \\ \hline
+ 	\textit{danais} & NBSVM & 0.888 & 0.5 & 0 & 1 & 0.941 & 0 & 0.47 \\ \hline
+ 	\textit{concdel} & fastText & 0.775 & 0.5 & 0 & 1 & 0.853 & 0 & 0.437 \\ \hline
+ 	\textit{concdel} & NBSVM & 0.775 & 0.5 & 0 & 1 & 0.873 & 0 & 0.437 \\ \hline
+ 	\textit{acpa} & fastText & 0.745 & 0.5 & 0 & 1 & 0.853 & 0 & 0.426 \\ \hline
+ 	\textit{acpa} & NBSVM & 0.745 & 0.5 & 0 & 1 & 0.853 & 0 & 0.426 \\ \hline
+ 	\textit{doris} & NBSVM & 0.5 & 0.492 & 0.85 & 0.167 & 0.174 & 0.63 & 0.402 \\ \hline
+ 	\textit{dcppc} & fastText & 0.667 & 0.5 & 1 & 0 & 0.8 & 0 & 0.4 \\ \hline
+ 	\textit{styx} & fastText & 0.667 & 0.5 & 1 & 0 & 0.8 & 0 & 0.4 \\ \hline
+ 	\textit{styx} & NBSVM & 0.667 & 0.5 & 0 & 1 & 0.8 & 0 & 0.4 \\ \hline
+ 	\textit{doris} & fastText & 0.523 & 0.5 & 1 & 0 & 0 & 0.686 & 0.343 \\ \hline
  	\end{tabular}
  \end{center}
  	
@@ -619,12 +619,12 @@ En représentant l'ensemble du document à l'aide de diverses représentations v
 \caption{Évaluation de fastText et NBSVM pour l'identification du sens du résultat par classe.}\label{tab:sensrst:fasttextnbsvm}
  \end{table}
 
- Les algorithmes PLS dépassent systématiquement les performances ($F_1$-mesure) de Fastext et
+ Les algorithmes PLS dépassent systématiquement les performances ($F_1$-mesure) de fastText et
 NBSVM de 10 à 20 à points, ce qui tend à démontrer l'efficacité des techniques PLS dans leur
 rôle de réduction des dimensions. Les algorithmes Gini-PLS ne semblent pas mieux
 fonctionner que les algorithmes classiques PLS. On peut supposer que la réduction de
 dimensions se réalise en conservant encore trop de bruit dans les données. Ceci est confirmé
-par les résultats des arbres qui restent très mitigés pour lesquels la ($F_1$-mesure (0,668) dépasse à
+par les résultats des arbres qui restent très mitigés pour lesquels la $F_1$-mesure (0,668) dépasse à
 peine celle du Logit-PLS (0,648). Il semble donc nécessaire de procéder à un zonage dans le
 document qui permettrait de mieux cerner les informations pertinentes et de ce fait réduire le
 bruit.
@@ -637,30 +637,30 @@ Etant donné que les décisions portent sur plusieurs catégories de demande, no
 	
 	\begin{tabular}{|l|l|l|l|l|}
 		\hline
-		\textbf{Catégorie} & \textbf{zone} & \textbf{Vecteur (pondération)} & \textbf{classifieur} & $F_1$ \\ \hline
-		\multirow{3}{*}{\textit{acpa}} & \textbf{demande\_resultat\_a\_resultat\_context} & \textbf{DBIDF*TF} & \textbf{Tree} & \textbf{0.846} \\ 
-		 & litige\_motifs\_dispositif & DELTADF*TF & StandardPLS & 0.697 \\ 
-		 & litige\_motifs\_dispositif & AVERAGEGlobals*TF & LogitPLS & 0.683 \\ \hline
+		\textbf{Catégorie} & \textbf{zone} & \textbf{Représentation} & \textbf{Algorithme} & $F_1$ \\ \hline
+		\multirow{3}{*}{\textit{acpa}} & \textbf{demande\_resultat\_a\_resultat\_context} & $tf-dbidf$ & \textbf{Arbre} & \textbf{0.846} \\ 
+		 & litige\_motifs\_dispositif & $tf-dbidf$ & StandardPLS & 0.697 \\ 
+		 & litige\_motifs\_dispositif & $tf-avg_{global}$ & LogitPLS & 0.683 \\ \hline
 		 
-		\multirow{3}{*}{\textit{concdel}} & \textbf{litige\_motifs\_dispositif} & \textbf{GSS*TF} & \textbf{Tree} & \textbf{0.798} \\ 
-		 & motifs & IDF*TF & GiniLogitPLS & 0.703 \\ 
-		 & context & DBIDF*LOGAVE & StandardPLS & 0.657 \\ \hline
+		\multirow{3}{*}{\textit{concdel}} & \textbf{litige\_motifs\_dispositif} & \textbf{$tf-gss$} & \textbf{Arbre} & \textbf{0.798} \\ 
+		 & motifs & $tf-idf$ & GiniLogitPLS & 0.703 \\ 
+		 & context & $logave-dbidf$ & StandardPLS & 0.657 \\ \hline
 		 
-		\multirow{3}{*}{\textit{danais}} & \textbf{demande\_resultat\_a\_resultat\_context} & \textbf{CHI2*AVERAGELocals} & \textbf{Tree} & \textbf{0.813} \\ 
-		 & demande\_resultat\_a\_resultat\_context & AVERAGEGlobals*ATF & LogitPLS & 0.721 \\ 
-		 & demande\_resultat\_a\_resultat\_context & AVERAGEGlobals*ATF & StandardPLS & 0.695 \\ \hline
+		\multirow{3}{*}{\textit{danais}} & \textbf{demande\_resultat\_a\_resultat\_context} & \textbf{$avg_{local}-\chi^2$} & \textbf{Arbre} & \textbf{0.813} \\ 
+		 & demande\_resultat\_a\_resultat\_context & $atf-avg_{global}$ & LogitPLS & 0.721 \\ 
+		 & demande\_resultat\_a\_resultat\_context & $atf-avg_{global}$ & StandardPLS & 0.695 \\ \hline
 		 
-		\multirow{3}{*}{\textit{dcppc}} & \textbf{demande\_resultat\_a\_resultat\_context} & \textbf{CHI2*TF} & \textbf{Tree} & \textbf{0.985} \\ 
-		 & demande\_resultat\_a\_resultat\_context & CHI2*TF & LogitPLS & 0.94 \\ 
-		 & litige\_motifs\_dispositif & MARASCUILO*TP & StandardPLS & 0.934 \\ \hline
+		\multirow{3}{*}{\textit{dcppc}} & \textbf{demande\_resultat\_a\_resultat\_context} & $tf-\chi^2$ & \textbf{Arbre} & \textbf{0.985} \\ 
+		 & demande\_resultat\_a\_resultat\_context & $tf-\chi^2$& LogitPLS & 0.94 \\ 
+		 & litige\_motifs\_dispositif & $tp-mar$ & StandardPLS & 0.934 \\ \hline
 		 
-		\multirow{3}{*}{\textit{doris}} & \textbf{litige\_motifs\_dispositif} & \textbf{DSIDF*TP} & \textbf{GiniPLS} & \textbf{0.806} \\
-		 & litige\_motifs\_dispositif & DSIDF*TP & GiniLogitPLS & 0.806 \\
-		 & litige\_motifs\_dispositif & IG*ATF & StandardPLS & 0.772 \\ \hline
+		\multirow{3}{*}{\textit{doris}} & \textbf{litige\_motifs\_dispositif} & $tp-dsidf$ & \textbf{GiniPLS} & \textbf{0.806} \\
+		 & litige\_motifs\_dispositif & $tp-dsidf$ & GiniLogitPLS & 0.806 \\
+		 & litige\_motifs\_dispositif & $atf-ig$ & StandardPLS & 0.772 \\ \hline
 		 
-		\multirow{3}{*}{\textit{styx}} & \textbf{motifs} & \textbf{DSIDF*TF} & \textbf{Tree} & \textbf{1} \\ 
-		 & demande\_resultat\_a\_resultat\_context & DSIDF*LOGAVE & GiniLogitPLS & 0.917 \\ 
-		 & litige\_motifs\_dispositif & RF*TF & GiniPLS & 0.833 \\ \hline
+		\multirow{3}{*}{\textit{styx}} & \textbf{motifs} & $tf-dsidf$ & \textbf{Arbre} & \textbf{1} \\ 
+		 & demande\_resultat\_a\_resultat\_context & $logave-dsidf$ & GiniLogitPLS & 0.917 \\ 
+		 & litige\_motifs\_dispositif & $tf-rf$& GiniPLS & 0.833 \\ \hline
 	\end{tabular}
 \caption{Impact de la restriction des documents à certains passages sur l'identification du sens du résultat.}\label{tab:sensrst:zone}
 \end{table}
@@ -693,7 +693,7 @@ données.
 
 \section{Conclusion}
 \label{sec:sensresultat:conclusion}
-L'étude de ce chapitre tente de simplifier l'extraction du sens du résultat rendu par les juges sur une demande de catégorie donnée. Elle a consisté à formuler le problème comme une tâche de classification de documents. On évite ainsi de passer par la détection ad-hoc\footnote{i.e. spécialement conçue pour nos données.} des passages et données à l'aide de termes-clés qui est un inconvénient de la méthode à règles du chapitre précédent car elle n'est peut-être pas généralisable à tous types de décisions (i.e. il pourrait être nécessaire d'établir de nouvelles listes de mots-clés pour d'autres domaines). Au total dix algorithmes de classification on été expérimentés sur 55 méthodes de représentations vectorielles de textes. Nous avons remarqué que les résultats de classification sont principalement influencés par 3 caractéristiques de nos données. Tout d'abord, le très faible nombre d'exemples d'entraînement défavorise certains algorithmes (sensibilité aux valeurs aberrantes ou \textit{outliers}), comme par exemple FastText qui nécessite plusieurs milliers d'exemples pour mettre à jour le pas du gradient (\textit{learning rate}). Ensuite, le fort déséquilibre entre les classes ("accepte" vs. "rejette") rend difficile la reconnaissance de la classe minoritaire qui est généralement la classe "accepte". Le fort gap entre les erreurs sur "rejette" et celles sur "accepte", ainsi que les bons résultats obtenus sur \textit{dcppc} en sont la preuve. Enfin, la présence d'autres catégories de demande dans le document dégrade l'efficacité de la classification parce que les algorithmes ne parviennent pas seuls à retrouver les éléments en rapport direct avec la catégorie choisie. Ceci est démontré par l'impact positif de la restriction du contenu à classer à certains passages particuliers, même si la restriction adéquate est fonction de la catégorie.
+L'étude de ce chapitre tente de simplifier l'extraction du sens du résultat rendu par les juges sur une demande de catégorie donnée. Elle a consisté à formuler le problème comme une tâche de classification de documents. On évite ainsi de passer par la détection ad-hoc\footnote{i.e. spécialement conçue pour nos données.} des passages et données à l'aide de termes-clés qui est un inconvénient de la méthode à règles du chapitre précédent car elle n'est peut-être pas généralisable à tous types de décisions (i.e. il pourrait être nécessaire d'établir de nouvelles listes de mots-clés pour d'autres domaines). Au total dix algorithmes de classification on été expérimentés sur 55 méthodes de représentations vectorielles de textes. Nous avons remarqué que les résultats de classification sont principalement influencés par 3 caractéristiques de nos données. Tout d'abord, le très faible nombre d'exemples d'entraînement défavorise certains algorithmes (sensibilité aux valeurs aberrantes ou \textit{outliers}), comme par exemple fastText qui nécessite plusieurs milliers d'exemples pour mettre à jour le pas du gradient (\textit{learning rate}). Ensuite, le fort déséquilibre entre les classes ("accepte" vs. "rejette") rend difficile la reconnaissance de la classe minoritaire qui est généralement la classe "accepte". Le fort gap entre les erreurs sur "rejette" et celles sur "accepte", ainsi que les bons résultats obtenus sur \textit{dcppc} en sont la preuve. Enfin, la présence d'autres catégories de demande dans le document dégrade l'efficacité de la classification parce que les algorithmes ne parviennent pas seuls à retrouver les éléments en rapport direct avec la catégorie choisie. Ceci est démontré par l'impact positif de la restriction du contenu à classer à certains passages particuliers, même si la restriction adéquate est fonction de la catégorie.
  
 Au final, les arbres de décision sont adaptés pour la tâche, mais l'usage du Gini-PLS et du Gini-Logit-PLS permet d'obtenir des performances assez proches de celles des arbres. %??? comparaison avec d'autres analyses discriminantes ???.
 Il serait intéressant de combiner ces variantes de l'analyse PLS, à d'autres comme le Sparse-PLS qui pourrait peut-être aider à résoudre le problème de vecteurs/matrices creuses dont sont victimes les représentations vectorielles de texte. Il existe aussi un grand nombre d'architectures neuronales pour la classification de document et de très grands nombres de métriques de pondération de termes pour la représentation des textes, mais aucune ne semble s'adapter à toutes les catégories. Par conséquent, une étude sur l'usage des représentations par plongement sémantique comme Word2Vec \citep{mikolov2013word2vec}, Sent2Vec \citep{pagliardini2017sent2vec} ou Doc2Vec \citep{quoc2014doc2vec} serait intéressante.
