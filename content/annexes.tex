@@ -1,12 +1,12 @@
 %annexes
 \appendix
-\renewcommand\thesection{A.\roman{section}}
-\renewcommand\thefigure{A.\arabic{figure}}
-\renewcommand\thetable{A.\arabic{table}}
+\renewcommand{\thesection}{A.\roman{section}}
+\renewcommand{\thefigure}{A.\arabic{figure}}
+\renewcommand{\thetable}{A.\arabic{table}}
 \chapter*{Annexes}
 \addcontentsline{toc}{chapter}{Annexes}
-\section{Exemple de décision judiciaire annotée}
-%\chaptermark{Exemple de décision de justice}
-%\addcontentsline{toc}{chapter}{Exemple de décision de justice française annotée}
+%\section{Exemple de décision judiciaire annotée}
+%\section{Exemple}
 \label{appendix:exemple-decision}
-\lstinputlisting[language=XMl]{content/CALYO1406777.xml}
+\lstset{language=XMl}
+\lstinputlisting{content/CALYO1406777.xml}
