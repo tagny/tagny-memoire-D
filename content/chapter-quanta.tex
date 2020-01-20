@@ -75,7 +75,7 @@ Une catégorie $c$ de demande regroupe les prétentions qui sont de même nature
 \textit{styx} & frais irrépétibles & dommages-intérêts & Article 700 du code de procédure civile \\ \hline
 \end{tabular}
 \textit{Les labels ont été définis dans le cadre du projet, et par conséquent, ils n'existent pas dans le langage juridique.}
-\caption{Exemples de catégories de demandes}\label{tab:quanta:exemple-categorie}
+\caption{Exemples de catégories de demandes.}\label{tab:quanta:exemple-categorie}
 \end{table}
 
 \subsubsection{Sens du résultat}
@@ -100,7 +100,7 @@ Les demandes sont en général décrites à la fin de la section d'exposé des f
 
  Cette pseudo-structure n'est pas standard et impose de nombreux défis à relever. En effet, une décision jurisprudentielle porte sur plusieurs demandes de catégories différentes ou similaires. Il est important de faire correspondre un quantum demandé extrait au sens et quantum du résultat qui font référence à la même demande. La séparation des demandes et des résultats rend difficile cette mise en correspondance. Ce problème peut aussi être causé par la redondance des quanta ; par exemple, les résultats exprimés dans les Motifs sont résumés dans le Dispositif. D'autre part, les références aux jugements antérieurs exigent de résoudre des références aux résultats de jugements antérieurs qui sont, généralement, rappelés dans le même document. Notons aussi que les difficultés liées aux agrégations (par ex. "\textit{infirmer ... en toutes ces dispositions}") et aux restrictions/sélections (par ex. "\textit{infirme le jugement ... sauf en ce qu'il a condamné M. A. ...}") méritent d'être résolues. Par ailleurs, les catégories de demandes sont nombreuses\footnote{plus de 500 selon la nomenclature des affaires civiles NAC+.} mais ne sont pas toutes présentes à la fois dans les décisions. Tous ces aspects rendent difficile l'annotation manuelle des données de référence et la modélisation d'une approche d'extraction adéquate. Nous avons cependant identifié des indicateurs qui pourraient être utiles.
 
-On pourrait au préalable annoter les candidats potentiels de quanta. Nous nous sommes intéressés aux demandes dont les quanta sont des sommes d'argent. Les mentions de somme d'argent sont généralement de la forme \og \texttt{[valeur] [monnaie]} \fg{} (par ex. \texttt{3000 \euro}, \texttt{15 503 676 francs}, \texttt{un euro}, \texttt{339.000 XPF}). Des centimes apparaissent parfois (par ex. \texttt{dix huit euros et soixante quatorze centimes}, \texttt{26'977 \euro{} 19}). Ainsi, il est possible d'annoter les sommes d'argent à l'aide d'une expression régulière. Même s'il est difficile de reconnaître des sommes d'argent écrites en lettre, il faut remarquer que l'équivalent en chiffre est généralement mentionné tout près (par ex. \texttt{neuf mille cinq cent soixante six euros et quatre vingt sept centimes (9566,87 \euro{} )}). 
+On pourrait au préalable annoter les candidats potentiels de quanta. Nous nous sommes intéressés aux demandes dont les quanta sont des sommes d'argent. Les mentions de somme d'argent sont généralement de la forme \og \texttt{[valeur] [monnaie]} \fg{} (par ex. \texttt{3000 \euro}, \texttt{15 503 676 francs}, \texttt{un euro}, \texttt{339.000 XPF}). Des centimes apparaissent parfois (par ex. \texttt{dix huit euros et soixante quatorze centimes}, \texttt{26'977 \euro{} 19}). Ainsi, il est possible d'annoter les sommes d'argent à l'aide d'une expression régulière. Même s'il est difficile de reconnaître des sommes d'argent écrites en lettre, il faut remarquer que l'équivalent en chiffre est généralement mentionné tout près (par ex. \texttt{neuf mille cinq cent soixante six euros et quatre vingt sept centimes (9566,87 \euro{})}). 
 
 La terminologie utilisée est aussi un bon indicateur pour reconnaître des demandes et des résultats. En effet, le vocabulaire utilisé est très souvent propre aux catégories de demandes. Par exemple le dernier élément de la Figure \ref{fig:quanta:expr-dmd} comprend le terme "\textit{pour procédure abusive}" qui est près d'une somme d'argent (\textit{3000 \euro{}}) ; il est donc probable que ce type de terme assez particulier soit un bon indicateur de la position des quanta. Par ailleurs, des verbes particuliers sont utilisés pour exprimer les demandes et résultats : infirmer, confirmer, constater, débouter, dire ... %Comme autres formes récurrentes, on pourrait citer l'ordre des demandes (resp. résultats). Généralement, on a les constats, les références aux jugements antérieurs, les demandes principales (?) et secondaires (?).
 
@@ -151,7 +151,7 @@ Les demandes ressemblent aux structures telles que les relations ou les évènem
 		Carolina"& Victim-Arg="il" \linebreak Time-Arg="hier" & Quantum-demandé="3000\euro{}"\linebreak Quantum-obtenu="0 \euro{}"\ \\ \hline
 		\textbf{Classes (\textit{attributes, classes})} & Asserted & Polarity=POSITIVE, Tense=PAST & Sens-résultat="Rejeté" \\ \hline
 	\end{tabular}
-	\caption{Exemples d'analogie entre relations, évènements et demandes} \label{tab:quanta:analogie-relation-evt}
+	\caption{Exemples d'analogie entre relations, évènements et demandes.} \label{tab:quanta:analogie-relation-evt}
 \end{table}
 
 \subsection{Approches d'extraction d'éléments structurés}
