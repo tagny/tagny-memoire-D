@@ -245,7 +245,7 @@ Les algorithmes dédiés aux textes intègrent leur propre représentation de do
 
 \subsubsection{NBSVM}
 
-Le NBSVM \citep{wang2012nbsvm} est un classifieur binaire qui consiste à appliquer une interpolation du classifieur naïf bayésien multinomial (MNB) et du SVM à représentation spécifique des textes entrés. Tout document entré est représenté par un vecteur $x=(x_1, x_2, \dots, x_m)$ tel que $\forall i \in [1 \twodots m], x_i$ est le nombre d'occurrences du terme $t_i \in V$.  $x$ est d'abord transformé en un vecteur $\hat{x}=(\hat{x}_1, \hat{x}_2, \dots, \hat{x}_m)$ tel que: 
+Le NBSVM \citep{wang2012nbsvm} est un classifieur binaire qui consiste à appliquer une interpolation du classifieur naïf bayésien multinomial (MNB) et du SVM à une représentation spécifique des textes entrés. Tout document entré est représenté par un vecteur $x=(x_1, x_2, \dots, x_m)$ tel que $\forall i \in [1 \twodots m], x_i$ est le nombre d'occurrences du terme $t_i \in V$.  $x$ est d'abord transformé en un vecteur $\hat{x}=(\hat{x}_1, \hat{x}_2, \dots, \hat{x}_m)$ tel que: 
 \[\forall i \in [1 \twodots m], \hat{x}_i = \mathbb{1}(x_i) = \left\lbrace \begin{array}{ll}
 1 & \text{si } x_i > 0 \\
 -1 & \text{sinon.}
@@ -257,7 +257,7 @@ où le vecteur $\hat{r}$ est défini par: \[\hat{r}=\log \left(\frac{\hat{p}/\ve
  
 
 \subsubsection{fastText}
- Le classifieur fastText \citep{grave2017fasttextcls} est un réseau de neurones dont l'architecture est donnée à la \figureref{fig:sensresultat:fastText} \citep{zolotov2017analysisOffastText}. Tout document $d$ à classifier est représenté un vecteur $x$ qui est la moyenne des vecteurs des mots de $d$ \citep{zolotov2017analysisOffastText}: \[x = \frac{1}{\setsize{d}} \sum\limits_{i = 1}^{\setsize{d}} \overrightarrow{d[i]}.\]
+ Le classifieur fastText \citep{grave2017fasttextcls} est un réseau de neurones dont l'architecture est donnée à la \figureref{fig:sensresultat:fastText} \citep{zolotov2017analysisOffastText}. Tout document $d$ à classifier est représenté par un vecteur $x$ qui est la moyenne des vecteurs des mots de $d$ \citep{zolotov2017analysisOffastText}: \[x = \frac{1}{\setsize{d}} \sum\limits_{i = 1}^{\setsize{d}} \overrightarrow{d[i]}.\]
  
  
  La couche cachée construit un vecteur $z = (z_1, z_2, \dots, z_\setsize{C})$ présenté en entrée de la fonction de classification \textit{softmax}. Cette dernière calcule la probabilité d'appartenance du document à chaque classe candidate:
@@ -283,7 +283,7 @@ Par ailleurs, la représentation vectorielle des textes résulte généralement 
 %\textcolor{red}{Justification: Pourquoi le PLS? à quel problème cette méthode répond spécifiquement? Qu'est ce que moi j'ai fait/ajouté?: le modèle a été déjà publié en temps que méthode de régression. nous l'adaptons pour de la classification de textes pourquoi?: ça n'a jamais été appliqué en classif. de texte, orienté par l'expertise de l'encadrement sur cette technique déjà publiée.}
 %https://link.springer.com/content/pdf/10.1007\%2FBF02174528.pdf, 
 %https://www.stat4decision.com/fr/regression-pls/
-Cette section présente nos deux adaptations de la régression Gini-PLS \citep{mussard2018ginipls} : une généralisation du Gini-PLS et une combinaison de cette dernière à la régression logistique. L'intérêt du Gini-PLS est de réduire la sensibilité aux valeurs aberrantes. C'est une extension de l'analyse des moindres carrés partiels PLS (\textit{partial least square}) \citep{wold1966pls}. L'analyse PLS explique la dépendance entre une ou plusieurs variables $y$ (dite dépendantes) et des variables $x_1,x_2,...,x_m$ (dites explicatives). Elle consiste principalement à transformer les variables explicatives en un nombre réduit de $h$ composantes principales orthogonales $t_1, ..., t_h$. Il s'agit donc d'une méthode de réduction de dimension au même titre que l'analyse en composantes principales, l'analyse discriminante linéaire (LDA), et l'analyse discriminante quadratique (QDA). Les composantes $t_h$ sont construites par étapes en appliquant l'algorithme du PLS de façon récurrente sur les données mal prédites (résidus). Plus précisément, à chaque itération $h$, la composante $t_h$ est calculée par la formule $t_h = w_{h1} x_1 + \cdots + w_{hj} x_j + \cdots + w_{hp} x_K$ dont les coefficients $w_{hj}$ sont à estimer. L'analyse PLS présente plusieurs avantages \citep{lacroux2011avantagesPLS} dont la robustesse au problème de haute-dimension\footnote{Lorsque le nombre de variables explicatives est très grand devant le nombre d'exemples d'entraînement ($N << m$).} et l'élimination du problème de multicolinéarité\footnote{La multicolinéarité est un problème qui survient lorsque certaines variables de prévision du modèle mesurent le même phénomène.}\citep{kroll2013impactOfMulticollinearity-PLS}. Ces problèmes sont susceptibles de survenir sur les petits corpus de textes comme dans notre cas.  La méthode PLS est étendue et appliquée avec succès pour divers problèmes de régression \citep{lacroux2011avantagesPLS}
+Cette section présente nos deux adaptations de la régression Gini-PLS \citep{mussard2018ginipls} : une généralisation du Gini-PLS et une combinaison de cette dernière à la régression logistique. L'intérêt du Gini-PLS est de réduire la sensibilité aux valeurs aberrantes. C'est une extension de l'analyse des moindres carrés partiels PLS (\textit{partial least square}) \citep{wold1966pls}. L'analyse PLS explique la dépendance entre une ou plusieurs variables $y$ (dite dépendantes) et des variables $x_1,x_2,...,x_m$ (dites explicatives). Elle consiste principalement à transformer les variables explicatives en un nombre réduit de $h$ composantes principales orthogonales $t_1, ..., t_h$. Il s'agit donc d'une méthode de réduction de dimension au même titre que l'analyse en composantes principales (ACP), l'analyse discriminante linéaire (LDA), et l'analyse discriminante quadratique (QDA). Les composantes $t_h$ sont construites par étapes en appliquant l'algorithme du PLS de façon récurrente sur les données mal prédites (résidus). Plus précisément, à chaque itération $h$, la composante $t_h$ est calculée par la formule $t_h = w_{h1} x_1 + \cdots + w_{hj} x_j + \cdots + w_{hm} x_m$ dont les coefficients $w_{hj}$ sont à estimer. L'analyse PLS présente plusieurs avantages \citep{lacroux2011avantagesPLS} dont la robustesse au problème de haute-dimension\footnote{Lorsque le nombre de variables explicatives est très grand devant le nombre d'exemples d'entraînement ($N << m$).} et l'élimination du problème de multicolinéarité\footnote{La multicolinéarité est un problème qui survient lorsque certaines variables de prévision du modèle mesurent le même phénomène.}\citep{kroll2013impactOfMulticollinearity-PLS}. Ces problèmes sont susceptibles de survenir sur les petits corpus de textes comme dans notre cas.  La méthode PLS est étendue et appliquée avec succès pour divers problèmes de régression \citep{lacroux2011avantagesPLS}
  ou de classification de données en général \citep{liu2007pls4classif,durif2017sparsePLSandLogit, bazzoli2018classificationwithLS-PLS}, et de textes en particulier \citep{zeng2007textclassPLS}.
 %Il est intéressant de noter la floraison d'extensions proposées pour répondre aux différentes limites du PLS. Notamment, nous pouvons citer la "\textit{sparse}" PLS introduite pour palier à la "\textit{sparsité}" et la colinéarité des variables explicatives [?], la PLS non-linéaire proposée pour les cas de données non-linéairement séparables [?], ou encore la PLS discriminante combinant la régression PLS et l'analyse discriminante [?]. 
 
@@ -332,7 +332,7 @@ $\bulle$ \underline{\textbf{Étape 1:}} La régression Gini permet de concevoir 
 \max \cog(y,X w_1) \ , \ \text{s.c.} \ \left\|w_1\right\|=1 \ , \ \text{est}
 \]
 \begin{equation}\notag
-w_{1j} = \frac{\cog(y,x_j)}{\sqrt{\sum\limits_{k=1}^m \emph{cog}^2(y,x_k)}} \ , \ \forall j = 1\ldots,p \ .
+w_{1j} = \frac{\cog(y,x_j)}{\sqrt{\sum\limits_{k=1}^m \emph{cog}^2(y,x_k)}} \ , \ \forall j = 1\ldots,m \ .
 \end{equation}
 La pondération est équivalente à :
 \begin{equation}\notag
@@ -345,7 +345,7 @@ t_1 = \sum_{k=1}^m w_{1k}x_k \ \Longrightarrow \ y = \hat{c}_1 t_1 + \hat{\varep
 
 \medskip
 
-$\bulle$ \underline{\textbf{Étape 2:}} On régresse le vecteur rang de chaque régreseur $R(x_k)$ sur la composante $t_1$ par moindres carrés ordinaires afin de récupérer les résidus $\hat{U}_{(1)k}$ : 
+$\bulle$ \underline{\textbf{Étape 2:}} On régresse le vecteur rang de chaque régresseur $R(x_k)$ sur la composante $t_1$ par moindres carrés ordinaires afin de récupérer les résidus $\hat{U}_{(1)k}$ : 
 \[
 R(x_k) = \hat{\beta}t_1 + \hat{U}_{(1)k} \ , \ \forall k = 1,\cdots, m \ .
 \]
