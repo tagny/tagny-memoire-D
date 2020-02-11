@@ -368,7 +368,7 @@ D'où, après maximisation :
 w_{hk} = \frac{\cog(\hat{\varepsilon}_{h-1},\hat{U}_{(h-1)k})}{\sqrt{\sum_{k=1}^m \cog^2(\hat{\varepsilon}_{h-1},\hat{U}_{(h-1)k})}} \ ,
 \]
 \[
-t_h = \sum_{k=1}^m w_{hk}\cdot \hat{U}_{(h-1)k} \ \Longrightarrow \ y = \alpha_2 + c_1 t_1 + \cdots + c_h t_h + \varepsilon_h \ .
+t_h = \sum_{k=1}^m w_{hk}\cdot \hat{U}_{(h-1)k} \ \Longrightarrow \ y = \hat{c}_1 t_1 + \cdots + \hat{c}_h t_h + \varepsilon_h \ .
 \]
 La procédure s'arrête lorsque la validation croisée indique que la composante $t_h$ n'est pas significative. L'algorithme Gini-PLS est valable si toutes les composantes $t_h$ et $t_l$ sont orthogonales, $\forall h\neq l$. 
 
